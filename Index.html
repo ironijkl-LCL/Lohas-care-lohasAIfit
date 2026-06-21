@@ -1,10 +1,9 @@
-```html
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FitAI 智能控體重 - 旗艦版</title>
+    <title>FitAI 智能控體重 - 雲端旗艦版</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
@@ -38,7 +37,7 @@
         .water-wave {
             transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        /* 橫向滾動條與預設隱藏 */
+        /* 滾動條樣式 */
         ::-webkit-scrollbar {
             width: 4px;
             height: 4px;
@@ -54,6 +53,14 @@
 </head>
 <body class="text-slate-100 antialiased">
 
+    <!-- 全域頂部橫幅 (當教練或好友正在遠端檢視別人的資料時顯示) -->
+    <div id="coachModeBanner" class="hidden bg-amber-500/95 text-slate-950 font-extrabold px-4 py-2 text-center text-xs flex justify-between items-center sticky top-0 z-50 backdrop-blur-md">
+        <span>⚠️ 唯讀模式：您正在檢視好友/學員的實時健康日誌</span>
+        <button onclick="exitCoachMode()" class="bg-slate-950 text-amber-400 px-2.5 py-1 rounded text-[10px] uppercase font-extrabold hover:bg-slate-900 transition">
+            返回我的數據
+        </button>
+    </div>
+
     <!-- 主容器 -->
     <div class="max-w-md mx-auto px-4 pt-6 space-y-5">
         
@@ -68,10 +75,17 @@
                     <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">智能膳食與體重專家</p>
                 </div>
             </div>
-            <!-- 設定齒輪 -->
-            <button onclick="toggleSettingsModal(true)" class="p-2.5 rounded-xl bg-slate-800/50 border border-slate-700/40 hover:bg-slate-700/60 text-slate-300 hover:text-emerald-400 transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-            </button>
+            <!-- 同步狀態燈 -->
+            <div class="flex items-center gap-2">
+                <div id="syncIndicator" class="flex items-center gap-1.5 px-2.5 py-1 bg-slate-800/60 rounded-full border border-slate-750 text-[10px] text-slate-400">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" id="syncStatusDot"></span>
+                    <span id="syncStatusText" class="font-semibold">連線中...</span>
+                </div>
+                <!-- 設定齒輪 -->
+                <button onclick="toggleSettingsModal(true)" class="p-2 rounded-xl bg-slate-800/50 border border-slate-700/40 hover:bg-slate-700/60 text-slate-300 hover:text-emerald-400 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </button>
+            </div>
         </header>
 
         <!-- 日期切換導航 -->
@@ -126,7 +140,7 @@
                     </div>
                 </div>
 
-                <!-- 營養素克數與比例快速提示 (三大營養素完整呈現) -->
+                <!-- 三大營養素完整呈現 (碳水、蛋白質、脂肪) -->
                 <div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-800/50 text-[10px] text-center font-bold">
                     <div class="p-1.5 rounded-lg bg-cyan-950/20 border border-cyan-500/10">
                         <span class="block text-cyan-400">碳水化合物</span>
@@ -255,7 +269,7 @@
                             <div class="space-y-2">
                                 <div class="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center mx-auto text-xl text-slate-400 group-hover:scale-110 transition duration-300">📸</div>
                                 <p class="text-sm font-semibold text-slate-200">點擊拍照或選擇相片</p>
-                                <p class="text-[11px] text-slate-500">內建 Canvas 智慧壓縮優化 (最大 800px)</p>
+                                <p class="text-[11px] text-slate-500">內建 Canvas 智慧壓縮優化 (最大 800px png)</p>
                             </div>
                         </div>
                         <input type="file" id="realPhotoInput" accept="image/*" class="hidden" onchange="onPhotoSelected(event)">
@@ -396,6 +410,43 @@
             </div>
         </main>
 
+        <!-- ================= PAGE 6: SHARE / SYNC CODE ================= -->
+        <main id="page-share" class="space-y-5 page-section hidden">
+            <div class="glass-card rounded-2xl p-5 space-y-4 relative overflow-hidden">
+                <div class="absolute -top-12 -right-12 w-32 h-32 bg-teal-500/5 rounded-full blur-2xl"></div>
+                <h3 class="text-sm font-bold text-slate-200 flex items-center gap-1.5">
+                    <span>☁️</span> 跨裝置同步與教練分享碼
+                </h3>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    透過雲端即時同步，不論您清除瀏覽器緩存還是更換手機，您的飲食日誌皆會永久保存。複製下方「同步分享碼」給朋友或健身教練，即可讓對方遠端實時檢看您的每日飲食表現！
+                </p>
+
+                <!-- 個人代碼 -->
+                <div class="p-3.5 bg-slate-900 rounded-xl space-y-1.5">
+                    <span class="text-[10px] text-slate-500 font-bold block uppercase tracking-wider">我的專屬同步分享碼 (Sync Code)</span>
+                    <div class="flex justify-between items-center gap-2">
+                        <span id="myShareCodeTxt" class="text-xs font-mono text-emerald-400 truncate tracking-wide">連線中...</span>
+                        <button onclick="copyMyShareCode()" class="px-2.5 py-1.5 bg-slate-800 text-slate-300 text-[10px] font-bold rounded hover:bg-slate-750 transition active:scale-95 shrink-0">
+                            複製分享碼
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 載入他人數據 -->
+            <div class="glass-card rounded-2xl p-5 space-y-3.5">
+                <h3 class="text-xs font-bold text-slate-300">👨‍🏫 載入學員 / 好友數據 (唯讀監督模式)</h3>
+                <p class="text-[10px] text-slate-500">輸入教練或朋友提供給您的分享碼，即可在您的裝置上實時檢視對方的飲食紀錄與圖表分析。</p>
+                
+                <div class="flex gap-2">
+                    <input type="text" id="targetShareCodeInput" placeholder="請輸入對方的分享碼" class="glass-input flex-1 p-2.5 rounded-xl text-xs font-mono">
+                    <button onclick="loadTargetSharedProfile()" class="px-4 bg-emerald-400 text-slate-950 font-extrabold rounded-xl text-xs hover:bg-emerald-300 transition active:scale-95 shrink-0">
+                        載入檢視
+                    </button>
+                </div>
+            </div>
+        </main>
+
     </div>
 
     <!-- 底部導航欄 -->
@@ -419,6 +470,10 @@
         <button onclick="switchPage('trends')" id="navBtn-trends" class="flex flex-col items-center gap-1 py-1 px-3 text-slate-500 transition">
             <span class="text-lg">📈</span>
             <span class="text-[9px] font-bold">趨勢指標</span>
+        </button>
+        <button onclick="switchPage('share')" id="navBtn-share" class="flex flex-col items-center gap-1 py-1 px-3 text-slate-500 transition">
+            <span class="text-lg">☁️</span>
+            <span class="text-[9px] font-bold">雲同步</span>
         </button>
     </nav>
 
@@ -457,22 +512,13 @@
     <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
         <div class="glass-card w-full max-w-sm rounded-2xl p-6 space-y-4 relative animate-in fade-in zoom-in duration-150">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-                <h3 class="text-sm font-bold text-slate-200">⚙️ 個人設定與 API 配置</h3>
+                <h3 class="text-sm font-bold text-slate-200">⚙️ 個人目標與參數設定</h3>
                 <button onclick="toggleSettingsModal(false)" class="p-1 text-slate-400 hover:text-slate-100 transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
 
             <div class="space-y-3">
-                <!-- API Key -->
-                <div class="space-y-1">
-                    <div class="flex justify-between">
-                        <label class="text-[10px] text-slate-400 font-bold uppercase">Gemini API Key</label>
-                        <a href="https://aistudio.google.com/" target="_blank" class="text-[10px] text-emerald-400 hover:underline">免費獲取 Key ↗</a>
-                    </div>
-                    <input type="password" id="apiKeyInput" placeholder="請填寫您的 Gemini API Key" class="glass-input w-full p-2.5 rounded-xl text-xs font-mono">
-                </div>
-
                 <!-- 每日目標熱量 -->
                 <div class="space-y-1">
                     <label class="text-[10px] text-slate-400 font-bold uppercase">每日目標熱量 (kcal)</label>
@@ -509,10 +555,14 @@
         <span id="toastMsg">訊息</span>
     </div>
 
-    <!-- 主應用腳本 -->
-    <script>
-        // === 全域狀態管理 (優先持久化於 LocalStorage) ===
-        let state = JSON.parse(localStorage.getItem("fitai_v5_state")) || {
+    <!-- ================= FIREBASE CLOUD STORAGE INTEGRATION ================= -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+        import { getFirestore, doc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+
+        // 綁定全域儲存狀態
+        window.state = {
             goalCal: 2000,
             targetWeight: 60,
             heightCm: 170,
@@ -523,19 +573,152 @@
             chatHistory: []
         };
 
-        // 綁定全域變數與元件
+        // Firebase 連線參數與 ID 對接
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'fitai-default-app';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        window.currentUserId = null;
+        window.myPrivateUserId = null;
+        let db = null;
+        let auth = null;
+        let unsubscribeRealtime = null;
+
+        const syncStatusDot = document.getElementById("syncStatusDot");
+        const syncStatusText = document.getElementById("syncStatusText");
+        const myShareCodeTxt = document.getElementById("myShareCodeTxt");
+
+        // 初始化資料庫
+        async function initCloudStorage() {
+            if (!firebaseConfig) {
+                console.warn("未檢測到 Firebase 配置，啟動 LocalStorage 本端託管。");
+                useLocalStorageFallback();
+                return;
+            }
+
+            try {
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // RULE 3: 登入優先 (優先採用 CustomToken 其次匿名)
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        window.myPrivateUserId = user.uid;
+                        myShareCodeTxt.innerText = user.uid;
+                        
+                        // 變更連線指示器
+                        syncStatusDot.className = "w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse";
+                        syncStatusText.innerText = "雲端同步中";
+
+                        // 開始監聽自己的資料
+                        bindRealtimeSync(user.uid);
+                    } else {
+                        useLocalStorageFallback();
+                    }
+                });
+
+            } catch (err) {
+                console.error("Firebase 初始化失敗，使用 LocalStorage 替代：", err);
+                useLocalStorageFallback();
+            }
+        }
+
+        // 當無 Firebase 情況下的 Fallback
+        function useLocalStorageFallback() {
+            window.myPrivateUserId = "local-offline-user";
+            myShareCodeTxt.innerText = "本端離線模式";
+            syncStatusDot.className = "w-1.5 h-1.5 rounded-full bg-amber-400";
+            syncStatusText.innerText = "本端儲存";
+
+            const cached = localStorage.getItem("fitai_local_state");
+            if (cached) {
+                window.state = JSON.parse(cached);
+            }
+            window.currentUserId = window.myPrivateUserId;
+            window.renderAll();
+        }
+
+        // RULE 1: 資料寫入路徑必須完全正確。使用 merge 同步最新狀態至雲端
+        window.syncStateToCloud = async function() {
+            if (window.currentUserId === "local-offline-user") {
+                localStorage.setItem("fitai_local_state", JSON.stringify(window.state));
+                return;
+            }
+
+            // 防護：唯讀模式下不可覆蓋他人數據
+            if (window.currentUserId !== window.myPrivateUserId) {
+                return;
+            }
+
+            if (!db || !window.currentUserId) return;
+
+            // 嚴格儲存路徑符合：/artifacts/{appId}/public/data/fitai_profiles/{userId}
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'fitai_profiles', window.currentUserId);
+            
+            try {
+                await setDoc(docRef, window.state, { merge: true });
+            } catch (err) {
+                console.error("同步至雲端失敗：", err);
+            }
+        }
+
+        // 綁定動態實時監聽器
+        window.bindRealtimeSync = function(userId) {
+            if (unsubscribeRealtime) unsubscribeRealtime();
+
+            window.currentUserId = userId;
+
+            if (userId === "local-offline-user") return;
+
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'fitai_profiles', userId);
+
+            // 實時更新，並強制加上 error callback 預防崩潰 (遵守規章)
+            unsubscribeRealtime = onSnapshot(docRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    window.state = {
+                        ...window.state,
+                        ...docSnap.data()
+                    };
+                } else {
+                    // 若為新建立用戶，寫入預設結構
+                    window.state = {
+                        goalCal: 2000,
+                        targetWeight: 60,
+                        heightCm: 170,
+                        dietLogs: [],
+                        waterLogs: [],
+                        workoutLogs: [],
+                        weightLogs: [],
+                        chatHistory: []
+                    };
+                    window.syncStateToCloud();
+                }
+                window.renderAll();
+            }, (error) => {
+                console.error("Firestore 即時同步異常：", error);
+                window.showToast("連線發生異常", "❌");
+            });
+        }
+
+        window.addEventListener('load', initCloudStorage);
+    </script>
+
+    <!-- 主應用邏輯與渲染腳本 -->
+    <script>
+        // 本地變數
+        const apiKey = ""; // 平台自動注入安全金鑰，維持空字串
+
         let currentViewDate = new Date().toISOString().split("T")[0];
         let selectedPhotoBase64 = null;
         let doughnutChartInstance = null;
         let lineChartInstance = null;
-
-        // API Key 設定管理
-        let savedApiKey = localStorage.getItem("fitai_apikey") || "";
-
-        // 獲取當前可用的 API key
-        function getActiveApiKey() {
-            return savedApiKey || "";
-        }
 
         window.addEventListener('load', () => {
             document.getElementById("dateInput").value = currentViewDate;
@@ -544,17 +727,14 @@
                 renderAll();
             });
 
-            // 初始化設定
-            document.getElementById("apiKeyInput").value = savedApiKey;
-            document.getElementById("goalInput").value = state.goalCal;
-            document.getElementById("heightInput").value = state.heightCm;
-            document.getElementById("targetWeightInput").value = state.targetWeight;
-
-            renderAll();
+            // 初始化設定預設輸入欄位
+            document.getElementById("goalInput").value = window.state.goalCal;
+            document.getElementById("heightInput").value = window.state.heightCm;
+            document.getElementById("targetWeightInput").value = window.state.targetWeight;
         });
 
-        // 秀出 Toast
-        function showToast(msg, icon = "💡") {
+        // 顯示通知
+        window.showToast = function(msg, icon = "💡") {
             const toast = document.getElementById("toastBox");
             document.getElementById("toastMsg").innerText = msg;
             document.getElementById("toastIcon").innerText = icon;
@@ -566,17 +746,12 @@
             }, 3000);
         }
 
-        // 保存全域狀態至 LocalStorage
-        function syncState() {
-            localStorage.setItem("fitai_v5_state", JSON.stringify(state));
-        }
-
-        // 導航與分頁切換
-        function switchPage(pageId) {
+        // 導航切換
+        window.switchPage = function(pageId) {
             document.querySelectorAll(".page-section").forEach(p => p.classList.add("hidden"));
             document.getElementById(`page-${pageId}`).classList.remove("hidden");
 
-            const pages = ['dashboard', 'addfood', 'logs', 'coach', 'trends'];
+            const pages = ['dashboard', 'addfood', 'logs', 'coach', 'trends', 'share'];
             pages.forEach(p => {
                 const btn = document.getElementById(`navBtn-${p}`);
                 if (p === pageId) {
@@ -585,10 +760,10 @@
                     btn.className = "flex flex-col items-center gap-1 py-1 px-3 text-slate-500 transition";
                 }
             });
-            renderAll();
+            window.renderAll();
         }
 
-        function switchInputMode(modeName) {
+        window.switchInputMode = function(modeName) {
             ['photo', 'text', 'manual'].forEach(m => {
                 const btn = document.getElementById(`inputTab-${m}`);
                 const container = document.getElementById(`inputBox-${m}`);
@@ -603,48 +778,61 @@
             clearAIStatus();
         }
 
-        function changeDate(offset) {
+        window.changeDate = function(offset) {
             const date = new Date(currentViewDate);
             date.setDate(date.getDate() + offset);
             currentViewDate = date.toISOString().split("T")[0];
             document.getElementById("dateInput").value = currentViewDate;
-            renderAll();
+            window.renderAll();
         }
 
         // 設定控制
-        function toggleSettingsModal(show) {
+        window.toggleSettingsModal = function(show) {
             const modal = document.getElementById("settingsModal");
-            if (show) modal.classList.remove("hidden");
-            else modal.classList.add("hidden");
+            if (show) {
+                // 回填最新資訊
+                document.getElementById("goalInput").value = window.state.goalCal;
+                document.getElementById("heightInput").value = window.state.heightCm;
+                document.getElementById("targetWeightInput").value = window.state.targetWeight;
+                modal.classList.remove("hidden");
+            } else {
+                modal.classList.add("hidden");
+            }
         }
 
-        function saveSettings() {
-            const key = document.getElementById("apiKeyInput").value.trim();
+        window.saveSettings = function() {
+            if (window.currentUserId !== window.myPrivateUserId) {
+                window.showToast("唯讀模式下不可操作！", "⚠️");
+                return;
+            }
+
             const goal = parseInt(document.getElementById("goalInput").value);
             const height = parseInt(document.getElementById("heightInput").value);
             const targetWeight = parseInt(document.getElementById("targetWeightInput").value);
 
             if (isNaN(goal) || goal <= 0) {
-                showToast("熱量目標必須為正整數", "⚠️");
+                window.showToast("熱量目標必須為正整數", "⚠️");
                 return;
             }
 
-            savedApiKey = key;
-            localStorage.setItem("fitai_apikey", key);
+            window.state.goalCal = goal;
+            window.state.heightCm = isNaN(height) ? 170 : height;
+            window.state.targetWeight = isNaN(targetWeight) ? 60 : targetWeight;
 
-            state.goalCal = goal;
-            state.heightCm = isNaN(height) ? 170 : height;
-            state.targetWeight = isNaN(targetWeight) ? 60 : targetWeight;
-
-            syncState();
-            toggleSettingsModal(false);
-            showToast("個人設定已成功保存！", "✅");
-            renderAll();
+            window.syncStateToCloud();
+            window.toggleSettingsModal(false);
+            window.showToast("目標設定已更新！", "✅");
+            window.renderAll();
         }
 
-        function clearAllLogs() {
-            if (confirm("您確定要徹底重設所有飲食、運動、補水與體重紀錄嗎？此操作無法恢復！")) {
-                state = {
+        window.clearAllLogs = function() {
+            if (window.currentUserId !== window.myPrivateUserId) {
+                window.showToast("唯讀模式下不可操作！", "⚠️");
+                return;
+            }
+
+            if (confirm("您確定要徹底重設雲端所有紀錄嗎？此操作無法恢復！")) {
+                window.state = {
                     goalCal: 2000,
                     targetWeight: 60,
                     heightCm: 170,
@@ -654,69 +842,85 @@
                     weightLogs: [],
                     chatHistory: []
                 };
-                syncState();
-                toggleSettingsModal(false);
-                showToast("數據已完成初始化重設", "🧹");
-                renderAll();
+                window.syncStateToCloud();
+                window.toggleSettingsModal(false);
+                window.showToast("數據已成功初始化", "🧹");
+                window.renderAll();
             }
         }
 
-        // ================= LEVEL 5: 補水與運動系統 =================
-        function addWater(ml) {
+        // ================= 補水與運動系統 =================
+        window.addWater = function(ml) {
+            if (window.currentUserId !== window.myPrivateUserId) {
+                window.showToast("唯讀模式下不可操作！", "⚠️");
+                return;
+            }
             const todayStr = currentViewDate;
-            const logIdx = state.waterLogs.findIndex(w => w.date === todayStr);
+            const logIdx = window.state.waterLogs.findIndex(w => w.date === todayStr);
             if (logIdx >= 0) {
-                state.waterLogs[logIdx].ml += ml;
+                window.state.waterLogs[logIdx].ml += ml;
             } else {
-                state.waterLogs.push({ date: todayStr, ml: ml });
+                window.state.waterLogs.push({ date: todayStr, ml: ml });
             }
-            syncState();
-            renderAll();
-            showToast(`已補水 +${ml}ml`, "💧");
+            window.syncStateToCloud();
+            window.renderAll();
+            window.showToast(`已補水 +${ml}ml`, "💧");
         }
 
-        function resetWater() {
+        window.resetWater = function() {
+            if (window.currentUserId !== window.myPrivateUserId) {
+                window.showToast("唯讀模式下不可操作！", "⚠️");
+                return;
+            }
             const todayStr = currentViewDate;
-            state.waterLogs = state.waterLogs.filter(w => w.date !== todayStr);
-            syncState();
-            renderAll();
+            window.state.waterLogs = window.state.waterLogs.filter(w => w.date !== todayStr);
+            window.syncStateToCloud();
+            window.renderAll();
         }
 
-        function openCustomWorkoutModal() {
+        window.openCustomWorkoutModal = function() {
+            if (window.currentUserId !== window.myPrivateUserId) {
+                window.showToast("唯讀模式下不可操作！", "⚠️");
+                return;
+            }
             document.getElementById("customWorkoutModal").classList.remove("hidden");
         }
-        function closeCustomWorkoutModal() {
+        window.closeCustomWorkoutModal = function() {
             document.getElementById("customWorkoutModal").classList.add("hidden");
         }
 
-        function saveCustomWorkout() {
+        window.saveCustomWorkout = function() {
             const name = document.getElementById("customWorkoutName").value.trim();
             const dur = parseInt(document.getElementById("customWorkoutDuration").value);
             const burn = parseInt(document.getElementById("customWorkoutBurn").value);
 
             if (!name || isNaN(dur) || isNaN(burn)) {
-                showToast("請輸入完整的運動資訊！", "⚠️");
+                window.showToast("請輸入完整的運動資訊！", "⚠️");
                 return;
             }
 
-            state.workoutLogs.push({
+            window.state.workoutLogs.push({
                 id: crypto.randomUUID(),
                 date: currentViewDate,
                 name: `${name} (${dur}分鐘)`,
                 cal: burn
             });
 
-            syncState();
-            renderAll();
+            window.syncStateToCloud();
+            window.renderAll();
             closeCustomWorkoutModal();
-            showToast("自訂燃脂運動已順利紀錄！", "🔥");
+            window.showToast("自訂燃脂運動已順利紀錄！", "🔥");
 
             document.getElementById("customWorkoutName").value = "";
             document.getElementById("customWorkoutDuration").value = "";
             document.getElementById("customWorkoutBurn").value = "";
         }
 
-        function quickAddWorkout() {
+        window.quickAddWorkout = function() {
+            if (window.currentUserId !== window.myPrivateUserId) {
+                window.showToast("唯讀模式下不可操作！", "⚠️");
+                return;
+            }
             const select = document.getElementById("quickWorkoutSelect");
             const val = select.value;
             if (!val) return;
@@ -729,38 +933,46 @@
             else if (val === "swimming") { name = "游泳 30分鐘"; cal = 350; }
             else if (val === "lifting") { name = "重量訓練 45分鐘"; cal = 200; }
 
-            state.workoutLogs.push({
+            window.state.workoutLogs.push({
                 id: crypto.randomUUID(),
                 date: currentViewDate,
                 name: name,
                 cal: cal
             });
 
-            syncState();
-            renderAll();
+            window.syncStateToCloud();
+            window.renderAll();
             select.value = "";
-            showToast(`成功登記運動：${name}`, "🔥");
+            window.showToast(`成功登記運動：${name}`, "🔥");
         }
 
-        function deleteWorkout(id) {
-            state.workoutLogs = state.workoutLogs.filter(w => w.id !== id);
-            syncState();
-            renderAll();
-            showToast("已移除該筆運動日誌", "🗑️");
+        window.deleteWorkout = function(id) {
+            if (window.currentUserId !== window.myPrivateUserId) {
+                window.showToast("唯讀模式下不可操作！", "⚠️");
+                return;
+            }
+            window.state.workoutLogs = window.state.workoutLogs.filter(w => w.id !== id);
+            window.syncStateToCloud();
+            window.renderAll();
+            window.showToast("已移除該筆運動日誌", "🗑️");
         }
 
-        // ================= LEVEL 3: 體重體脂紀錄 =================
-        function saveBodyStats() {
+        // ================= 體重與 BMI 系統 =================
+        window.saveBodyStats = function() {
+            if (window.currentUserId !== window.myPrivateUserId) {
+                window.showToast("唯讀模式下不可操作！", "⚠️");
+                return;
+            }
             const weight = parseFloat(document.getElementById("weightInput").value);
             const fat = parseFloat(document.getElementById("fatInput").value);
 
             if (isNaN(weight) || weight <= 0) {
-                showToast("請輸入有效的體重！", "⚠️");
+                window.showToast("請輸入有效的體重！", "⚠️");
                 return;
             }
 
             const todayStr = currentViewDate;
-            const idx = state.weightLogs.findIndex(w => w.date === todayStr);
+            const idx = window.state.weightLogs.findIndex(w => w.date === todayStr);
 
             const statObj = {
                 date: todayStr,
@@ -768,23 +980,75 @@
                 fat: isNaN(fat) ? 0 : fat
             };
 
-            if (idx >= 0) state.weightLogs[idx] = statObj;
-            else state.weightLogs.push(statObj);
+            if (idx >= 0) window.state.weightLogs[idx] = statObj;
+            else window.state.weightLogs.push(statObj);
 
-            syncState();
-            renderAll();
-            showToast("身體指標登記成功！", "⚖️");
+            window.syncStateToCloud();
+            window.renderAll();
+            window.showToast("身體指標登記成功！", "⚖️");
 
             document.getElementById("weightInput").value = "";
             document.getElementById("fatInput").value = "";
         }
 
-        // ================= FEATURE 2: 內建 CANVAS 智慧壓縮優化 =================
-        function triggerPhotoSelect() {
+        // ================= 跨裝置與教練同步分享機制 =================
+        window.copyMyShareCode = function() {
+            const code = window.myPrivateUserId;
+            if (!code || code === "local-offline-user") {
+                window.showToast("目前處於離線狀態，無法產生分享碼", "⚠️");
+                return;
+            }
+            
+            // 安全剪貼簿複製 (使用相容 iframe 寫法)
+            const dummy = document.createElement("input");
+            document.body.appendChild(dummy);
+            dummy.value = code;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+            
+            window.showToast("分享代碼已複製到剪貼簿！", "📋");
+        }
+
+        window.loadTargetSharedProfile = function() {
+            const targetCode = document.getElementById("targetShareCodeInput").value.trim();
+            if (!targetCode) {
+                window.showToast("請輸入對方的分享碼！", "⚠️");
+                return;
+            }
+
+            if (targetCode === window.myPrivateUserId) {
+                window.showToast("這就是您個人的同步分享碼喔！", "💡");
+                return;
+            }
+
+            // 開啟唯讀監管 Banner
+            document.getElementById("coachModeBanner").classList.remove("hidden");
+            window.bindRealtimeSync(targetCode);
+            
+            window.showToast("成功與雲端連線！現已進入對方的健康唯讀日誌。", "👨‍🏫");
+            window.switchPage("dashboard");
+            document.getElementById("targetShareCodeInput").value = "";
+        }
+
+        window.exitCoachMode = function() {
+            document.getElementById("coachModeBanner").classList.add("hidden");
+            window.bindRealtimeSync(window.myPrivateUserId);
+            window.showToast("已成功返回您個人的 FitAI 健康日誌", "👤");
+            window.switchPage("dashboard");
+        }
+
+
+        // ================= CANVAS 智慧影像壓縮機制 =================
+        window.triggerPhotoSelect = function() {
+            if (window.currentUserId !== window.myPrivateUserId) {
+                window.showToast("唯讀模式下不可操作！", "⚠️");
+                return;
+            }
             document.getElementById("realPhotoInput").click();
         }
 
-        function onPhotoSelected(e) {
+        window.onPhotoSelected = function(e) {
             const file = e.target.files[0];
             if (!file) return;
 
@@ -793,7 +1057,6 @@
             reader.onload = async (event) => {
                 try {
                     updateAIStatus("正在在本地執行智慧壓縮優化...", true);
-                    // 執行壓縮：最大寬高限制 800px，輸出為品質 70% 的 JPG。保證極速辨識、防報錯
                     selectedPhotoBase64 = await compressImage(event.target.result, 800, 800);
                     
                     document.getElementById("photoPreviewImg").src = selectedPhotoBase64;
@@ -801,14 +1064,14 @@
                     updateAIStatus("圖像優化成功！可開始進行 AI 評估。", false);
                 } catch (err) {
                     console.error(err);
-                    showToast("圖像壓縮失敗", "❌");
+                    window.showToast("圖像壓縮失敗", "❌");
                     clearAIStatus();
                 }
             };
             reader.readAsDataURL(file);
         }
 
-        function clearSelectedPhoto(e) {
+        window.clearSelectedPhoto = function(e) {
             e.stopPropagation();
             selectedPhotoBase64 = null;
             document.getElementById("realPhotoInput").value = "";
@@ -842,7 +1105,7 @@
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    resolve(canvas.toDataURL('image/jpeg', 0.7)); // 70% 質量的 JPEG
+                    resolve(canvas.toDataURL('image/png')); 
                 };
                 img.onerror = (err) => reject(err);
             });
@@ -861,10 +1124,10 @@
             document.getElementById("aiStatusBox").classList.add("hidden");
         }
 
-        // ================= GEMINI API 整合運作 (含指數級退避機制) =================
+
+        // ================= GEMINI API 多模態與語意解析 (含 5 次指數級重試回退) =================
         async function fetchGeminiWithBackoff(contents, systemInstruction = null) {
-            const key = getActiveApiKey();
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${key}`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             
             const payload = { contents };
             if (systemInstruction) {
@@ -884,18 +1147,18 @@
                         return data.candidates?.[0]?.content?.parts?.[0]?.text;
                     }
                 } catch (e) {
-                    // 指數級退避，靜默嘗試
+                    // silent retry
                 }
                 await new Promise(resolve => setTimeout(resolve, delay));
-                delay *= 2; // 1s, 2s, 4s, 8s, 16s
+                delay *= 2; 
             }
-            throw new Error("無法成功取得 AI 分析，請確認 API Key 與網路環境是否順暢。");
+            throw new Error("API 連線異常，請確認您的網路環境並稍候再試。");
         }
 
         function parseCleanJson(text) {
             let clean = text.trim();
             if (clean.startsWith("```")) {
-                clean = clean.replace(/^```json/, "").replace(/```$/, "").trim();
+                clean = clean.replace(/^```json/gi, "").replace(/```$/g, "").trim();
             }
             try {
                 return JSON.parse(clean);
@@ -906,12 +1169,10 @@
             }
         }
 
-        // ================= FEATURE 1: 多重智慧輸入 AI 引擎運作 =================
-
-        // 1. 拍照 AI 辨識
-        async function runPhotoAI() {
+        // 1. AI 照相分析 (多模態完美 Payload 格式修復)
+        window.runPhotoAI = async function() {
             if (!selectedPhotoBase64) {
-                showToast("請拍攝或上傳一張食物照片！", "⚠️");
+                window.showToast("請先選擇或拍攝一張食物照片！", "⚠️");
                 return;
             }
 
@@ -921,19 +1182,28 @@
 
             try {
                 const base64Data = selectedPhotoBase64.split(",")[1];
-                const prompt = "請估算這張食物圖片中所有食物的：熱量 kcal（整數）、以及「碳水化合物 carb（克）」、「蛋白質 protein（克）」與「脂肪 fat（克，非常重要）」。請「只」回傳標準的 JSON 結構，不要有任何 markdown 或前後修飾語，格式必須為：{\"name\":\"食物繁體中文縮稱\",\"kcal\":350,\"carb\":25,\"protein\":15,\"fat\":8}";
+                const mimeType = selectedPhotoBase64.split(";")[0].split(":")[1] || "image/png";
 
+                const prompt = "請仔細評估這張食物圖片中所有食物的：熱量 kcal（整數）、以及「碳水化合物 carb（克）」、「蛋白質 protein（克）」與「脂肪 fat（克，非常重要）」。請「只」回傳標準的 JSON 結構，絕對不要附帶 markdown 或前後修飾語，格式必須為：{\"name\":\"食物繁體中文縮稱\",\"kcal\":350,\"carb\":25,\"protein\":15,\"fat\":8}";
+
+                // 修正：必須包含 role: "user" 封裝多模態資料
                 const contents = [{
+                    role: "user",
                     parts: [
                         { text: prompt },
-                        { inlineData: { mimeType: "image/jpeg", data: base64Data } }
+                        {
+                            inlineData: {
+                                mimeType: mimeType,
+                                data: base64Data
+                            }
+                        }
                     ]
                 }];
 
                 const textResult = await fetchGeminiWithBackoff(contents);
                 const foodJson = parseCleanJson(textResult);
 
-                state.dietLogs.push({
+                window.state.dietLogs.push({
                     id: crypto.randomUUID(),
                     date: currentViewDate,
                     name: foodJson.name || "AI 辨識食物",
@@ -944,27 +1214,27 @@
                     img: selectedPhotoBase64
                 });
 
-                syncState();
-                renderAll();
-                showToast(`已成功記錄：${foodJson.name}`, "✅");
+                window.syncStateToCloud();
+                window.renderAll();
+                window.showToast(`已成功記錄：${foodJson.name}`, "✅");
 
                 clearSelectedPhoto({ stopPropagation: () => {} });
-                switchPage("logs");
+                window.switchPage("logs");
 
             } catch (err) {
                 console.error(err);
-                showToast("圖像評估失敗，請設定 API key 並確保圖片清晰", "❌");
+                window.showToast("AI 影像識別失敗，請重新拍照一次！", "❌");
                 updateAIStatus("分析失敗", false);
             } finally {
                 btn.disabled = false;
             }
         }
 
-        // 2. 文字 AI 智慧解構 (完美支援如「一碗牛肉麵和一杯無糖綠茶」)
-        async function runTextAI() {
+        // 2. AI 智慧文字解構 (支援「一碗牛肉麵和一杯無糖綠茶」)
+        window.runTextAI = async function() {
             const query = document.getElementById("textDescribeInput").value.trim();
             if (!query) {
-                showToast("請輸入您今天的飲食文字描述！", "⚠️");
+                window.showToast("請輸入您今天的飲食文字描述！", "⚠️");
                 return;
             }
 
@@ -975,11 +1245,14 @@
             try {
                 const prompt = `請分析這段吃過的食物文字描述：「${query}」。估算這整餐包含了哪些主要食物，並估計其整體的總「熱量 kcal（整數）」、「碳水化合物 carb（克）」、「蛋白質 protein（克）」與「脂肪 fat（克，非常重要）」。請「只」輸出標準 JSON 物件，絕對不要附帶 markdown、注釋或其他敘述文字。結構必須完全符合：{\"name\":\"簡潔餐食名稱組合\",\"kcal\":450,\"carb\":40,\"protein\":20,\"fat\":10}`;
 
-                const contents = [{ parts: [{ text: prompt }] }];
+                const contents = [{
+                    role: "user",
+                    parts: [{ text: prompt }]
+                }];
                 const textResult = await fetchGeminiWithBackoff(contents);
                 const foodJson = parseCleanJson(textResult);
 
-                state.dietLogs.push({
+                window.state.dietLogs.push({
                     id: crypto.randomUUID(),
                     date: currentViewDate,
                     name: foodJson.name || "AI 解析文字膳食",
@@ -990,24 +1263,29 @@
                     img: ""
                 });
 
-                syncState();
-                renderAll();
-                showToast(`文字解構成功：${foodJson.name}`, "✅");
+                window.syncStateToCloud();
+                window.renderAll();
+                window.showToast(`文字解構成功：${foodJson.name}`, "✅");
 
                 document.getElementById("textDescribeInput").value = "";
-                switchPage("logs");
+                window.switchPage("logs");
 
             } catch (err) {
                 console.error(err);
-                showToast("語意解析失敗，請確認 API Key 的有效性！", "❌");
+                window.showToast("語意解析失敗，請重新發問！", "❌");
                 updateAIStatus("分析失敗", false);
             } finally {
                 btn.disabled = false;
             }
         }
 
-        // 3. 傳統手動輸入 (包含脂肪 Fat 追蹤)
-        function runManualAdd() {
+        // 3. 手動新增食物
+        window.runManualAdd = function() {
+            if (window.currentUserId !== window.myPrivateUserId) {
+                window.showToast("唯讀模式下不可操作！", "⚠️");
+                return;
+            }
+
             const name = document.getElementById("manFoodName").value.trim();
             const kcal = Math.round(Number(document.getElementById("manFoodKcal").value));
             const carb = Math.round(Number(document.getElementById("manFoodCarb").value));
@@ -1015,15 +1293,15 @@
             const fat = Math.round(Number(document.getElementById("manFoodFat").value));
 
             if (!name) {
-                showToast("請填寫食物名稱", "⚠️");
+                window.showToast("請填寫食物名稱", "⚠️");
                 return;
             }
             if (isNaN(kcal) || kcal < 0) {
-                showToast("請輸入有效的卡路里數值", "⚠️");
+                window.showToast("請輸入有效的卡路里數值", "⚠️");
                 return;
             }
 
-            state.dietLogs.push({
+            window.state.dietLogs.push({
                 id: crypto.randomUUID(),
                 date: currentViewDate,
                 name: name,
@@ -1034,9 +1312,9 @@
                 img: ""
             });
 
-            syncState();
-            renderAll();
-            showToast(`已成功手動加入：${name}`, "✅");
+            window.syncStateToCloud();
+            window.renderAll();
+            window.showToast(`已成功手動加入：${name}`, "✅");
 
             document.getElementById("manFoodName").value = "";
             document.getElementById("manFoodKcal").value = "";
@@ -1044,19 +1322,23 @@
             document.getElementById("manFoodProtein").value = "";
             document.getElementById("manFoodFat").value = "";
 
-            switchPage("logs");
+            window.switchPage("logs");
         }
 
-        function deleteDietItem(id) {
-            state.dietLogs = state.dietLogs.filter(d => d.id !== id);
-            syncState();
-            renderAll();
-            showToast("已刪除該筆飲食紀錄", "🗑️");
+        window.deleteDietItem = function(id) {
+            if (window.currentUserId !== window.myPrivateUserId) {
+                window.showToast("唯讀模式下不可操作！", "⚠️");
+                return;
+            }
+            window.state.dietLogs = window.state.dietLogs.filter(d => d.id !== id);
+            window.syncStateToCloud();
+            window.renderAll();
+            window.showToast("已刪除該筆飲食紀錄", "🗑️");
         }
 
 
-        // ================= LEVEL 2: AI COACH CHAT & 每日診斷評估 =================
-        async function sendMsgToCoach() {
+        // ================= AI COACH CHAT & 每日診斷點評 =================
+        window.sendMsgToCoach = async function() {
             const input = document.getElementById("coachQueryInput");
             const q = input.value.trim();
             if (!q) return;
@@ -1064,50 +1346,49 @@
             const btn = document.getElementById("btnSendCoach");
             btn.disabled = true;
 
-            state.chatHistory.push({ role: "user", text: q });
+            window.state.chatHistory.push({ role: "user", text: q });
             input.value = "";
             renderCoachChat();
 
             try {
                 const messages = [];
-                state.chatHistory.slice(-10).forEach(chat => {
+                window.state.chatHistory.slice(-10).forEach(chat => {
                     messages.push({
                         role: chat.role === "user" ? "user" : "model",
                         parts: [{ text: chat.text }]
                     });
                 });
 
-                const systemPrompt = "你是一位居住在香港、具有豐富醫學營養知識的 AI 體重管理導師。請全程使用繁體中文以及親切幽默的「廣東話」口吻進行回答，指出用戶在飲食控制、脂肪攝取或水分攝取上的要點。";
+                const systemPrompt = "你是一位居住在香港、具有豐富醫學營養知識的 AI 體重管理導師。請全程使用繁體中文以及親切幽默的「廣東話」口吻進行回答，指出用戶在飲食控制、脂肪與水分攝取上的要點。";
                 const response = await fetchGeminiWithBackoff(messages, systemPrompt);
 
-                state.chatHistory.push({ role: "model", text: response });
-                syncState();
+                window.state.chatHistory.push({ role: "model", text: response });
+                window.syncStateToCloud();
                 renderCoachChat();
 
             } catch (err) {
                 console.error(err);
-                state.chatHistory.push({ role: "model", text: "抱歉，我連線思考稍微有些短路，請重試發問！" });
+                window.state.chatHistory.push({ role: "model", text: "抱歉，我連線思考稍微有些短路，請重試發問！" });
                 renderCoachChat();
             } finally {
                 btn.disabled = false;
             }
         }
 
-        function handleCoachChatKeyPress(e) {
+        window.handleCoachChatKeyPress = function(e) {
             if (e.key === 'Enter') sendMsgToCoach();
         }
 
-        // 一鍵生成全日膳食與營養診斷報告 (傳統繁體廣東話)
-        async function generateDailyCoachReport() {
+        window.generateDailyCoachReport = async function() {
             const btn = document.getElementById("btnCoachReport");
             btn.disabled = true;
-            showToast("正在整合今日所有膳食與脂肪佔比進行深度診斷...", "🤖");
+            window.showToast("正在整合今日所有膳食與脂肪佔比進行深度診斷...", "🤖");
 
             const todayStr = currentViewDate;
-            const eats = state.dietLogs.filter(d => d.date === todayStr);
-            const burns = state.workoutLogs.filter(w => w.date === todayStr);
-            const water = state.waterLogs.find(w => w.date === todayStr)?.ml || 0;
-            const lastWeightObj = state.weightLogs.slice(-1)[0];
+            const eats = window.state.dietLogs.filter(d => d.date === todayStr);
+            const burns = window.state.workoutLogs.filter(w => w.date === todayStr);
+            const water = window.state.waterLogs.find(w => w.date === todayStr)?.ml || 0;
+            const lastWeightObj = window.state.weightLogs.slice(-1)[0];
 
             let dietSummary = eats.map(e => `- ${e.name}（熱量: ${e.cal}kcal, 碳水: ${e.carb}g, 蛋白質: ${e.protein}g, 脂肪: ${e.fat}g）`).join("\n");
             let workoutSummary = burns.map(w => `- ${w.name}（消耗 ${w.cal}kcal）`).join("\n");
@@ -1115,7 +1396,7 @@
             const context = `
             【本日基本數據分析】
             - 日期：${todayStr}
-            - 卡路里目標設定值：${state.goalCal} kcal
+            - 卡路里目標設定值：${window.state.goalCal} kcal
             - 今日飲食紀錄：
             ${dietSummary || "（今日無飲食紀錄）"}
             - 今日運動紀錄：
@@ -1124,22 +1405,25 @@
             - 體重指標：${lastWeightObj ? `${lastWeightObj.weight} kg (體脂率 ${lastWeightObj.fat}%)` : "本日尚未輸入體重"}
             `;
 
-            state.chatHistory.push({ role: "user", text: "請一鍵分析並診斷我今天的整體健康、能量盈餘以及三大營養素（特別是碳水與脂肪）的攝取比例，用港式廣東話寫一份診斷報告。" });
+            window.state.chatHistory.push({ role: "user", text: "請一鍵分析並診斷我今天的整體健康、能量盈餘以及三大營養素的攝取比例，用港式廣東話寫一份診斷報告。" });
             renderCoachChat();
 
             try {
                 const contents = [
-                    { text: `請根據以下用戶當日的飲食、補水與運動數據，寫一份專業、幽默且富有啟發性的健康評估報告（廣東話撰寫）。資料如下：\n${context}` }
+                    {
+                        role: "user",
+                        parts: [{ text: `請根據以下用戶當日的飲食、補水與運動數據，寫一份專業、幽默且富有啟發性的健康評估報告（廣東話撰寫）。資料如下：\n${context}` }]
+                    }
                 ];
 
                 const response = await fetchGeminiWithBackoff(contents, "你是一位經驗豐富、定居香港的私人健身教練和註冊營養師。");
-                state.chatHistory.push({ role: "model", text: response });
-                syncState();
+                window.state.chatHistory.push({ role: "model", text: response });
+                window.syncStateToCloud();
                 renderCoachChat();
 
             } catch (err) {
                 console.error(err);
-                state.chatHistory.push({ role: "model", text: "報告生成失敗，請確認 API Key 的正確性或稍候重試！" });
+                window.state.chatHistory.push({ role: "model", text: "報告生成失敗，請確認網路或稍候重試！" });
                 renderCoachChat();
             } finally {
                 btn.disabled = false;
@@ -1150,7 +1434,7 @@
             const container = document.getElementById("chatHistoryDiv");
             container.innerHTML = "";
 
-            state.chatHistory.forEach(chat => {
+            window.state.chatHistory.forEach(chat => {
                 const isAI = chat.role === "model";
                 const div = document.createElement("div");
                 div.className = "flex items-start gap-2.5 " + (isAI ? "" : "flex-row-reverse");
@@ -1169,15 +1453,15 @@
         }
 
 
-        // ================= RENDERING AND GRAPHICAL SYSTEM (Responsive) =================
+        // ================= RENDERING AND GRAPHICAL SYSTEM =================
         function getDailyCalculations() {
             const todayStr = currentViewDate;
-            const eats = state.dietLogs.filter(d => d.date === todayStr);
-            const burns = state.workoutLogs.filter(w => w.date === todayStr);
+            const eats = window.state.dietLogs.filter(d => d.date === todayStr);
+            const burns = window.state.workoutLogs.filter(w => w.date === todayStr);
 
             const totalEaten = eats.reduce((acc, curr) => acc + curr.cal, 0);
             const totalBurned = burns.reduce((acc, curr) => acc + curr.cal, 0);
-            const remain = state.goalCal - totalEaten + totalBurned;
+            const remain = window.state.goalCal - totalEaten + totalBurned;
 
             const totalCarb = eats.reduce((acc, curr) => acc + curr.carb, 0);
             const totalProtein = eats.reduce((acc, curr) => acc + curr.protein, 0);
@@ -1186,12 +1470,12 @@
             return { totalEaten, totalBurned, remain, totalCarb, totalProtein, totalFat };
         }
 
-        function renderAll() {
+        window.renderAll = function() {
             const calStats = getDailyCalculations();
 
             // 1. Dashboard 數值算繪
             document.getElementById("remainCal").innerText = calStats.remain;
-            document.getElementById("targetCalText").innerText = state.goalCal;
+            document.getElementById("targetCalText").innerText = window.state.goalCal;
             document.getElementById("eatenCalText").innerText = calStats.totalEaten;
             document.getElementById("burnedCalText").innerText = calStats.totalBurned;
 
@@ -1202,7 +1486,7 @@
             }
 
             // 進度條
-            let progressRatio = (calStats.totalEaten / (state.goalCal + calStats.totalBurned)) * 100;
+            let progressRatio = (calStats.totalEaten / (window.state.goalCal + calStats.totalBurned)) * 100;
             if (isNaN(progressRatio)) progressRatio = 0;
             const cleanPct = Math.round(progressRatio);
             document.getElementById("progressPctText").innerText = `${cleanPct}%`;
@@ -1215,24 +1499,24 @@
 
             // 水波填充動畫
             const targetWater = 2000;
-            const waterToday = state.waterLogs.find(w => w.date === currentViewDate)?.ml || 0;
+            const waterToday = window.state.waterLogs.find(w => w.date === currentViewDate)?.ml || 0;
             document.getElementById("waterTargetTxt").innerText = `${waterToday}/${targetWater}ml`;
             document.getElementById("waterLoggedTxt").innerHTML = `${waterToday} <span class="text-xs font-normal text-slate-500">ml</span>`;
             document.getElementById("waterWaveBg").style.height = `${Math.min((waterToday / targetWater) * 100, 100)}%`;
 
             // 運動卡片
-            const burnsCount = state.workoutLogs.filter(w => w.date === currentViewDate).length;
+            const burnsCount = window.state.workoutLogs.filter(w => w.date === currentViewDate).length;
             document.getElementById("workoutCountTxt").innerText = `${burnsCount} 次`;
             document.getElementById("workoutLoggedTxt").innerHTML = `${calStats.totalBurned} <span class="text-xs font-normal text-slate-500">kcal</span>`;
 
             // 體重貼士
-            const prevWeight = state.weightLogs.slice().reverse().find(w => w.weight > 0);
+            const prevWeight = window.state.weightLogs.slice().reverse().find(w => w.weight > 0);
             document.getElementById("lastWeightTxt").innerText = prevWeight ? `上次紀錄: ${prevWeight.weight}kg` : "尚無紀錄";
 
             // 2. 日誌明細渲染
             renderLogsList();
 
-            // 3. 更新 Doughnut 圓環圖 (三大營養素完整分析，含脂肪)
+            // 3. 更新 Doughnut 圓環圖
             updateNutrientChart(calStats.totalCarb, calStats.totalProtein, calStats.totalFat);
 
             // 4. 更新折線歷史趨勢 (雙軸)
@@ -1249,8 +1533,8 @@
             container.innerHTML = "";
 
             const targetDate = currentViewDate;
-            const eats = state.dietLogs.filter(d => d.date === targetDate);
-            const burns = state.workoutLogs.filter(w => w.date === targetDate);
+            const eats = window.state.dietLogs.filter(d => d.date === targetDate);
+            const burns = window.state.workoutLogs.filter(w => w.date === targetDate);
 
             const totalItemsCount = eats.length + burns.length;
             document.getElementById("totalRecordsTxt").innerText = `${totalItemsCount} 筆紀錄`;
@@ -1310,7 +1594,7 @@
             });
         }
 
-        // 3. 三大營養素（碳水 + 蛋白質 + 脂肪）圓環甜甜圈圖
+        // 三大營養素圓環圖 (碳水、蛋白、脂肪)
         function updateNutrientChart(carb, protein, fat) {
             const ctx = document.getElementById("nutrientDoughnut").getContext("2d");
             if (doughnutChartInstance) doughnutChartInstance.destroy();
@@ -1353,18 +1637,18 @@
             });
         }
 
-        // 4. 雙軸折線趨勢圖 (最近 7 筆數據)
+        // 雙軸折線趨勢圖 (最近 7 筆數據)
         function updateTrendsLineChart() {
             const ctx = document.getElementById("trendsLineChart").getContext("2d");
             if (lineChartInstance) lineChartInstance.destroy();
 
-            let sortedLogs = state.weightLogs.slice().sort((a,b) => new Date(a.date) - new Date(b.date));
+            let sortedLogs = window.state.weightLogs.slice().sort((a,b) => new Date(a.date) - new Date(b.date));
             sortedLogs = sortedLogs.slice(-7);
 
-            const labels = sortedLogs.map(l => l.date.substring(5)); // 取 MM-DD
+            const labels = sortedLogs.map(l => l.date.substring(5)); // MM-DD
             const weights = sortedLogs.map(l => l.weight);
             const calorieInputs = sortedLogs.map(l => {
-                const eats = state.dietLogs.filter(d => d.date === l.date);
+                const eats = window.state.dietLogs.filter(d => d.date === l.date);
                 return eats.reduce((acc, curr) => acc + curr.cal, 0);
             });
 
@@ -1434,8 +1718,8 @@
 
             // 更新 BMI 計算
             const latestWeight = weights.slice(-1)[0] || 0;
-            const targetWeight = state.targetWeight || 60;
-            const height = state.heightCm || 170;
+            const targetWeight = window.state.targetWeight || 60;
+            const height = window.state.heightCm || 170;
 
             document.getElementById("statTargetWeight").innerText = `${targetWeight} kg`;
 
@@ -1459,5 +1743,3 @@
 
 </body>
 </html>
-
-```
