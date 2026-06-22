@@ -68,10 +68,10 @@
         </button>
     </div>
 
-    <!-- Chrome 下金鑰或設定未配置提示橫幅 -->
+    <!-- Chrome/GitHub 下金鑰或設定未配置提示橫幅 -->
     <div id="keyMissingBanner" class="hidden bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold px-4 py-3 text-xs sticky top-0 z-40 backdrop-blur-md shadow-lg transition-all duration-300">
         <div class="max-w-md mx-auto flex justify-between items-center gap-3">
-            <span id="missingBannerText">🔑 偵測到您在 Chrome 運行！請點擊右方設定，填寫 Gemini Key (AIzaSy...) 或 OpenRouter 金鑰 (sk-or-...) 及 Firebase API Key。</span>
+            <span id="missingBannerText">🔑 偵測到您在外部運行！請點擊右方設定，填寫 Gemini Key (AIzaSy...) 或 OpenRouter 金鑰 (sk-or-...) 及 Firebase API Key。</span>
             <button onclick="toggleSettingsModal(true)" class="bg-slate-950 text-amber-400 px-2.5 py-1 rounded text-[10px] uppercase font-black shrink-0">
                 前往設定
             </button>
@@ -151,19 +151,19 @@
                     <div class="space-y-2 py-1 relative z-0">
                         <div class="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto text-2xl group-hover:scale-110 transition duration-300 shadow-inner">📷</div>
                         <p class="text-xs font-black text-slate-200">一按即拍 / 選擇餐食照片</p>
-                        <p class="text-[10px] text-slate-500">內建 Canvas 智慧壓縮優化，保證辨識無阻礙</p>
+                        <p class="text-[10px] text-slate-550">內建 Canvas 智慧壓縮優化，保證辨識無阻礙</p>
                     </div>
                 </div>
 
                 <input type="file" id="realPhotoInput" accept="image/*" class="hidden" onchange="onPhotoSelected(event)">
 
                 <!-- 啟動分析 -->
-                <button onclick="runPhotoAI()" id="btnPhotoAI" class="w-full py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-black rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2 mt-4 text-xs tracking-wide shadow-lg shadow-emerald-500/10">
+                <button onclick="runPhotoAI()" id="btnPhotoAI" class="w-full py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-500 hover:to-teal-500 text-slate-955 font-black rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2 mt-4 text-xs tracking-wide shadow-lg shadow-emerald-500/10">
                     <span>開始 3 秒極速 AI 分析</span>
                 </button>
 
                 <!-- AI 分析加載面板 -->
-                <div id="aiStatusBox" class="hidden mt-3 p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center gap-3">
+                <div id="aiStatusBox" class="hidden mt-3 p-2.5 rounded-xl bg-slate-955/80 border border-slate-800 flex items-center gap-3">
                     <div class="animate-spin rounded-full h-4 w-4 border-2 border-emerald-400 border-t-transparent"></div>
                     <p id="aiStatusTxt" class="text-[11px] font-bold text-slate-300">處理中...</p>
                 </div>
@@ -247,7 +247,7 @@
                     <div class="relative z-10 grid grid-cols-2 gap-2 mt-4">
                         <button onclick="addWater(250)" class="py-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-400 hover:bg-blue-500/20 transition active:scale-95">+250ml</button>
                         <button onclick="addWater(500)" class="py-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-400 hover:bg-blue-500/20 transition active:scale-95">+500ml</button>
-                        <button onclick="resetWater()" class="col-span-2 py-0.5 text-[9px] text-slate-500 hover:text-slate-400 transition text-center">重新計算</button>
+                        <button onclick="resetWater()" class="col-span-2 py-0.5 text-[9px] text-slate-550 hover:text-slate-400 transition text-center">重新計算</button>
                     </div>
                 </div>
 
@@ -293,7 +293,7 @@
                         <input type="number" id="fatInput" step="0.1" placeholder="體脂 (%)" class="glass-input w-full p-2.5 rounded-xl text-sm pl-8">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">F</span>
                     </div>
-                    <button onclick="saveBodyStats()" class="col-span-2 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 text-xs font-black rounded-xl hover:shadow-lg active:scale-95 transition">
+                    <button onclick="saveBodyStats()" class="col-span-2 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-955 text-xs font-black rounded-xl hover:shadow-lg active:scale-95 transition">
                         儲存今日數據
                     </button>
                 </div>
@@ -303,7 +303,7 @@
         <!-- ================= PAGE 2: ADD FOOD (文字與手動) ================= -->
         <main id="page-addfood" class="space-y-5 page-section hidden">
             <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="flex border-b border-slate-800 bg-slate-950/40">
+                <div class="flex border-b border-slate-800 bg-slate-955/40">
                     <button onclick="switchInputMode('text')" id="inputTab-text" class="flex-1 py-4 text-xs font-bold tracking-wider text-emerald-400 border-b-2 border-emerald-500 transition-all flex items-center justify-center gap-1.5">
                         ✍️ AI 智慧文字
                     </button>
@@ -319,7 +319,7 @@
                             <label class="text-xs text-slate-400 font-bold">直接打字輸入您吃了什麼（支援多個食物組合）：</label>
                             <textarea id="textDescribeInput" rows="4" placeholder="例如：「一碗牛肉麵和一杯無糖綠茶」或是「兩隻香蕉、一杯燕麥奶配茶葉蛋」" class="glass-input w-full p-3.5 rounded-xl text-sm placeholder-slate-600 resize-none"></textarea>
                         </div>
-                        <button onclick="runTextAI()" id="btnTextAI" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold rounded-xl transition active:scale-95 flex items-center justify-center gap-2">
+                        <button onclick="runTextAI()" id="btnTextAI" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-955 font-bold rounded-xl transition active:scale-95 flex items-center justify-center gap-2">
                             <span>開始 AI 語意解構</span>
                         </button>
                     </div>
@@ -348,7 +348,7 @@
                                 <input type="number" id="manFoodFat" placeholder="0" class="glass-input w-full p-2.5 rounded-xl text-sm mt-1">
                             </div>
                         </div>
-                        <button onclick="runManualAdd()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold rounded-xl transition active:scale-95 mt-2">
+                        <button onclick="runManualAdd()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-955 font-bold rounded-xl transition active:scale-95 mt-2">
                             儲存至今日日誌
                         </button>
                     </div>
@@ -389,7 +389,7 @@
                     <h3 class="text-xs font-bold text-slate-200">一鍵評估今日膳食與三大營養</h3>
                     <p class="text-[10px] text-slate-400">AI 營養師將診斷您的卡路里預算與水分攝取</p>
                 </div>
-                <button onclick="generateDailyCoachReport()" id="btnCoachReport" class="px-3.5 py-2 bg-emerald-400 text-slate-950 text-xs font-extrabold rounded-xl hover:bg-emerald-300 transition active:scale-95 shrink-0">
+                <button onclick="generateDailyCoachReport()" id="btnCoachReport" class="px-3.5 py-2 bg-emerald-400 text-slate-955 text-xs font-extrabold rounded-xl hover:bg-emerald-300 transition active:scale-95 shrink-0">
                     產生建議
                 </button>
             </div>
@@ -468,12 +468,12 @@
 
             <!-- 載入他人數據 -->
             <div class="glass-card rounded-2xl p-5 space-y-3.5">
-                <h3 class="text-xs font-bold text-slate-350">👨‍🏫 載入學員 / 好友數據 (唯讀監督模式)</h3>
+                <h3 class="text-xs font-bold text-slate-300">👨‍🏫 載入學員 / 好友數據 (唯讀監督模式)</h3>
                 <p class="text-[10px] text-slate-500">輸入教練或朋友提供給您的分享碼，即可在您的裝置上實時檢視對方的飲食紀錄與圖表分析。</p>
                 
                 <div class="flex gap-2">
                     <input type="text" id="targetShareCodeInput" placeholder="請輸入對方的分享碼" class="glass-input flex-1 p-2.5 rounded-xl text-xs font-mono">
-                    <button onclick="loadTargetSharedProfile()" class="px-4 bg-emerald-400 text-slate-950 font-extrabold rounded-xl text-xs hover:bg-emerald-300 transition active:scale-95 shrink-0">
+                    <button onclick="loadTargetSharedProfile()" class="px-4 bg-emerald-400 text-slate-955 font-extrabold rounded-xl text-xs hover:bg-emerald-300 transition active:scale-95 shrink-0">
                         載入檢視
                     </button>
                 </div>
@@ -541,7 +541,7 @@
         </div>
     </div>
 
-    <!-- 設定 Modal -->
+    <!-- 設定 Modal (自動綁定專案 Web API Key 與 Gemini 雙路由通道) -->
     <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
         <div class="glass-card w-full max-w-sm rounded-2xl p-6 space-y-4 relative overflow-y-auto max-h-[90vh] animate-in fade-in zoom-in duration-150">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
@@ -556,20 +556,22 @@
                 <div class="space-y-1">
                     <div class="flex justify-between">
                         <label class="text-[10px] text-slate-400 font-bold uppercase">Gemini / OpenRouter 金鑰</label>
-                        <a href="https://aistudio.google.com/" target="_blank" class="text-[10px] text-emerald-400 hover:underline">申請 Gemini Key ↗</a>
+                        <a href="https://openrouter.ai/" target="_blank" class="text-[10px] text-emerald-400 hover:underline">申請 OpenRouter ↗</a>
                     </div>
-                    <input type="password" id="apiKeyInput" placeholder="請填寫您的 AI 金鑰 (以 AIzaSy 或 sk-or- 開頭)" class="glass-input w-full p-2.5 rounded-xl text-xs font-mono">
-                    <p class="text-[9px] text-slate-500 leading-tight">支援 Google AI Studio 金鑰 (AIzaSy...) 或 OpenRouter 金鑰 (sk-or-...)。</p>
+                    <!-- 智慧對接：預設已寫入您的 GCP 密鑰！ -->
+                    <input type="password" id="apiKeyInput" placeholder="已載入預設金鑰（支援 AIzaSy 或 sk-or- 金鑰）" class="glass-input w-full p-2.5 rounded-xl text-xs font-mono">
+                    <p class="text-[9px] text-slate-550 leading-tight">提示：在當前 Gemini 預覽視窗內會自動授權。導出到外部 Chrome / GitHub Pages 且身處香港時，請<strong>必須</strong>輸入以 <strong>sk-or-</strong> 開頭的 OpenRouter 金鑰以繞過地區限制。</p>
                 </div>
 
-                <!-- 【Firebase 雲端對接】一步到位對接專專案 lohas-58d50 -->
+                <!-- 【Firebase 雲端對接】一步到位對接專案 lohas-58d50 -->
                 <div class="space-y-1 p-2.5 bg-slate-900/50 rounded-xl border border-slate-800">
                     <div class="flex justify-between items-center mb-1">
                         <label class="text-[10px] text-teal-400 font-bold uppercase">Firebase Web API 金鑰</label>
-                        <span class="text-[9px] text-slate-500">專案: lohas-58d50</span>
+                        <span class="text-[9px] text-slate-550">專案: lohas-58d50</span>
                     </div>
-                    <input type="password" id="firebaseApiKeyInput" placeholder="請貼上您 lohas-58d50 專案的 Web API 金鑰" class="glass-input w-full p-2.5 rounded-xl text-xs font-mono">
-                    <p class="text-[8px] text-slate-500 leading-relaxed mt-1">可在您的 Firebase Console > 專案設定內複製。填寫後此 App 便能在 Chrome 裡雙向連上您的雲端資料庫！</p>
+                    <!-- 智慧對接：一站式硬編碼自動對接，連線免設定！ -->
+                    <input type="password" id="firebaseApiKeyInput" placeholder="已自動配置預設專案 API 金鑰" class="glass-input w-full p-2.5 rounded-xl text-xs font-mono">
+                    <p class="text-[8px] text-slate-500 leading-relaxed mt-1">可在您的 Firebase Console > 專案設定內複製。填寫後此 App 便能在 Chrome / GitHub 裡雙向連上您的雲端資料庫！</p>
                 </div>
 
                 <!-- 每日目標熱量 -->
@@ -592,10 +594,10 @@
             </div>
 
             <div class="flex gap-2.5 pt-4 border-t border-slate-800/80 mt-4">
-                <button onclick="saveSettings()" class="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 text-xs font-black rounded-xl transition">
+                <button onclick="saveSettings()" class="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-955 text-xs font-black rounded-xl transition">
                     保存設定並重新整理
                 </button>
-                <button onclick="clearAllLogs()" class="px-3 py-2.5 bg-rose-500/10 hover:bg-rose-500 hover:text-white border border-rose-500/20 text-rose-400 text-xs font-bold rounded-xl transition">
+                <button onclick="clearAllLogs()" class="px-3.5 py-2.5 bg-rose-500/10 hover:bg-rose-500 hover:text-white border border-rose-500/20 text-rose-400 text-xs font-bold rounded-xl transition">
                     重設數據
                 </button>
             </div>
@@ -608,7 +610,7 @@
             <div id="alertIcon" class="text-3xl">⚠️</div>
             <h3 id="alertTitle" class="text-sm font-bold text-slate-100">注意</h3>
             <p id="alertMsg" class="text-xs text-slate-400 leading-relaxed break-all"></p>
-            <button onclick="closeCustomAlert()" class="w-full py-2 bg-emerald-500 text-slate-950 text-xs font-black rounded-xl hover:bg-emerald-400 transition">
+            <button onclick="closeCustomAlert()" class="w-full py-2 bg-emerald-500 text-slate-955 text-xs font-black rounded-xl hover:bg-emerald-400 transition">
                 確定
             </button>
         </div>
@@ -643,8 +645,8 @@
         let firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-        // 【Chrome 外部運行相容】讀取使用者手動輸入的 Firebase Web API 金鑰
-        const savedFirebaseApiKey = localStorage.getItem("fitai_firebase_apikey") || "";
+        // 【一步到位設定】：讀取使用者手動輸入的 Firebase Web API 金鑰，若無，預設對接您的專案金鑰！
+        const savedFirebaseApiKey = localStorage.getItem("fitai_firebase_apikey") || "AQ.Ab8RN6ItjJK5iyK-fZ3mu4eD2QEGAAWyERNEkAuxAhCMtLpuTg";
 
         window.currentUserId = null;
         window.myPrivateUserId = null;
@@ -658,7 +660,7 @@
 
         // 一站式初始化資料庫邏輯
         async function initCloudStorage() {
-            // 如果是在 Chrome 直接打開，且使用者填寫了 Web API Key，我們便能組裝並對接 lohas-58d50 專案
+            // 如果是在 Chrome / GitHub Pages 直接打開，且使用者填寫了 Web API Key，我們便能組裝並對接 lohas-58d50 專案
             if (!firebaseConfig && savedFirebaseApiKey) {
                 firebaseConfig = {
                     apiKey: savedFirebaseApiKey,
@@ -798,9 +800,9 @@
         let doughnutChartInstance = null;
         let lineChartInstance = null;
 
-        // 【Chrome 外部執行相容】讀取使用者手動儲存的金鑰與配置
-        let savedApiKey = localStorage.getItem("fitai_apikey") || "";
-        let savedFirebaseApiKey = localStorage.getItem("fitai_firebase_apikey") || "";
+        // 【一步到位設定】：讀取使用者手動儲存的金鑰與配置，若無，預設載入您的 GCP 驗證金鑰！
+        let savedApiKey = localStorage.getItem("fitai_apikey") || "AQ.Ab8RN6ItjJK5iyK-fZ3mu4eD2QEGAAWyERNEkAuxAhCMtLpuTg";
+        let savedFirebaseApiKey = localStorage.getItem("fitai_firebase_apikey") || "AQ.Ab8RN6ItjJK5iyK-fZ3mu4eD2QEGAAWyERNEkAuxAhCMtLpuTg";
 
         // 獲取目前有效的 API Key (雙軌混合機制)
         function getActiveApiKey() {
@@ -842,9 +844,9 @@
             // 動態更新頂部的模型版本標籤
             updateModelBadge();
 
-            // 若在 Chrome 且缺少金鑰設定，則亮起提示橫幅
-            if (window.location.protocol === "file:" || window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-                if (!savedApiKey || !savedFirebaseApiKey) {
+            // 若在 Chrome 且缺少金鑰設定且未設定 OpenRouter，則亮起提示橫幅
+            if (window.location.protocol === "file:" || window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname.endsWith(".github.io")) {
+                if (!savedApiKey || savedApiKey === "AQ.Ab8RN6ItjJK5iyK-fZ3mu4eD2QEGAAWyERNEkAuxAhCMtLpuTg") {
                     document.getElementById("keyMissingBanner").classList.remove("hidden");
                 }
             }
@@ -929,7 +931,7 @@
             date.setDate(date.getDate() + offset);
             currentViewDate = date.toISOString().split("T")[0];
             document.getElementById("dateInput").value = currentViewDate;
-            window.renderAll();
+            renderAll();
         }
 
         // 設定控制
@@ -975,9 +977,10 @@
             window.state.heightCm = isNaN(height) ? 170 : height;
             window.state.targetWeight = isNaN(targetWeight) ? 60 : targetWeight;
 
-            // 一步到位：重設 Firebase config 後，重新載入頁面以套用最新 API
+            updateModelBadge();
             window.syncStateToCloud();
-            window.showToast("設定儲存成功！正在重新連線...", "✅");
+            window.toggleSettingsModal(false);
+            window.showToast("設定已成功更新！正在刷新雲端連線...", "✅");
             
             setTimeout(() => {
                 window.location.reload();
@@ -1102,7 +1105,7 @@
             window.syncStateToCloud();
             window.renderAll();
             select.value = "";
-            window.showToast(`成功登記運動：${name}`, "🔥");
+            window.showToast("運動已順利紀錄！", "🔥");
         }
 
         window.deleteWorkout = function(id) {
@@ -1388,7 +1391,7 @@
                         return text;
                     } else {
                         const errData = await res.json().catch(() => ({}));
-                        const errMsg = errData.error?.message || `HTTP 狀態碼 ${res.status}`;
+                        const errMsg = errData.error?.message || errData.error?.metadata?.message || `HTTP 狀態碼 ${res.status}`;
                         throw new Error(`API 伺服器回報錯誤: ${errMsg}`);
                     }
                 } catch (e) {
@@ -1415,7 +1418,7 @@
             }
         }
 
-        // 1. 【核心特色】📸 拍照 AI 影像大腦深度識別
+        // 1. 【核心功能】📸 拍照 AI 影像大腦深度識別
         window.runPhotoAI = async function() {
             if (!selectedPhotoBase64) {
                 window.showCustomAlert("操作提示", "請先點擊上方相機框，拍攝或選擇一張食物相片！", "📷");
@@ -1470,12 +1473,22 @@
             } catch (err) {
                 console.error(err);
                 const key = getActiveApiKey();
-                if (!key || !key.startsWith("AIzaSy") && !key.startsWith("sk-or-")) {
+                // 針對香港地區直接呼叫 Google API 金鑰被 geo-block 的錯誤攔截與人性化指引
+                if (err.message && err.message.includes("not available in your region")) {
+                    window.showCustomAlert(
+                        "地區限制錯誤 (Region Block)",
+                        `偵測到 Google 官方地區不可用限制：<br><br>` +
+                        `<span class="text-amber-400 font-semibold">"This model is not available in your region."</span><br><br>` +
+                        `由於 Google 限制了香港 IP 直接調用 API，<strong>您必須改用以 sk-or- 開頭的 OpenRouter 金鑰以繞過此區域限制！</strong><br><br>` +
+                        `請點擊右上角<strong>「齒輪 ⚙️」</strong>設定，將金鑰置換為您擁有的 OpenRouter Key 即可流暢執行首頁 AI 影相分析！`,
+                        "🔑"
+                    );
+                } else if (!key || !key.startsWith("AIzaSy") && !key.startsWith("sk-or-")) {
                     window.showCustomAlert(
                         "API 金鑰無效或格式錯誤", 
                         `偵測到您目前設定的金鑰非合規格式（目前為: ${key.substring(0, 10)}...）。<br><br>` +
                         `本機 Chrome 執行時，<strong>需要填寫以 「AIzaSy」開頭的標準 Gemini API 金鑰，或以 「sk-or-」 開頭的 OpenRouter API 金鑰</strong>。<br><br>` +
-                        `請點擊右上角<strong>「齒輪 ⚙️」</strong>，並填入有效金鑰即可完美解鎖 AI 分析！`,
+                        `請點擊右上角<strong>「齒輪 ⚙️」</strong>，並填入有效金鑰即可完美解鎖 AI 影相分析！`,
                         "🔑"
                     );
                 } else {
@@ -1497,7 +1510,7 @@
 
             const btn = document.getElementById("btnTextAI");
             btn.disabled = true;
-            updateTextStatus("AI 語意解構模組正在評估膳食資訊...", true);
+            updateTextStatus("AI 語意解構模組正在評估膳意資訊...", true);
 
             try {
                 const prompt = `請分析這段吃過的食物文字描述：「${query}」。估算這整餐包含了哪些主要食物，並估計其整體的總「熱量 kcal（整數）」、「碳水化合物 carb（克）」、「蛋白質 protein（克）」與「脂肪 fat（克，非常重要）」。請「只」輸出標準 JSON 物件，絕對不要附帶 markdown、注釋或其他敘述文字。結構必須完全符合：{\"name\":\"邊度有嘢食組合\",\"kcal\":450,\"carb\":40,\"protein\":20,\"fat\":10}`;
@@ -1530,7 +1543,15 @@
             } catch (err) {
                 console.error(err);
                 const key = getActiveApiKey();
-                if (!key || !key.startsWith("AIzaSy") && !key.startsWith("sk-or-")) {
+                if (err.message && err.message.includes("not available in your region")) {
+                    window.showCustomAlert(
+                        "地區限制錯誤 (Region Block)",
+                        `偵測到 Google 官方地區不可用限制：<br><br>` +
+                        `<span class="text-amber-400 font-semibold">"This model is not available in your region."</span><br><br>` +
+                        `請點擊右上角<strong>「齒輪 ⚙️」</strong>設定，改用以 <strong>sk-or-</strong> 開頭的 OpenRouter API 金鑰繞過限制！`,
+                        "🔑"
+                    );
+                } else if (!key || !key.startsWith("AIzaSy") && !key.startsWith("sk-or-")) {
                     window.showCustomAlert(
                         "API 金鑰無效", 
                         `偵測到您目前設定的金鑰並非合規格式（目前為: ${key.substring(0, 10)}...）。<br><br>` +
@@ -1709,11 +1730,11 @@
 
                 const icon = isAI ? "🤖" : "👤";
                 const iconBg = isAI ? "bg-emerald-500/10 border-emerald-500/20" : "bg-indigo-500/10 border-indigo-500/20";
-                const textBg = isAI ? "bg-slate-900/80 text-slate-200 rounded-r-xl rounded-bl-xl" : "bg-emerald-400 text-slate-950 rounded-l-xl rounded-br-xl font-bold";
+                const textBg = isAI ? "bg-slate-900/80 text-slate-200 p-2.5 rounded-r-xl rounded-bl-xl max-w-[85%] leading-relaxed whitespace-pre-wrap" : "bg-emerald-400 text-slate-955 p-2.5 rounded-l-xl rounded-br-xl font-bold max-w-[85%] leading-relaxed whitespace-pre-wrap";
 
                 div.innerHTML = `
                     <div class="w-7 h-7 ${iconBg} border rounded-lg flex items-center justify-center text-sm shrink-0">${icon}</div>
-                    <div class="${textBg} p-2.5 max-w-[85%] leading-relaxed whitespace-pre-wrap">${chat.text}</div>
+                    <div class="${textBg}">${chat.text}</div>
                 `;
                 container.appendChild(div);
             });
@@ -1913,7 +1934,7 @@
             let sortedLogs = state.weightLogs.slice().sort((a,b) => new Date(a.date) - new Date(b.date));
             sortedLogs = sortedLogs.slice(-7);
 
-            const labels = sortedLogs.map(l => l.date.substring(5)); // MM-DD
+            const labels = sortedLogs.map(l => l.date.substring(5)); // 取 MM-DD
             const weights = sortedLogs.map(l => l.weight);
             const calorieInputs = sortedLogs.map(l => {
                 const eats = state.dietLogs.filter(d => d.date === l.date);
