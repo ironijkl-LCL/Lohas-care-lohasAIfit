@@ -60,7 +60,7 @@
 </head>
 <body class="text-slate-100 antialiased">
 
-    <!-- 頂部唯讀橫幅 -->
+    <!-- 頂部唯讀監看模式橫幅 -->
     <div id="coachModeBanner" class="hidden bg-amber-500/95 text-slate-950 font-extrabold px-4 py-2 text-center text-xs flex justify-between items-center sticky top-0 z-50 backdrop-blur-md">
         <span>⚠️ 唯讀模式：您正在實時監控好友/學員的飲食與體重</span>
         <button onclick="exitCoachMode()" class="bg-slate-950 text-amber-400 px-2.5 py-1 rounded text-[10px] uppercase font-extrabold hover:bg-slate-900 transition">
@@ -68,10 +68,10 @@
         </button>
     </div>
 
-    <!-- Chrome 下金鑰格式不符提示橫幅 -->
+    <!-- Chrome 下金鑰或設定未配置提示橫幅 -->
     <div id="keyMissingBanner" class="hidden bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold px-4 py-3 text-xs sticky top-0 z-40 backdrop-blur-md shadow-lg transition-all duration-300">
         <div class="max-w-md mx-auto flex justify-between items-center gap-3">
-            <span id="missingBannerText">🔑 偵測到您在 Chrome 運行！請點擊右方設定，填寫正確以 <strong>AIzaSy</strong> 開頭的 Gemini Key 或以 <strong>sk-or-</strong> 開頭的 OpenRouter 金鑰。</span>
+            <span id="missingBannerText">🔑 偵測到您在 Chrome 運行！請點擊右方設定，填寫 Gemini Key (AIzaSy...) 或 OpenRouter 金鑰 (sk-or-...) 及 Firebase API Key。</span>
             <button onclick="toggleSettingsModal(true)" class="bg-slate-950 text-amber-400 px-2.5 py-1 rounded text-[10px] uppercase font-black shrink-0">
                 前往設定
             </button>
@@ -96,7 +96,7 @@
             <div class="flex items-center gap-2">
                 <div id="syncIndicator" class="flex items-center gap-1.5 px-2.5 py-1 bg-slate-800/60 rounded-full border border-slate-750 text-[10px] text-slate-400">
                     <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" id="syncStatusDot"></span>
-                    <span id="syncStatusText" class="font-semibold">連線中...</span>
+                    <span id="syncStatusText" class="font-semibold">本端模式</span>
                 </div>
                 <button onclick="toggleSettingsModal(true)" class="p-2 rounded-xl bg-slate-800/50 border border-slate-700/40 hover:bg-slate-700/60 text-slate-300 hover:text-emerald-400 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -238,7 +238,7 @@
                     
                     <div class="relative z-10 space-y-1">
                         <div class="flex justify-between items-center">
-                            <span class="text-xs font-bold text-slate-350">💧 智能補水</span>
+                            <span class="text-xs font-bold text-slate-355">💧 智能補水</span>
                             <span class="text-[10px] text-blue-400 font-black" id="waterTargetTxt">0/2000ml</span>
                         </div>
                         <p class="text-2xl font-black text-blue-400 tracking-tight" id="waterLoggedTxt">0 <span class="text-xs font-normal text-slate-500">ml</span></p>
@@ -255,7 +255,7 @@
                 <div class="glass-card rounded-2xl p-4 flex flex-col justify-between h-44">
                     <div class="space-y-1">
                         <div class="flex justify-between items-center">
-                            <span class="text-xs font-bold text-slate-350">🔥 運動燃脂</span>
+                            <span class="text-xs font-bold text-slate-355">🔥 運動燃脂</span>
                             <span class="text-[10px] text-rose-400 font-black" id="workoutCountTxt">0 次</span>
                         </div>
                         <p class="text-2xl font-black text-rose-400 tracking-tight" id="workoutLoggedTxt">0 <span class="text-xs font-normal text-slate-500">kcal</span></p>
@@ -279,7 +279,7 @@
             <!-- 身體指標登記 -->
             <div class="glass-card rounded-2xl p-4">
                 <div class="flex justify-between items-center mb-3">
-                    <h3 class="text-xs font-bold text-slate-350 flex items-center gap-1.5">
+                    <h3 class="text-xs font-bold text-slate-355 flex items-center gap-1.5">
                         <span>⚖️</span> 登記今日身體數據
                     </h3>
                     <span id="lastWeightTxt" class="text-[10px] text-slate-405">上次紀錄: --kg</span>
@@ -300,7 +300,7 @@
             </div>
         </main>
 
-        <!-- ================= PAGE 2: SECONDARY ADD FOOD (文字與手動) ================= -->
+        <!-- ================= PAGE 2: ADD FOOD (文字與手動) ================= -->
         <main id="page-addfood" class="space-y-5 page-section hidden">
             <div class="glass-card rounded-2xl overflow-hidden">
                 <div class="flex border-b border-slate-800 bg-slate-950/40">
@@ -368,7 +368,7 @@
                 <h3 class="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
                     <span>📋</span> 當日飲食明細
                 </h3>
-                <span class="text-[11px] text-slate-500" id="totalRecordsTxt">0 筆紀錄</span>
+                <span class="text-[11px] text-slate-550" id="totalRecordsTxt">0 筆紀錄</span>
             </div>
 
             <div class="space-y-3" id="logsListDiv"></div>
@@ -420,7 +420,7 @@
             <!-- 折線歷史趨勢 -->
             <div class="glass-card rounded-2xl p-5 space-y-4">
                 <div>
-                    <h3 class="text-xs font-bold text-slate-350">📈 體重與熱量歷史雙軸趨勢</h3>
+                    <h3 class="text-xs font-bold text-slate-355">📈 體重與熱量歷史雙軸趨勢</h3>
                     <p class="text-[10px] text-slate-550 mt-0.5">顯示您最近 7 次紀錄的體重變化與熱量攝取關聯性</p>
                 </div>
                 <div class="relative h-56 w-full">
@@ -543,7 +543,7 @@
 
     <!-- 設定 Modal -->
     <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="glass-card w-full max-w-sm rounded-2xl p-6 space-y-4 relative animate-in fade-in zoom-in duration-150">
+        <div class="glass-card w-full max-w-sm rounded-2xl p-6 space-y-4 relative overflow-y-auto max-h-[90vh] animate-in fade-in zoom-in duration-150">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
                 <h3 class="text-sm font-bold text-slate-200">⚙️ 個人目標與參數設定</h3>
                 <button onclick="toggleSettingsModal(false)" class="p-1 text-slate-400 hover:text-slate-100 transition">
@@ -551,15 +551,25 @@
                 </button>
             </div>
 
-            <div class="space-y-3">
-                <!-- 【Chrome 相容性優化】API Key 輸入欄位 (在 Chrome 下執行需要填寫) -->
+            <div class="space-y-3.5 pt-2">
+                <!-- 【AI 大腦金鑰對接】 -->
                 <div class="space-y-1">
                     <div class="flex justify-between">
-                        <label class="text-[10px] text-slate-400 font-bold uppercase">Gemini API Key</label>
-                        <a href="https://aistudio.google.com/" target="_blank" class="text-[10px] text-emerald-400 hover:underline">免費獲取 Key ↗</a>
+                        <label class="text-[10px] text-slate-400 font-bold uppercase">Gemini / OpenRouter 金鑰</label>
+                        <a href="https://aistudio.google.com/" target="_blank" class="text-[10px] text-emerald-400 hover:underline">申請 Gemini Key ↗</a>
                     </div>
-                    <input type="password" id="apiKeyInput" placeholder="在 Chrome 執行時請填寫 API Key (此處免輸入)" class="glass-input w-full p-2.5 rounded-xl text-xs font-mono">
-                    <p class="text-[9px] text-slate-550 leading-tight">提示：在當前 Gemini 預覽視窗內會自動授權，不需填寫。導出到外部 Chrome 時，請在此輸入您的 Gemini Key。</p>
+                    <input type="password" id="apiKeyInput" placeholder="請填寫您的 AI 金鑰 (以 AIzaSy 或 sk-or- 開頭)" class="glass-input w-full p-2.5 rounded-xl text-xs font-mono">
+                    <p class="text-[9px] text-slate-500 leading-tight">支援 Google AI Studio 金鑰 (AIzaSy...) 或 OpenRouter 金鑰 (sk-or-...)。</p>
+                </div>
+
+                <!-- 【Firebase 雲端對接】一步到位對接專專案 lohas-58d50 -->
+                <div class="space-y-1 p-2.5 bg-slate-900/50 rounded-xl border border-slate-800">
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="text-[10px] text-teal-400 font-bold uppercase">Firebase Web API 金鑰</label>
+                        <span class="text-[9px] text-slate-500">專案: lohas-58d50</span>
+                    </div>
+                    <input type="password" id="firebaseApiKeyInput" placeholder="請貼上您 lohas-58d50 專案的 Web API 金鑰" class="glass-input w-full p-2.5 rounded-xl text-xs font-mono">
+                    <p class="text-[8px] text-slate-500 leading-relaxed mt-1">可在您的 Firebase Console > 專案設定內複製。填寫後此 App 便能在 Chrome 裡雙向連上您的雲端資料庫！</p>
                 </div>
 
                 <!-- 每日目標熱量 -->
@@ -581,18 +591,18 @@
                 </div>
             </div>
 
-            <div class="flex gap-2.5 pt-2">
+            <div class="flex gap-2.5 pt-4 border-t border-slate-800/80 mt-4">
                 <button onclick="saveSettings()" class="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 text-xs font-black rounded-xl transition">
-                    保存設定
+                    保存設定並重新整理
                 </button>
-                <button onclick="clearAllLogs()" class="px-3.5 py-2.5 bg-rose-500/10 hover:bg-rose-500 hover:text-white border border-rose-500/20 text-rose-400 text-xs font-bold rounded-xl transition">
+                <button onclick="clearAllLogs()" class="px-3 py-2.5 bg-rose-500/10 hover:bg-rose-500 hover:text-white border border-rose-500/20 text-rose-400 text-xs font-bold rounded-xl transition">
                     重設數據
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- 全自訂美學 Alert 彈窗 (取代 browser alert) -->
+    <!-- 全自訂美學 Alert 彈窗 -->
     <div id="customAlertModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
         <div class="glass-card w-full max-w-xs rounded-2xl p-5 space-y-4 text-center">
             <div id="alertIcon" class="text-3xl">⚠️</div>
@@ -628,10 +638,13 @@
             chatHistory: []
         };
 
-        // Firebase 連線參數與 ID 對接
+        // Firebase 專案 ID 固定為 lohas-58d50
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'fitai-default-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        let firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // 【Chrome 外部運行相容】讀取使用者手動輸入的 Firebase Web API 金鑰
+        const savedFirebaseApiKey = localStorage.getItem("fitai_firebase_apikey") || "";
 
         window.currentUserId = null;
         window.myPrivateUserId = null;
@@ -643,8 +656,17 @@
         const syncStatusText = document.getElementById("syncStatusText");
         const myShareCodeTxt = document.getElementById("myShareCodeTxt");
 
-        // 初始化資料庫
+        // 一站式初始化資料庫邏輯
         async function initCloudStorage() {
+            // 如果是在 Chrome 直接打開，且使用者填寫了 Web API Key，我們便能組裝並對接 lohas-58d50 專案
+            if (!firebaseConfig && savedFirebaseApiKey) {
+                firebaseConfig = {
+                    apiKey: savedFirebaseApiKey,
+                    authDomain: "lohas-58d50.firebaseapp.com",
+                    projectId: "lohas-58d50"
+                };
+            }
+
             if (!firebaseConfig) {
                 console.warn("未檢測到 Firebase 配置，啟動 LocalStorage 本端託管。");
                 useLocalStorageFallback();
@@ -656,7 +678,7 @@
                 auth = getAuth(app);
                 db = getFirestore(app);
 
-                // RULE 3: 登入優先
+                // RULE 3: 登入優先 (優先採用 CustomToken 其次匿名)
                 if (initialAuthToken) {
                     await signInWithCustomToken(auth, initialAuthToken);
                 } else {
@@ -672,7 +694,7 @@
                         syncStatusDot.className = "w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse";
                         syncStatusText.innerText = "雲端同步中";
 
-                        // 開始監聽自己的資料
+                        // 開始實時監聽與對接
                         bindRealtimeSync(user.uid);
                     } else {
                         useLocalStorageFallback();
@@ -776,26 +798,30 @@
         let doughnutChartInstance = null;
         let lineChartInstance = null;
 
-        // 【Chrome 外部執行相容】讀取使用者手動儲存的金鑰
+        // 【Chrome 外部執行相容】讀取使用者手動儲存的金鑰與配置
         let savedApiKey = localStorage.getItem("fitai_apikey") || "";
+        let savedFirebaseApiKey = localStorage.getItem("fitai_firebase_apikey") || "";
 
         // 獲取目前有效的 API Key (雙軌混合機制)
         function getActiveApiKey() {
             if (typeof apiKey !== 'undefined' && apiKey !== "") {
                 return apiKey;
             }
-            // 外部開啟時，如果 LocalStorage 沒有設定，將回退到使用者提供的預設 API KEY
-            return savedApiKey || "AQ.Ab8RN6ItjJK5iyK-fZ3mu4eD2QEGAAWyERNEkAuxAhCMtLpuTg";
+            return savedApiKey || "";
         }
 
-        // 獲取目前套編的模型名稱（根據執行環境進行雙軌路由，避免 Chrome 端權限受阻）
+        // 獲取目前套編的模型名稱（根據金鑰類型與執行環境執行模型與端點路由）
         function getActiveModelName() {
             const activeKey = getActiveApiKey();
+            // 如果是 OpenRouter 金鑰
+            if (activeKey.startsWith("sk-or-")) {
+                return "google/gemini-2.5-flash";
+            }
             // 如果 activeKey 等於平台在預覽視窗自動注入的值（也就是 apiKey 全域變數被覆蓋時的情況）
             if (typeof apiKey !== 'undefined' && apiKey !== "" && activeKey === apiKey) {
                 return "gemini-2.5-flash-preview-09-2025";
             }
-            // 否則在外部 Chrome 中，一律採用對大眾金鑰最開放、最不容易報 403 錯誤的 gemini-1.5-flash
+            // 否則在外部 Chrome 中，一律採用官方正式發布版模型型號
             return "gemini-1.5-flash";
         }
 
@@ -811,17 +837,28 @@
             document.getElementById("heightInput").value = window.state.heightCm;
             document.getElementById("targetWeightInput").value = window.state.targetWeight;
             document.getElementById("apiKeyInput").value = savedApiKey;
+            document.getElementById("firebaseApiKeyInput").value = savedFirebaseApiKey;
 
             // 動態更新頂部的模型版本標籤
             updateModelBadge();
+
+            // 若在 Chrome 且缺少金鑰設定，則亮起提示橫幅
+            if (window.location.protocol === "file:" || window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+                if (!savedApiKey || !savedFirebaseApiKey) {
+                    document.getElementById("keyMissingBanner").classList.remove("hidden");
+                }
+            }
         });
 
         function updateModelBadge() {
             const badge = document.getElementById("activeModelTag");
             const model = getActiveModelName();
-            if (model === "gemini-2.5-flash-preview-09-2025") {
+            if (model.includes("2.5-flash-preview")) {
                 badge.innerText = "2.5 Flash 預覽版";
                 badge.className = "text-[9px] bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 font-extrabold px-2 py-0.5 rounded-full";
+            } else if (model.includes("2.5-flash")) {
+                badge.innerText = "OpenRouter 2.5";
+                badge.className = "text-[9px] bg-indigo-500/20 border border-indigo-500/30 text-indigo-350 font-extrabold px-2 py-0.5 rounded-full";
             } else {
                 badge.innerText = "1.5 Flash 穩定版";
                 badge.className = "text-[9px] bg-blue-500/20 border border-blue-500/30 text-blue-300 font-extrabold px-2 py-0.5 rounded-full";
@@ -904,6 +941,7 @@
                 document.getElementById("heightInput").value = window.state.heightCm;
                 document.getElementById("targetWeightInput").value = window.state.targetWeight;
                 document.getElementById("apiKeyInput").value = savedApiKey;
+                document.getElementById("firebaseApiKeyInput").value = savedFirebaseApiKey;
                 modal.classList.remove("hidden");
             } else {
                 modal.classList.add("hidden");
@@ -920,25 +958,30 @@
             const height = parseInt(document.getElementById("heightInput").value);
             const targetWeight = parseInt(document.getElementById("targetWeightInput").value);
             const key = document.getElementById("apiKeyInput").value.trim();
+            const fbKey = document.getElementById("firebaseApiKeyInput").value.trim();
 
             if (isNaN(goal) || goal <= 0) {
                 window.showCustomAlert("格式錯誤", "每日卡路里預算必須是正整數！");
                 return;
             }
 
-            // 保存個人金鑰到本地
+            // 保存金鑰到本地
             savedApiKey = key;
+            savedFirebaseApiKey = fbKey;
             localStorage.setItem("fitai_apikey", key);
+            localStorage.setItem("fitai_firebase_apikey", fbKey);
 
             window.state.goalCal = goal;
             window.state.heightCm = isNaN(height) ? 170 : height;
             window.state.targetWeight = isNaN(targetWeight) ? 60 : targetWeight;
 
-            updateModelBadge();
+            // 一步到位：重設 Firebase config 後，重新載入頁面以套用最新 API
             window.syncStateToCloud();
-            window.toggleSettingsModal(false);
-            window.showToast("設定已成功更新！", "✅");
-            window.renderAll();
+            window.showToast("設定儲存成功！正在重新連線...", "✅");
+            
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
         }
 
         window.clearAllLogs = function() {
@@ -1030,6 +1073,47 @@
             document.getElementById("customWorkoutName").value = "";
             document.getElementById("customWorkoutDuration").value = "";
             document.getElementById("customWorkoutBurn").value = "";
+        }
+
+        window.quickAddWorkout = function() {
+            if (window.currentUserId !== window.myPrivateUserId) {
+                window.showCustomAlert("系統提示", "唯讀模式下不可操作！", "🔒");
+                return;
+            }
+            const select = document.getElementById("quickWorkoutSelect");
+            const val = select.value;
+            if (!val) return;
+
+            let name = "";
+            let cal = 0;
+
+            if (val === "running") { name = "慢跑 30分鐘"; cal = 300; }
+            else if (val === "cycling") { name = "單車 30分鐘"; cal = 250; }
+            else if (val === "swimming") { name = "游泳 30分鐘"; cal = 350; }
+            else if (val === "lifting") { name = "重量訓練 45分鐘"; cal = 200; }
+
+            window.state.workoutLogs.push({
+                id: crypto.randomUUID(),
+                date: currentViewDate,
+                name: name,
+                cal: cal
+            });
+
+            window.syncStateToCloud();
+            window.renderAll();
+            select.value = "";
+            window.showToast(`成功登記運動：${name}`, "🔥");
+        }
+
+        window.deleteWorkout = function(id) {
+            if (window.currentUserId !== window.myPrivateUserId) {
+                window.showCustomAlert("系統提示", "唯讀模式下不可操作！", "🔒");
+                return;
+            }
+            window.state.workoutLogs = window.state.workoutLogs.filter(w => w.id !== id);
+            window.syncStateToCloud();
+            window.renderAll();
+            window.showToast("已移除該筆運動日誌", "🗑️");
         }
 
         // ================= 體重與 BMI 系統 =================
@@ -1214,20 +1298,67 @@
         }
 
 
-        // ================= GEMINI API 整合運作 (含 5 次指數級重試回退 與 正確詳細除錯反饋) =================
+        // ================= GEMINI / OPENROUTER API 智慧整合路由 (5 次指數級重試) =================
         async function fetchGeminiWithBackoff(contents, systemInstruction = null) {
             const activeKey = getActiveApiKey();
             if (!activeKey) {
-                throw new Error("API Key 為空！若您正在 Chrome 執行，請點擊右上角「齒輪 ⚙️」設定並填入您的 Gemini API Key 後再行嘗試！");
+                throw new Error("API Key 為空！若您正在 Chrome 執行，請點擊右上角「齒輪 ⚙️」設定並填入您的 Gemini 或 OpenRouter API Key 後再行嘗試！");
             }
 
-            // 動態雙軌路由選擇 Model
             const modelName = getActiveModelName();
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${activeKey}`;
-            
-            const payload = { contents };
-            if (systemInstruction) {
-                payload.systemInstruction = { parts: [{ text: systemInstruction }] };
+            let url = "";
+            let payload = {};
+            let headers = { "Content-Type": "application/json" };
+
+            // 1. 如果是 OpenRouter 金鑰
+            if (activeKey.startsWith("sk-or-")) {
+                url = "https://openrouter.ai/api/v1/chat/completions";
+                headers["Authorization"] = `Bearer ${activeKey}`;
+                
+                // 將 Google Gemini 格式之 contents 多模態 Payload 轉換為 OpenRouter / OpenAI 格式
+                let openRouterMessages = [];
+                
+                // 先插入系統提示
+                if (systemInstruction) {
+                    openRouterMessages.push({
+                        role: "system",
+                        content: systemInstruction
+                    });
+                }
+
+                contents.forEach(item => {
+                    let textPrompt = "";
+                    let imgDataUrl = "";
+                    
+                    item.parts.forEach(part => {
+                        if (part.text) {
+                            textPrompt = part.text;
+                        } else if (part.inlineData) {
+                            imgDataUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+                        }
+                    });
+
+                    let contentArray = [];
+                    if (textPrompt) contentArray.push({ type: "text", text: textPrompt });
+                    if (imgDataUrl) contentArray.push({ type: "image_url", image_url: { url: imgDataUrl } });
+
+                    openRouterMessages.push({
+                        role: item.role === "model" ? "assistant" : "user",
+                        content: contentArray.length === 1 && textPrompt ? textPrompt : contentArray
+                    });
+                });
+
+                payload = {
+                    model: modelName,
+                    messages: openRouterMessages
+                };
+            } else {
+                // 2. 如果是標準 Google 官方 API 金鑰
+                url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${activeKey}`;
+                payload = { contents };
+                if (systemInstruction) {
+                    payload.systemInstruction = { parts: [{ text: systemInstruction }] };
+                }
             }
 
             let delay = 1000;
@@ -1237,31 +1368,37 @@
                 try {
                     const res = await fetch(url, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
+                        headers: headers,
                         body: JSON.stringify(payload)
                     });
                     
                     if (res.ok) {
                         const data = await res.json();
-                        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                        // 取回文字結果
+                        let text = "";
+                        if (activeKey.startsWith("sk-or-")) {
+                            text = data.choices?.[0]?.message?.content;
+                        } else {
+                            text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                        }
+
                         if (!text) {
-                            throw new Error("Google AI 成功連線，但回傳了空白的評估內容，請更換相片角度重新嘗試。");
+                            throw new Error("AI 成功連線，但回傳了空白的內容，請稍候重試。");
                         }
                         return text;
                     } else {
-                        // 嘗試抓取 Google 官方的回傳錯誤 JSON 包，取得詳細錯誤理由
                         const errData = await res.json().catch(() => ({}));
                         const errMsg = errData.error?.message || `HTTP 狀態碼 ${res.status}`;
-                        throw new Error(`Google API 回報錯誤: ${errMsg}`);
+                        throw new Error(`API 伺服器回報錯誤: ${errMsg}`);
                     }
                 } catch (e) {
                     lastError = e;
                 }
-                // 指數退避 1s, 2s, 4s, 8s, 16s
+                // 指數級退避
                 await new Promise(resolve => setTimeout(resolve, delay));
                 delay *= 2; 
             }
-            throw lastError || new Error("網絡請求重試失敗，請確認網絡連線或 Key 的可用性。");
+            throw lastError || new Error("網絡連線請求失敗，請確認網絡連線或金鑰可用性。");
         }
 
         function parseCleanJson(text) {
@@ -1278,7 +1415,7 @@
             }
         }
 
-        // 1. 【核心功能】📸 拍照 AI 影像大腦深度識別
+        // 1. 【核心特色】📸 拍照 AI 影像大腦深度識別
         window.runPhotoAI = async function() {
             if (!selectedPhotoBase64) {
                 window.showCustomAlert("操作提示", "請先點擊上方相機框，拍攝或選擇一張食物相片！", "📷");
@@ -1332,18 +1469,17 @@
 
             } catch (err) {
                 console.error(err);
-                // 提供清晰的 AI 故障診斷器：如果 key 沒貼好或是失效，直接將 Google API 回報的真正細節報給用戶
                 const key = getActiveApiKey();
-                if (!key || !key.startsWith("AIzaSy")) {
+                if (!key || !key.startsWith("AIzaSy") && !key.startsWith("sk-or-")) {
                     window.showCustomAlert(
-                        "API 金鑰無效", 
-                        `偵測到您目前設定的金鑰並非 Gemini 官方格式（目前為: ${key.substring(0, 10)}...）。<br><br>` +
-                        `此 App 在本機 Chrome 執行時，<strong>需要填寫以 「AIzaSy」開頭的標準 Gemini API 金鑰</strong>，無法直接使用 Google Cloud Agent Platform 的 「AQ.Ab...」憑證。<br><br>` +
-                        `請點擊右上角<strong>「齒輪 ⚙️」</strong>，並根據說明申請免費的 Gemini Key 後填入即可完美使用！`,
+                        "API 金鑰無效或格式錯誤", 
+                        `偵測到您目前設定的金鑰非合規格式（目前為: ${key.substring(0, 10)}...）。<br><br>` +
+                        `本機 Chrome 執行時，<strong>需要填寫以 「AIzaSy」開頭的標準 Gemini API 金鑰，或以 「sk-or-」 開頭的 OpenRouter API 金鑰</strong>。<br><br>` +
+                        `請點擊右上角<strong>「齒輪 ⚙️」</strong>，並填入有效金鑰即可完美解鎖 AI 分析！`,
                         "🔑"
                     );
                 } else {
-                    window.showCustomAlert("AI 辨識失敗", `詳細錯誤理由：${err.message || err}。<br><br>請確認：（1）您輸入的 Gemini API Key 正確無誤（2）您的裝置網絡連線正常（3）該 Key 擁有當前 Model 的呼叫權限。`, "❌");
+                    window.showCustomAlert("AI 辨識失敗", `詳細錯誤理由：${err.message || err}。<br><br>請確認：（1）您輸入的 API 金鑰正確無誤且有餘額（2）您的裝置網絡連線正常。`, "❌");
                 }
                 updateAIStatus("分析失敗", false);
             } finally {
@@ -1394,12 +1530,12 @@
             } catch (err) {
                 console.error(err);
                 const key = getActiveApiKey();
-                if (!key || !key.startsWith("AIzaSy")) {
+                if (!key || !key.startsWith("AIzaSy") && !key.startsWith("sk-or-")) {
                     window.showCustomAlert(
                         "API 金鑰無效", 
-                        `偵測到您目前設定的金鑰並非 Gemini 官方格式（目前為: ${key.substring(0, 10)}...）。<br><br>` +
-                        `本機 Chrome 執行時，<strong>需要填寫以 「AIzaSy」開頭的標準 Gemini API 金鑰</strong>。<br><br>` +
-                        `請點擊右上角<strong>「齒輪 ⚙️」</strong>，並根據說明申請免費的 Gemini Key 後填入即可完美使用！`,
+                        `偵測到您目前設定的金鑰並非合規格式（目前為: ${key.substring(0, 10)}...）。<br><br>` +
+                        `本機 Chrome 執行時，<strong>需要填寫以 「AIzaSy」開頭的標準 Gemini API 金鑰，或以 「sk-or-」 開頭的 OpenRouter API 金鑰</strong>。<br><br>` +
+                        `請點擊右上角<strong>「齒輪 ⚙️」</strong>配置有效金鑰即可完美使用！`,
                         "🔑"
                     );
                 } else {
@@ -1777,7 +1913,7 @@
             let sortedLogs = state.weightLogs.slice().sort((a,b) => new Date(a.date) - new Date(b.date));
             sortedLogs = sortedLogs.slice(-7);
 
-            const labels = sortedLogs.map(l => l.date.substring(5)); // 取 MM-DD
+            const labels = sortedLogs.map(l => l.date.substring(5)); // MM-DD
             const weights = sortedLogs.map(l => l.weight);
             const calorieInputs = sortedLogs.map(l => {
                 const eats = state.dietLogs.filter(d => d.date === l.date);
