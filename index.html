@@ -37,10 +37,8 @@
             animation: pulse-border 2s infinite alternate;
         }
         @keyframes pulse-border {
-            0% { border-color: rgba(16, 185, 129, 0.3);
-            box-shadow: 0 0 5px rgba(16, 185, 129, 0.2); }
-            100% { border-color: rgba(16, 185, 129, 0.8);
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
+            0% { border-color: rgba(16, 185, 129, 0.3); box-shadow: 0 0 5px rgba(16, 185, 129, 0.2); }
+            100% { border-color: rgba(16, 185, 129, 0.8); box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
         }
         .water-wave {
             transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -119,7 +117,7 @@
                     <div class="space-y-2 py-1 relative z-0">
                         <div class="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto text-2xl group-hover:scale-110 transition duration-300 shadow-inner">📷</div>
                         <p class="text-xs font-black text-slate-200">一按即拍 / 選擇餐食照片</p>
-                        <p class="text-[10px] text-slate-500">內建 Canvas 智慧壓縮優化，保證辨識無阻礙</p>
+                        <p class="text-[10px] text-slate-500">內建 Canvas 智慧壓縮優化，防範 400 錯誤體積限制</p>
                     </div>
                 </div>
 
@@ -195,7 +193,6 @@
             <div class="grid grid-cols-2 gap-4">
                 <div class="glass-card rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden h-44">
                     <div class="absolute bottom-0 left-0 right-0 bg-blue-600/15 border-t border-blue-500/25 water-wave" id="waterWaveBg" style="height: 0%"></div>
-                    
                     <div class="relative z-10 space-y-1">
                         <div class="flex justify-between items-center">
                             <span class="text-xs font-bold text-slate-350">💧 智能補水</span>
@@ -203,7 +200,6 @@
                         </div>
                         <p class="text-2xl font-black text-blue-400 tracking-tight" id="waterLoggedTxt">0 <span class="text-xs font-normal text-slate-500">ml</span></p>
                     </div>
-
                     <div class="relative z-10 grid grid-cols-2 gap-2 mt-4">
                         <button onclick="addWater(250)" class="py-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-400 hover:bg-blue-500/20 transition active:scale-95">+250ml</button>
                         <button onclick="addWater(500)" class="py-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-400 hover:bg-blue-500/20 transition active:scale-95">+500ml</button>
@@ -219,7 +215,6 @@
                         </div>
                         <p class="text-2xl font-black text-rose-400 tracking-tight" id="workoutLoggedTxt">0 <span class="text-xs font-normal text-slate-500">kcal</span></p>
                     </div>
-
                     <div class="space-y-1.5 mt-2">
                         <select id="quickWorkoutSelect" onchange="quickAddWorkout()" class="w-full bg-slate-900 border border-slate-800 text-xs text-slate-350 rounded-xl p-2 outline-none">
                             <option value="">🏃 快速新增運動...</option>
@@ -228,9 +223,7 @@
                             <option value="swimming">游泳 30分鐘 (-350k)</option>
                             <option value="lifting">重訓 45分鐘 (-200k)</option>
                         </select>
-                        <button onclick="openCustomWorkoutModal()" class="w-full py-2 bg-rose-500/10 border border-rose-500/20 text-xs font-bold text-rose-400 rounded-xl hover:bg-rose-500/20 transition active:scale-95">
-                            自訂運動紀錄
-                        </button>
+                        <button onclick="openCustomWorkoutModal()" class="w-full py-2 bg-rose-500/10 border border-rose-500/20 text-xs font-bold text-rose-400 rounded-xl hover:bg-rose-500/20 transition active:scale-95">自訂運動紀錄</button>
                     </div>
                 </div>
             </div>
@@ -251,9 +244,7 @@
                         <input type="number" id="fatInput" step="0.1" placeholder="體脂 (%)" class="glass-input w-full p-2.5 rounded-xl text-sm pl-8">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">F</span>
                     </div>
-                    <button onclick="saveBodyStats()" class="col-span-2 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 text-xs font-black rounded-xl hover:shadow-lg active:scale-95 transition">
-                        儲存今日數據
-                    </button>
+                    <button onclick="saveBodyStats()" class="col-span-2 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 text-xs font-black rounded-xl hover:shadow-lg active:scale-95 transition">儲存今日數據</button>
                 </div>
             </div>
         </main>
@@ -265,7 +256,6 @@
                         ➕ 傳統手動紀錄
                     </button>
                 </div>
-
                 <div class="p-5">
                     <div id="inputBox-manual" class="space-y-3.5">
                         <div>
@@ -290,9 +280,7 @@
                                 <input type="number" id="manFoodFat" placeholder="0" class="glass-input w-full p-2.5 rounded-xl text-sm mt-1">
                             </div>
                         </div>
-                        <button onclick="runManualAdd()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold rounded-xl transition active:scale-95 mt-2">
-                            儲存至今日日誌
-                        </button>
+                        <button onclick="runManualAdd()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold rounded-xl transition active:scale-95 mt-2">儲存至今日日誌</button>
                     </div>
                 </div>
             </div>
@@ -305,9 +293,7 @@
                 </h3>
                 <span class="text-[11px] text-slate-500" id="totalRecordsTxt">0 筆紀錄</span>
             </div>
-
             <div class="space-y-3" id="logsListDiv"></div>
-
             <div id="logsEmptyState" class="py-12 text-center space-y-2 hidden">
                 <span class="text-4xl">🍃</span>
                 <p class="text-sm font-semibold text-slate-400">當天尚未紀錄飲食或運動</p>
@@ -325,7 +311,6 @@
                     <canvas id="trendsLineChart"></canvas>
                 </div>
             </div>
-
             <div class="grid grid-cols-2 gap-4">
                 <div class="glass-card rounded-2xl p-4 space-y-1">
                     <p class="text-[10px] text-slate-400 font-semibold">當前 BMI 指數</p>
@@ -349,27 +334,20 @@
                 <p class="text-xs text-slate-400 leading-relaxed">
                     透過雲端即時同步，不論您清除瀏覽器緩存還是更換手機，您的飲食日誌皆會永久保存。複製下方「同步分享碼」給朋友或健身教練，即可讓對方遠端實時檢看您的每日飲食表現！
                 </p>
-
                 <div class="p-3.5 bg-slate-900 rounded-xl space-y-1.5">
                     <span class="text-[10px] text-slate-500 font-bold block uppercase tracking-wider">我的專屬同步分享碼 (Sync Code)</span>
                     <div class="flex justify-between items-center gap-2">
                         <span id="myShareCodeTxt" class="text-xs font-mono text-emerald-400 truncate tracking-wide">連線中...</span>
-                        <button onclick="copyMyShareCode()" class="px-2.5 py-1.5 bg-slate-800 text-slate-300 text-[10px] font-bold rounded hover:bg-slate-750 transition active:scale-95 shrink-0">
-                            複製分享碼
-                        </button>
+                        <button onclick="copyMyShareCode()" class="px-2.5 py-1.5 bg-slate-800 text-slate-300 text-[10px] font-bold rounded hover:bg-slate-750 transition active:scale-95 shrink-0">複製分享碼</button>
                     </div>
                 </div>
             </div>
-
             <div class="glass-card rounded-2xl p-5 space-y-3.5">
                 <h3 class="text-xs font-bold text-slate-300">👨‍🏫 載入學員 / 好友數據 (唯讀監督模式)</h3>
                 <p class="text-[10px] text-slate-550">輸入教練或朋友提供給您的分享碼，即可在您的裝置上實時檢視對方的飲食紀錄與圖表分析。</p>
-                
                 <div class="flex gap-2">
                     <input type="text" id="targetShareCodeInput" placeholder="請輸入對方的分享碼" class="glass-input flex-1 p-2.5 rounded-xl text-xs font-mono">
-                    <button onclick="loadTargetSharedProfile()" class="px-4 bg-emerald-400 text-slate-950 font-extrabold rounded-xl text-xs hover:bg-emerald-300 transition active:scale-95 shrink-0">
-                        載入檢視
-                    </button>
+                    <button onclick="loadTargetSharedProfile()" class="px-4 bg-emerald-400 text-slate-950 font-extrabold rounded-xl text-xs hover:bg-emerald-300 transition active:scale-95 shrink-0">載入檢視</button>
                 </div>
             </div>
         </main>
@@ -378,24 +356,19 @@
 
     <nav class="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-xl border-t border-slate-900 py-1.5 px-3 flex justify-around">
         <button onclick="switchPage('dashboard')" id="navBtn-dashboard" class="flex flex-col items-center gap-1 py-1 px-3 text-emerald-400 transition">
-            <span class="text-lg">📊</span>
-            <span class="text-[9px] font-bold">首頁</span>
+            <span class="text-lg">📊</span><span class="text-[9px] font-bold">首頁</span>
         </button>
         <button onclick="switchPage('addfood')" id="navBtn-addfood" class="flex flex-col items-center gap-1 py-1 px-3 text-slate-500 transition">
-            <span class="text-lg">Salad 🥗</span>
-            <span class="text-[9px] font-bold">記錄飲食</span>
+            <span class="text-lg">Salad 🥗</span><span class="text-[9px] font-bold">記錄飲食</span>
         </button>
         <button onclick="switchPage('logs')" id="navBtn-logs" class="flex flex-col items-center gap-1 py-1 px-3 text-slate-500 transition">
-            <span class="text-lg">📋</span>
-            <span class="text-[9px] font-bold">日誌明細</span>
+            <span class="text-lg">📋</span><span class="text-[9px] font-bold">日誌明細</span>
         </button>
         <button onclick="switchPage('trends')" id="navBtn-trends" class="flex flex-col items-center gap-1 py-1 px-3 text-slate-500 transition">
-            <span class="text-lg">📈</span>
-            <span class="text-[9px] font-bold">趨勢指標</span>
+            <span class="text-lg">📈</span><span class="text-[9px] font-bold">趨勢指標</span>
         </button>
         <button onclick="switchPage('share')" id="navBtn-share" class="flex flex-col items-center gap-1 py-1 px-3 text-slate-500 transition">
-            <span class="text-lg">☁️</span>
-            <span class="text-[9px] font-bold">雲同步</span>
+            <span class="text-lg">☁️</span><span class="text-[9px] font-bold">雲同步</span>
         </button>
     </nav>
 
@@ -419,12 +392,8 @@
                 </div>
             </div>
             <div class="flex gap-2.5 pt-2">
-                <button onclick="closeCustomWorkoutModal()" class="flex-1 py-2 bg-slate-900 border border-slate-800 text-xs text-slate-400 font-bold rounded-xl transition">
-                    取消
-                </button>
-                <button onclick="saveCustomWorkout()" class="flex-1 py-2 bg-rose-500 text-slate-950 text-xs font-bold rounded-xl hover:bg-rose-450 transition">
-                    新增儲存
-                </button>
+                <button onclick="closeCustomWorkoutModal()" class="flex-1 py-2 bg-slate-900 border border-slate-800 text-xs text-slate-400 font-bold rounded-xl transition">取消</button>
+                <button onclick="saveCustomWorkout()" class="flex-1 py-2 bg-rose-500 text-slate-950 text-xs font-bold rounded-xl hover:bg-rose-450 transition">新增儲存</button>
             </div>
         </div>
     </div>
@@ -437,13 +406,11 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-
             <div class="space-y-3">
                 <div class="space-y-1">
                     <label class="text-[10px] text-slate-400 font-bold uppercase">每日目標熱量 (kcal)</label>
                     <input type="number" id="goalInput" placeholder="2000" class="glass-input w-full p-2.5 rounded-xl text-xs">
                 </div>
-
                 <div class="grid grid-cols-2 gap-3">
                     <div class="space-y-1">
                         <label class="text-[10px] text-slate-400 font-bold uppercase">身高 (cm)</label>
@@ -455,14 +422,9 @@
                     </div>
                 </div>
             </div>
-
             <div class="flex gap-2.5 pt-2">
-                <button onclick="saveSettings()" class="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 text-xs font-black rounded-xl transition">
-                    保存設定
-                </button>
-                <button onclick="clearAllLogs()" class="px-3.5 py-2.5 bg-rose-500/10 hover:bg-rose-500 hover:text-white border border-rose-500/20 text-rose-400 text-xs font-bold rounded-xl transition">
-                    重設數據
-                </button>
+                <button onclick="saveSettings()" class="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 text-xs font-black rounded-xl transition">保存設定</button>
+                <button onclick="clearAllLogs()" class="px-3.5 py-2.5 bg-rose-500/10 hover:bg-rose-500 hover:text-white border border-rose-500/20 text-rose-400 text-xs font-bold rounded-xl transition">重設數據</button>
             </div>
         </div>
     </div>
@@ -472,15 +434,12 @@
             <div id="alertIcon" class="text-3xl">⚠️</div>
             <h3 id="alertTitle" class="text-sm font-bold text-slate-100">注意</h3>
             <p id="alertMsg" class="text-xs text-slate-400 leading-relaxed break-all"></p>
-            <button onclick="closeCustomAlert()" class="w-full py-2 bg-emerald-500 text-slate-950 text-xs font-black rounded-xl hover:bg-emerald-400 transition">
-                確定
-            </button>
+            <button onclick="closeCustomAlert()" class="w-full py-2 bg-emerald-500 text-slate-950 text-xs font-black rounded-xl hover:bg-emerald-400 transition">確定</button>
         </div>
     </div>
 
     <div id="toastBox" class="fixed top-6 left-1/2 -translate-x-1/2 px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 shadow-xl text-xs font-semibold text-slate-200 flex items-center gap-2 z-50 transition duration-300 opacity-0 pointer-events-none">
-        <span id="toastIcon">✨</span>
-        <span id="toastMsg">訊息</span>
+        <span id="toastIcon">✨</span><span id="toastMsg">訊息</span>
     </div>
 
     <script type="module">
@@ -488,7 +447,7 @@
         import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
         import { getFirestore, doc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
-        // 綁定全域儲存狀態
+        // 初始化全域核心數據結構
         window.state = {
             goalCal: 2000,
             targetWeight: 60,
@@ -514,14 +473,12 @@
         const syncStatusText = document.getElementById("syncStatusText");
         const myShareCodeTxt = document.getElementById("myShareCodeTxt");
 
-        // 初始化資料庫
         async function initCloudStorage() {
             if (!firebaseConfig) {
-                console.warn("未檢測到 Firebase 配置，啟動 LocalStorage 本端託管。");
+                console.warn("未偵測到 Firebase 雲端環境參數，全面啟動萬能 LocalStorage 本端託管模式。");
                 useLocalStorageFallback();
                 return;
             }
-
             try {
                 const app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
@@ -537,17 +494,15 @@
                     if (user) {
                         window.myPrivateUserId = user.uid;
                         myShareCodeTxt.innerText = user.uid;
-                        
                         syncStatusDot.className = "w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse";
                         syncStatusText.innerText = "雲端同步中";
-
                         bindRealtimeSync(user.uid);
                     } else {
                         useLocalStorageFallback();
                     }
                 });
             } catch (err) {
-                console.error("Firebase 初始化失敗，使用 LocalStorage 替代：", err);
+                console.error("Firebase 初始化失敗，自動切換至離線 LocalStorage：", err);
                 useLocalStorageFallback();
             }
         }
@@ -571,50 +526,35 @@
                 localStorage.setItem("fitai_local_state", JSON.stringify(window.state));
                 return;
             }
-
-            if (window.currentUserId !== window.myPrivateUserId) {
-                return;
-            }
-
-            if (!db || !window.currentUserId) return;
+            if (window.currentUserId !== window.myPrivateUserId || !db) return;
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'fitai_profiles', window.currentUserId);
             try {
                 await setDoc(docRef, window.state, { merge: true });
             } catch (err) {
-                console.error("同步至雲端失敗：", err);
+                console.error("資料同步至 Firestore 失敗：", err);
             }
         }
 
         window.bindRealtimeSync = function(userId) {
             if (unsubscribeRealtime) unsubscribeRealtime();
             window.currentUserId = userId;
-
             if (userId === "local-offline-user") return;
 
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'fitai_profiles', userId);
             unsubscribeRealtime = onSnapshot(docRef, (docSnap) => {
                 if (docSnap.exists()) {
-                    window.state = {
-                        ...window.state,
-                        ...docSnap.data()
-                    };
+                    window.state = { ...window.state, ...docSnap.data() };
                 } else {
                     window.state = {
-                        goalCal: 2000,
-                        targetWeight: 60,
-                        heightCm: 170,
-                        dietLogs: [],
-                        waterLogs: [],
-                        workoutLogs: [],
-                        weightLogs: [],
-                        chatHistory: []
+                        goalCal: 2000, targetWeight: 60, heightCm: 170,
+                        dietLogs: [], waterLogs: [], workoutLogs: [], weightLogs: [], chatHistory: []
                     };
                     window.syncStateToCloud();
                 }
                 window.renderAll();
             }, (error) => {
-                console.error("Firestore 即時同步異常：", error);
-                window.showToast("連線發生異常", "❌");
+                console.error("Firestore 即時監聽異常：", error);
+                window.showToast("同步連線中斷", "❌");
             });
         }
 
@@ -631,12 +571,13 @@
             document.getElementById("dateInput").value = currentViewDate;
             document.getElementById("dateInput").addEventListener("change", (e) => {
                 currentViewDate = e.target.value;
-                renderAll();
+                window.renderAll();
             });
-
-            document.getElementById("goalInput").value = window.state.goalCal;
-            document.getElementById("heightInput").value = window.state.heightCm;
-            document.getElementById("targetWeightInput").value = window.state.targetWeight;
+            setTimeout(() => {
+                document.getElementById("goalInput").value = window.state.goalCal;
+                document.getElementById("heightInput").value = window.state.heightCm;
+                document.getElementById("targetWeightInput").value = window.state.targetWeight;
+            }, 500);
         });
 
         window.showCustomAlert = function(title, msg, icon = "⚠️") {
@@ -670,11 +611,9 @@
             pages.forEach(p => {
                 const btn = document.getElementById("navBtn-" + p);
                 if (btn) {
-                    if (p === pageId) {
-                        btn.className = "flex flex-col items-center gap-1 py-1 px-3 text-emerald-400 transition";
-                    } else {
-                        btn.className = "flex flex-col items-center gap-1 py-1 px-3 text-slate-500 transition";
-                    }
+                    btn.className = (p === pageId) 
+                        ? "flex flex-col items-center gap-1 py-1 px-3 text-emerald-400 transition"
+                        : "flex flex-col items-center gap-1 py-1 px-3 text-slate-500 transition";
                 }
             });
             window.renderAll();
@@ -705,7 +644,6 @@
                 window.showCustomAlert("系統提示", "唯讀監看模式下不支援修改！", "🔒");
                 return;
             }
-
             const goal = parseInt(document.getElementById("goalInput").value);
             const height = parseInt(document.getElementById("heightInput").value);
             const targetWeight = parseInt(document.getElementById("targetWeightInput").value);
@@ -730,20 +668,13 @@
                 window.showCustomAlert("系統提示", "唯讀模式下不可操作！", "🔒");
                 return;
             }
-
             window.state = {
-                goalCal: 2000,
-                targetWeight: 60,
-                heightCm: 170,
-                dietLogs: [],
-                waterLogs: [],
-                workoutLogs: [],
-                weightLogs: [],
-                chatHistory: []
+                goalCal: 2000, targetWeight: 60, heightCm: 170,
+                dietLogs: [], waterLogs: [], workoutLogs: [], weightLogs: [], chatHistory: []
             };
             window.syncStateToCloud();
             window.toggleSettingsModal(false);
-            window.showToast("數據已成功初始化", "🧹");
+            window.showToast("數據已成功重設", "🧹");
             window.renderAll();
         }
 
@@ -765,11 +696,8 @@
         }
 
         window.resetWater = function() {
-            if (window.currentUserId !== window.myPrivateUserId) {
-                return;
-            }
-            const todayStr = currentViewDate;
-            window.state.waterLogs = window.state.waterLogs.filter(w => w.date !== todayStr);
+            if (window.currentUserId !== window.myPrivateUserId) return;
+            window.state.waterLogs = window.state.waterLogs.filter(w => w.date !== currentViewDate);
             window.syncStateToCloud();
             window.renderAll();
         }
@@ -803,7 +731,7 @@
             });
             window.syncStateToCloud();
             window.renderAll();
-            closeCustomWorkoutModal();
+            window.closeCustomWorkoutModal();
             window.showToast("自訂燃脂運動已順利紀錄！", "🔥");
 
             document.getElementById("customWorkoutName").value = "";
@@ -822,7 +750,6 @@
 
             let name = "";
             let cal = 0;
-
             if (val === "running") { name = "慢跑 (30分鐘)"; cal = 300; }
             else if (val === "cycling") { name = "單車 (30分鐘)"; cal = 250; }
             else if (val === "swimming") { name = "游泳 (30分鐘)"; cal = 350; }
@@ -842,9 +769,7 @@
         }
 
         window.deleteWorkout = function(id) {
-            if (window.currentUserId !== window.myPrivateUserId) {
-                return;
-            }
+            if (window.currentUserId !== window.myPrivateUserId) return;
             window.state.workoutLogs = window.state.workoutLogs.filter(w => w.id !== id);
             window.syncStateToCloud();
             window.renderAll();
@@ -866,17 +791,13 @@
 
             const todayStr = currentViewDate;
             const idx = window.state.weightLogs.findIndex(w => w.date === todayStr);
-
-            const statObj = {
-                date: todayStr,
-                weight: weight,
-                fat: isNaN(fat) ? 0 : fat
-            };
+            const statObj = { date: todayStr, weight: weight, fat: isNaN(fat) ? 0 : fat };
+            
             if (idx >= 0) window.state.weightLogs[idx] = statObj;
             else window.state.weightLogs.push(statObj);
 
             window.syncStateToCloud();
-            renderAll();
+            window.renderAll();
             window.showToast("身體指標登記成功！", "⚖️");
 
             document.getElementById("weightInput").value = "";
@@ -886,21 +807,19 @@
         window.copyMyShareCode = function() {
             const code = window.myPrivateUserId;
             if (!code || code === "local-offline-user") {
-                window.showToast("離線狀態下，不支援分享碼功能", "⚠️");
+                window.showToast("離線狀態下不支援同步代碼", "⚠️");
                 return;
             }
-            
             navigator.clipboard.writeText(code).then(() => {
-                window.showToast("分享代碼已複製到剪貼簿！", "📋");
+                window.showToast("分享代碼已複製！", "📋");
             }).catch(() => {
-                // 退回老式複製法防呆
                 const dummy = document.createElement("input");
                 document.body.appendChild(dummy);
                 dummy.value = code;
                 dummy.select();
                 document.execCommand("copy");
                 document.body.removeChild(dummy);
-                window.showToast("分享代碼已複製到剪貼簿！", "📋");
+                window.showToast("分享代碼已複製！", "📋");
             });
         }
 
@@ -910,16 +829,13 @@
                 window.showToast("請輸入欲載入的分享碼！", "⚠️");
                 return;
             }
-
             if (targetCode === window.myPrivateUserId) {
                 window.showToast("這是您本人的同步分享碼！", "💡");
                 return;
             }
-
             document.getElementById("coachModeBanner").classList.remove("hidden");
             window.bindRealtimeSync(targetCode);
-            
-            window.showToast("成功與雲端連線！現已載入對方的飲食日誌。", "👨‍🏫");
+            window.showToast("成功進入唯讀監督模式！", "👨‍🏫");
             window.switchPage("dashboard");
             document.getElementById("targetShareCodeInput").value = "";
         }
@@ -927,10 +843,11 @@
         window.exitCoachMode = function() {
             document.getElementById("coachModeBanner").classList.add("hidden");
             window.bindRealtimeSync(window.myPrivateUserId);
-            window.showToast("已成功返回您個人的 FitAI 健康日誌", "👤");
+            window.showToast("已返還您個人的日誌", "👤");
             window.switchPage("dashboard");
         }
 
+        // ================= 📸 Canvas 高效圖像壓縮與預覽控制 =================
         window.triggerPhotoSelect = function() {
             if (window.currentUserId !== window.myPrivateUserId) {
                 window.showCustomAlert("系統提示", "唯讀模式下不可上傳相片！", "🔒");
@@ -943,19 +860,20 @@
             const file = e.target.files[0];
             if (!file) return;
 
-            updateAIStatus("正在載入並讀取圖片...", true);
+            window.updateAIStatus("正在載入並讀取圖片...", true);
             const reader = new FileReader();
             reader.onload = async (event) => {
                 try {
-                    updateAIStatus("正在在本地執行 Canvas 智慧優化壓縮...", true);
-                    selectedPhotoBase64 = await compressImage(event.target.result, 600, 600);
+                    window.updateAIStatus("正在在本機執行 Canvas 智慧優化壓縮...", true);
+                    // 智慧防護：限制在 400x400 完美抵禦後端 HTTP 400 大體積出錯
+                    selectedPhotoBase64 = await compressImage(event.target.result, 400, 400);
                     document.getElementById("photoPreviewImg").src = selectedPhotoBase64;
                     document.getElementById("photoPreviewFrame").classList.remove("hidden");
-                    updateAIStatus("食物相片優化完成！請按下方按鈕分析。", false);
+                    window.updateAIStatus("食物相片優化完成！可開始分析。", false);
                 } catch (err) {
                     console.error(err);
-                    window.showToast("圖像壓縮優化失敗", "❌");
-                    clearAIStatus();
+                    window.showToast("圖像優化壓縮失敗", "❌");
+                    window.clearAIStatus();
                 }
             };
             reader.readAsDataURL(file);
@@ -967,7 +885,7 @@
             document.getElementById("realPhotoInput").value = "";
             document.getElementById("photoPreviewFrame").classList.add("hidden");
             document.getElementById("photoPreviewImg").src = "";
-            clearAIStatus();
+            window.clearAIStatus();
         }
 
         function compressImage(base64Str, maxWidth, maxHeight) {
@@ -978,7 +896,6 @@
                     const canvas = document.createElement('canvas');
                     let width = img.width;
                     let height = img.height;
-
                     if (width > height) {
                         if (width > maxWidth) {
                             height = Math.round((height * maxWidth) / width);
@@ -990,7 +907,6 @@
                             height = maxHeight;
                         }
                     }
-
                     canvas.width = width;
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
@@ -1001,7 +917,7 @@
             });
         }
 
-        function updateAIStatus(text, showSpinner = true) {
+        window.updateAIStatus = function(text, showSpinner = true) {
             const box = document.getElementById("aiStatusBox");
             const spinner = box.querySelector(".animate-spin");
             document.getElementById("aiStatusTxt").innerText = text;
@@ -1010,11 +926,11 @@
             else spinner.classList.add("hidden");
         }
 
-        function clearAIStatus() {
+        window.clearAIStatus = function() {
             document.getElementById("aiStatusBox").classList.add("hidden");
         }
 
-        // ================= 🔗 對接雲端 CLOUD FUNCTION =================
+        // ================= 🔗 全功能對接雲端 Cloud Function 網址 =================
         window.runPhotoAI = async function() {
             if (!selectedPhotoBase64) {
                 window.showCustomAlert("操作提示", "請先點擊上方相機框，拍攝或選擇一張食物相片！", "📷");
@@ -1023,33 +939,32 @@
 
             const btn = document.getElementById("btnPhotoAI");
             btn.disabled = true;
-            updateAIStatus("後端雲端伺服器正在識別圖像並計算三大營養素...", true);
+            window.updateAIStatus("後端雲端伺服器正在識別圖像並計算三大營養素...", true);
 
             try {
-                // 這裡已經對接你剛剛成功上線的 Google Cloud Function 網址
+                // 指向我們成功亮起 ACTIVE 的完全體第 5 版雲端網址
                 const cloudFunctionUrl = "https://us-central1-familycalender-a62ae.cloudfunctions.net/analyzeFood";
                 
                 const res = await fetch(cloudFunctionUrl, {
                     method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         type: "image",
-                        image: selectedPhotoBase64 // 送出優化壓縮後的 Base64 數據
+                        image: selectedPhotoBase64
                     })
                 });
 
                 if (!res.ok) {
-                    throw new Error(`伺服器回報錯誤: ${res.status}`);
+                    throw new Error(`雲端回報錯誤代碼: ${res.status}`);
                 }
 
                 const foodJson = await res.json();
 
+                // 將 AI 分析出的標準 JSON 物件推入數據日誌
                 window.state.dietLogs.push({
                     id: crypto.randomUUID(),
                     date: currentViewDate,
-                    name: foodJson.name || "AI 辨識食物",
+                    name: foodJson.name || "AI 辨識膳食",
                     cal: Math.round(Number(foodJson.kcal || 0)),
                     carb: Math.round(Number(foodJson.carb || 0)),
                     protein: Math.round(Number(foodJson.protein || 0)),
@@ -1067,11 +982,11 @@
             } catch (err) {
                 console.error(err);
                 window.showCustomAlert(
-                    "AI 辨識失敗", 
-                    `詳細錯誤理由：${err.message || err}。<br><br>請確認：（1）雲端運作正常（2）跨網域 (CORS) 權限已自動配給。`, 
+                    "AI 辨識請求失敗", 
+                    `詳細出錯理由：${err.message || err}。<br><br>溫馨提示：請確認您的 OpenRouter 金鑰是否有效或餘額充足。`, 
                     "❌"
                 );
-                updateAIStatus("分析失敗", false);
+                window.updateAIStatus("分析失敗", false);
             } finally {
                 btn.disabled = false;
             }
@@ -1082,21 +997,14 @@
                 window.showCustomAlert("系統提示", "唯讀模式下不可手動寫入！", "🔒");
                 return;
             }
-
             const name = document.getElementById("manFoodName").value.trim();
             const kcal = Math.round(Number(document.getElementById("manFoodKcal").value));
             const carb = Math.round(Number(document.getElementById("manFoodCarb").value));
             const protein = Math.round(Number(document.getElementById("manFoodProtein").value));
             const fat = Math.round(Number(document.getElementById("manFoodFat").value));
 
-            if (!name) {
-                window.showToast("請填寫食物名稱", "⚠️");
-                return;
-            }
-            if (isNaN(kcal) || kcal < 0) {
-                window.showToast("請輸入有效的卡路里數值", "⚠️");
-                return;
-            }
+            if (!name) { window.showToast("請填寫食物名稱", "⚠️"); return; }
+            if (isNaN(kcal) || kcal < 0) { window.showToast("請輸入有效的卡路里數值", "⚠️"); return; }
 
             window.state.dietLogs.push({
                 id: crypto.randomUUID(),
@@ -1110,7 +1018,7 @@
             });
             window.syncStateToCloud();
             window.renderAll();
-            window.showToast(`已成功手動加入：${name}`, "✅");
+            window.showToast(`手動成功加入：${name}`, "✅");
 
             document.getElementById("manFoodName").value = "";
             document.getElementById("manFoodKcal").value = "";
@@ -1122,80 +1030,4 @@
         }
 
         window.deleteDietItem = function(id) {
-            if (window.currentUserId !== window.myPrivateUserId) {
-                window.showCustomAlert("系統提示", "唯讀模式下不可操作！", "🔒");
-                return;
-            }
-            window.state.dietLogs = window.state.dietLogs.filter(d => d.id !== id);
-            window.syncStateToCloud();
-            window.renderAll();
-            window.showToast("已刪除該筆飲食紀錄", "🗑️");
-        }
-
-        function getDailyCalculations() {
-            const todayStr = currentViewDate;
-            const eats = window.state.dietLogs.filter(d => d.date === todayStr);
-            const burns = window.state.workoutLogs.filter(w => w.date === todayStr);
-            const totalEaten = eats.reduce((acc, curr) => acc + curr.cal, 0);
-            const totalBurned = burns.reduce((acc, curr) => acc + curr.cal, 0);
-            const remain = window.state.goalCal - totalEaten + totalBurned;
-
-            const totalCarb = eats.reduce((acc, curr) => acc + curr.carb, 0);
-            const totalProtein = eats.reduce((acc, curr) => acc + curr.protein, 0);
-            const totalFat = eats.reduce((acc, curr) => acc + curr.fat, 0);
-            return { totalEaten, totalBurned, remain, totalCarb, totalProtein, totalFat };
-        }
-
-        window.renderAll = function() {
-            const calStats = getDailyCalculations();
-            
-            document.getElementById("remainCal").innerText = calStats.remain;
-            document.getElementById("targetCalText").innerText = window.state.goalCal;
-            document.getElementById("eatenCalText").innerText = calStats.totalEaten;
-            document.getElementById("burnedCalText").innerText = calStats.totalBurned;
-
-            if (calStats.remain < 0) {
-                document.getElementById("remainCal").className = "text-4xl font-black text-rose-400 tracking-tight animate-pulse";
-            } else {
-                document.getElementById("remainCal").className = "text-4xl font-black text-emerald-400 tracking-tight";
-            }
-
-            let progressRatio = (calStats.totalEaten / (window.state.goalCal + calStats.totalBurned)) * 100;
-            if (isNaN(progressRatio)) progressRatio = 0;
-            const cleanPct = Math.round(progressRatio);
-            document.getElementById("progressPctText").innerText = `${cleanPct}%`;
-            document.getElementById("progressBarFill").style.width = `${Math.min(cleanPct, 100)}%`;
-            
-            document.getElementById("summaryCarb").innerText = `${calStats.totalCarb}g`;
-            document.getElementById("summaryProtein").innerText = `${calStats.totalProtein}g`;
-            document.getElementById("summaryFat").innerText = `${calStats.totalFat}g`;
-
-            const targetWater = 2000;
-            const waterToday = window.state.waterLogs.find(w => w.date === currentViewDate)?.ml || 0;
-            document.getElementById("waterTargetTxt").innerText = `${waterToday}/${targetWater}ml`;
-            document.getElementById("waterLoggedTxt").innerHTML = `${waterToday} <span class="text-xs font-normal text-slate-500">ml</span>`;
-            document.getElementById("waterWaveBg").style.height = `${Math.min((waterToday / targetWater) * 100, 100)}%`;
-
-            const burnsCount = window.state.workoutLogs.filter(w => w.date === currentViewDate).length;
-            document.getElementById("workoutCountTxt").innerText = `${burnsCount} 次`;
-            document.getElementById("workoutLoggedTxt").innerHTML = `${calStats.totalBurned} <span class="text-xs font-normal text-slate-500">kcal</span>`;
-            
-            const prevWeight = window.state.weightLogs.slice().reverse().find(w => w.weight > 0);
-            document.getElementById("lastWeightTxt").innerText = prevWeight ? `上次紀錄: ${prevWeight.weight}kg` : "尚無紀錄";
-
-            renderLogsList();
-            updateNutrientChart(calStats.totalCarb, calStats.totalProtein, calStats.totalFat);
-            updateTrendsLineChart();
-        }
-
-        function renderLogsList() {
-            const container = document.getElementById("logsListDiv");
-            const emptyState = document.getElementById("logsEmptyState");
-            container.innerHTML = "";
-
-            const targetDate = currentViewDate;
-            const eats = window.state.dietLogs.filter(d => d.date === targetDate);
-            const burns = window.state.workoutLogs.filter(w => w.date === targetDate);
-
-            const totalItemsCount = eats.length + burns.length;
-            document.
+            if (window.currentUserId !==
