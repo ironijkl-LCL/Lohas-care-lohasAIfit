@@ -363,7 +363,7 @@
 
             <div class="glass-card rounded-2xl p-5 space-y-3.5">
                 <h3 class="text-xs font-bold text-slate-300">👨‍🏫 載入學員 / 好友數據 (唯讀監督模式)</h3>
-                <p class="text-[10px] text-slate-500">輸入教練或朋友提供給您的分享碼，即可在您的裝置上實時檢視對方的飲食紀錄與圖表分析。</p>
+                <p class="text-[10px] text-slate-550">輸入教練或朋友提供給您的分享碼，即可在您的裝置上實時檢視對方的飲食紀錄與圖表分析。</p>
                 
                 <div class="flex gap-2">
                     <input type="text" id="targetShareCodeInput" placeholder="請輸入對方的分享碼" class="glass-input flex-1 p-2.5 rounded-xl text-xs font-mono">
@@ -382,7 +382,7 @@
             <span class="text-[9px] font-bold">首頁</span>
         </button>
         <button onclick="switchPage('addfood')" id="navBtn-addfood" class="flex flex-col items-center gap-1 py-1 px-3 text-slate-500 transition">
-            <span class="text-lg"> Salad 🥗</span>
+            <span class="text-lg">Salad 🥗</span>
             <span class="text-[9px] font-bold">記錄飲食</span>
         </button>
         <button onclick="switchPage('logs')" id="navBtn-logs" class="flex flex-col items-center gap-1 py-1 px-3 text-slate-500 transition">
@@ -639,7 +639,6 @@
             document.getElementById("targetWeightInput").value = window.state.targetWeight;
         });
 
-        // 美化彈窗
         window.showCustomAlert = function(title, msg, icon = "⚠️") {
             document.getElementById("alertIcon").innerText = icon;
             document.getElementById("alertTitle").innerText = title;
@@ -651,7 +650,6 @@
             document.getElementById("customAlertModal").classList.add("hidden");
         }
 
-        // 顯示通知
         window.showToast = function(msg, icon = "💡") {
             const toast = document.getElementById("toastBox");
             document.getElementById("toastMsg").innerText = msg;
@@ -664,7 +662,6 @@
             }, 3000);
         }
 
-        // 導航切換
         window.switchPage = function(pageId) {
             document.querySelectorAll(".page-section").forEach(p => p.classList.add("hidden"));
             document.getElementById(`page-${pageId}`).classList.remove("hidden");
@@ -691,7 +688,6 @@
             window.renderAll();
         }
 
-        // 設定控制
         window.toggleSettingsModal = function(show) {
             const modal = document.getElementById("settingsModal");
             if (show) {
@@ -735,7 +731,6 @@
                 return;
             }
 
-            window.showCustomAlert("系統警告", "您是否確定要重置所有紀錄？這將會清空雲端及本地的所有日誌，且無法復原。如果您確定，請關閉本視窗並前往明細日誌直接逐筆刪除，或於本地點按確定完成重設。", "⚠️");
             window.state = {
                 goalCal: 2000,
                 targetWeight: 60,
@@ -752,7 +747,6 @@
             window.renderAll();
         }
 
-        // ================= 補水與運動系統 =================
         window.addWater = function(ml) {
             if (window.currentUserId !== window.myPrivateUserId) {
                 window.showCustomAlert("系統提示", "唯讀模式下不支援寫入數據喔！", "🔒");
@@ -857,7 +851,6 @@
             window.showToast("已刪除該筆運動紀錄", "🗑️");
         }
 
-        // ================= 體重與 BMI 系統 =================
         window.saveBodyStats = function() {
             if (window.currentUserId !== window.myPrivateUserId) {
                 window.showCustomAlert("系統提示", "唯讀模式下不支援變更體重！", "🔒");
@@ -890,7 +883,6 @@
             document.getElementById("fatInput").value = "";
         }
 
-        // ================= 跨裝置與教練同步分享機制 =================
         window.copyMyShareCode = function() {
             const code = window.myPrivateUserId;
             if (!code || code === "local-offline-user") {
@@ -898,14 +890,18 @@
                 return;
             }
             
-            const dummy = document.createElement("input");
-            document.body.appendChild(dummy);
-            dummy.value = code;
-            dummy.select();
-            document.execCommand("copy");
-            document.body.removeChild(dummy);
-            
-            window.showToast("分享代碼已複製到剪貼簿！", "📋");
+            navigator.clipboard.writeText(code).then(() => {
+                window.showToast("分享代碼已複製到剪貼簿！", "📋");
+            }).catch(() => {
+                // 退回老式複製法防呆
+                const dummy = document.createElement("input");
+                document.body.appendChild(dummy);
+                dummy.value = code;
+                dummy.select();
+                document.execCommand("copy");
+                document.body.removeChild(dummy);
+                window.showToast("分享代碼已複製到剪貼簿！", "📋");
+            });
         }
 
         window.loadTargetSharedProfile = function() {
@@ -935,8 +931,6 @@
             window.switchPage("dashboard");
         }
 
-
-        // ================= 📸 本地 Canvas 高效影像壓縮機制 =================
         window.triggerPhotoSelect = function() {
             if (window.currentUserId !== window.myPrivateUserId) {
                 window.showCustomAlert("系統提示", "唯讀模式下不可上傳相片！", "🔒");
@@ -968,7 +962,7 @@
         }
 
         window.clearSelectedPhoto = function(e) {
-            e.stopPropagation();
+            if (e && e.stopPropagation) e.stopPropagation();
             selectedPhotoBase64 = null;
             document.getElementById("realPhotoInput").value = "";
             document.getElementById("photoPreviewFrame").classList.add("hidden");
@@ -1020,8 +1014,7 @@
             document.getElementById("aiStatusBox").classList.add("hidden");
         }
 
-
-        // ================= 🔗 對接外部 FIREBASE CLOUD FUNCTION =================
+        // ================= 🔗 對接雲端 CLOUD FUNCTION =================
         window.runPhotoAI = async function() {
             if (!selectedPhotoBase64) {
                 window.showCustomAlert("操作提示", "請先點擊上方相機框，拍攝或選擇一張食物相片！", "📷");
@@ -1033,7 +1026,7 @@
             updateAIStatus("後端雲端伺服器正在識別圖像並計算三大營養素...", true);
 
             try {
-                // 呼叫您提供的後端 Firebase Cloud Function 網址
+                // 這裡已經對接你剛剛成功上線的 Google Cloud Function 網址
                 const cloudFunctionUrl = "https://us-central1-familycalender-a62ae.cloudfunctions.net/analyzeFood";
                 
                 const res = await fetch(cloudFunctionUrl, {
@@ -1042,7 +1035,8 @@
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        image: selectedPhotoBase64 // 送出優化壓縮後的 Base64 字串
+                        type: "image",
+                        image: selectedPhotoBase64 // 送出優化壓縮後的 Base64 數據
                     })
                 });
 
@@ -1050,7 +1044,6 @@
                     throw new Error(`伺服器回報錯誤: ${res.status}`);
                 }
 
-                // 後端回傳格式預期為：{ name, kcal, carb, protein, fat }
                 const foodJson = await res.json();
 
                 window.state.dietLogs.push({
@@ -1068,14 +1061,14 @@
                 window.renderAll();
                 window.showToast(`AI 成功識別並加入：${foodJson.name}`, "✅");
 
-                clearSelectedPhoto({ stopPropagation: () => {} });
+                window.clearSelectedPhoto();
                 window.switchPage("logs");
 
             } catch (err) {
                 console.error(err);
                 window.showCustomAlert(
                     "AI 辨識失敗", 
-                    `詳細錯誤理由：${err.message || err}。<br><br>請確認：（1）您的 Cloud Function 運作正常（2）後端已開啟跨網域 (CORS) 存取權限。`, 
+                    `詳細錯誤理由：${err.message || err}。<br><br>請確認：（1）雲端運作正常（2）跨網域 (CORS) 權限已自動配給。`, 
                     "❌"
                 );
                 updateAIStatus("分析失敗", false);
@@ -1084,7 +1077,6 @@
             }
         }
 
-        // 手動新增食物
         window.runManualAdd = function() {
             if (window.currentUserId !== window.myPrivateUserId) {
                 window.showCustomAlert("系統提示", "唯讀模式下不可手動寫入！", "🔒");
@@ -1140,8 +1132,6 @@
             window.showToast("已刪除該筆飲食紀錄", "🗑️");
         }
 
-
-        // ================= RENDERING AND GRAPHICAL SYSTEM =================
         function getDailyCalculations() {
             const todayStr = currentViewDate;
             const eats = window.state.dietLogs.filter(d => d.date === todayStr);
@@ -1208,204 +1198,4 @@
             const burns = window.state.workoutLogs.filter(w => w.date === targetDate);
 
             const totalItemsCount = eats.length + burns.length;
-            document.getElementById("totalRecordsTxt").innerText = `${totalItemsCount} 筆紀錄`;
-            if (totalItemsCount === 0) {
-                emptyState.classList.remove("hidden");
-                return;
-            }
-            emptyState.classList.add("hidden");
-            
-            eats.forEach(item => {
-                const div = document.createElement("div");
-                div.className = "flex gap-3.5 p-3 rounded-xl bg-slate-900/50 border border-slate-800/80 group relative hover:border-slate-700/60 transition duration-150";
-                
-                const imgTag = item.img 
-                    ? `<img src="${item.img}" class="w-12 h-12 rounded-lg object-cover border border-slate-850 shrink-0">`
-                    : `<div class="w-12 h-12 bg-slate-950 rounded-lg flex items-center justify-center text-xl shrink-0">🥦</div>`;
-
-                div.innerHTML = `
-                    ${imgTag}
-                    <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                        <div class="flex justify-between items-start gap-1">
-                            <h4 class="font-bold text-sm text-slate-100 truncate pr-4">${item.name}</h4>
-                            <span class="font-black text-xs text-rose-400 shrink-0">${item.cal} <span class="text-[9px] text-slate-550 font-semibold">kcal</span></span>
-                        </div>
-                        <div class="flex gap-2.5 text-[9px] font-bold text-slate-400">
-                            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> 碳水 ${item.carb}g</span>
-                            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> 蛋白 ${item.protein}g</span>
-                            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span> 脂肪 ${item.fat}g</span>
-                        </div>
-                    </div>
-                    <button onclick="deleteDietItem('${item.id}')" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition duration-200">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    </button>
-                `;
-                container.appendChild(div);
-            });
-
-            burns.forEach(item => {
-                const div = document.createElement("div");
-                div.className = "flex gap-3.5 p-3 rounded-xl bg-slate-900/30 border border-slate-800/40 group relative hover:border-slate-750 transition duration-150";
-                div.innerHTML = `
-                    <div class="w-12 h-12 bg-rose-950/20 rounded-lg flex items-center justify-center text-xl border border-rose-500/10 shrink-0">🏃‍♂️</div>
-                    <div class="flex-1 min-w-0 flex flex-col justify-center py-0.5">
-                        <div class="flex justify-between items-center gap-1">
-                            <h4 class="font-bold text-sm text-slate-200 truncate pr-4">${item.name}</h4>
-                            <span class="font-black text-xs text-cyan-400 shrink-0">-${item.cal} <span class="text-[9px] text-slate-550 font-semibold">kcal</span></span>
-                        </div>
-                    </div>
-                    <button onclick="deleteWorkout('${item.id}')" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition duration-200">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    </button>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // 三大營養素圓環圖
-        function updateNutrientChart(carb, protein, fat) {
-            const ctx = document.getElementById("nutrientDoughnut").getContext("2d");
-            if (doughnutChartInstance) doughnutChartInstance.destroy();
-
-            const total = carb + protein + fat;
-            const hasData = total > 0;
-            const dataSet = hasData ? [carb, protein, fat] : [1];
-            const colors = hasData ? ["#06b6d4", "#fbbf24", "#f472b6"] : ["#1e293b"];
-            const labels = hasData ? ["碳水", "蛋白質", "脂肪"] : ["暫無紀錄"];
-            
-            doughnutChartInstance = new Chart(ctx, {
-                type: "doughnut",
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: dataSet,
-                        backgroundColor: colors,
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            enabled: hasData,
-                            callbacks: {
-                                label: function(context) {
-                                    const value = context.raw;
-                                    const pct = Math.round((value / total) * 100);
-                                    return ` ${context.label}: ${value}g (${pct}%)`;
-                                }
-                            }
-                        }
-                    },
-                    cutout: "75%"
-                }
-            });
-        }
-
-        // 雙軸折線趨勢圖 (最近 7 筆數據)
-        function updateTrendsLineChart() {
-            const ctx = document.getElementById("trendsLineChart").getContext("2d");
-            if (lineChartInstance) lineChartInstance.destroy();
-
-            let sortedLogs = state.weightLogs.slice().sort((a,b) => new Date(a.date) - new Date(b.date));
-            sortedLogs = sortedLogs.slice(-7);
-            const labels = sortedLogs.map(l => l.date.substring(5)); 
-            const weights = sortedLogs.map(l => l.weight);
-            const calorieInputs = sortedLogs.map(l => {
-                const eats = state.dietLogs.filter(d => d.date === l.date);
-                return eats.reduce((acc, curr) => acc + curr.cal, 0);
-            });
-
-            lineChartInstance = new Chart(ctx, {
-                type: "line",
-                data: {
-                    labels: labels.length > 0 ? labels : ["暫無指標"],
-                    datasets: [
-                        {
-                            label: "體重 (kg)",
-                            data: weights.length > 0 ? weights : [0],
-                            borderColor: "#6366f1",
-                            backgroundColor: "rgba(99, 102, 241, 0.12)",
-                            yAxisID: "y-weight",
-                            tension: 0.35,
-                            fill: true,
-                            borderWidth: 2,
-                            pointRadius: 4,
-                            pointBackgroundColor: "#6366f1"
-                        },
-                        {
-                            label: "攝取熱量 (kcal)",
-                            data: calorieInputs.length > 0 ? calorieInputs : [0],
-                            borderColor: "#10b981",
-                            backgroundColor: "transparent",
-                            yAxisID: "y-calorie",
-                            tension: 0.25,
-                            borderWidth: 1.5,
-                            borderDash: [5, 5],
-                            pointRadius: 3,
-                            pointBackgroundColor: "#10b981"
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            grid: { color: "rgba(255,255,255,0.02)" },
-                            ticks: { color: "#94a3b8", font: { size: 9 } }
-                        },
-                        "y-weight": {
-                            type: "linear",
-                            position: "left",
-                            grid: { color: "rgba(255,255,255,0.03)" },
-                            ticks: { color: "#818cf8", font: { size: 9 } },
-                            title: { display: true, text: "kg", color: "#818cf8", font: { size: 9 } }
-                        },
-                        "y-calorie": {
-                            type: "linear",
-                            position: "right",
-                            grid: { drawOnChartArea: false },
-                            ticks: { color: "#34d399", font: { size: 9 } },
-                            title: { display: true, text: "kcal", color: "#34d399", font: { size: 9 } }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: "top",
-                            labels: { color: "#94a3b8", font: { size: 10 }, boxWidth: 15 }
-                        }
-                    }
-                }
-            });
-
-            // 更新 BMI 計算
-            const latestWeight = weights.slice(-1)[0] || 0;
-            const targetWeight = state.targetWeight || 60;
-            const height = state.heightCm || 170;
-
-            document.getElementById("statTargetWeight").innerText = `${targetWeight} kg`;
-            if (latestWeight > 0) {
-                const heightM = height / 100;
-                const bmi = (latestWeight / (heightM * heightM)).toFixed(1);
-                document.getElementById("statBmi").innerText = bmi;
-
-                let bmiStatus = "正常";
-                let colorClass = "text-emerald-400";
-                if (bmi < 18.5) { bmiStatus = "過輕"; colorClass = "text-sky-400"; }
-                else if (bmi >= 24) { bmiStatus = "過重"; colorClass = "text-rose-400"; }
-
-                document.getElementById("statBmiStatus").innerHTML = `<span class="${colorClass} font-bold">${bmiStatus}</span> (身高 ${height}cm)`;
-            } else {
-                document.getElementById("statBmi").innerText = "--";
-                document.getElementById("statBmiStatus").innerText = "尚未登記體重";
-            }
-        }
-    </script>
-
-</body>
-</html>
+            document.
