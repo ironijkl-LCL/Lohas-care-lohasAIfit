@@ -1030,4 +1030,260 @@
         }
 
         window.deleteDietItem = function(id) {
-            if (window.currentUserId !==
+            if (window.currentUserId !== window.myPrivateUserId) {
+                window.showCustomAlert("系統提示", "唯讀模式下不可操作！", "🔒");
+                return;
+            }
+            window.state.dietLogs = window.state.dietLogs.filter(d => d.id !== id);
+            window.syncStateToCloud();
+            window.renderAll();
+            window.showToast("已刪除飲食紀錄", "🗑️");
+        }
+
+        // ================= 🧮 數據統計與圖表引擎驅動 (Render) =================
+        function getDailyCalculations() {
+            const todayStr = currentViewDate;
+            const eats = (window.state.dietLogs || []).filter(d => d.date === todayStr);
+            const burns = (window.state.workoutLogs || []).filter(w => w.date === todayStr);
+            const totalEaten = eats.reduce((acc, curr) => acc + curr.cal, 0);
+            const totalBurned = burns.reduce((acc, curr) => acc + curr.cal, 0);
+            const remain = window.state.goalCal - totalEaten + totalBurned;
+
+            const totalCarb = eats.reduce((acc, curr) => acc + curr.carb, 0);
+            const totalProtein = eats.reduce((acc, curr) => acc + curr.protein, 0);
+            const totalFat = eats.reduce((acc, curr) => acc + curr.fat, 0);
+            return { totalEaten, totalBurned, remain, totalCarb, totalProtein, totalFat };
+        }
+
+        window.renderAll = function() {
+            const calStats = getDailyCalculations();
+            
+            document.getElementById("remainCal").innerText = calStats.remain;
+            document.getElementById("targetCalText").innerText = window.state.goalCal;
+            document.getElementById("eatenCalText").innerText = calStats.totalEaten;
+            document.getElementById("burnedCalText").innerText = calStats.totalBurned;
+
+            if (calStats.remain < 0) {
+                document.getElementById("remainCal").className = "text-4xl font-black text-rose-400 tracking-tight animate-pulse";
+            } else {
+                document.getElementById("remainCal").className = "text-4xl font-black text-emerald-400 tracking-tight";
+            }
+
+            let progressRatio = (calStats.totalEaten / (window.state.goalCal + calStats.totalBurned)) * 100;
+            if (isNaN(progressRatio)) progressRatio = 0;
+            const cleanPct = Math.round(progressRatio);
+            document.getElementById("progressPctText").innerText = `${cleanPct}%`;
+            document.getElementById("progressBarFill").style.width = `${Math.min(cleanPct, 100)}%`;
+            
+            document.getElementById("summaryCarb").innerText = `${calStats.totalCarb}g`;
+            document.getElementById("summaryProtein").innerText = `${calStats.totalProtein}g`;
+            document.getElementById("summaryFat").innerText = `${calStats.totalFat}g`;
+
+            const targetWater = 2000;
+            const waterToday = (window.state.waterLogs || []).find(w => w.date === currentViewDate)?.ml || 0;
+            document.getElementById("waterTargetTxt").innerText = `${waterToday}/${targetWater}ml`;
+            document.getElementById("waterLoggedTxt").innerHTML = `${waterToday} <span class="text-xs font-normal text-slate-500">ml</span>`;
+            document.getElementById("waterWaveBg").style.height = `${Math.min((waterToday / targetWater) * 100, 100)}%`;
+
+            const burnsCount = (window.state.workoutLogs || []).filter(w => w.date === currentViewDate).length;
+            document.getElementById("workoutCountTxt").innerText = `${burnsCount} 次`;
+            document.getElementById("workoutLoggedTxt").innerHTML = `${calStats.totalBurned} <span class="text-xs font-normal text-slate-500">kcal</span>`;
+            
+            const prevWeight = (window.state.weightLogs || []).slice().reverse().find(w => w.weight > 0);
+            document.getElementById("lastWeightTxt").innerText = prevWeight ? `上次紀錄: ${prevWeight.weight}kg` : "尚無紀錄";
+
+            renderLogsList();
+            updateNutrientChart(calStats.totalCarb, calStats.totalProtein, calStats.totalFat);
+            updateTrendsLineChart();
+        }
+
+        function renderLogsList() {
+            const container = document.getElementById("logsListDiv");
+            const emptyState = document.getElementById("logsEmptyState");
+            if (!container) return;
+            container.innerHTML = "";
+
+            const targetDate = currentViewDate;
+            const eats = (window.state.dietLogs || []).filter(d => d.date === targetDate);
+            const burns = (window.state.workoutLogs || []).filter(w => w.date === targetDate);
+
+            const totalItemsCount = eats.length + burns.length;
+            document.getElementById("totalRecordsTxt").innerText = `${totalItemsCount} 筆紀錄`;
+            if (totalItemsCount === 0) {
+                emptyState.classList.remove("hidden");
+                return;
+            }
+            emptyState.classList.add("hidden");
+            
+            eats.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "flex gap-3.5 p-3 rounded-xl bg-slate-900/50 border border-slate-800/80 group relative hover:border-slate-700/60 transition duration-150";
+                const imgTag = item.img 
+                    ? `<img src="${item.img}" class="w-12 h-12 rounded-lg object-cover border border-slate-850 shrink-0">`
+                    : `<div class="w-12 h-12 bg-slate-950 rounded-lg flex items-center justify-center text-xl shrink-0">🥦</div>`;
+
+                div.innerHTML = `
+                    ${imgTag}
+                    <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                        <div class="flex justify-between items-start gap-1">
+                            <h4 class="font-bold text-sm text-slate-100 truncate pr-4">${item.name}</h4>
+                            <span class="font-black text-xs text-rose-400 shrink-0">${item.cal} <span class="text-[9px] text-slate-550 font-semibold">kcal</span></span>
+                        </div>
+                        <div class="flex gap-2.5 text-[9px] font-bold text-slate-400">
+                            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> 碳水 ${item.carb}g</span>
+                            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> 蛋白 ${item.protein}g</span>
+                            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span> 脂肪 ${item.fat}g</span>
+                        </div>
+                    </div>
+                    <button onclick="deleteDietItem('${item.id}')" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition duration-200">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+
+            burns.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "flex gap-3.5 p-3 rounded-xl bg-slate-900/30 border border-slate-800/40 group relative hover:border-slate-750 transition duration-150";
+                div.innerHTML = `
+                    <div class="w-12 h-12 bg-rose-950/20 rounded-lg flex items-center justify-center text-xl border border-rose-500/10 shrink-0">🏃‍♂️</div>
+                    <div class="flex-1 min-w-0 flex flex-col justify-center py-0.5">
+                        <div class="flex justify-between items-center gap-1">
+                            <h4 class="font-bold text-sm text-slate-200 truncate pr-4">${item.name}</h4>
+                            <span class="font-black text-xs text-cyan-400 shrink-0">-${item.cal} <span class="text-[9px] text-slate-550 font-semibold">kcal</span></span>
+                        </div>
+                    </div>
+                    <button onclick="deleteWorkout('${item.id}')" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition duration-200">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateNutrientChart(carb, protein, fat) {
+            const canvasEl = document.getElementById("nutrientDoughnut");
+            if (!canvasEl) return;
+            const ctx = canvasEl.getContext("2d");
+            if (doughnutChartInstance) doughnutChartInstance.destroy();
+
+            const total = carb + protein + fat;
+            const hasData = total > 0;
+            
+            doughnutChartInstance = new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                    labels: hasData ? ["碳水", "蛋白質", "脂肪"] : ["暫無紀錄"],
+                    datasets: [{
+                        data: hasData ? [carb, protein, fat] : [1],
+                        backgroundColor: hasData ? ["#06b6d4", "#fbbf24", "#f472b6"] : ["#1e293b"],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            enabled: hasData,
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw;
+                                    return ` ${context.label}: ${value}g (${Math.round((value / total) * 100)}%)`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: "75%"
+                }
+            });
+        }
+
+        function updateTrendsLineChart() {
+            const canvasEl = document.getElementById("trendsLineChart");
+            if (!canvasEl) return;
+            const ctx = canvasEl.getContext("2d");
+            if (lineChartInstance) lineChartInstance.destroy();
+
+            let sortedLogs = (window.state.weightLogs || []).slice().sort((a,b) => new Date(a.date) - new Date(b.date));
+            sortedLogs = sortedLogs.slice(-7);
+            const labels = sortedLogs.map(l => l.date.substring(5)); 
+            const weights = sortedLogs.map(l => l.weight);
+            const calorieInputs = sortedLogs.map(l => {
+                const eats = window.state.dietLogs.filter(d => d.date === l.date);
+                return eats.reduce((acc, curr) => acc + curr.cal, 0);
+            });
+
+            lineChartInstance = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: labels.length > 0 ? labels : ["暫無指標"],
+                    datasets: [
+                        {
+                            label: "體重 (kg)",
+                            data: weights.length > 0 ? weights : [0],
+                            borderColor: "#6366f1",
+                            backgroundColor: "rgba(99, 102, 241, 0.12)",
+                            yAxisID: "y-weight",
+                            tension: 0.35,
+                            fill: true,
+                            borderWidth: 2,
+                            pointRadius: 4
+                        },
+                        {
+                            label: "攝取熱量 (kcal)",
+                            data: calorieInputs.length > 0 ? calorieInputs : [0],
+                            borderColor: "#10b981",
+                            yAxisID: "y-calorie",
+                            tension: 0.25,
+                            borderWidth: 1.5,
+                            borderDash: [5, 5]
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { ticks: { color: "#94a3b8", font: { size: 9 } } },
+                        "y-weight": {
+                            type: "linear", position: "left",
+                            ticks: { color: "#818cf8", font: { size: 9 } },
+                            title: { display: true, text: "kg", color: "#818cf8", font: { size: 9 } }
+                        },
+                        "y-calorie": {
+                            type: "linear", position: "right",
+                            ticks: { color: "#34d399", font: { size: 9 } },
+                            title: { display: true, text: "kcal", color: "#34d399", font: { size: 9 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: true, position: "top", labels: { color: "#94a3b8", font: { size: 10 } } }
+                    }
+                }
+            });
+
+            const latestWeight = weights.slice(-1)[0] || 0;
+            const targetWeight = window.state.targetWeight || 60;
+            const height = window.state.heightCm || 170;
+
+            document.getElementById("statTargetWeight").innerText = `${targetWeight} kg`;
+            if (latestWeight > 0) {
+                const heightM = height / 100;
+                const bmi = (latestWeight / (heightM * heightM)).toFixed(1);
+                document.getElementById("statBmi").innerText = bmi;
+                let bmiStatus = "正常";
+                let colorClass = "text-emerald-400";
+                if (bmi < 18.5) { bmiStatus = "過輕"; colorClass = "text-sky-400"; }
+                else if (bmi >= 24) { bmiStatus = "過重"; colorClass = "text-rose-400"; }
+                document.getElementById("statBmiStatus").innerHTML = `<span class="${colorClass} font-bold">${bmiStatus}</span> (身高 ${height}cm)`;
+            } else {
+                document.getElementById("statBmi").innerText = "--";
+                document.getElementById("statBmiStatus").innerText = "尚未登記體重";
+            }
+        }
+    </script>
+</body>
+</html>
