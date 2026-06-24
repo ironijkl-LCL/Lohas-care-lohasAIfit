@@ -702,7 +702,7 @@ z-index:9999;
     </div>
 
     <div class="card" style="text-align: center;">
-        <h3 style="text-align: left;">📸 AI 視覺食物分析</h3>
+        <h3 style="text-align: left;">📸 AI 視覺食物 analysis</h3>
         <p style="font-size:13px; color:#8e8e93; margin-top:-5px; text-align: left;">支援原型食物、茶餐廳組合及外賣標籤同時解構</p>
         
         <!-- Demo 專用快速切換按鈕組 -->
@@ -778,6 +778,9 @@ z-index:9999;
 const BACKUP_OPENROUTER_KEY = "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";
 const SITE_URL = window.location.href || "https://ainutrition.ultimate";
 const SITE_NAME = "AI Nutrition Ultimate";
+
+// 📊 實時 Google Sheets 資料庫整合 Web App URL 
+const SHEET_DB_URL = "https://script.google.com/macros/s/AKfycbyUUlD_-S7d22LnTjoFDtHSWkuwkTWFJsyjmLgoJKuX-6HXJSc2ECFO1p037E1qaTvX/exec";
 
 // 📊 全局狀態變數
 let cal = 0, protein = 0, carbs = 0, fat = 0;
@@ -1178,13 +1181,70 @@ function openCamera() {
     document.getElementById("camera").click();
 }
 
-// 🔍 BONUS: AI 文字食物搜尋與解構 (文字替代影相)
+// 🔍 BONUS: 智能食物搜尋與解構 (優化支援：優先搜尋實時 Google Sheets 資料庫，失敗後自動轉入 AI 大腦)
 async function searchFoodText() {
     const query = document.getElementById("foodSearchInput").value.trim();
     if (query === "") return;
 
-    document.getElementById("result").innerHTML = `⏳ 正在將 "${query}" 傳送至大模型解構解析中...`;
+    document.getElementById("result").innerHTML = `⏳ 正在查詢 Google Sheet (nutrition_database) 實時資料庫...`;
     track("search_food");
+
+    let foundInDb = false;
+
+    // 1️⃣ 第一步：嘗試獲取 Google Sheet 數據 
+    try {
+        let dbResponse = await fetch(`${SHEET_DB_URL}?query=${encodeURIComponent(query)}`);
+        if (dbResponse.ok) {
+            let dbResult = await dbResponse.json();
+            let dbFoods = [];
+
+            // 支援多元的 JSON 數據回傳結構格式
+            if (Array.isArray(dbResult)) {
+                dbFoods = dbResult;
+            } else if (dbResult && dbResult.foods) {
+                dbFoods = dbResult.foods;
+            } else if (dbResult && dbResult.data) {
+                dbFoods = Array.isArray(dbResult.data) ? dbResult.data : [dbResult.data];
+            }
+
+            if (dbFoods && dbFoods.length > 0) {
+                document.getElementById("result").innerHTML = `<span style="color:#30d158;">✅ 成功於 Google Sheet 資料庫中匹配到實時紀錄！</span>`;
+                dbFoods.forEach(item => {
+                    // 自動匹配欄位名稱，相容繁簡中文及英文結構
+                    let mappedFood = {
+                        name: item.name || item.名稱 || query,
+                        grams: Number(item.grams || item.重量 || 100),
+                        cal: Number(item.cal || item.calories || item.卡路里 || 0),
+                        p: Number(item.p || item.protein || item.蛋白質 || 0),
+                        c: Number(item.c || item.carbs || item.碳水 || 0),
+                        f: Number(item.f || item.fat || item.脂肪 || 0),
+                        oil_g: Number(item.oil_g || item.oil || item.油 || 0),
+                        sugar_g: Number(item.sugar_g || item.sugar || item.糖 || 0),
+                        sodium_mg: Number(item.sodium_mg || item.sodium || item.鈉 || 0),
+                        oil_rating: item.oil_rating || (Number(item.oil_g || 0) > 20 ? "high" : "low"),
+                        sugar_rating: item.sugar_rating || (Number(item.sugar_g || 0) > 25 ? "high" : "low"),
+                        sodium_rating: item.sodium_rating || (Number(item.sodium_mg || 0) > 1000 ? "high" : "low"),
+                        grade: item.grade || item.評級 || "B",
+                        confidence: 100 // 官方核實數據 100% 信心度
+                    };
+                    updateUI(mappedFood);
+                });
+                foundInDb = true;
+                track("search_food_db_success");
+                triggerAppleHealthSync();
+
+                // 清空輸入並在一秒後導航回首頁
+                document.getElementById("foodSearchInput").value = "";
+                setTimeout(() => { showPage('homePage'); }, 800);
+                return; // 提前退出
+            }
+        }
+    } catch (dbErr) {
+        console.warn("Google Sheet Database 查詢超時或無匹配記錄，自動轉入 AI Fallback 處理:", dbErr);
+    }
+
+    // 2️⃣ 第二步：本地數據庫無匹配，調用 OpenRouter (GPT-4o) 備用大腦
+    document.getElementById("result").innerHTML = `⏳ 本地資料庫未匹配，正在調用 AI 大腦進行智能解構分析...`;
 
     try {
         const activeKey = getActiveApiKey();
@@ -1667,6 +1727,7 @@ function animate(id, val) {
     }, 20);
 }
 
+// 轉換圖片為 Base64 編碼
 function toBase64(file) {
     return new Promise(r => {
         let reader = new FileReader();
