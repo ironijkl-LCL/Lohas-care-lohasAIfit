@@ -5,8 +5,8 @@
 <title>AI Nutrition Ultimate++</title>
 
 <!-- 🍏 Firebase 11.3.0 相容版 SDK (Compat CDN) -->
-<script src="https://www.gstatic.com/firebasejs/11.3.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/11.3.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.3.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore-compat.js"></script>
 
 <style>
@@ -304,7 +304,7 @@ body::before {
     font-size: 18px; flex-shrink: 0;
     box-shadow: 0 0 10px rgba(0,122,255,0.5);
 }
-.coach-msg { font-size: 14px; line-height: 1.6; color: #e5e5ea; }
+.coach-msg { font-size: 14px; line-line-height: 1.6; color: #e5e5ea; }
 
 /* 🍏 Apple Health 同步狀態 */
 .health-sync {
@@ -730,6 +730,13 @@ z-index:9999;
 <div class="settings-modal" id="settingsModal">
     <h2>⚙️ 雲端與金鑰設定</h2>
     
+    <!-- 🇭🇰 核心升級：支援在 UI 介面中動態切換、手動輸入自定義 Google Sheet URL 網址 -->
+    <div class="form-group" style="margin-bottom: 15px;">
+        <label for="sheetUrlInput">Google Sheet Apps Script URL</label>
+        <input type="text" id="sheetUrlInput" placeholder="https://script.google.com/macros/s/.../exec">
+        <span style="font-size:11px; color:#8e8e93; margin-top:5px; display:block;">貼上您的 Google Apps Script Web App URL，即可與您自己的 Google 試算表實時連通。</span>
+    </div>
+
     <div class="form-group" style="margin-bottom: 15px;">
         <label for="modelSelect">選擇 AI 大腦模型 (無餘額時推薦使用免費版)</label>
         <select id="modelSelect" onchange="onModelChange()">
@@ -779,8 +786,8 @@ const BACKUP_OPENROUTER_KEY = "sk-or-v1-0d8d5347b21f4c06a810cb1e778a905559b4c9e8
 const SITE_URL = window.location.href || "https://ainutrition.ultimate";
 const SITE_NAME = "AI Nutrition Ultimate";
 
-// 📊 實時 Google Sheets 資料庫整合 Web App URL 
-const SHEET_DB_URL = "https://script.google.com/macros/s/AKfycbyUUlD_-S7d22LnTjoFDtHSWkuwkTWFJsyjmLgoJKuX-6HXJSc2ECFO1p037E1qaTvX/exec";
+// 📊 預設實時 Google Sheets 資料庫整合 Web App URL 
+const DEFAULT_SHEET_DB_URL = "https://script.google.com/macros/s/AKfycbyUUlD_-S7d22LnTjoFDtHSWkuwkTWFJsyjmLgoJKuX-6HXJSc2ECFO1p037E1qaTvX/exec";
 
 // 📊 全局狀態變數
 let cal = 0, protein = 0, carbs = 0, fat = 0;
@@ -804,6 +811,15 @@ function track(event) {
         time: new Date().toISOString()
     });
     localStorage.setItem("analytics", JSON.stringify(logs));
+}
+
+// ⚙️ 獲取當前有效的 Google Sheet Apps Script 網址
+function getActiveSheetUrl() {
+    const userUrl = localStorage.getItem("user_sheets_url");
+    if (userUrl && userUrl.trim().startsWith("https://script.google.com")) {
+        return userUrl.trim();
+    }
+    return DEFAULT_SHEET_DB_URL;
 }
 
 // ⚙️ 獲取當前適配的 AI 模型大腦 (優先讀取 user_selected_model)
@@ -849,6 +865,10 @@ function toggleSettings(show) {
         // 載入自定義模型
         const currentCustomId = localStorage.getItem("user_custom_model_id") || "";
         document.getElementById("customModelInput").value = currentCustomId;
+
+        // 載入 Google Sheets URL
+        const currentSheetUrl = localStorage.getItem("user_sheets_url") || DEFAULT_SHEET_DB_URL;
+        document.getElementById("sheetUrlInput").value = currentSheetUrl;
         
         // 動態控制顯示狀態
         onModelChange();
@@ -871,8 +891,15 @@ function saveCustomApiKey() {
         const customId = document.getElementById("customModelInput").value.trim();
         localStorage.setItem("user_custom_model_id", customId);
     }
+
+    const sheetUrl = document.getElementById("sheetUrlInput").value.trim();
+    if (sheetUrl === "" || sheetUrl === DEFAULT_SHEET_DB_URL) {
+        localStorage.removeItem("user_sheets_url");
+    } else {
+        localStorage.setItem("user_sheets_url", sheetUrl);
+    }
     
-    alert("設定成功！大腦模型與 API 金鑰已成功部署同步。");
+    alert("設定成功！大腦模型、API 金鑰與試算表資料庫網址已成功部署同步。");
     track("save_api_key");
     toggleSettings(false);
 }
@@ -1190,10 +1217,11 @@ async function searchFoodText() {
     track("search_food");
 
     let foundInDb = false;
+    const activeSheetUrl = getActiveSheetUrl();
 
     // 1️⃣ 第一步：嘗試獲取 Google Sheet 數據 
     try {
-        let dbResponse = await fetch(`${SHEET_DB_URL}?query=${encodeURIComponent(query)}`);
+        let dbResponse = await fetch(`${activeSheetUrl}?query=${encodeURIComponent(query)}`);
         if (dbResponse.ok) {
             let dbResult = await dbResponse.json();
             let dbFoods = [];
@@ -1263,7 +1291,10 @@ async function searchFoodText() {
                 response_format: { type: "json_object" },
                 messages: [{
                     role: "user",
-                    content: `
+                    content: [
+                        {
+                            type: "text",
+                            text: `
 你是頂級營養學 AI。
 任務：
 
@@ -1311,6 +1342,8 @@ F = 高風險
   ]
 }
 `
+                        }
+                    ]
                 }]
             })
         });
