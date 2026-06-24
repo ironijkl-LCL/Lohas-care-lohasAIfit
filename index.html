@@ -117,7 +117,7 @@
                     <div class="space-y-2 py-1 relative z-0">
                         <div class="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto text-2xl group-hover:scale-110 transition duration-300 shadow-inner">📷</div>
                         <p class="text-xs font-black text-slate-200">一按即拍 / 選擇餐食照片</p>
-                        <p class="text-[10px] text-slate-500">內建 Canvas 智慧壓縮優化，防範 400 錯誤體積限制</p>
+                        <p class="text-[10px] text-slate-500">內建 Canvas 智慧壓縮優化，防範後端 400 錯誤體積限制</p>
                     </div>
                 </div>
 
@@ -942,7 +942,6 @@
             window.updateAIStatus("後端雲端伺服器正在識別圖像並計算三大營養素...", true);
 
             try {
-                // 指向我們成功亮起 ACTIVE 的完全體第 5 版雲端網址
                 const cloudFunctionUrl = "https://us-central1-familycalender-a62ae.cloudfunctions.net/analyzeFood";
                 
                 const res = await fetch(cloudFunctionUrl, {
@@ -960,7 +959,6 @@
 
                 const foodJson = await res.json();
 
-                // 將 AI 分析出的標準 JSON 物件推入數據日誌
                 window.state.dietLogs.push({
                     id: crypto.randomUUID(),
                     date: currentViewDate,
