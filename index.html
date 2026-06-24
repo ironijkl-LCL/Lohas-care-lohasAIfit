@@ -4,16 +4,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>AI Nutrition Ultimate++</title>
 
-<!-- 🍏 PWA 與 iOS 獨立應用優化支援 -->
 <meta name="theme-color" content="#0a0a0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="AI Nutrition">
 
-<!-- 🎁 內聯 PWA Manifest (免外部檔案，直接啟用 PWA 獨立運行模式) -->
-<link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIkFJIE51dHJpdGlvbiBVbHRpbWF0ZSIsCiAgInNob3J0X25hbWUiOiAiQUkgTnV0cml0aW9uIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYTBhMGYiLAogICJ0aGVtZV9jb2xvciI6ICIjMGEwYTBmIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sOzbaseY0LDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgNTEyIDUxMic+PHJlY3Qgd2lkdGg9JzUxMicgaGVpZ2h0PSc1MTInIHJ4PScxMjgnIGZpbGw9JyMwYTBhMGYnLz48Y2lyY2xlIGN4PScyNTYnIGN5PScyNTYnIHI9JzE2MCcgZmlsbD0nbGluZWFyLWdyYWRpZW50KDkwZGVnLCAjZmY5ZjBhLCAjZmYzNzVmKScvPjwvc3ZnPiIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0KICBdCn0=">
+<link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIkFJIE51dHJpdGlvbiBVbHRpbWF0ZSIsCiAgInNob3J0X25hbWUiOiAiQUkgTnV0cml0aW9uIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYTBhMGYiLAogICJ0aGVtZV9jb2xvciI6ICIjMGEwYTBmIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sOzbaseY0LDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgNTEyIDUxMic+PHJlY3Qgd2lkdGg9JzUxMicgaGVpZ2h0PSc5MTInIHJ4PScxMjgnIGZpbGw9JyMwYTBhMGYnLz48Y2lyY2xlIGN4PScyNTYnIGN5PScyNTYnIHI9JzE2MCcgZmlsbD0nbGluZWFyLWdyYWRpZW50KDkwZGVnLCAjZmY5ZjBhLCAjZmYzNzVmKScvPjwvc3ZnPiIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGU MeeI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
 
-<!-- 🍏 Firebase 11.3.0 相容版 SDK (Compat CDN) -->
 <script src="https://www.gstatic.com/firebasejs/11.3.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/11.3.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore-compat.js"></script>
@@ -108,7 +105,7 @@ body::before {
     -webkit-backdrop-filter: blur(30px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    transform: perspective(1000px) translateZ(0); /* 視差滾動空間基礎 */
+    transform: perspective(1000px) translateZ(0);
     transition: transform 0.1s ease-out;
 }
 
@@ -142,7 +139,7 @@ body::before {
     transition: background 1.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.5s ease-in-out;
 }
 
-/* Ring 1: 卡路里（外環，傳統健康橙） */
+/* Ring 1: 卡路里（外環） */
 .ring1 {
     inset: 0;
     background: conic-gradient(#ff9f0a 0deg, #222 0deg);
@@ -158,7 +155,7 @@ body::before {
     z-index: 0;
 }
 
-/* Ring 2: 蛋白質（中環，活力綠 - 達標後會自動開啟霓虹流光特效） */
+/* Ring 2: 蛋白質（中環） */
 .ring2 {
     inset: 16px;
     background: conic-gradient(#30d158 0deg, #222 0deg);
@@ -175,13 +172,12 @@ body::before {
     z-index: 0;
 }
 
-/* 🟢 蛋白質達標霓虹特效 */
 @keyframes proteinGlow {
     0% { filter: drop-shadow(0 0 8px rgba(48, 209, 88, 0.5)); }
     100% { filter: drop-shadow(0 0 25px rgba(48, 209, 88, 1)); }
 }
 
-/* Ring 3: 脂肪（內環，玫瑰粉紅） */
+/* Ring 3: 脂肪（內環） */
 .ring3 {
     inset: 32px;
     background: conic-gradient(#ff375f 0deg, #222 0deg);
@@ -331,7 +327,7 @@ body::before {
 }
 .health-logo { color: #ff2d55; font-weight: bold; display: flex; align-items: center; gap: 6px; }
 
-/* 🔍 BONUS: 智能食物搜尋輸入區 */
+/* 🔍 智能食物搜尋輸入區 */
 .search-container {
     display: flex;
     gap: 10px;
@@ -415,7 +411,7 @@ body::before {
     100% { top: 0%; }
 }
 
-/* Demo 快速切換按鈕區 */
+/* Demo 按鈕區 */
 .demo-btn-group {
     display: flex;
     gap: 10px;
@@ -449,7 +445,7 @@ button {
 }
 button:active { transform: scale(0.97); opacity: 0.9; }
 
-/* ⚙️ 浮動設定 & Risk Modal 面板 */
+/* ⚙️ 設定面板 */
 .settings-modal {
     display: none;
     position: fixed;
@@ -522,7 +518,7 @@ button:active { transform: scale(0.97); opacity: 0.9; }
     margin-top: 8px;
 }
 
-/* 📱 iOS 下方導覽列 */
+/* 📱 Bottom Nav Bar */
 .tab {
     position: fixed; bottom: 0; width: 100%; display: flex;
     justify-content: space-around; background: rgba(15, 15, 20, 0.85);
@@ -530,57 +526,42 @@ button:active { transform: scale(0.97); opacity: 0.9; }
     padding: 12px 0 28px 0; border-top: 1px solid rgba(255,255,255,0.05);
     z-index: 990;
 }
-.tab-item { text-align: center; color: #8e8e93; font-size: 11px; cursor: pointer; width: 25%; }
-.tab-item .icon { font-size: 24px; margin-bottom: 2px; transition: 0.2s; }
+.tab-item { 
+    text-align: center; 
+    color: #8e8e93; 
+    font-size: 11px; 
+    cursor: pointer; 
+    width: 33.3%;
+    transition: color 0.3s;
+}
+.tab-item .icon { font-size: 24px; margin-bottom: 2px; transition: transform 0.2s; }
 .tab-item.active { color: #ff9f0a; }
 .tab-item.active .icon { transform: scale(1.1); }
 
-/* 📈 趨勢圖形 */
 .chart-svg { width: 100%; height: 65px; overflow: visible; }
-
 </style>
 </head>
 
 <body>
 
-<!-- 💎 頂部高質感啟動動畫 Loader -->
-<div id="appLoader" style="
-position:fixed;
-inset:0;
-background:#0a0a0f;
-display:flex;
-align-items:center;
-justify-content:center;
-z-index:9999;
-">
-    <div style="
-    width:60px;
-    height:60px;
-    border-radius:50%;
-    border:4px solid #222;
-    border-top:4px solid #ff9f0a;
-    animation:spin 0.8s linear infinite;
-    "></div>
+<div id="appLoader" style="position:fixed; inset:0; background:#0a0a0f; display:flex; align-items:center; justify-content:center; z-index:9999;">
+    <div style="width:60px; height:60px; border-radius:50%; border:4px solid #222; border-top:4px solid #ff9f0a; animation:spin 0.8s linear infinite;"></div>
 </div>
 
-<!-- 🍏 頂部高級導航欄 -->
 <div class="nav-header">
     <div class="nav-title">AI Nutrition Ultimate++</div>
     <div class="settings-btn" onclick="toggleSettings(true)">⚙️</div>
 </div>
 
-<!-- 🍏 Apple Health 同步狀態欄 -->
 <div class="health-sync">
     <div class="health-logo">🍏 Apple Health</div>
     <div id="syncStatus">正在初始化雲端同步...</div>
 </div>
 
-<!-- 1️⃣ 主頁面 (Home & 儀表板) -->
 <div id="homePage">
     <div class="card">
         <h3>🔥 今日三環閉環進度 <span style="font-size:11px; color:#8e8e93;">外環:卡 ｜ 中環:蛋 ｜ 內環:脂</span></h3>
         
-        <!-- Concentric Rings 同心圓環 -->
         <div class="rings">
             <div class="ring ring1" id="ringCal">
                 <div class="ring ring2" id="ringProtein">
@@ -594,14 +575,12 @@ z-index:9999;
             </div>
         </div>
 
-        <!-- 🏆 每日成就徽章系統 -->
         <div class="badge-container">
             <div class="achievement-badge" id="badgeSugar">🍹 控糖小能手</div>
             <div class="achievement-badge" id="badgeProtein">💪 蛋白質達人</div>
             <div class="achievement-badge" id="badgeCal">🟡 熱量控制家</div>
         </div>
         
-        <!-- 三大營養素 -->
         <div class="macro-grid">
             <div class="macro-box">
                 <div class="macro-title">🥩 蛋白質</div>
@@ -617,7 +596,6 @@ z-index:9999;
             </div>
         </div>
 
-        <!-- 港式油糖鹽監控 -->
         <div class="macro-grid" style="margin-top: 10px;">
             <div class="macro-box">
                 <div class="macro-title">🛢️ 總油脂</div>
@@ -634,7 +612,6 @@ z-index:9999;
         </div>
     </div>
 
-    <!-- ⚖️ 體重追蹤管理看板 (UX 新增) -->
     <div class="card">
         <h3>⚖️ 體重追蹤管理</h3>
         <div style="display:flex; gap:10px; align-items:center;">
@@ -642,11 +619,10 @@ z-index:9999;
             <button onclick="logWeight()" style="width:auto; margin:0; padding:12px 24px; border-radius:12px; font-size:14px; flex-shrink:0;">記錄體重</button>
         </div>
         <div id="weightLogHistory" style="margin-top:12px; font-size:13px; color:#8e8e93; max-height: 80px; overflow-y:auto; line-height: 1.5;">
-            尚未記錄任何體重數據
+            尚未記錄 any 體重數據
         </div>
     </div>
 
-    <!-- AI Diet Coach 建議 -->
     <div class="card">
         <h3>🤖 AI Diet Coach 智能導師</h3>
         <div class="coach-box">
@@ -655,7 +631,6 @@ z-index:9999;
         </div>
     </div>
 
-    <!-- 今日記錄 -->
     <div class="card">
         <h3>📜 今日餐食記錄</h3>
         <div id="history">
@@ -664,17 +639,15 @@ z-index:9999;
     </div>
 </div>
 
-<!-- 2️⃣ 長期健康趨勢頁面 -->
 <div id="reportPage" style="display:none">
     <div class="card">
         <h3>📈 本週卡路里動態趨勢</h3>
         <p style="font-size:12px; color:#8e8e93; margin-top:-5px;">基於您每日數據庫的自動動態折線繪製</p>
         
-        <!-- 真正動態繪製的 SVG Chart -->
         <svg class="chart-svg" id="weeklyChartSvg" viewBox="0 0 300 60">
             <path id="chartPathLine" d="M 10 50 L 290 50" fill="none" stroke="#ff9f0a" stroke-width="3" stroke-linecap="round"/>
             <path id="chartPathFill" d="M 10 50 L 290 50 L 290 60 L 10 60 Z" fill="url(#grad)" opacity="0.15"/>
-            <g id="chartGridX"></g> <!-- X軸網格文字 -->
+            <g id="chartGridX"></g>
             <defs>
                 <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" style="stop-color:#ff9f0a;stop-opacity:1" />
@@ -683,7 +656,6 @@ z-index:9999;
             </defs>
         </svg>
 
-        <!-- 週均 KPI 診斷數據 (UX 新增) -->
         <div class="macro-grid" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 15px;">
             <div class="macro-box">
                 <div class="macro-title">📅 週均熱量</div>
@@ -707,34 +679,18 @@ z-index:9999;
         </div>
     </div>
 
-    <!-- 📊 營養分類資料庫卡（科學參考知識庫） -->
     <div class="card">
         <h3>📚 營養分類資料庫</h3>
-
         <ol style="line-height:1.8; padding-left:18px;">
-            <li>
-                <strong style="color:#ff9f0a;">主要成分</strong><br>
-                蛋白質、碳水化合物、總脂肪、膳食纖維、糖
-            </li>
-            <li>
-                <strong style="color:#30d158;">脂質</strong><br>
-                飽和脂肪、反式脂肪、膽固醇
-            </li>
-            <li>
-                <strong style="color:#0a84ff;">礦物質與維他命</strong><br>
-                鈣、銅、鐵、鎂、錳、磷、鉀、鈉、鋅、維他命C
-            </li>
+            <li><strong style="color:#ff9f0a;">主要成分</strong><br>蛋白質、碳水化合物、總脂肪、膳食纖維、糖</li>
+            <li><strong style="color:#30d158;">脂質</strong><br>飽和脂肪、反式脂肪、膽固醇</li>
+            <li><strong style="color:#0a84ff;">礦物質與維他命</strong><br>鈣、銅、鐵、鎂、錳、磷、鉀、鈉、鋅、維他命C</li>
         </ol>
-
-        <div style="margin-top:15px; font-size:13px; color:#8e8e93;">
-            💡 數據來自全球標準營養資料庫（USDA + 香港食安中心）
-        </div>
+        <div style="margin-top:15px; font-size:13px; color:#8e8e93;">💡 數據來自全球標準營養資料庫（USDA + 香港食安中心）</div>
     </div>
 </div>
 
-<!-- 3️⃣ 相機及手動輸入分析頁面 -->
 <div id="cameraPage" style="display:none">
-    <!-- BONUS 搜尋輸入區 -->
     <div class="card">
         <h3>🔍 智能文字搜尋膳食</h3>
         <p style="font-size:13px; color:#8e8e93; margin-top:-5px; margin-bottom: 15px;">不方便拍照時，可以直接輸入食物品項名稱</p>
@@ -748,22 +704,18 @@ z-index:9999;
         <h3 style="text-align: left;">📸 AI 視覺食物 analysis</h3>
         <p style="font-size:13px; color:#8e8e93; margin-top:-5px; text-align: left;">支援原型食物、茶餐廳組合及外賣標籤同時解構</p>
         
-        <!-- Demo 專用快速切換按鈕組 -->
         <div class="demo-btn-group">
             <div class="btn-demo" onclick="simulateFood('orange')">🎯 Demo 1: 影個橙</div>
             <div class="btn-demo" onclick="simulateFood('chaChaanTeng')">🎯 Demo 2: 影茶餐廳套餐</div>
         </div>
 
-        <!-- 觀景窗與動態雷射掃描線 -->
         <div class="viewfinder" id="viewfinder">
             <div class="scanner-line" id="scannerLine"></div>
             <div class="viewfinder-placeholder" id="placeholderText">📸 尚未上傳相片<br><span style="font-size:12px;color:#555;">點擊下方按鈕、開啟視訊或右上角設定金鑰</span></div>
-            <!-- 📹 實時視訊鏡頭 -->
             <video id="webcamVideo" autoplay playsinline></video>
             <img id="previewImg" alt="食物預覽">
         </div>
         
-        <!-- 相機/上傳控制群組 -->
         <input type="file" id="camera" hidden accept="image/*" capture="environment">
         <button id="webcamToggleBtn" onclick="toggleWebcamStream()" style="background: linear-gradient(90deg, #007aff, #5856d6); margin-bottom: 10px;">🟢 開啟即時鏡頭</button>
         <button id="captureSnapshotBtn" onclick="captureWebcamSnapshot()" style="background: linear-gradient(90deg, #30d158, #10b981); margin-bottom: 10px; display:none;">📸 截圖分析</button>
@@ -773,1220 +725,491 @@ z-index:9999;
     </div>
 </div>
 
-<!-- ⚙️ 設定 Modal 結構 -->
 <div class="settings-overlay" id="settingsOverlay" onclick="toggleSettings(false)"></div>
 <div class="settings-modal" id="settingsModal">
     <h2>⚙️ 雲端與金鑰設定</h2>
-    
-    <!-- 試算表 Web App URL 輸入 -->
-    <div class="form-group" style="margin-bottom: 15px;">
+    <div class="form-group">
         <label for="sheetUrlInput">Google Sheet Apps Script URL</label>
         <input type="text" id="sheetUrlInput" placeholder="https://script.google.com/macros/s/.../exec">
-        <span style="font-size:11px; color:#8e8e93; margin-top:5px; display:block;">貼上您的 Google Apps Script Web App URL，即可與您自己的 Google 試算表實時連通。</span>
     </div>
-
-    <!-- 🔐 安全授權金鑰配置（對應 API 工作表 A2 授權碼） -->
-    <div class="form-group" style="margin-bottom: 15px;">
+    <div class="form-group">
         <label for="sheetAuthInput">Google Sheet API Authorization Key</label>
         <input type="password" id="sheetAuthInput" placeholder="輸入 API 分頁中 A2 的授權代碼">
-        <span style="font-size:11px; color:#8e8e93; margin-top:5px; display:block;">如果您的 Apps Script 啟用了預檢鑑權，請在此填寫與試算表「API」分頁 A2 單元格完全一致的授權碼。</span>
     </div>
-
-    <div class="form-group" style="margin-bottom: 15px;">
-        <label for="modelSelect">選擇 AI 大腦模型 (無餘額時推薦使用免費版)</label>
+    <div class="form-group">
+        <label for="modelSelect">選擇 AI 大腦模型</label>
         <select id="modelSelect" onchange="onModelChange()">
-            <option value="openrouter/free">🎁 免費智慧路由 (openrouter/free - 完美白嫖免餘額！)</option>
-            <option value="openai/gpt-4o">🔥 付費旗艦版 (openai/gpt-4o - 帳戶需有美金充值)</option>
+            <option value="openrouter/free">🎁 免費智慧路由 (openrouter/free)</option>
+            <option value="openai/gpt-4o">🔥 付費旗艦版 (openai/gpt-4o)</option>
             <option value="custom">✍️ 自定義手動輸入模型 ID</option>
         </select>
     </div>
-
-    <div class="form-group" id="customModelGroup" style="margin-bottom: 15px; display: none;">
+    <div class="form-group" id="customModelGroup" style="display: none;">
         <label for="customModelInput">自定義 OpenRouter 模型 ID</label>
         <input type="text" id="customModelInput" placeholder="例如: qwen/qwen3-coder:free">
     </div>
-
-    <div class="form-group" style="margin-bottom: 15px;">
+    <div class="form-group">
         <label for="apiKeyInput">OpenRouter API Key (sk-or-...)</label>
         <input type="password" id="apiKeyInput" placeholder="請在此貼上您的專屬 API Key">
-        <span style="font-size:11px; color:#8e8e93; margin-top:5px; display:block;">貼上金鑰後即可解決 403 拒絕存取問題。金鑰會安全保存在本地。</span>
     </div>
     <button class="btn-save" onclick="saveCustomApiKey()">儲存設定</button>
     <button class="btn-close" onclick="toggleSettings(false)">返回</button>
 </div>
 
-<!-- 🚨 高風險食物 Grade F 自定義 Modal 警告 -->
 <div class="settings-modal" id="riskModal" style="border-color: #ff375f; background: rgba(30, 15, 20, 0.98);">
     <h2 style="color: #ff375f; display: flex; align-items: center; gap: 8px;">🚨 高風險食物嚴重警告</h2>
     <p id="riskModalMsg" style="font-size: 14px; line-height: 1.6; color: #e5e5ea;"></p>
     <button class="btn-save" style="background: #ff375f;" onclick="closeRiskModal()">我知道了，我會少吃點</button>
 </div>
 
-<!-- 📱 底部 iOS 導覽列 -->
 <div class="tab">
-    <div class="tab-item active" onclick="showPage('homePage')">
+    <div class="tab-item active" id="tab-homePage" onclick="showPage('homePage')">
         <div class="icon">🏠</div><div>總覽</div>
     </div>
-    <div class="tab-item" onclick="showPage('cameraPage')">
+    <div class="tab-item" id="tab-cameraPage" onclick="showPage('cameraPage')">
         <div class="icon">📸</div><div>拍照識別</div>
     </div>
-    <div class="tab-item" onclick="showPage('reportPage')">
+    <div class="tab-item" id="tab-reportPage" onclick="showPage('reportPage')">
         <div class="icon">📈</div><div>健康報告</div>
     </div>
 </div>
 
 <script>
-// 🌐 預設備用 OpenRouter Key (若使用者未輸入時的Fallback)
-const BACKUP_OPENROUTER_KEY = "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";
-const SITE_URL = window.location.href || "https://ainutrition.ultimate";
-const SITE_NAME = "AI Nutrition Ultimate";
+// 🔒 預防 headers 出現不相容字元，全面將這兩條常數寫死為純英文 (防 403 / Header Crash 核心防禦)
+const CLEAN_REFERER = "https://ainutrition.ultimate";
+const CLEAN_TITLE = "AI Nutrition Ultimate";
 
-// 📊 預設實時 Google Sheets 資料庫整合 Web App URL 
+const BACKUP_OPENROUTER_KEY = "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";
 const DEFAULT_SHEET_DB_URL = "https://script.google.com/macros/s/AKfycbxijr9snTKRYm-MmkUXkUJaLUNFoGlt99Kl2KtpVhg/dev";
 
-// 📊 全局狀態變數
 let cal = 0, protein = 0, carbs = 0, fat = 0;
 let totalOil = 0, totalSugar = 0, totalSodium = 0; 
-const goal = 2000;
-const proteinGoal = 120;
-const fatGoal = 70;
-let mealsHistory = [];
-let weightHistory = []; // 體重記錄歷史
-let webcamStream = null; // 實時相機視訊流控制
-
-// 🚫 食物去重機制核心變數
-let lastAddedMeal = null;
-
-// 🔒 Firebase 雲端整合 (RULE 1 & RULE 3)
-let db = null;
-let auth = null;
-let currentUser = null;
+const goal = 2000; const proteinGoal = 120; const fatGoal = 70;
+let mealsHistory = []; let weightHistory = []; let webcamStream = null; let lastAddedMeal = null;
+let db = null; let auth = null; let currentUser = null;
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+let idb = null; const idbName = "ai_nutrition_offline_db"; const idbVersion = 1;
 
-// 儲存至 IndexedDB
-let idb = null;
-const idbName = "ai_nutrition_offline_db";
-const idbVersion = 1;
+const safeStorage = {
+    getItem(key) { try { return localStorage.getItem(key); } catch (e) { return this._data[key] || null; } },
+    setItem(key, val) { try { localStorage.setItem(key, val); this._data[key] = String(val); } catch (e) { this._data[key] = String(val); } },
+    removeItem(key) { try { localStorage.removeItem(key); delete this._data[key]; } catch (e) { delete this._data[key]; } },
+    _data: {}
+};
+
+function safeParse(str) {
+    try {
+        let cleanStr = str.replace(/```json/g, "").replace(/```/g, "").trim();
+        return JSON.parse(cleanStr);
+    } catch (e) {
+        try {
+            let start = str.indexOf("{"); let end = str.lastIndexOf("}");
+            if (start !== -1 && end !== -1) return JSON.parse(str.substring(start, end + 1));
+        } catch (innerErr) {}
+        alert("AI 回傳格式異常，無法解析數據！");
+        return { foods: [] };
+    }
+}
+
+function detectFoodRisk(f) {
+    if (f.grade === 'F' || f.oil_rating === 'high' || f.sugar_rating === 'high' || f.sodium_rating === 'high') return "⚠️ 邪惡食品";
+    if (f.grade === 'A' || f.grade === 'B') return "🍏 清淡健康";
+    return "⚖️ 中性均衡";
+}
+
+function openCamera() { const fileInput = document.getElementById("camera"); if (fileInput) fileInput.click(); }
+
+function showPage(pageId) {
+    track("navigate_to_" + pageId);
+    document.getElementById("homePage").style.display = "none";
+    document.getElementById("cameraPage").style.display = "none";
+    document.getElementById("reportPage").style.display = "none";
+    document.getElementById(pageId).style.display = "block";
+    document.querySelectorAll(".tab-item").forEach(el => el.classList.remove("active"));
+    const activeTab = document.getElementById("tab-" + pageId);
+    if (activeTab) activeTab.classList.add("active");
+    if (pageId === "reportPage") { drawWeeklyChart(); if (mealsHistory.length > 0) generateDietCoachAdvice(lastAddedMeal); }
+    if (pageId !== "cameraPage" && webcamStream) toggleWebcamStream();
+}
+
+function simulateFood(type) {
+    let mockData = {};
+    if (type === 'orange') {
+        mockData = { name: "新鮮大香橙", grams: 150, cal: 62, p: 1.2, c: 15.4, f: 0.2, oil_g: 0, sugar_g: 12.2, sodium_mg: 0, oil_rating: "low", sugar_rating: "mid", sodium_rating: "low", grade: "A", confidence: 99 };
+    } else if (type === 'chaChaanTeng') {
+        mockData = { name: "茶餐廳沙嗲牛肉麵 + 凍檸茶", grams: 580, cal: 780, p: 28, c: 85, f: 32, oil_g: 26, sugar_g: 22, sodium_mg: 2100, oil_rating: "high", sugar_rating: "high", sodium_rating: "high", grade: "F", confidence: 94 };
+    }
+    document.getElementById("result").innerHTML = `⚡ 觸發 Demo 演示模式成功...`;
+    setTimeout(() => { document.getElementById("result").innerHTML = ""; updateUI(mockData); triggerAppleHealthSync(); setTimeout(() => { showPage('homePage'); }, 500); }, 600);
+}
 
 function initIndexedDB() {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open(idbName, idbVersion);
-        
-        request.onupgradeneeded = function(e) {
-            const dbInstance = e.target.result;
-            if (!dbInstance.objectStoreNames.contains("appState")) {
-                dbInstance.createObjectStore("appState", { keyPath: "key" });
-            }
-        };
-        
-        request.onsuccess = function(e) {
-            idb = e.target.result;
-            console.log("✅ IndexedDB 斷網快取防禦資料庫載入成功");
-            resolve(idb);
-        };
-        
-        request.onerror = function(e) {
-            console.error("❌ IndexedDB 初始化失敗", e.target.error);
-            reject(e.target.error);
-        };
+        try {
+            if (!window.indexedDB) { reject(new Error("不支援 IndexedDB")); return; }
+            const request = window.indexedDB.open(idbName, idbVersion);
+            request.onupgradeneeded = function(e) { if (!e.target.result.objectStoreNames.contains("appState")) e.target.result.createObjectStore("appState", { keyPath: "key" }); };
+            request.onsuccess = function(e) { idb = e.target.result; resolve(idb); };
+            request.onerror = function(e) { reject(e.target.error); };
+        } catch (err) { reject(err); }
     });
 }
 
 async function readOfflineState() {
     if (!idb) return null;
     return new Promise((resolve) => {
-        const tx = idb.transaction("appState", "readonly");
-        const store = tx.objectStore("appState");
-        const req = store.get("dailyState");
-        
-        req.onsuccess = function() {
-            resolve(req.result ? req.result.data : null);
-        };
-        req.onerror = function() {
-            resolve(null);
-        };
+        try {
+            const tx = idb.transaction("appState", "readonly");
+            const req = tx.objectStore("appState").get("dailyState");
+            req.onsuccess = function() { resolve(req.result ? req.result.data : null); };
+            req.onerror = function() { resolve(null); };
+        } catch (e) { resolve(null); }
     });
 }
 
 async function writeOfflineState(data) {
     if (!idb) return;
-    const tx = idb.transaction("appState", "readwrite");
-    const store = tx.objectStore("appState");
-    store.put({ key: "dailyState", data: data });
+    try { const tx = idb.transaction("appState", "readwrite"); tx.objectStore("appState").put({ key: "dailyState", data: data }); } catch (e) {}
 }
 
-// 📊 企業級數據分析行為追蹤
 function track(event) {
-    let logs = JSON.parse(localStorage.getItem("analytics") || "[]");
-    logs.push({
-        event: event,
-        time: new Date().toISOString()
-    });
-    localStorage.setItem("analytics", JSON.stringify(logs));
+    let logs = JSON.parse(safeStorage.getItem("analytics") || "[]");
+    logs.push({ event: event, time: new Date().toISOString() });
+    safeStorage.setItem("analytics", JSON.stringify(logs));
 }
 
-// ⚙️ 獲取當前有效的 Google Sheet Apps Script 網址
-function getActiveSheetUrl() {
-    const userUrl = localStorage.getItem("user_sheets_url");
-    if (userUrl && userUrl.trim().startsWith("https://script.google.com")) {
-        return userUrl.trim();
-    }
-    return DEFAULT_SHEET_DB_URL;
-}
+function getActiveSheetUrl() { const userUrl = safeStorage.getItem("user_sheets_url"); return (userUrl && userUrl.trim().startsWith("https://script.google.com")) ? userUrl.trim() : DEFAULT_SHEET_DB_URL; }
+function getActiveSheetAuth() { return safeStorage.getItem("user_sheets_auth") || ""; }
+function getActiveModel() { const selected = safeStorage.getItem("user_selected_model") || "openrouter/free"; return selected === "custom" ? (safeStorage.getItem("user_custom_model_id") || "openrouter/free").trim() : selected; }
+function onModelChange() { const v = document.getElementById("modelSelect").value; if (document.getElementById("customModelGroup")) document.getElementById("customModelGroup").style.display = (v === "custom") ? "block" : "none"; }
+function getActiveApiKey() { const userKey = safeStorage.getItem("user_openrouter_key"); return (userKey && userKey.trim() !== "") ? userKey.trim() : BACKUP_OPENROUTER_KEY; }
 
-// ⚙️ 獲取當前有效的 Google Sheet API Authorization 金鑰
-function getActiveSheetAuth() {
-    return localStorage.getItem("user_sheets_auth") || "";
-}
-
-// ⚙️ 獲取當前適配的 AI 模型大腦 (優先讀取 user_selected_model)
-function getActiveModel() {
-    const selected = localStorage.getItem("user_selected_model") || "openrouter/free"; // 預設使用免費智慧路由，保障流暢體驗！
-    if (selected === "custom") {
-        return (localStorage.getItem("user_custom_model_id") || "openrouter/free").trim();
-    }
-    return selected;
-}
-
-// ⚙️ 當下拉選單變更時
-function onModelChange() {
-    const selectVal = document.getElementById("modelSelect").value;
-    const customGroup = document.getElementById("customModelGroup");
-    customGroup.style.display = (selectVal === "custom") ? "block" : "none";
-}
-
-// ⚙️ 獲取當前有效的 API Key
-function getActiveApiKey() {
-    const userKey = localStorage.getItem("user_openrouter_key");
-    if (userKey && userKey.trim() !== "") {
-        return userKey.trim();
-    }
-    return BACKUP_OPENROUTER_KEY;
-}
-
-// ⚙️ 開啟/關閉設定面板
 function toggleSettings(show) {
     document.getElementById("settingsOverlay").style.display = show ? "block" : "none";
     document.getElementById("settingsModal").style.display = show ? "block" : "none";
-    
     if (show) {
-        track("open_settings");
-        // 載入 Key
-        const currentKey = localStorage.getItem("user_openrouter_key") || "";
-        document.getElementById("apiKeyInput").value = currentKey;
-        
-        // 載入選擇的模型
-        const currentModel = localStorage.getItem("user_selected_model") || "openrouter/free";
-        document.getElementById("modelSelect").value = currentModel;
-        
-        // 載入自定義模型
-        const currentCustomId = localStorage.getItem("user_custom_model_id") || "";
-        document.getElementById("customModelInput").value = currentCustomId;
-
-        // 載入 Google Sheets URL
-        const currentSheetUrl = localStorage.getItem("user_sheets_url") || DEFAULT_SHEET_DB_URL;
-        document.getElementById("sheetUrlInput").value = currentSheetUrl;
-
-        // 載入 Google Sheets 授權碼
-        const currentSheetAuth = localStorage.getItem("user_sheets_auth") || "";
-        document.getElementById("sheetAuthInput").value = currentSheetAuth;
-        
-        // 動態控制顯示狀態
+        document.getElementById("apiKeyInput").value = safeStorage.getItem("user_openrouter_key") || "";
+        document.getElementById("modelSelect").value = safeStorage.getItem("user_selected_model") || "openrouter/free";
+        document.getElementById("customModelInput").value = safeStorage.getItem("user_custom_model_id") || "";
+        document.getElementById("sheetUrlInput").value = safeStorage.getItem("user_sheets_url") || DEFAULT_SHEET_DB_URL;
+        document.getElementById("sheetAuthInput").value = safeStorage.getItem("user_sheets_auth") || "";
         onModelChange();
     }
 }
 
-// ⚙️ 儲存自定義 API Key 與 模型設定
 function saveCustomApiKey() {
-    const keyInput = document.getElementById("apiKeyInput").value.trim();
-    if (keyInput === "") {
-        localStorage.removeItem("user_openrouter_key");
-    } else {
-        localStorage.setItem("user_openrouter_key", keyInput);
-    }
-    
-    const modelSelect = document.getElementById("modelSelect").value;
-    localStorage.setItem("user_selected_model", modelSelect);
-    
-    if (modelSelect === "custom") {
-        const customId = document.getElementById("customModelInput").value.trim();
-        localStorage.setItem("user_custom_model_id", customId);
-    }
-
-    const sheetUrl = document.getElementById("sheetUrlInput").value.trim();
-    if (sheetUrl === "" || sheetUrl === DEFAULT_SHEET_DB_URL) {
-        localStorage.removeItem("user_sheets_url");
-    } else {
-        localStorage.setItem("user_sheets_url", sheetUrl);
-    }
-
-    const sheetAuth = document.getElementById("sheetAuthInput").value.trim();
-    if (sheetAuth === "") {
-        localStorage.removeItem("user_sheets_auth");
-    } else {
-        localStorage.setItem("user_sheets_auth", sheetAuth);
-    }
-    
-    alert("設定成功！大腦模型、API 金鑰與試算表資料庫網址已成功部署同步。");
-    track("save_api_key");
-    toggleSettings(false);
+    const k = document.getElementById("apiKeyInput").value.trim();
+    if (k === "") safeStorage.removeItem("user_openrouter_key"); else safeStorage.setItem("user_openrouter_key", k);
+    const m = document.getElementById("modelSelect").value; safeStorage.setItem("user_selected_model", m);
+    if (m === "custom") safeStorage.setItem("user_custom_model_id", document.getElementById("customModelInput").value.trim());
+    const url = document.getElementById("sheetUrlInput").value.trim();
+    if (url === "" || url === DEFAULT_SHEET_DB_URL) safeStorage.removeItem("user_sheets_url"); else safeStorage.setItem("user_sheets_url", url);
+    const auth = document.getElementById("sheetAuthInput").value.trim();
+    if (auth === "") safeStorage.removeItem("user_sheets_auth"); else safeStorage.setItem("user_sheets_auth", auth);
+    alert("設定已同步部署！"); toggleSettings(false);
 }
 
-// 📂 儲存每日數據到長期統計數據庫 (SaaS 趨勢基石)
 function saveDailyStats() {
-    let stats = JSON.parse(localStorage.getItem("weekly") || "[]");
-    
-    // 只保留最近 7 天的歷史數據避免溢出
-    if (stats.length >= 7) {
-        stats.shift();
-    }
-    
-    // 獲取簡短日期 (例如: 24/6)
-    let d = new Date();
-    let label = `${d.getDate()}/${d.getMonth()+1}`;
-
-    stats.push({
-        date: label,
-        cal: cal,
-        sodium: totalSodium
-    });
-
-    localStorage.setItem("weekly", JSON.stringify(stats));
+    let stats = JSON.parse(safeStorage.getItem("weekly") || "[]");
+    if (stats.length >= 7) stats.shift();
+    stats.push({ date: `${new Date().getDate()}/${new Date().getMonth()+1}`, cal: cal, sodium: totalSodium });
+    safeStorage.setItem("weekly", JSON.stringify(stats));
 }
 
-// 📈 繪製動態 SVG 折線圖形 & 計算 KPI
 function drawWeeklyChart() {
-    let stats = JSON.parse(localStorage.getItem("weekly") || "[]");
-    
+    let stats = JSON.parse(safeStorage.getItem("weekly") || "[]");
     if (stats.length === 0) {
-        stats = [
-            { date: "20/6", cal: 1850, sodium: 1200 },
-            { date: "21/6", cal: 1540, sodium: 1100 },
-            { date: "22/6", cal: 2100, sodium: 1600 },
-            { date: "23/6", cal: 1980, sodium: 1450 },
-            { date: "24/6", cal: cal, sodium: totalSodium }
-        ];
+        stats = [{ date: "20/6", cal: 1850, sodium: 1200 }, { date: "21/6", cal: 1540, sodium: 1100 }, { date: "22/6", cal: 2100, sodium: 1600 }, { date: "23/6", cal: 1980, sodium: 1450 }, { date: `${new Date().getDate()}/${new Date().getMonth()+1}`, cal: cal, sodium: totalSodium }];
     } else {
-        let todayLabel = `${new Date().getDate()}/${new Date().getMonth()+1}`;
-        let todayIndex = stats.findIndex(s => s.date === todayLabel);
-        if (todayIndex !== -1) {
-            stats[todayIndex].cal = cal;
-            stats[todayIndex].sodium = totalSodium;
-        } else {
-            stats.push({ date: todayLabel, cal: cal, sodium: totalSodium });
-        }
+        let t = `${new Date().getDate()}/${new Date().getMonth()+1}`;
+        let idx = stats.findIndex(s => s.date === t);
+        if (idx !== -1) { stats[idx].cal = cal; stats[idx].sodium = totalSodium; } else { stats.push({ date: t, cal: cal, sodium: totalSodium }); }
     }
 
-    // 計算週均 KPI 數據 (UX 新增)
-    let totalCalCount = 0;
-    let totalSodiumCount = 0;
-    stats.forEach(s => {
-        totalCalCount += s.cal;
-        totalSodiumCount += (s.sodium || 0);
-    });
-    let avgCal = Math.round(totalCalCount / stats.length);
-    let avgSodium = Math.round(totalSodiumCount / stats.length);
+    let tc = 0, ts = 0; stats.forEach(s => { tc += s.cal; ts += (s.sodium || 0); });
+    if (document.getElementById("avgCalKPI")) document.getElementById("avgCalKPI").innerText = `${Math.round(tc / stats.length)} kcal`;
+    if (document.getElementById("avgSodiumKPI")) document.getElementById("avgSodiumKPI").innerText = `${Math.round(ts / stats.length)} mg`;
+    if (document.getElementById("loggedDaysKPI")) document.getElementById("loggedDaysKPI").innerText = `${stats.length} 天`;
 
-    document.getElementById("avgCalKPI").innerText = `${avgCal} kcal`;
-    document.getElementById("avgSodiumKPI").innerText = `${avgSodium} mg`;
-    document.getElementById("loggedDaysKPI").innerText = `${stats.length} 天`;
-
-    const svgWidth = 300;
-    const svgHeight = 60;
-    const paddingLeft = 20;
-    const paddingRight = 20;
-    const paddingBottom = 15;
-    const paddingTop = 10;
-
-    const maxCal = Math.max(...stats.map(s => s.cal), 2500); 
-    const pointCount = stats.length;
-    const stepX = (svgWidth - paddingLeft - paddingRight) / (pointCount - 1 || 1);
-
-    let points = [];
-    let textElements = "";
+    const maxCal = Math.max(...stats.map(s => s.cal), 2500);
+    const stepX = 260 / (stats.length - 1 || 1);
+    let pts = []; let txt = "";
 
     stats.forEach((item, index) => {
-        let x = paddingLeft + index * stepX;
-        let y = svgHeight - paddingBottom - ((item.cal / maxCal) * (svgHeight - paddingBottom - paddingTop));
-        points.push({ x, y });
-
-        textElements += `
-            <text x="${x}" y="${svgHeight - 2}" fill="#8e8e93" font-size="7" text-anchor="middle">${item.date}</text>
-            <circle cx="${x}" cy="${y}" r="2.5" fill="#ff9f0a" />
-        `;
+        let x = 20 + index * stepX; let y = 45 - ((item.cal / maxCal) * 35);
+        pts.push({ x, y });
+        txt += `<text x="${x}" y="58" fill="#8e8e93" font-size="7" text-anchor="middle">${item.date}</text><circle cx="${x}" cy="${y}" r="2.5" fill="#ff9f0a" />`;
     });
 
-    let linePath = `M ${points[0].x} ${points[0].y} ` + points.slice(1).map(p => `L ${p.x} ${p.y}`).join(" ");
-    let fillPath = `${linePath} L ${points[points.length-1].x} ${svgHeight - paddingBottom} L ${points[0].x} ${svgHeight - paddingBottom} Z`;
-
-    document.getElementById("chartPathLine").setAttribute("d", linePath);
-    document.getElementById("chartPathFill").setAttribute("d", fillPath);
-    document.getElementById("chartGridX").innerHTML = textElements;
+    let lPath = `M ${pts[0].x} ${pts[0].y} ` + pts.slice(1).map(p => `L ${p.x} ${p.y}`).join(" ");
+    if (document.getElementById("chartPathLine")) document.getElementById("chartPathLine").setAttribute("d", lPath);
+    if (document.getElementById("chartPathFill")) document.getElementById("chartPathFill").setAttribute("d", `${lPath} L ${pts[pts.length-1].x} 45 L ${pts[0].x} 45 Z`);
+    if (document.getElementById("chartGridX")) document.getElementById("chartGridX").innerHTML = txt;
 }
 
-// 📈 每日 reset 系統 (真 App 必備防無限加乘機制)
 function checkDayReset() {
     let today = new Date().toDateString();
-    let last = localStorage.getItem("lastDay");
-
-    if (last !== today) {
-        if (last) {
-            saveDailyStats();
-        }
-        localStorage.setItem("lastDay", today);
-        track("daily_reset");
-
-        cal = 0;
-        protein = 0;
-        carbs = 0;
-        fat = 0;
-        totalOil = 0;
-        totalSugar = 0;
-        totalSodium = 0;
-        mealsHistory = [];
-        lastAddedMeal = null; // 重置去重比對
-
-        updateUI({
-            cal: 0, p: 0, c: 0, f: 0,
-            oil_g: 0, sugar_g: 0, sodium_mg: 0
-        }, true);
+    if (safeStorage.getItem("lastDay") !== today) {
+        if (safeStorage.getItem("lastDay")) saveDailyStats();
+        safeStorage.setItem("lastDay", today);
+        cal = 0; protein = 0; carbs = 0; fat = 0; totalOil = 0; totalSugar = 0; totalSodium = 0; mealsHistory = []; lastAddedMeal = null;
+        updateUI({ cal: 0, p: 0, c: 0, f: 0, oil_g: 0, sugar_g: 0, sodium_mg: 0 }, true);
     }
 }
 
-// 🏆 每日動態成就解鎖引擎
 function updateAchievements() {
-    const badgeSugar = document.getElementById("badgeSugar");
-    const badgeProtein = document.getElementById("badgeProtein");
-    const badgeCal = document.getElementById("badgeCal");
-
-    if (totalSugar > 0 && totalSugar <= 25) {
-        badgeSugar.classList.add("unlocked");
-        badgeSugar.innerHTML = "🍹 控糖小能手 ✅";
-    } else {
-        badgeSugar.classList.remove("unlocked");
-        badgeSugar.innerHTML = "🍹 控糖小能手";
-    }
-
-    if (protein >= 60) {
-        badgeProtein.classList.add("unlocked");
-        badgeProtein.innerHTML = "💪 蛋白質達人 ✅";
-    } else {
-        badgeProtein.classList.remove("unlocked");
-        badgeProtein.innerHTML = "💪 蛋白質達人";
-    }
-
-    if (cal > 0 && cal <= goal) {
-        badgeCal.classList.add("unlocked");
-        badgeCal.innerHTML = "🟡 熱量控制家 ✅";
-    } else {
-        badgeCal.classList.remove("unlocked");
-        badgeCal.innerHTML = "🟡 熱量控制家";
-    }
+    const s = document.getElementById("badgeSugar"); const p = document.getElementById("badgeProtein"); const c = document.getElementById("badgeCal");
+    if (s) { if (totalSugar > 0 && totalSugar <= 25) { s.classList.add("unlocked"); s.innerHTML = "🍹 控糖小能手 ✅"; } else { s.classList.remove("unlocked"); s.innerHTML = "🍹 控糖小能手"; } }
+    if (p) { if (protein >= 60) { p.classList.add("unlocked"); p.innerHTML = "💪 蛋白質達人 ✅"; } else { p.classList.remove("unlocked"); p.innerHTML = "💪 蛋白質達人"; } }
+    if (c) { if (cal > 0 && cal <= goal) { c.classList.add("unlocked"); c.innerHTML = "🟡 熱量控制家 ✅"; } else { c.classList.remove("unlocked"); c.innerHTML = "🟡 熱量控制家"; } }
 }
 
-// 🚨 Grade F 警告 Modal 開關控制
 function showRiskModal(msg) {
-    navigator.vibrate?.([200, 100, 200]); // 物理微震動
-    document.getElementById("riskModalMsg").innerText = msg;
+    navigator.vibrate?.([200, 100, 200]);
+    if (document.getElementById("riskModalMsg")) document.getElementById("riskModalMsg").innerText = msg;
     document.getElementById("settingsOverlay").style.display = "block";
     document.getElementById("riskModal").style.display = "block";
 }
+function closeRiskModal() { document.getElementById("settingsOverlay").style.display = "none"; document.getElementById("riskModal").style.display = "none"; }
 
-function closeRiskModal() {
-    document.getElementById("settingsOverlay").style.display = "none";
-    document.getElementById("riskModal").style.display = "none";
-}
-
-// 🧠 體重追蹤管理邏輯 (UX 新增)
 function logWeight() {
-    let input = document.getElementById("weightInput");
-    let weight = parseFloat(input.value);
-    if (isNaN(weight) || weight <= 0) {
-        alert("請輸入有效的體重數值！");
-        return;
-    }
-    
-    let timeLabel = new Date().toLocaleString('zh-HK', { hour12: false });
-    weightHistory.unshift({
-        weight: weight,
-        time: timeLabel
-    });
-    
-    localStorage.setItem("weightHistory", JSON.stringify(weightHistory));
-    renderWeightHistory();
-    input.value = "";
-    track("log_weight");
+    let input = document.getElementById("weightInput"); if (!input) return;
+    let w = parseFloat(input.value); if (isNaN(w) || w <= 0) { alert("請輸入有效體重！"); return; }
+    weightHistory.unshift({ weight: w, time: new Date().toLocaleString('zh-HK', { hour12: false }) });
+    safeStorage.setItem("weightHistory", JSON.stringify(weightHistory)); renderWeightHistory(); input.value = "";
 }
-
 function renderWeightHistory() {
-    let container = document.getElementById("weightLogHistory");
-    if (weightHistory.length === 0) {
-        container.innerHTML = "尚未記錄任何體重數據";
-        return;
-    }
-    container.innerHTML = weightHistory.map(w => `
-        <div style="display:flex; justify-content:space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.03);">
-            <span>⚖️ <strong>${w.weight} kg</strong></span>
-            <span style="color:#8e8e93; font-size:11px;">${w.time}</span>
-        </div>
-    `).join("");
+    let container = document.getElementById("weightLogHistory"); if (!container) return;
+    if (weightHistory.length === 0) { container.innerHTML = "尚未記錄任何體重數據"; return; }
+    container.innerHTML = weightHistory.map(w => `<div style="display:flex; justify-content:space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.03);"><span>⚖️ <strong>${w.weight} kg</strong></span><span style="color:#8e8e93; font-size:11px;">${w.time}</span></div>`).join("");
 }
+function loadLocalWeightData() { let raw = safeStorage.getItem("weightHistory"); if (raw) { weightHistory = JSON.parse(raw); renderWeightHistory(); } }
 
-function loadLocalWeightData() {
-    let raw = localStorage.getItem("weightHistory");
-    if (raw) {
-        weightHistory = JSON.parse(raw);
-        renderWeightHistory();
-    }
-}
-
-// 🕒 智慧時空「餐次自動分類」演算法
 function getMealType() {
     let hr = new Date().getHours();
-    if (hr >= 5 && hr < 11) return "🌅 早餐";
-    if (hr >= 11 && hr < 14) return "☀️ 午餐";
-    if (hr >= 14 && hr < 18) return "☕ 下午茶";
-    if (hr >= 18 && hr < 22) return "🌙 晚餐";
-    return "🌌 宵夜";
+    if (hr >= 5 && hr < 11) return "🌅 早餐"; if (hr >= 11 && hr < 14) return "☀️ 午餐";
+    if (hr >= 14 && hr < 18) return "☕ 下午茶"; if (hr >= 18 && hr < 22) return "🌙 晚餐"; return "🌌 宵夜";
 }
 
-// 🚫 食物去重比對判定
-function isDuplicate(f) {
-    if (!lastAddedMeal) return false;
-    return (
-        lastAddedMeal.name === f.name &&
-        Math.abs(lastAddedMeal.cal - f.cal) < 5
-    );
-}
+function isDuplicate(f) { return (f && lastAddedMeal && lastAddedMeal.name === f.name && Math.abs((lastAddedMeal.cal || 0) - (f.cal || 0)) < 5); }
 
-// 📹 實時視訊鏡頭 (流暢硬體調用 getUserMedia)
 async function toggleWebcamStream() {
-    let video = document.getElementById("webcamVideo");
-    let previewImg = document.getElementById("previewImg");
-    let placeholderText = document.getElementById("placeholderText");
-    let toggleBtn = document.getElementById("webcamToggleBtn");
-    let captureBtn = document.getElementById("captureSnapshotBtn");
-    
+    let video = document.getElementById("webcamVideo"); let img = document.getElementById("previewImg");
+    let txt = document.getElementById("placeholderText"); let btnT = document.getElementById("webcamToggleBtn"); let btnC = document.getElementById("captureSnapshotBtn");
     if (webcamStream) {
-        let tracks = webcamStream.getTracks();
-        tracks.forEach(track => track.stop());
-        webcamStream = null;
-        video.style.display = "none";
-        previewImg.style.display = "none";
-        placeholderText.style.display = "block";
-        toggleBtn.innerText = "🟢 開啟即時鏡頭";
-        captureBtn.style.display = "none";
-        track("close_webcam");
+        webcamStream.getTracks().forEach(t => t.stop()); webcamStream = null;
+        if (video) video.style.display = "none"; if (img) img.style.display = "none"; if (txt) txt.style.display = "block";
+        if (btnT) btnT.innerText = "🟢 開啟即時鏡頭"; if (btnC) btnC.style.display = "none";
     } else {
         try {
-            webcamStream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: "environment" } 
-            });
-            video.srcObject = webcamStream;
-            video.style.display = "block";
-            previewImg.style.display = "none";
-            placeholderText.style.display = "none";
-            toggleBtn.innerText = "🔴 關閉即時鏡頭";
-            captureBtn.style.display = "block";
-            track("open_webcam_success");
-        } catch (err) {
-            console.error("無法開啟攝像頭: ", err);
-            alert("攝像頭開啟失敗，請確認是否授予權限，或使用圖片上傳功能！");
-            track("open_webcam_fail");
-        }
+            webcamStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+            if (video) { video.srcObject = webcamStream; video.style.display = "block"; }
+            if (img) img.style.display = "none"; if (txt) txt.style.display = "none";
+            if (btnT) btnT.innerText = "🔴 關閉即時鏡頭"; if (btnC) btnC.style.display = "block";
+        } catch (err) { alert("開啟相機失敗，請提供相機權限或直接上傳圖片。"); }
     }
 }
 
-// 📸 實時鏡頭快照截圖
 function captureWebcamSnapshot() {
     if (!webcamStream) return;
-    
-    let video = document.getElementById("webcamVideo");
-    let previewImg = document.getElementById("previewImg");
-    let scannerLine = document.getElementById("scannerLine");
-    
-    let canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    let ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-    let base64Data = canvas.toDataURL("image/jpeg").split(',')[1];
-    
-    previewImg.src = canvas.toDataURL("image/jpeg");
-    previewImg.style.display = "block";
-    video.style.display = "none";
-    scannerLine.style.display = "block"; 
-    
-    let tracks = webcamStream.getTracks();
-    tracks.forEach(track => track.stop());
-    webcamStream = null;
-    document.getElementById("webcamToggleBtn").innerText = "🟢 開啟即時鏡頭";
-    document.getElementById("captureSnapshotBtn").style.display = "none";
-    
+    let video = document.getElementById("webcamVideo"); let img = document.getElementById("previewImg");
+    let canvas = document.createElement("canvas"); canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+    canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+    let base64 = canvas.toDataURL("image/jpeg").split(',')[1];
+    if (img) { img.src = canvas.toDataURL("image/jpeg"); img.style.display = "block"; }
+    if (video) video.style.display = "none";
+    if (document.getElementById("scannerLine")) document.getElementById("scannerLine").style.display = "block";
+    webcamStream.getTracks().forEach(t => t.stop()); webcamStream = null;
+    if (document.getElementById("webcamToggleBtn")) document.getElementById("webcamToggleBtn").innerText = "🟢 開啟即時鏡頭";
+    if (document.getElementById("captureSnapshotBtn")) document.getElementById("captureSnapshotBtn").style.display = "none";
     document.getElementById("result").innerHTML = `⏳ 正在將快照傳送至 AI 大腦解構分析...`;
-    
-    sendImageToAI(base64Data);
-    track("capture_snapshot_success");
+    sendImageToAI(base64);
 }
 
-// 處理並向大腦發送 Base64 數據
 async function sendImageToAI(base64Data) {
-    let scannerLine = document.getElementById("scannerLine");
     try {
-        const activeKey = getActiveApiKey();
-        const activeModel = getActiveModel();
-
         let res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
             headers: {
-                "Authorization": "Bearer " + activeKey,
-                "HTTP-Referer": SITE_URL,
-                "X-Title": SITE_NAME,
+                "Authorization": "Bearer " + getActiveApiKey(),
+                "HTTP-Referer": CLEAN_REFERER, // 👈 治本修復：傳入純英文，阻斷編碼崩潰
+                "X-Title": CLEAN_TITLE,         // 👈 治本修復：傳入純英文，阻斷編碼崩潰
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: activeModel,
+                model: getActiveModel(),
                 response_format: { type: "json_object" },
                 messages: [{
                     role: "user",
                     content: [
-                        {
-                            type: "text",
-                            text: `
-你是頂級營養學 AI。
-任務：
-
-1. 辨識圖片中所有食物（可以多樣）
-2. 每樣要估：
-- 重量 grams（非常重要）
-- 卡路里 kcal
-- 蛋白質 p
-- 碳水 c
-- 脂肪 f
-
-3. 如果係港式 / 中式：
-必須估：
-- 油 oil_g
-- 糖 sugar_g
-- 鈉 sodium_mg
-
-4. 評分（A-F）：
-A = 健康
-C = 一般
-F = 高風險
-
-5. 計算此辨識的可信度/信心分數（confidence） 0 到 100 之間。
-
-6. 必須輸出 JSON（不能多字）：
-
-{
-  "foods":[
-    {
-      "name":"名稱",
-      "grams":200,
-      "cal":400,
-      "p":20,
-      "c":30,
-      "f":10,
-      "oil_g":15,
-      "sugar_g":5,
-      "sodium_mg":800,
-      "oil_rating":"high|mid|low",
-      "sugar_rating":"high|mid|low",
-      "sodium_rating":"high|mid|low",
-      "grade":"A-F",
-      "confidence":95
-    }
-  ]
-}
-`
-                        },
-                        {
-                            type: "image_url",
-                            image_url: { url: `data:image/jpeg;base64,${base64Data}` }
-                        }
+                        { type: "text", text: `你是頂級營養學 AI。任務：1. 辨識圖片食物。2. 估算 grams, kcal, p, c, f。3. 中港式必估 oil_g, sugar_g, sodium_mg。4. 評分 A-F。5. 輸出規範之標準 JSON 物件物件。` },
+                        { type: "image_url", image_url: { url: `data:image/jpeg;base64,${base64Data}` } }
                     ]
                 }]
             })
         });
-
-        scannerLine.style.display = "none";
-
+        if (document.getElementById("scannerLine")) document.getElementById("scannerLine").style.display = "none";
         if (!res.ok) {
-            if (res.status === 403) {
-                throw new Error("API 反應失敗，代碼: 403 (Forbidden)。您的 OpenRouter 餘額目前應為 $0。付費模型如『gpt-4o』必須在充值後才能執行。<br><br><strong style='color:#ff9f0a;'>💡 1秒白嫖解決方案：</strong><br>請點擊右上角 <strong style='color:white;'>⚙️ 設定按鈕</strong>，將模型大腦切換為『🎁 免費智慧路由 (openrouter/free)』即可不花一分錢完美運行！");
-            } else if (res.status === 401) {
-                throw new Error("API 驗證失敗，代碼: 401 (Unauthorized)。請檢查設定面板中的金鑰是否輸入正確。");
-            } else {
-                throw new Error("API 連線異常，伺服器回傳狀態碼: " + res.status);
-            }
-        }
-        
-        let data = await res.json();
-        if (data.error) {
-            throw new Error("OpenRouter 報錯: " + data.error.message);
-        }
-
-        let parsed = safeParse(data.choices[0].message.content);
-        if (!parsed.foods) {
-            parsed = { foods: [parsed] };
-        }
-
-        document.getElementById("result").innerHTML = ""; 
-        parsed.foods.forEach(f => updateUI(f));
-        track("scan_food_success");
-        triggerAppleHealthSync();
-
-        setTimeout(() => {
-            showPage('homePage');
-        }, 800);
-
-    } catch (e) {
-        console.error(e);
-        scannerLine.style.display = "none";
-        track("scan_food_fail");
-        
-        document.getElementById("result").innerHTML = `
-            <div class="card" style="border: 1px solid #ff375f; background: rgba(255,55,95,0.12); margin:0; text-align:left;">
-                <strong style="color:#ff375f; font-size:15px; display:block; margin-bottom:8px;">❌ AI 掃描與解析失敗</strong>
-                <p style="font-size:13px; color:#e5e5ea; margin: 0 0 10px 0; line-height:1.5;">${e.message}</p>
-                <div style="background: rgba(255,255,255,0.05); padding:10px; border-radius:12px; font-size:12px;">
-                    <strong style="color:#ff9f0a;">💡 三步解決方案：</strong>
-                    <ol style="margin: 5px 0 0 0; padding-left: 18px; color: #aeaeb2; line-height:1.6;">
-                        <li>點擊右上角 <strong style="color:white;">⚙️ 設定按鈕</strong></li>
-                        <li>將模型切換為 <strong style="color:white;">🎁 免費智慧路由</strong></li>
-                        <li>貼上您自己的 <strong style="color:white;">API Key</strong> 點擊儲存，再次拍照！</li>
-                    </ol>
-                </div>
-            </div>
-        `;
-    }
-}
-
-// 🤖 智慧食物搜尋：支援 sheet API 授權金鑰控制
-async function searchFoodText() {
-    const query = document.getElementById("foodSearchInput").value.trim();
-    if (query === "") return;
-
-    document.getElementById("result").innerHTML = `⏳ 正在查詢 Google Sheet (nutrition_database) 實時資料庫...`;
-    track("search_food");
-
-    const activeSheetUrl = getActiveSheetUrl();
-    const sheetAuthKey = getActiveSheetAuth();
-
-    try {
-        let fetchUrl = `${activeSheetUrl}?query=${encodeURIComponent(query)}`;
-        if (sheetAuthKey !== "") {
-            fetchUrl += `&auth=${encodeURIComponent(sheetAuthKey)}`;
-        }
-
-        let dbResponse = await fetch(fetchUrl);
-        if (dbResponse.ok) {
-            let dbResult = await dbResponse.json();
-            
-            if (dbResult.error && dbResult.error.indexOf("403") !== -1) {
-                throw new Error("Google Sheet 認證失敗：" + dbResult.error);
-            }
-
-            let dbFoods = [];
-            if (Array.isArray(dbResult)) {
-                dbFoods = dbResult;
-            } else if (dbResult && dbResult.foods) {
-                dbFoods = dbResult.foods;
-            } else if (dbResult && dbResult.data) {
-                dbFoods = Array.isArray(dbResult.data) ? dbResult.data : [dbResult.data];
-            }
-
-            if (dbFoods && dbFoods.length > 0) {
-                document.getElementById("result").innerHTML = `<span style="color:#30d158;">✅ 成功於 Google Sheet 資料庫中匹配到實時紀錄！</span>`;
-                dbFoods.forEach(item => {
-                    let mappedFood = {
-                        name: item.name || item.名稱 || query,
-                        grams: Number(item.grams || item.重量 || 100),
-                        cal: Number(item.cal || item.calories || item.卡路里 || 0),
-                        p: Number(item.p || item.protein || item.蛋白質 || 0),
-                        c: Number(item.c || item.carbs || item.碳水 || 0),
-                        f: Number(item.f || item.fat || item.脂肪 || 0),
-                        oil_g: Number(item.oil_g || item.oil || item.油 || 0),
-                        sugar_g: Number(item.sugar_g || item.sugar || item.糖 || 0),
-                        sodium_mg: Number(item.sodium_mg || item.sodium || item.鈉 || 0),
-                        oil_rating: item.oil_rating || (Number(item.oil_g || 0) > 20 ? "high" : "low"),
-                        sugar_rating: item.sugar_rating || (Number(item.sugar_g || 0) > 25 ? "high" : "low"),
-                        sodium_rating: item.sodium_rating || (Number(item.sodium_mg || 0) > 1000 ? "high" : "low"),
-                        grade: item.grade || item.評級 || "B",
-                        confidence: 100 
-                    };
-                    updateUI(mappedFood);
-                });
-                track("search_food_db_success");
-                triggerAppleHealthSync();
-
-                document.getElementById("foodSearchInput").value = "";
-                setTimeout(() => { showPage('homePage'); }, 800);
-                return; 
-            }
-        }
-    } catch (dbErr) {
-        console.warn("Google Sheet Database 查詢無匹配記錄，自動轉入 AI Fallback 處理:", dbErr);
-    }
-
-    document.getElementById("result").innerHTML = `⏳ 本地資料庫未匹配，正在調用 AI 大腦進行智能解構分析...`;
-
-    try {
-        const activeKey = getActiveApiKey();
-        const activeModel = getActiveModel();
-
-        let res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + activeKey,
-                "HTTP-Referer": SITE_URL,
-                "X-Title": SITE_NAME,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                model: activeModel,
-                response_format: { type: "json_object" },
-                messages: [{
-                    role: "user",
-                    content: [
-                        {
-                            type: "text",
-                            text: `
-你是頂級營養學 AI。
-任務：
-
-1. 辨識分析以下使用者手動輸入的膳食名稱：「${query}」
-2. 預估其：
-- 重量 grams
-- 卡路里 kcal
-- 蛋白質 p
-- 碳水 c
-- 脂肪 f
-
-3. 如果係港式 / 中式：
-必須估：
-- 油 oil_g
-- 糖 sugar_g
-- 鈉 sodium_mg
-
-4. 評分（A-F）：
-A = 健康
-C = 一般
-F = 高風險
-
-5. 計算此辨識的可信度/信心分數（confidence） 0 到 100 之間。
-
-6. 必須輸出 JSON（不能多字）：
-
-{
-  "foods":[
-    {
-      "name":"名稱",
-      "grams":200,
-      "cal":400,
-      "p":20,
-      "c":30,
-      "f":10,
-      "oil_g":15,
-      "sugar_g":5,
-      "sodium_mg":800,
-      "oil_rating":"high|mid|low",
-      "sugar_rating":"high|mid|low",
-      "sodium_rating":"high|mid|low",
-      "grade":"A-F",
-      "confidence":95
-    }
-  ]
-}
-`
-                        }
-                    ]
-                }]
-            })
-        });
-
-        if (!res.ok) {
-            if (res.status === 403) {
-                throw new Error("403 (Forbidden) 錯誤。這代表您目前帳戶餘額為 $0，無法呼叫收費模型。解決方案：點擊右上角 ⚙️ 設定，將模型切換為「🎁 免費智慧路由」即可不花一分錢完美運行！");
-            } else {
-                throw new Error("搜尋連線異常，狀態碼: " + res.status);
-            }
+            if (res.status === 403) throw new Error("API 反應失敗 (403 Forbidden)。您的 OpenRouter 帳戶目前餘額為 $0。<br><br><strong>💡 免費解決方案：</strong><br>請點擊右上角 ⚙️ 設定按鈕，將大腦模型切換為第一個【🎁 免費智慧路由】即可完美免費運行！");
+            throw new Error("伺服器連線異常，狀態碼: " + res.status);
         }
         let data = await res.json();
-        
         let parsed = safeParse(data.choices[0].message.content);
-        if (!parsed.foods) {
-            parsed = { foods: [parsed] };
-        }
-
+        if (!parsed.foods) parsed = { foods: [parsed] };
         document.getElementById("result").innerHTML = "";
-        document.getElementById("foodSearchInput").value = ""; 
-        
         parsed.foods.forEach(f => updateUI(f));
-        track("search_food_success");
         triggerAppleHealthSync();
-
-        setTimeout(() => {
-            showPage('homePage');
-        }, 800);
-
+        setTimeout(() => { showPage('homePage'); }, 800);
     } catch (e) {
-        console.error(e);
-        track("search_food_fail");
-        document.getElementById("result").innerHTML = `
-            <div style="color: #ff375f; font-size:12px; padding:10px;">
-                ❌ 搜尋解析失敗: ${e.message}
-            </div>
-        `;
+        if (document.getElementById("scannerLine")) document.getElementById("scannerLine").style.display = "none";
+        document.getElementById("result").innerHTML = `<div class="card" style="border: 1px solid #ff375f; background: rgba(255,55,95,0.12); margin:0;"><strong style="color:#ff375f;">❌ AI 掃描解析失敗</strong><p style="font-size:13px; line-height:1.5;">${e.message}</p></div>`;
     }
 }
 
-// 系統相機/上傳按鈕處理
+async function searchFoodText() {
+    const query = document.getElementById("foodSearchInput").value.trim(); if (query === "") return;
+    document.getElementById("result").innerHTML = `⏳ 正在查詢資料庫...`;
+    try {
+        let url = `${getActiveSheetUrl()}?query=${encodeURIComponent(query)}`;
+        if (getActiveSheetAuth() !== "") url += `&auth=${encodeURIComponent(getActiveSheetAuth())}`;
+        let dbRes = await fetch(url);
+        if (dbRes.ok) {
+            let r = await dbRes.json();
+            let dbFoods = Array.isArray(r) ? r : (r.foods || (r.data ? (Array.isArray(r.data) ? r.data : [r.data]) : []));
+            if (dbFoods && dbFoods.length > 0) {
+                document.getElementById("result").innerHTML = `<span style="color:#30d158;">✅ 已在 Sheet 資料庫匹配數據！</span>`;
+                dbFoods.forEach(item => {
+                    updateUI({
+                        name: item.name || item.名稱 || query, grams: Number(item.grams || item.重量 || 100), cal: Number(item.cal || item.calories || item.卡路里 || 0),
+                        p: Number(item.p || item.protein || item.蛋白質 || 0), c: Number(item.c || item.carbs || item.碳水 || 0), f: Number(item.f || item.fat || item.脂肪 || 0),
+                        oil_g: Number(item.oil_g || item.oil || item.油 || 0), sugar_g: Number(item.sugar_g || item.sugar || item.糖 || 0), sodium_mg: Number(item.sodium_mg || item.sodium || item.鈉 || 0),
+                        oil_rating: item.oil_rating || (Number(item.oil_g || 0) > 20 ? "high" : "low"), sugar_rating: item.sugar_rating || (Number(item.sugar_g || 0) > 25 ? "high" : "low"), sodium_rating: item.sodium_rating || (Number(item.sodium_mg || 0) > 1000 ? "high" : "low"), grade: item.grade || item.評級 || "B", confidence: 100
+                    });
+                });
+                triggerAppleHealthSync(); document.getElementById("foodSearchInput").value = "";
+                setTimeout(() => { showPage('homePage'); }, 800); return;
+            }
+        }
+    } catch (err) {}
+
+    document.getElementById("result").innerHTML = `⏳ 本地無記錄，正在調用 AI 進行智能分析...`;
+    try {
+        let res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + getActiveApiKey(),
+                "HTTP-Referer": CLEAN_REFERER, // 👈 治本修復：傳入純英文，阻斷編碼崩潰
+                "X-Title": CLEAN_TITLE,         // 👈 治本修復：傳入純英文，阻斷編碼崩潰
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: getActiveModel(),
+                response_format: { type: "json_object" },
+                messages: [{ role: "user", content: `你是頂級營養學 AI。任務：分析「${query}」。預估重量 grams, 卡路里 kcal, 蛋白質 p, 碳水 c, 脂肪 f。中港式必估 oil_g, sugar_g, sodium_mg。輸出標準 JSON 物件。` }]
+            })
+        });
+        if (!res.ok) throw new Error(res.status === 403 ? "帳戶餘額為 $0，請進入設定切換為免費模型大腦！" : "連線異常");
+        let data = await res.json();
+        let parsed = safeParse(data.choices[0].message.content);
+        if (!parsed.foods) parsed = { foods: [parsed] };
+        document.getElementById("result").innerHTML = ""; document.getElementById("foodSearchInput").value = "";
+        parsed.foods.forEach(f => updateUI(f));
+        triggerAppleHealthSync();
+        setTimeout(() => { showPage('homePage'); }, 800);
+    } catch (e) { document.getElementById("result").innerHTML = `<div style="color:#ff375f; font-size:12px; padding:10px;">❌ 搜尋失敗: ${e.message}</div>`; }
+}
+
 document.getElementById("camera").addEventListener("change", async function() {
     if (!this.files.length) return;
     let file = this.files[0];
-    
-    let previewImg = document.getElementById("previewImg");
-    let placeholderText = document.getElementById("placeholderText");
-    let scannerLine = document.getElementById("scannerLine");
-    
-    previewImg.src = URL.createObjectURL(file);
-    previewImg.style.display = "block";
-    placeholderText.style.display = "none";
-    scannerLine.style.display = "block"; 
-    
-    document.getElementById("result").innerHTML = `<div style="text-align:center; padding:20px; color:#ff9f0a;">⏳ 正在解碼並調用 GPT-4o 掃描分析...</div>`;
-    track("scan_food_start");
-
-    try {
-        let base64Data = await toBase64(file);
-        await sendImageToAI(base64Data);
-    } catch (e) {
-        console.error(e);
-        scannerLine.style.display = "none";
-        document.getElementById("result").innerHTML = `<div style="color:#ff375f; padding:10px;">❌ 讀取圖片失敗: ${e.message}</div>`;
-    }
+    if (document.getElementById("previewImg")) { document.getElementById("previewImg").src = URL.createObjectURL(file); document.getElementById("previewImg").style.display = "block"; }
+    if (document.getElementById("placeholderText")) document.getElementById("placeholderText").style.display = "none";
+    if (document.getElementById("scannerLine")) document.getElementById("scannerLine").style.display = "block";
+    document.getElementById("result").innerHTML = `<div style="text-align:center; padding:20px; color:#ff9f0a;">⏳ 正在解碼並調用 AI 鏡頭解構分析...</div>`;
+    try { let b64 = await toBase64(file); await sendImageToAI(b64); } catch (e) { document.getElementById("result").innerHTML = `<div style="color:#ff375f;">❌ 讀圖失敗: ${e.message}</div>`; }
 });
 
-// 🧠 AI 主動輔導洞察引擎 (From Tool to Diet Coach)
 function generateInsights() {
     let tips = [];
-
-    if (totalSugar > 30) {
-        tips.push("🍹 偵測到今日糖分偏高，可能來自手調飲品或糕點。建議多補充溫水，阻斷血糖連續飆升。");
-    }
-
-    if (totalOil > 40) {
-        tips.push("🍗 油脂累積偏高。可能食咗煎炸類或炒粉麵飯。下餐建議叫「白灼」或「少油去汁」餐點平衡。");
-    }
-
-    if (protein < 40 && cal > 1200) {
-        tips.push("💪 雖然今日熱量充足，但蛋白質比例過低，恐影響肌肉代謝與修復。請於下一餐酌量補點蛋、奶或雞肉。");
-    }
-
-    if (totalSodium > 1500) {
-        tips.push("🧂 鈉攝取已拉警報！這對心血管系統是極大負荷。請立刻多飲水，幫助體內鈉鹽代謝排泄.");
-    }
-
-    const adviceBox = document.getElementById("advice");
-    if (tips.length > 0) {
-        adviceBox.innerHTML = tips.join("<br><br>");
-    } else if (cal > 0) {
-        adviceBox.innerHTML = "✅ 目前各項指標在合理區間！飲食比例很健康完美，繼續保持！";
-    } else {
-        adviceBox.innerHTML = "正在等待您的第一餐拍照或搜尋數據，我將為您實時分析食物作息與給予配餐建議。";
-    }
+    if (totalSugar > 30) tips.push("🍹 今日糖分偏高。建議多補充溫水，阻斷血糖連續飆升。");
+    if (totalOil > 40) tips.push("🍗 油脂累積偏高。下餐建議叫「白灼」或「少油去汁」餐點平衡。");
+    if (protein < 40 && cal > 1200) tips.push("💪 今日熱量充足，但蛋白質比例過低。請於下一餐酌量補點蛋、奶或雞肉。");
+    if (totalSodium > 1500) tips.push("🧂 鈉攝取已拉警報！這對心血管系統是極大負荷。請立刻多飲水。");
+    const box = document.getElementById("advice");
+    if (box) box.innerHTML = tips.length > 0 ? tips.join("<br><br>") : (cal > 0 ? "✅ 目前各項指標在合理區間！飲食比例很完美，繼續保持！" : "正在等待您的第一餐拍照數據，我將為您實時分析食物作息與給予配餐建議。");
 }
 
-// 🔒 Firebase 雲端與 Firestore 整合初始化系統 (RULE 3)
 function initFirebaseSystem() {
     try {
         if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-            const firebaseConfig = JSON.parse(__firebase_config);
-            const app = firebase.initializeApp(firebaseConfig);
-            auth = firebase.auth();
-            db = firebase.firestore();
-            
-            const initAuth = async () => {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await auth.signInWithCustomToken(__initial_auth_token);
-                } else {
-                    await auth.signInAnonymously();
-                }
-            };
-            
+            firebase.initializeApp(JSON.parse(__firebase_config)); auth = firebase.auth(); db = firebase.firestore();
+            const initAuth = async () => { if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await auth.signInWithCustomToken(__initial_auth_token); else await auth.signInAnonymously(); };
             initAuth();
-            
             auth.onAuthStateChanged((user) => {
-                currentUser = user;
-                if (user) {
-                    document.getElementById("syncStatus").innerHTML = `✅ Firebase 雲端連線成功 (UID: ${user.uid.substring(0,8)}...)`;
-                    document.getElementById("syncStatus").style.color = "#30d158";
-                    loadCloudData();
-                } else {
-                    document.getElementById("syncStatus").innerHTML = `⚠️ 未登入，暫存於本機`;
-                    document.getElementById("syncStatus").style.color = "#ff9f0a";
-                }
+                currentUser = user; const syncEl = document.getElementById("syncStatus");
+                if (user) { if (syncEl) { syncEl.innerHTML = `✅ Firebase 雲端連線成功 (UID: ${user.uid.substring(0,8)}...)`; syncEl.style.color = "#30d158"; } loadCloudData(); }
+                else if (syncEl) { syncEl.innerHTML = `⚠️ 未登入，暫存於本機`; syncEl.style.color = "#ff9f0a"; }
             });
-        } else {
-            document.getElementById("syncStatus").innerHTML = `💡 本地 Demo 演示模式 (無 Firebase)`;
-            document.getElementById("syncStatus").style.color = "#8e8e93";
-        }
-    } catch (e) {
-        console.error("Firebase 初始化失敗:", e);
-        document.getElementById("syncStatus").innerHTML = `❌ 雲端連接錯誤 (使用本地記憶體)`;
-        document.getElementById("syncStatus").style.color = "#ff375f";
-    }
+        } else { const syncEl = document.getElementById("syncStatus"); if (syncEl) { syncEl.innerHTML = `💡 本地 Demo 演示模式 (無 Firebase)`; syncEl.style.color = "#8e8e93"; } }
+    } catch (e) { const syncEl = document.getElementById("syncStatus"); if (syncEl) { syncEl.innerHTML = `❌ 雲端連接錯誤 (使用本地快取)`; syncEl.style.color = "#ff375f"; } }
 }
 
-// 🔄 物理數據、Apple 三環、成就解鎖、UI 與去重機制
+function loadCloudData() {
+    if (!db || !currentUser) return;
+    db.doc(`artifacts/${appId}/users/${currentUser.uid}/dailyState/today`).onSnapshot((docSnap) => {
+        if (docSnap.exists) {
+            const d = docSnap.data(); cal = d.cal || 0; protein = d.protein || 0; carbs = d.carbs || 0; fat = d.fat || 0;
+            totalOil = d.totalOil || 0; totalSugar = d.totalSugar || 0; totalSodium = d.totalSodium || 0; mealsHistory = d.mealsHistory || [];
+            updateUI({ cal: 0, p: 0, c: 0, f: 0, oil_g: 0, sugar_g: 0, sodium_mg: 0 }, true);
+        }
+    });
+}
+
+async function saveCloudData() {
+    if (!db || !currentUser) return;
+    try { await db.doc(`artifacts/${appId}/users/${currentUser.uid}/dailyState/today`).set({ cal, protein, carbs, fat, totalOil, totalSugar, totalSodium, mealsHistory, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true }); } catch (e) {}
+}
+
 async function updateUI(f, isOnlyRedraw = false) {
-    // 食物去重安全閥
-    if (!isOnlyRedraw && f.name) {
-        if (isDuplicate(f)) {
-            console.log("偵測到重複餐點攝取，已自動為您過濾: ", f.name);
-            track("duplicate_food_blocked");
-            return;
-        }
-        lastAddedMeal = f; 
-    }
-
+    if (!isOnlyRedraw && f.name) { if (isDuplicate(f)) { track("duplicate_food_blocked"); return; } lastAddedMeal = f; }
     if (!isOnlyRedraw) {
-        cal += f.cal || 0;
-        protein += f.p || 0;
-        carbs += f.c || 0;
-        fat += f.f || 0;
-        
-        totalOil += f.oil_g || 0;
-        totalSugar += f.sugar_g || 0;
-        totalSodium += f.sodium_mg || 0;
-
+        cal += f.cal || 0; protein += f.p || 0; carbs += f.c || 0; fat += f.f || 0;
+        totalOil += f.oil_g || 0; totalSugar += f.sugar_g || 0; totalSodium += f.sodium_mg || 0;
         if (f.name) {
-            let gradeClass = (f.grade === 'A' || f.grade === 'B') ? 'grade-A' : (f.grade === 'E' || f.grade === 'F' ? 'grade-F' : '');
-            let riskLabel = detectFoodRisk(f);
-            
-            // 智慧餐次分類
-            let mealTimeLabel = getMealType();
-
-            if (f.grade === "F") {
-                showRiskModal(`高風險警告！您剛攝入的【${f.name}】經解構評級為最低的 Grade F（極危飲食）。它含有極高的油脂、糖分或鈉，不利於您的代謝指標。`);
-            }
-
-            mealsHistory.unshift(`
-                <div class="history-item ${gradeClass}">
-                    <div>
-                        <strong style="color:white; font-size:15px;">[${mealTimeLabel}] ${f.name} (${f.grams}g)</strong>
-                        <div style="margin-top: 4px; display:flex; flex-wrap:wrap; gap:4px;">
-                            <span class="hk-badge ${getBadgeClass(f.oil_rating)}">油: ${f.oil_g}g</span>
-                            <span class="hk-badge ${getBadgeClass(f.sugar_rating)}">糖: ${f.sugar_g}g</span>
-                            <span class="hk-badge ${getBadgeClass(f.sodium_rating)}">鈉: ${f.sodium_mg}mg</span>
-                            <span class="hk-badge" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #8e8e93;">${riskLabel}</span>
-                            <span class="hk-badge" style="background: rgba(0, 122, 255, 0.1); border: 1px solid rgba(0, 122, 255, 0.2); color: #0a84ff;">🤝 信心 ${f.confidence || 85}%</span>
-                        </div>
-                    </div>
-                    <div style="text-align:right;">
-                        <span style="font-weight:bold; color:#ff9f0a;">+${f.cal} kcal</span>
-                        <div style="font-size:12px; color:#8e8e93; margin-top:2px;">評級: <strong style="color:white;">${f.grade}</strong></div>
-                    </div>
-                </div>
-            `);
+            let gradeClass = (f.grade === 'A' || f.grade === 'B') ? 'grade-A' : ((f.grade === 'E' || f.grade === 'F') ? 'grade-F' : '');
+            if (f.grade === "F") showRiskModal(`高風險警告！【${f.name}】評級為 Grade F（極危飲食）。`);
+            mealsHistory.unshift(`<div class="history-item ${gradeClass}"><div><strong style="color:white; font-size:15px;">[${getMealType()}] ${f.name} (${f.grams}g)</strong><div style="margin-top:4px; display:flex; flex-wrap:wrap; gap:4px;"><span class="hk-badge ${getBadgeClass(f.oil_rating)}">油: ${f.oil_g}g</span><span class="hk-badge ${getBadgeClass(f.sugar_rating)}">糖: ${f.sugar_g}g</span><span class="hk-badge ${getBadgeClass(f.sodium_rating)}">鈉: ${f.sodium_mg}mg</span><span class="hk-badge" style="background:rgba(255,255,255,0.06); color:#8e8e93;">${detectFoodRisk(f)}</span></div></div><div style="text-align:right;"><span style="font-weight:bold; color:#ff9f0a;">+${f.cal} kcal</span><div style="font-size:12px; color:#8e8e93; margin-top:2px;">評級: <strong>${f.grade}</strong></div></div></div>`);
         }
     }
 
-    // 更新 Concentric Rings 同心三環的背景度數
-    let calDeg = Math.min((cal / goal) * 360, 360);
-    let pDeg = Math.min((protein / proteinGoal) * 360, 360);
-    let fDeg = Math.min((fat / fatGoal) * 360, 360);
-
-    const ringCal = document.getElementById("ringCal");
-    const ringProtein = document.getElementById("ringProtein");
-    
-    // 卡路里超標震動 + 紅色光爆
-    if (cal > goal) {
-        ringCal.style.background = `conic-gradient(#ff375f ${calDeg}deg, #222 ${calDeg}deg)`;
-        ringCal.style.animation = "overloadPulse 1s infinite alternate";
-        navigator.vibrate?.(100); 
-    } else {
-        ringCal.style.background = `conic-gradient(#ff9f0a ${calDeg}deg, #222 ${calDeg}deg)`;
-        ringCal.style.animation = "glowPulse 3s infinite alternate";
-    }
-
-    // 蛋白質達標霓虹特效
-    if (protein >= proteinGoal) {
-        ringProtein.style.background = `conic-gradient(#30d158 ${pDeg}deg, #222 ${pDeg}deg)`;
-        ringProtein.style.animation = "proteinGlow 1.5s infinite alternate";
-    } else {
-        ringProtein.style.background = `conic-gradient(#30d158 ${pDeg}deg, #222 ${pDeg}deg)`;
-        ringProtein.style.animation = "glowPulse 3s infinite alternate";
-    }
-
-    document.getElementById("ringFat").style.background = `conic-gradient(#ff375f ${fDeg}deg, #222 ${fDeg}deg)`;
-
-    // KCAL 數字動態滾動
+    let cDeg = Math.min((cal / goal) * 360, 360); let pDeg = Math.min((protein / proteinGoal) * 360, 360); let fDeg = Math.min((fat / fatGoal) * 360, 360);
+    if (document.getElementById("ringCal")) { document.getElementById("ringCal").style.background = `conic-gradient(${cal > goal ? '#ff375f' : '#ff9f0a'} ${cDeg}deg, #222 ${cDeg}deg)`; document.getElementById("ringCal").style.animation = cal > goal ? "overloadPulse 1s infinite alternate" : "glowPulse 3s infinite alternate"; }
+    if (document.getElementById("ringProtein")) { document.getElementById("ringProtein").style.background = `conic-gradient(#30d158 ${pDeg}deg, #222 ${pDeg}deg)`; if (protein >= proteinGoal) document.getElementById("ringProtein").style.animation = "proteinGlow 1.5s infinite alternate"; }
+    if (document.getElementById("ringFat")) document.getElementById("ringFat").style.background = `conic-gradient(#ff375f ${fDeg}deg, #222 ${fDeg}deg)`;
     animate("cal", cal);
-
-    // 三大營養素文字
-    document.getElementById("protein").innerText = protein;
-    document.getElementById("carbs").innerText = carbs;
-    document.getElementById("fat").innerText = fat;
-
-    // 油糖鹽紅綠燈數據渲染
+    if (document.getElementById("protein")) document.getElementById("protein").innerText = protein;
+    if (document.getElementById("carbs")) document.getElementById("carbs").innerText = carbs;
+    if (document.getElementById("fat")) document.getElementById("fat").innerText = fat;
     renderHkMetrics();
-    
-    if (mealsHistory.length > 0) {
-        document.getElementById("history").innerHTML = mealsHistory.join("");
-    } else {
-        document.getElementById("history").innerHTML = `<div style="text-align:center; color:#636366; padding:10px; font-size:14px;">尚無就餐數據</div>`;
-    }
-
-    // 🏆 更新每日動態成就系統
-    updateAchievements();
-
-    // 🧠 觸發主動引導 Coach 洞察
-    generateInsights();
-
-    // 離線快取數據寫入儲存
-    const dailyStateToSave = {
-        cal, protein, carbs, fat,
-        totalOil, totalSugar, totalSodium,
-        mealsHistory
-    };
-    await writeOfflineState(dailyStateToSave);
-
+    if (document.getElementById("history")) document.getElementById("history").innerHTML = mealsHistory.length > 0 ? mealsHistory.join("") : `<div style="text-align:center; color:#636366; padding:10px; font-size:14px;">尚無就餐數據</div>`;
+    updateAchievements(); generateInsights();
+    await writeOfflineState({ cal, protein, carbs, fat, totalOil, totalSugar, totalSodium, mealsHistory });
     saveCloudData();
 }
 
-function renderHkMetrics() {
-    document.getElementById("oilLevel").innerHTML = `<span class="${totalOil > 40 ? 'hk-high' : 'hk-low'}">${totalOil}g</span>`;
-    document.getElementById("sugarLevel").innerHTML = `<span class="${totalSugar > 25 ? 'hk-high' : 'hk-low'}">${totalSugar}g</span>`;
-    document.getElementById("sodiumLevel").innerHTML = `<span class="${totalSodium > 1300 ? 'hk-high' : (totalSodium > 500 ? 'hk-mid' : 'hk-low')}">${totalSodium}mg</span>`;
-}
+function toBase64(file) { return new Promise(r => { let reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => r(reader.result.split(',')[1]); }); }
 
-function getBadgeClass(rating) {
-    if(rating === 'high') return 'hk-high';
-    if(rating === 'mid') return 'hk-mid';
-    return 'hk-low';
-}
-
-function generateDietCoachAdvice(lastFood) {
-    let state = "BALANCED";
-
-    if (totalSodium > 1500) state = "HIGH_SODIUM";
-    else if (totalOil > 50) state = "HIGH_OIL";
-    else if (protein < 50) state = "LOW_PROTEIN";
-
-    let recommendationText = "";
-    if (state === "HIGH_SODIUM" || state === "HIGH_OIL") {
-        recommendationText = `💡 **下一餐跨時空防禦配餐推薦**：<br>由於您今天油脂或鈉攝取失調，晚上強烈建議叫 **「白灼芥蘭（去汁） + 蒸魚 / 豆腐配白飯」**，並點 **「凍檸茶（走甜）」**，助您平穩身體代謝，抵消多餘鈉鹽！`;
-    } else {
-        recommendationText = `💡 **下一餐配餐推薦**：<br>目前的狀態十分健康，下一餐可安心進食。推薦搭配一些複合碳水化合物，如 **「生菜雞肉沙律」** 伴一小碗十穀飯，維持完美的體能狀態。`;
-    }
-    document.getElementById("recommendation").innerHTML = recommendationText;
-}
-
-// 🍏 實時/原生 Apple Health / HealthKit 通訊橋接接口
-function triggerAppleHealthSync() {
-    let syncEl = document.getElementById("syncStatus");
-    syncEl.innerHTML = `⏳ 正在寫入 Apple Health 核心閉環...`;
-    syncEl.style.color = "#ff2d55";
-    
-    setTimeout(() => {
-        syncEl.innerHTML = `✅ 已成功寫入 iOS 健康 (Active Energy)`;
-        syncEl.style.color = "#30d158";
-        
-        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.HealthKit) {
-            try {
-                window.Capacitor.Plugins.HealthKit.saveQuantitySample({
-                    sampleType: 'HKQuantityTypeIdentifierDietaryEnergyConsumed',
-                    unit: 'kcal',
-                    amount: cal,
-                    startDate: new Date().toISOString(),
-                    endDate: new Date().toISOString()
-                });
-                console.log("Capacitor Native Bridge: Successfully synced DietaryEnergy to Apple HealthKit");
-            } catch (nativeErr) {
-                console.warn("Capacitor HealthKit sync error: ", nativeErr);
-            }
-        }
-        
-        setTimeout(() => {
-            if (currentUser) {
-                syncEl.innerHTML = `✅ Firebase 雲端儲存已同步 (UID: ${currentUser.uid.substring(0,8)}...)`;
-                syncEl.style.color = "#30d158";
-            } else {
-                syncEl.innerHTML = `💡 本地 Demo 演示模式`;
-                syncEl.style.color = "#8e8e93";
-            }
-        }, 1500);
-    }, 1200);
-}
-
-function animate(id, val) {
-    let el = document.getElementById(id);
-    let start = parseInt(el.innerText) || 0;
-    let i = setInterval(() => {
-        start += Math.ceil((val - start) / 6);
-        if (start >= val) { start = val; clearInterval(i); }
-        el.innerText = start;
-    }, 20);
-}
-
-function toBase64(file) {
-    return new Promise(r => {
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => r(reader.result.split(',')[1]);
-    });
-}
-
-// ⚡️ iOS 原生級：極致滑動視差滾動效果
-window.addEventListener("scroll", () => {
-    document.querySelectorAll(".card").forEach((card, i) => {
-        let y = window.scrollY * (0.02 * (i + 1));
-        card.style.transform = `perspective(1000px) translateY(${y}px) translateZ(0)`;
-    });
-});
-
-// ⏳ 啟動初始化程序
 window.onload = async function() {
-    track("app_launch"); 
-    
-    // 初始化 IndexedDB 斷網快取防禦資料庫 (離線模式)
+    track("app_launch");
     try {
-        await initIndexedDB();
-        const offlineData = await readOfflineState();
-        if (offlineData) {
-            cal = offlineData.cal || 0;
-            protein = offlineData.protein || 0;
-            carbs = offlineData.carbs || 0;
-            fat = offlineData.fat || 0;
-            totalOil = offlineData.totalOil || 0;
-            totalSugar = offlineData.totalSugar || 0;
-            totalSodium = offlineData.totalSodium || 0;
-            mealsHistory = offlineData.mealsHistory || [];
-            updateUI({ cal: 0, p: 0, c: 0, f: 0, oil_g: 0, sugar_g: 0, sodium_mg: 0 }, true);
-        }
-    } catch (dbErr) {
-        console.warn("IndexedDB 初始化失敗，降級為純記憶體/Firestore 儲存模式: ", dbErr);
-    }
-
-    checkDayReset();      // 執行每日重置檢測
-    initFirebaseSystem(); // 初始化雲端儲存
-    loadLocalWeightData(); // 載入體重追蹤數據
-    
-    // 開啟 App 首刷流暢過渡動畫 (800ms)
-    setTimeout(() => {
-        const loader = document.getElementById("appLoader");
-        loader.style.transition = "opacity 0.4s ease";
-        loader.style.opacity = 0;
-        setTimeout(() => {
-            loader.style.display = "none";
-        }, 400);
-    }, 800);
+        await initIndexedDB(); const offline = await readOfflineState();
+        if (offline) { cal = offline.cal || 0; protein = offline.protein || 0; carbs = offline.carbs || 0; fat = offline.fat || 0; totalOil = offline.totalOil || 0; totalSugar = offline.totalSugar || 0; totalSodium = offline.totalSodium || 0; mealsHistory = offline.mealsHistory || []; updateUI({ cal: 0, p: 0, c: 0, f: 0, oil_g: 0, sugar_g: 0, sodium_mg: 0 }, true); }
+    } catch (e) {}
+    try { checkDayReset(); } catch(e){}
+    try { initFirebaseSystem(); } catch(e){}
+    try { loadLocalWeightData(); } catch(e){}
+    setTimeout(() => { if (document.getElementById("appLoader")) { document.getElementById("appLoader").style.transition = "opacity 0.4s ease"; document.getElementById("appLoader").style.opacity = 0; setTimeout(() => { document.getElementById("appLoader").style.display = "none"; }, 400); } }, 800);
 }
 </script>
-
 </body>
 </html>
