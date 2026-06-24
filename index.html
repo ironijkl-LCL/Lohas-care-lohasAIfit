@@ -1,8 +1,6 @@
-```html
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>AI Nutrition Ultimate++</title>
 
@@ -110,7 +108,7 @@ body::before {
     -webkit-backdrop-filter: blur(30px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    transform: perspective(1000px) translateZ(0);
+    transform: perspective(1000px) translateZ(0); /* 視差滾動空間基礎 */
     transition: transform 0.1s ease-out;
 }
 
@@ -160,11 +158,12 @@ body::before {
     z-index: 0;
 }
 
-/* Ring 2: 蛋白質（中環，活力綠） */
+/* Ring 2: 蛋白質（中環，活力綠 - 達標後會自動開啟霓虹流光特效） */
 .ring2 {
     inset: 16px;
     background: conic-gradient(#30d158 0deg, #222 0deg);
     filter: drop-shadow(0 0 10px rgba(48, 209, 88, 0.35));
+    animation: glowPulse 3s infinite alternate;
     z-index: 1;
 }
 .ring2::before {
@@ -178,8 +177,8 @@ body::before {
 
 /* 🟢 蛋白質達標霓虹特效 */
 @keyframes proteinGlow {
-    0% { filter: drop-shadow(0 0 10px rgba(48, 209, 88, 0.35)); }
-    100% { filter: drop-shadow(0 0 25px rgba(48, 209, 88, 0.95)); }
+    0% { filter: drop-shadow(0 0 8px rgba(48, 209, 88, 0.5)); }
+    100% { filter: drop-shadow(0 0 25px rgba(48, 209, 88, 1)); }
 }
 
 /* Ring 3: 脂肪（內環，玫瑰粉紅） */
@@ -187,6 +186,7 @@ body::before {
     inset: 32px;
     background: conic-gradient(#ff375f 0deg, #222 0deg);
     filter: drop-shadow(0 0 10px rgba(255, 55, 95, 0.35));
+    animation: glowPulse 3s infinite alternate;
     z-index: 2;
 }
 .ring3::before {
@@ -228,6 +228,25 @@ body::before {
     0% { opacity: 0.85; transform: scale(0.97); }
     100% { opacity: 1; transform: scale(1.03); filter: drop-shadow(0 0 35px #ff375f); }
 }
+
+/* 📊 巨集與港式「油糖鹽」指標 */
+.macro-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.macro-box {
+    background: rgba(255,255,255,0.03);
+    padding: 10px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.03);
+}
+
+.macro-title { font-size: 11px; color: #a1a1aa; margin-bottom: 4px; }
+.macro-val { font-size: 15px; font-weight: bold; }
 
 /* 🏆 每日動態成就解鎖徽章樣式 */
 .badge-container {
@@ -271,6 +290,164 @@ body::before {
 .hk-high { background: rgba(255, 55, 95, 0.15); color: #ff375f; border: 1px solid rgba(255, 55, 95, 0.3); }
 .hk-mid { background: rgba(255, 159, 10, 0.15); color: #ff9f0a; border: 1px solid rgba(255, 159, 10, 0.3); }
 .hk-low { background: rgba(48, 209, 88, 0.15); color: #30d158; border: 1px solid rgba(48, 209, 88, 0.3); }
+
+/* 📜 歷史記錄 */
+.history-item {
+    background: rgba(255,255,255,0.02);
+    padding: 12px;
+    border-radius: 16px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid #ff9f0a;
+}
+.history-item.grade-A { border-left-color: #30d158; }
+.history-item.grade-F { border-left-color: #ff375f; }
+
+/* 🤖 AI Diet Coach */
+.coach-box {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+.avatar {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #007aff, #5856d6);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(0,122,255,0.5);
+}
+.coach-msg { font-size: 14px; line-height: 1.6; color: #e5e5ea; }
+
+/* 🍏 Apple Health 同步狀態 */
+.health-sync {
+    background: rgba(255, 45, 85, 0.08);
+    border: 1px solid rgba(255, 45, 85, 0.15);
+    padding: 12px; border-radius: 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; margin: 16px;
+}
+.health-logo { color: #ff2d55; font-weight: bold; display: flex; align-items: center; gap: 6px; }
+
+/* 🔍 BONUS: 智能食物搜尋輸入區 */
+.search-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 15px auto;
+}
+
+.search-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 14px;
+    color: white;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.search-input:focus {
+    outline: none;
+    border-color: #ff9f0a;
+}
+
+.search-btn {
+    width: auto;
+    padding: 0 20px;
+    margin: 0;
+    border-radius: 16px;
+}
+
+/* 📸 相機觀景窗與美化 */
+.viewfinder {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    height: 300px;
+    background: #111;
+    border-radius: 24px;
+    overflow: hidden;
+    margin: 0 auto 15px auto;
+    border: 2px dashed rgba(255, 159, 10, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+}
+
+#previewImg, #webcamVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: none;
+    background-color: #0d0d14;
+}
+
+.viewfinder-placeholder {
+    color: #8e8e93;
+    font-size: 14px;
+    text-align: center;
+    z-index: 1;
+    line-height: 1.6;
+}
+
+/* ⚡ 雷射掃描線 */
+.scanner-line {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(to bottom, transparent, #ff9f0a, transparent);
+    box-shadow: 0 0 15px #ff9f0a, 0 0 25px #ff375f;
+    z-index: 5;
+    display: none;
+    animation: scan 2s linear infinite;
+}
+
+@keyframes scan {
+    0% { top: 0%; }
+    50% { top: 100%; }
+    100% { top: 0%; }
+}
+
+/* Demo 快速切換按鈕區 */
+.demo-btn-group {
+    display: flex;
+    gap: 10px;
+    margin: 10px auto 20px auto;
+    max-width: 600px;
+}
+.btn-demo {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 10px 12px;
+    border-radius: 14px;
+    color: #ff9f0a;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+    transition: background 0.2s;
+}
+.btn-demo:active { background: rgba(255, 255, 255, 0.2); }
+
+/* 按鈕 */
+button {
+    width: 100%; max-width: 600px; padding: 16px; border-radius: 18px; border: none; color: white;
+    font-size: 16px; font-weight: 600;
+    background: linear-gradient(90deg, #ff9f0a, #ff375f);
+    box-shadow: 0 4px 15px rgba(255, 55, 95, 0.3);
+    cursor: pointer; transition: 0.2s;
+    margin: 0 auto 10px auto;
+    display: block;
+}
+button:active { transform: scale(0.97); opacity: 0.9; }
 
 /* ⚙️ 浮動設定 & Risk Modal 面板 */
 .settings-modal {
@@ -360,6 +537,7 @@ body::before {
 
 /* 📈 趨勢圖形 */
 .chart-svg { width: 100%; height: 65px; overflow: visible; }
+
 </style>
 </head>
 
@@ -580,7 +758,7 @@ z-index:9999;
         <div class="viewfinder" id="viewfinder">
             <div class="scanner-line" id="scannerLine"></div>
             <div class="viewfinder-placeholder" id="placeholderText">📸 尚未上傳相片<br><span style="font-size:12px;color:#555;">點擊下方按鈕、開啟視訊或右上角設定金鑰</span></div>
-            <!-- 📹 實時視訊鏡頭 (流暢硬體接入) -->
+            <!-- 📹 實時視訊鏡頭 -->
             <video id="webcamVideo" autoplay playsinline></video>
             <img id="previewImg" alt="食物預覽">
         </div>
@@ -600,14 +778,14 @@ z-index:9999;
 <div class="settings-modal" id="settingsModal">
     <h2>⚙️ 雲端與金鑰設定</h2>
     
-    <!-- 🇭🇰 核心升級：支援在 UI 介面中動態切換、手動輸入自定義 Google Sheet URL 網址 -->
+    <!-- 試算表 Web App URL 輸入 -->
     <div class="form-group" style="margin-bottom: 15px;">
         <label for="sheetUrlInput">Google Sheet Apps Script URL</label>
         <input type="text" id="sheetUrlInput" placeholder="https://script.google.com/macros/s/.../exec">
         <span style="font-size:11px; color:#8e8e93; margin-top:5px; display:block;">貼上您的 Google Apps Script Web App URL，即可與您自己的 Google 試算表實時連通。</span>
     </div>
 
-    <!-- 🔐 安全授權金鑰配置（對接 code.gs 中的預設預檢與 expectedAuth 安全校正） -->
+    <!-- 🔐 安全授權金鑰配置（對應 API 工作表 A2 授權碼） -->
     <div class="form-group" style="margin-bottom: 15px;">
         <label for="sheetAuthInput">Google Sheet API Authorization Key</label>
         <input type="password" id="sheetAuthInput" placeholder="輸入 API 分頁中 A2 的授權代碼">
@@ -684,6 +862,58 @@ let db = null;
 let auth = null;
 let currentUser = null;
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+// 儲存至 IndexedDB
+let idb = null;
+const idbName = "ai_nutrition_offline_db";
+const idbVersion = 1;
+
+function initIndexedDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(idbName, idbVersion);
+        
+        request.onupgradeneeded = function(e) {
+            const dbInstance = e.target.result;
+            if (!dbInstance.objectStoreNames.contains("appState")) {
+                dbInstance.createObjectStore("appState", { keyPath: "key" });
+            }
+        };
+        
+        request.onsuccess = function(e) {
+            idb = e.target.result;
+            console.log("✅ IndexedDB 斷網快取防禦資料庫載入成功");
+            resolve(idb);
+        };
+        
+        request.onerror = function(e) {
+            console.error("❌ IndexedDB 初始化失敗", e.target.error);
+            reject(e.target.error);
+        };
+    });
+}
+
+async function readOfflineState() {
+    if (!idb) return null;
+    return new Promise((resolve) => {
+        const tx = idb.transaction("appState", "readonly");
+        const store = tx.objectStore("appState");
+        const req = store.get("dailyState");
+        
+        req.onsuccess = function() {
+            resolve(req.result ? req.result.data : null);
+        };
+        req.onerror = function() {
+            resolve(null);
+        };
+    });
+}
+
+async function writeOfflineState(data) {
+    if (!idb) return;
+    const tx = idb.transaction("appState", "readwrite");
+    const store = tx.objectStore("appState");
+    store.put({ key: "dailyState", data: data });
+}
 
 // 📊 企業級數據分析行為追蹤
 function track(event) {
@@ -794,7 +1024,6 @@ function saveCustomApiKey() {
     if (sheetAuth === "") {
         localStorage.removeItem("user_sheets_auth");
     } else {
-        localStorage.setItem("user_sheets_url", sheetUrl);
         localStorage.setItem("user_sheets_auth", sheetAuth);
     }
     
@@ -825,21 +1054,19 @@ function saveDailyStats() {
     localStorage.setItem("weekly", JSON.stringify(stats));
 }
 
-// 📈 繪製動態 SVG 折線圖形
+// 📈 繪製動態 SVG 折線圖形 & 計算 KPI
 function drawWeeklyChart() {
     let stats = JSON.parse(localStorage.getItem("weekly") || "[]");
     
-    // 如果沒有真實歷史數據，我們預設生成一組好看的 Dummy 數據進行渲染展示
     if (stats.length === 0) {
         stats = [
             { date: "20/6", cal: 1850, sodium: 1200 },
             { date: "21/6", cal: 1540, sodium: 1100 },
             { date: "22/6", cal: 2100, sodium: 1600 },
             { date: "23/6", cal: 1980, sodium: 1450 },
-            { date: "24/6", cal: cal, sodium: totalSodium } // 今日動態數值
+            { date: "24/6", cal: cal, sodium: totalSodium }
         ];
     } else {
-        // 更新今日數值
         let todayLabel = `${new Date().getDate()}/${new Date().getMonth()+1}`;
         let todayIndex = stats.findIndex(s => s.date === todayLabel);
         if (todayIndex !== -1) {
@@ -871,7 +1098,7 @@ function drawWeeklyChart() {
     const paddingBottom = 15;
     const paddingTop = 10;
 
-    const maxCal = Math.max(...stats.map(s => s.cal), 2500); // 最小基準為2500
+    const maxCal = Math.max(...stats.map(s => s.cal), 2500); 
     const pointCount = stats.length;
     const stepX = (svgWidth - paddingLeft - paddingRight) / (pointCount - 1 || 1);
 
@@ -880,18 +1107,15 @@ function drawWeeklyChart() {
 
     stats.forEach((item, index) => {
         let x = paddingLeft + index * stepX;
-        // 反轉 Y 軸座標計算卡路里高度
         let y = svgHeight - paddingBottom - ((item.cal / maxCal) * (svgHeight - paddingBottom - paddingTop));
         points.push({ x, y });
 
-        // 渲染底下的日期文字標籤
         textElements += `
             <text x="${x}" y="${svgHeight - 2}" fill="#8e8e93" font-size="7" text-anchor="middle">${item.date}</text>
             <circle cx="${x}" cy="${y}" r="2.5" fill="#ff9f0a" />
         `;
     });
 
-    // 建立 L (連線) 與 Fill (漸變填充) SVG 繪製路徑
     let linePath = `M ${points[0].x} ${points[0].y} ` + points.slice(1).map(p => `L ${p.x} ${p.y}`).join(" ");
     let fillPath = `${linePath} L ${points[points.length-1].x} ${svgHeight - paddingBottom} L ${points[0].x} ${svgHeight - paddingBottom} Z`;
 
@@ -906,7 +1130,6 @@ function checkDayReset() {
     let last = localStorage.getItem("lastDay");
 
     if (last !== today) {
-        // 重置前先儲存昨日數據
         if (last) {
             saveDailyStats();
         }
@@ -936,7 +1159,6 @@ function updateAchievements() {
     const badgeProtein = document.getElementById("badgeProtein");
     const badgeCal = document.getElementById("badgeCal");
 
-    // 1. 控糖小能手: 糖分低於 25g 且今日有進食記錄
     if (totalSugar > 0 && totalSugar <= 25) {
         badgeSugar.classList.add("unlocked");
         badgeSugar.innerHTML = "🍹 控糖小能手 ✅";
@@ -945,7 +1167,6 @@ function updateAchievements() {
         badgeSugar.innerHTML = "🍹 控糖小能手";
     }
 
-    // 2. 蛋白質達人: 蛋白質攝取大於 60g
     if (protein >= 60) {
         badgeProtein.classList.add("unlocked");
         badgeProtein.innerHTML = "💪 蛋白質達人 ✅";
@@ -954,7 +1175,6 @@ function updateAchievements() {
         badgeProtein.innerHTML = "💪 蛋白質達人";
     }
 
-    // 3. 熱量控制家: 卡路里少於今日預算且大於 0
     if (cal > 0 && cal <= goal) {
         badgeCal.classList.add("unlocked");
         badgeCal.innerHTML = "🟡 熱量控制家 ✅";
@@ -966,7 +1186,7 @@ function updateAchievements() {
 
 // 🚨 Grade F 警告 Modal 開關控制
 function showRiskModal(msg) {
-    navigator.vibrate?.([200, 100, 200]); // 物理急促震動
+    navigator.vibrate?.([200, 100, 200]); // 物理微震動
     document.getElementById("riskModalMsg").innerText = msg;
     document.getElementById("settingsOverlay").style.display = "block";
     document.getElementById("riskModal").style.display = "block";
@@ -977,7 +1197,7 @@ function closeRiskModal() {
     document.getElementById("riskModal").style.display = "none";
 }
 
-// 🧠 體重追蹤管理邏輯
+// 🧠 體重追蹤管理邏輯 (UX 新增)
 function logWeight() {
     let input = document.getElementById("weightInput");
     let weight = parseFloat(input.value);
@@ -995,22 +1215,29 @@ function logWeight() {
     localStorage.setItem("weightHistory", JSON.stringify(weightHistory));
     renderWeightHistory();
     input.value = "";
+    track("log_weight");
 }
 
 function renderWeightHistory() {
-    const logBox = document.getElementById("weightLogHistory");
+    let container = document.getElementById("weightLogHistory");
     if (weightHistory.length === 0) {
-        logBox.innerHTML = "尚未記錄任何體重數據";
+        container.innerHTML = "尚未記錄任何體重數據";
         return;
     }
-    
-    let logHTML = weightHistory.map(item => `
-        <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.02); padding: 4px 0;">
-            <span>⚖️ <strong>${item.weight} kg</strong></span>
-            <span>${item.time}</span>
+    container.innerHTML = weightHistory.map(w => `
+        <div style="display:flex; justify-content:space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.03);">
+            <span>⚖️ <strong>${w.weight} kg</strong></span>
+            <span style="color:#8e8e93; font-size:11px;">${w.time}</span>
         </div>
     `).join("");
-    logBox.innerHTML = logHTML;
+}
+
+function loadLocalWeightData() {
+    let raw = localStorage.getItem("weightHistory");
+    if (raw) {
+        weightHistory = JSON.parse(raw);
+        renderWeightHistory();
+    }
 }
 
 // 🕒 智慧時空「餐次自動分類」演算法
@@ -1030,206 +1257,6 @@ function isDuplicate(f) {
         lastAddedMeal.name === f.name &&
         Math.abs(lastAddedMeal.cal - f.cal) < 5
     );
-}
-
-// 🧠 餐廳級判斷：多維度高危風險檢測
-function detectFoodRisk(f) {
-    if (f.sodium_mg > 1500) return "🚨 超高鈉 (加工/茶餐廳)";
-    if (f.oil_g > 20) return "⚠️ 高油脂";
-    if (f.sugar_g > 30) return "⚠️ 高糖";
-    return "✅ 健康原型";
-}
-
-// 🔒 IndexedDB 斷網快取防禦機制系統 (離線模式)
-let idb = null;
-const idbName = "ai_nutrition_offline_db";
-const idbVersion = 1;
-
-function initIndexedDB() {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open(idbName, idbVersion);
-        
-        request.onupgradeneeded = function(e) {
-            const dbInstance = e.target.result;
-            if (!dbInstance.objectStoreNames.contains("appState")) {
-                dbInstance.createObjectStore("appState", { keyPath: "key" });
-            }
-        };
-        
-        request.onsuccess = function(e) {
-            idb = e.target.result;
-            console.log("✅ IndexedDB 斷網快取防禦資料庫載入成功");
-            resolve(idb);
-        };
-        
-        request.onerror = function(e) {
-            console.error("❌ IndexedDB 初始化失敗", e.target.error);
-            reject(e.target.error);
-        };
-    });
-}
-
-// 從 IndexedDB 讀取離線資料
-async function readOfflineState() {
-    if (!idb) return null;
-    return new Promise((resolve) => {
-        const tx = idb.transaction("appState", "readonly");
-        const store = tx.objectStore("appState");
-        const req = store.get("dailyState");
-        
-        req.onsuccess = function() {
-            resolve(req.result ? req.result.data : null);
-        };
-        req.onerror = function() {
-            resolve(null);
-        };
-    });
-}
-
-// 寫入離線資料到 IndexedDB
-async function writeOfflineState(data) {
-    if (!idb) return;
-    const tx = idb.transaction("appState", "readwrite");
-    const store = tx.objectStore("appState");
-    store.put({ key: "dailyState", data: data });
-}
-
-// 初始化 Firebase 系統
-function initFirebaseSystem() {
-    try {
-        if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-            const firebaseConfig = JSON.parse(__firebase_config);
-            const app = firebase.initializeApp(firebaseConfig);
-            auth = firebase.auth();
-            db = firebase.firestore();
-            
-            const initAuth = async () => {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await auth.signInWithCustomToken(__initial_auth_token);
-                } else {
-                    await auth.signInAnonymously();
-                }
-            };
-            
-            initAuth();
-            
-            auth.onAuthStateChanged((user) => {
-                currentUser = user;
-                if (user) {
-                    document.getElementById("syncStatus").innerHTML = `✅ Firebase 雲端連線成功 (UID: ${user.uid.substring(0,8)}...)`;
-                    document.getElementById("syncStatus").style.color = "#30d158";
-                    loadCloudData();
-                } else {
-                    document.getElementById("syncStatus").innerHTML = `⚠️ 未登入，暫存於本機`;
-                    document.getElementById("syncStatus").style.color = "#ff9f0a";
-                }
-            });
-        } else {
-            document.getElementById("syncStatus").innerHTML = `💡 本地 Demo 演示模式 (無 Firebase)`;
-            document.getElementById("syncStatus").style.color = "#8e8e93";
-        }
-    } catch (e) {
-        console.error("Firebase 初始化失敗:", e);
-        document.getElementById("syncStatus").innerHTML = `❌ 雲端連接錯誤 (使用本地記憶體)`;
-        document.getElementById("syncStatus").style.color = "#ff375f";
-    }
-}
-
-// 📂 從 Firestore 雲端讀取歷史數據
-function loadCloudData() {
-    if (!db || !currentUser) return;
-    
-    // 符合 RULE 1 嚴格約束的路徑
-    const docRef = db.doc(`artifacts/${appId}/users/${currentUser.uid}/dailyState/today`);
-    
-    docRef.onSnapshot((docSnap) => {
-        if (docSnap.exists) {
-            const data = docSnap.data();
-            cal = data.cal || 0;
-            protein = data.protein || 0;
-            carbs = data.carbs || 0;
-            fat = data.fat || 0;
-            totalOil = data.totalOil || 0;
-            totalSugar = data.totalSugar || 0;
-            totalSodium = data.totalSodium || 0;
-            mealsHistory = data.mealsHistory || [];
-            
-            updateUI({ cal: 0, p: 0, c: 0, f: 0, oil_g: 0, sugar_g: 0, sodium_mg: 0 }, true);
-        }
-    }, (error) => {
-        console.error("讀取雲端 Firestore 數據出錯:", error);
-    });
-}
-
-// 💾 將數據同步寫入至 Firestore (RULE 3)
-async function saveCloudData() {
-    if (!db || !currentUser) return; 
-    
-    const docRef = db.doc(`artifacts/${appId}/users/${currentUser.uid}/dailyState/today`);
-    
-    try {
-        await docRef.set({
-            cal,
-            protein,
-            carbs,
-            fat,
-            totalOil,
-            totalSugar,
-            totalSodium,
-            mealsHistory,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
-    } catch (e) {
-        console.error("同步至雲端失敗:", e);
-    }
-}
-
-// 🧠 容錯度極高之 JSON 解析器
-function safeParse(content) {
-    try {
-        return JSON.parse(content);
-    } catch {
-        let fixed = content
-            .replace(/```json/g, "")
-            .replace(/```/g, "")
-            .trim();
-        try {
-            return JSON.parse(fixed);
-        } catch (err) {
-            const jsonRegex = /\{[\s\S]*\}/;
-            const match = fixed.match(jsonRegex);
-            if (match) {
-                return JSON.parse(match[0]);
-            }
-            throw err;
-        }
-    }
-}
-
-// 📱 導覽列切換
-function showPage(pageId) {
-    document.getElementById("homePage").style.display = "none";
-    document.getElementById("cameraPage").style.display = "none";
-    document.getElementById("reportPage").style.display = "none";
-    
-    document.getElementById(pageId).style.display = "block";
-    
-    if (pageId === "homePage") track("view_dashboard");
-    if (pageId === "cameraPage") track("view_camera");
-    if (pageId === "reportPage") {
-        track("view_report");
-        drawWeeklyChart(); // 切換到圖表頁面時，執行折線繪製
-    }
-    
-    document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
-    if(pageId === 'homePage') document.querySelector('.tab-item:nth-child(1)').classList.add('active');
-    if(pageId === 'cameraPage') document.querySelector('.tab-item:nth-child(2)').classList.add('active');
-    if(pageId === 'reportPage') document.querySelector('.tab-item:nth-child(3)').classList.add('active');
-}
-
-function openCamera() {
-    track("open_camera");
-    document.getElementById("camera").click();
 }
 
 // 📹 實時視訊鏡頭 (流暢硬體調用 getUserMedia)
@@ -1388,7 +1415,7 @@ F = 高風險
 
         if (!res.ok) {
             if (res.status === 403) {
-                throw new Error("API 反應失敗，代碼: 403 (Forbidden)。您的 OpenRouter 餘額目前應為 $0。付費模型如『gpt-4o』必須在充值後才能執行。<br><br><strong style='color:#ff9f0a;'>💡 1秒白嫖解決方案：</strong><br>請點擊右上角 <strong style='color:white;'>⚙️ 設定按鈕</strong>，將模型大腦切換為『🎁 免費智慧路由 (openrouter/free)』即可不花一分錢完美使用 AIFood 分析！");
+                throw new Error("API 反應失敗，代碼: 403 (Forbidden)。您的 OpenRouter 餘額目前應為 $0。付費模型如『gpt-4o』必須在充值後才能執行。<br><br><strong style='color:#ff9f0a;'>💡 1秒白嫖解決方案：</strong><br>請點擊右上角 <strong style='color:white;'>⚙️ 設定按鈕</strong>，將模型大腦切換為『🎁 免費智慧路由 (openrouter/free)』即可不花一分錢完美運行！");
             } else if (res.status === 401) {
                 throw new Error("API 驗證失敗，代碼: 401 (Unauthorized)。請檢查設定面板中的金鑰是否輸入正確。");
             } else {
@@ -1437,7 +1464,7 @@ F = 高風險
     }
 }
 
-// 🔍 BONUS: 智能食物搜尋與解構 (對接 expectedAuth API 鑑權認證機制)
+// 🤖 智慧食物搜尋：支援 sheet API 授權金鑰控制
 async function searchFoodText() {
     const query = document.getElementById("foodSearchInput").value.trim();
     if (query === "") return;
@@ -1449,7 +1476,6 @@ async function searchFoodText() {
     const sheetAuthKey = getActiveSheetAuth();
 
     try {
-        // 在 API Web App 請求中安全攜帶 auth 授權代碼參數
         let fetchUrl = `${activeSheetUrl}?query=${encodeURIComponent(query)}`;
         if (sheetAuthKey !== "") {
             fetchUrl += `&auth=${encodeURIComponent(sheetAuthKey)}`;
@@ -1459,7 +1485,6 @@ async function searchFoodText() {
         if (dbResponse.ok) {
             let dbResult = await dbResponse.json();
             
-            // 處理預先鑑權出錯提示
             if (dbResult.error && dbResult.error.indexOf("403") !== -1) {
                 throw new Error("Google Sheet 認證失敗：" + dbResult.error);
             }
@@ -1503,7 +1528,7 @@ async function searchFoodText() {
             }
         }
     } catch (dbErr) {
-        console.warn("Google Sheet Database 查詢超時、權限不足或無匹配記錄，自動轉入 AI Fallback 處理:", dbErr);
+        console.warn("Google Sheet Database 查詢無匹配記錄，自動轉入 AI Fallback 處理:", dbErr);
     }
 
     document.getElementById("result").innerHTML = `⏳ 本地資料庫未匹配，正在調用 AI 大腦進行智能解構分析...`;
@@ -1645,9 +1670,80 @@ document.getElementById("camera").addEventListener("change", async function() {
     }
 });
 
+// 🧠 AI 主動輔導洞察引擎 (From Tool to Diet Coach)
+function generateInsights() {
+    let tips = [];
+
+    if (totalSugar > 30) {
+        tips.push("🍹 偵測到今日糖分偏高，可能來自手調飲品或糕點。建議多補充溫水，阻斷血糖連續飆升。");
+    }
+
+    if (totalOil > 40) {
+        tips.push("🍗 油脂累積偏高。可能食咗煎炸類或炒粉麵飯。下餐建議叫「白灼」或「少油去汁」餐點平衡。");
+    }
+
+    if (protein < 40 && cal > 1200) {
+        tips.push("💪 雖然今日熱量充足，但蛋白質比例過低，恐影響肌肉代謝與修復。請於下一餐酌量補點蛋、奶或雞肉。");
+    }
+
+    if (totalSodium > 1500) {
+        tips.push("🧂 鈉攝取已拉警報！這對心血管系統是極大負荷。請立刻多飲水，幫助體內鈉鹽代謝排泄.");
+    }
+
+    const adviceBox = document.getElementById("advice");
+    if (tips.length > 0) {
+        adviceBox.innerHTML = tips.join("<br><br>");
+    } else if (cal > 0) {
+        adviceBox.innerHTML = "✅ 目前各項指標在合理區間！飲食比例很健康完美，繼續保持！";
+    } else {
+        adviceBox.innerHTML = "正在等待您的第一餐拍照或搜尋數據，我將為您實時分析食物作息與給予配餐建議。";
+    }
+}
+
+// 🔒 Firebase 雲端與 Firestore 整合初始化系統 (RULE 3)
+function initFirebaseSystem() {
+    try {
+        if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+            const firebaseConfig = JSON.parse(__firebase_config);
+            const app = firebase.initializeApp(firebaseConfig);
+            auth = firebase.auth();
+            db = firebase.firestore();
+            
+            const initAuth = async () => {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await auth.signInWithCustomToken(__initial_auth_token);
+                } else {
+                    await auth.signInAnonymously();
+                }
+            };
+            
+            initAuth();
+            
+            auth.onAuthStateChanged((user) => {
+                currentUser = user;
+                if (user) {
+                    document.getElementById("syncStatus").innerHTML = `✅ Firebase 雲端連線成功 (UID: ${user.uid.substring(0,8)}...)`;
+                    document.getElementById("syncStatus").style.color = "#30d158";
+                    loadCloudData();
+                } else {
+                    document.getElementById("syncStatus").innerHTML = `⚠️ 未登入，暫存於本機`;
+                    document.getElementById("syncStatus").style.color = "#ff9f0a";
+                }
+            });
+        } else {
+            document.getElementById("syncStatus").innerHTML = `💡 本地 Demo 演示模式 (無 Firebase)`;
+            document.getElementById("syncStatus").style.color = "#8e8e93";
+        }
+    } catch (e) {
+        console.error("Firebase 初始化失敗:", e);
+        document.getElementById("syncStatus").innerHTML = `❌ 雲端連接錯誤 (使用本地記憶體)`;
+        document.getElementById("syncStatus").style.color = "#ff375f";
+    }
+}
+
 // 🔄 物理數據、Apple 三環、成就解鎖、UI 與去重機制
 async function updateUI(f, isOnlyRedraw = false) {
-    // 1️⃣ 食物去重安全閥
+    // 食物去重安全閥
     if (!isOnlyRedraw && f.name) {
         if (isDuplicate(f)) {
             console.log("偵測到重複餐點攝取，已自動為您過濾: ", f.name);
@@ -1717,7 +1813,7 @@ async function updateUI(f, isOnlyRedraw = false) {
         ringCal.style.animation = "glowPulse 3s infinite alternate";
     }
 
-    // 🟢 蛋白質達標霓虹特效
+    // 蛋白質達標霓虹特效
     if (protein >= proteinGoal) {
         ringProtein.style.background = `conic-gradient(#30d158 ${pDeg}deg, #222 ${pDeg}deg)`;
         ringProtein.style.animation = "proteinGlow 1.5s infinite alternate";
@@ -1751,7 +1847,7 @@ async function updateUI(f, isOnlyRedraw = false) {
     // 🧠 觸發主動引導 Coach 洞察
     generateInsights();
 
-    // 💾 離線與雲端快取數據寫入儲存
+    // 離線快取數據寫入儲存
     const dailyStateToSave = {
         cal, protein, carbs, fat,
         totalOil, totalSugar, totalSodium,
@@ -1785,12 +1881,12 @@ function generateDietCoachAdvice(lastFood) {
     if (state === "HIGH_SODIUM" || state === "HIGH_OIL") {
         recommendationText = `💡 **下一餐跨時空防禦配餐推薦**：<br>由於您今天油脂或鈉攝取失調，晚上強烈建議叫 **「白灼芥蘭（去汁） + 蒸魚 / 豆腐配白飯」**，並點 **「凍檸茶（走甜）」**，助您平穩身體代謝，抵消多餘鈉鹽！`;
     } else {
-        recommendationText = `💡 **下一餐配餐推薦**：<br>目前的狀態十分健康，下一餐可安心進食。推薦搭配一些複合碳水化合物，如 **「生菜雞肉沙拉」** 伴一小碗十穀飯，維持完美的體能狀態。`;
+        recommendationText = `💡 **下一餐配餐推薦**：<br>目前的狀態十分健康，下一餐可安心進食。推薦搭配一些複合碳水化合物，如 **「生菜雞肉沙律」** 伴一小碗十穀飯，維持完美的體能狀態。`;
     }
     document.getElementById("recommendation").innerHTML = recommendationText;
 }
 
-// 🍏 實時/原生 Apple Health / HealthKit 通訊橋接接口 (Capacitor/Native Bridge)
+// 🍏 實時/原生 Apple Health / HealthKit 通訊橋接接口
 function triggerAppleHealthSync() {
     let syncEl = document.getElementById("syncStatus");
     syncEl.innerHTML = `⏳ 正在寫入 Apple Health 核心閉環...`;
@@ -1837,11 +1933,27 @@ function animate(id, val) {
     }, 20);
 }
 
+function toBase64(file) {
+    return new Promise(r => {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => r(reader.result.split(',')[1]);
+    });
+}
+
+// ⚡️ iOS 原生級：極致滑動視差滾動效果
+window.addEventListener("scroll", () => {
+    document.querySelectorAll(".card").forEach((card, i) => {
+        let y = window.scrollY * (0.02 * (i + 1));
+        card.style.transform = `perspective(1000px) translateY(${y}px) translateZ(0)`;
+    });
+});
+
 // ⏳ 啟動初始化程序
 window.onload = async function() {
     track("app_launch"); 
     
-    // 1️⃣ 初始化 IndexedDB 斷網快取防禦資料庫 (離線模式)
+    // 初始化 IndexedDB 斷網快取防禦資料庫 (離線模式)
     try {
         await initIndexedDB();
         const offlineData = await readOfflineState();
