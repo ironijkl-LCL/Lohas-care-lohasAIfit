@@ -1,84 +1,213 @@
-function doGet(e) {
-  try {
-    // 🎯 您的專屬試算表 ID 
-    var SPREADSHEET_ID = '1IEturpYhoHSEUlCr_VBoY8wv84RqHBaZuAOktHUFRO4'; 
-    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-    
-    // ==========================================
-    // 1. 讀取 "API" 工作表的資料
-    // ==========================================
-    var apiSheet = ss.getSheetByName("API");
-    var apiData = {};
-    
-    if (apiSheet) {
-      apiData.apiName = apiSheet.getRange("A1").getValue() ? apiSheet.getRange("A1").getValue().toString().trim() : "";
-      apiData.apiKey = apiSheet.getRange("A2").getValue() ? apiSheet.getRange("A2").getValue().toString().trim() : ""; 
-    } else {
-      apiData.error = "找不到名為 'API' 的工作表";
-    }
-    
-    // ==========================================
-    // 2. 讀取 "nutrition_database" 工作表資料
-    // ==========================================
-    var nutritionSheet = ss.getSheetByName("nutrition_database");
-    var foodList = [];
-    
-    if (nutritionSheet) {
-      var lastRow = nutritionSheet.getLastRow();
-      var lastColumn = 18; // A 欄 到 R 欄共 18 欄
-      
-      if (lastRow > 1) {
-        // 取得第一行的欄位標頭 (A1:R1)
-        var headers = nutritionSheet.getRange(1, 1, 1, lastColumn).getValues()[0];
-        // 取得第二行之後的所有食物數據
-        var dataRows = nutritionSheet.getRange(2, 1, lastRow - 1, lastColumn).getValues();
-        
-        // 👥 檢查前端是否有傳入模糊搜尋關鍵字 (?query=xxx)
-        var searchQuery = (e && e.parameter && e.parameter.query) ? e.parameter.query.toString().toLowerCase().trim() : "";
-        
-        // 將數據組裝成 JSON 物件陣列
-        for (var i = 0; i < dataRows.length; i++) {
-          var row = dataRows[i];
-          var foodNameInDb = row[0] ? row[0].toString() : ""; // A欄是 Food Name
-          
-          // 🎯【關鍵核心優化】：如果前端有傳 query，後端直接進行模糊匹配包含篩選
-          if (searchQuery !== "") {
-            if (foodNameInDb.toLowerCase().indexOf(searchQuery) === -1) {
-              continue; // 名字不包含關鍵字，直接跳過這筆
-            }
-          }
-          
-          var foodItem = {};
-          for (var j = 0; j < headers.length; j++) {
-            var headerName = headers[j] ? headers[j].toString().trim() : "Column_" + (j + 1);
-            foodItem[headerName] = row[j];
-          }
-          foodList.push(foodItem);
-        }
-      }
-    } else {
-      return ContentService.createTextOutput(JSON.stringify({ 
-        status: "error", 
-        message: "找不到名為 'nutrition_database' 的工作表，請檢查名稱" 
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    // ==========================================
-    // 3. 整合兩張工作表並回傳安全 JSON
-    // ==========================================
-    var responseData = {
-      status: "success",
-      api_config: apiData,
-      nutrition_data: foodList
-    };
-    
-    return ContentService.createTextOutput(JSON.stringify(responseData))
-                         .setMimeType(ContentService.MimeType.JSON);
-                         
-  } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
-      status: "error", 
-      message: "系統錯誤: " + error.toString() 
-    })).setMimeType(ContentService.MimeType.JSON);
-  }
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AI Nutrition Ultimate++</title>
+<style>
+body {
+    margin: 0;
+    font-family: -apple-system, sans-serif;
+    background: #0a0a0f;
+    color: white;
+    padding-bottom: 110px;
 }
+.card {
+    margin: 16px;
+    padding: 20px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.search-container {
+    display: flex;
+    gap: 10px;
+    margin: 16px;
+}
+.search-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 14px;
+    color: white;
+}
+.search-btn {
+    padding: 0 20px;
+    border-radius: 16px;
+    background: linear-gradient(90deg, #ff9f0a, #ff375f);
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+.rings {
+    width: 120px;
+    height: 120px;
+    margin: 10px auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid #ff9f0a;
+}
+.macro-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    text-align: center;
+    margin-top: 15px;
+}
+.macro-box {
+    background: rgba(255,255,255,0.03);
+    padding: 10px;
+    border-radius: 14px;
+}
+.chart-svg { width: 100%; height: 65px; overflow: visible; }
+.history-item {
+    background: rgba(255,255,255,0.02);
+    padding: 12px;
+    border-radius: 14px;
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+</style>
+</head>
+<body>
+
+<div class="search-container">
+    <input type="text" class="search-input" id="foodSearchInput" placeholder="輸入食物名稱 (例如: 絲襪奶茶)">
+    <button class="search-btn" onclick="searchFoodText()">🔍 搜尋</button>
+</div>
+
+<div id="result" style="font-size: 13px; color: #ff9f0a; margin: 0 16px;"></div>
+
+<div class="card" style="text-align: center;">
+    <h3>🔥 今日熱量進度</h3>
+    <div class="rings">
+        <div>
+            <div id="cal" style="font-size: 24px; font-weight: bold;">0</div>
+            <div style="font-size: 10px; color: #8e8e93;">KCAL</div>
+        </div>
+    </div>
+    
+    <div class="macro-grid">
+        <div class="macro-box"><div>🥩 蛋白質</div><div id="protein">0g</div></div>
+        <div class="macro-box"><div>🍞 碳水</div><div id="carbs">0g</div></div>
+        <div class="macro-box"><div>🧈 脂肪</div><div id="fat">0g</div></div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>📈 本週卡路里動態趨勢</h3>
+    <svg class="chart-svg" viewBox="0 0 300 60">
+        <path id="chartPathLine" d="M 10 50 L 290 50" fill="none" stroke="#ff9f0a" stroke-width="3"/>
+        <g id="chartGridX"></g>
+    </svg>
+</div>
+
+<div class="card">
+    <h3>📜 今日餐食記錄</h3>
+    <div id="history">尚無數據</div>
+</div>
+
+<script>
+// 直接鎖定正式後端網址
+const API_URL = "https://script.google.com/macros/s/AKfycbyUUlD_-S7d22LnTjoFDtHSWkuwkTWFJsyjmLgoJKuX-6HXJSc2ECFO1p037E1qaTvX/exec";
+
+let cal = 0, protein = 0, carbs = 0, fat = 0;
+let weeklyData = [1400, 1500, 1350, 1600, 0]; // 預設週均趨勢數據
+
+async function searchFoodText() {
+    const query = document.getElementById("foodSearchInput").value.trim();
+    if (!query) return;
+    
+    document.getElementById("result").innerHTML = "⏳ 正在搜尋雲端試算表資料庫...";
+    
+    try {
+        // 直接發送純淨 GET 請求，絕不夾帶任何引發錯誤的標頭
+        let res = await fetch(API_URL); 
+        
+        if (res.ok) {
+            let resData = await res.json();
+            // 對齊你 Apps Script 中實際回傳的 'nutrition_data' 陣列
+            let foodList = resData.nutrition_data || [];
+            
+            // 🎯【關鍵修正】改成模糊比對：只要試算表裡的食物名稱包含你輸入的字（如"絲襪奶茶"）就匹配成功！
+            let targetItem = foodList.find(item => {
+                let dbName = (item["Food Name"] || "").toString().toLowerCase();
+                return dbName.includes(query.toLowerCase());
+            });
+            
+            if (targetItem) {
+                document.getElementById("result").innerHTML = "<span style='color:#30d158;'>✅ 成功抓取試算表數據！</span>";
+                
+                // 清洗物件屬性名稱，抹除空格與括號以確保對對接成功
+                let cleanItem = {};
+                for (let key in targetItem) {
+                    let cleanKey = key.toString().toLowerCase().replace(/[^a-z0-9]/g, "");
+                    cleanItem[cleanKey] = targetItem[key];
+                }
+                
+                // 讀取數值並累加
+                let fCal = Math.round(parseFloat(cleanItem["calories"] || 0));
+                let fP = Math.round(parseFloat(cleanItem["proteing"] || 0));
+                let fC = Math.round(parseFloat(cleanItem["carbsg"] || 0));
+                let fF = Math.round(parseFloat(cleanItem["fatg"] || 0));
+                
+                cal += fCal;
+                protein += fP;
+                carbs += fC;
+                fat += fF;
+                
+                // 1. 刷新主面板數據
+                document.getElementById("cal").innerText = cal;
+                document.getElementById("protein").innerText = protein + "g";
+                document.getElementById("carbs").innerText = carbs + "g";
+                document.getElementById("fat").innerText = fat + "g";
+                
+                // 2. 寫入今日餐食歷史紀錄
+                let histBox = document.getElementById("history");
+                if (histBox.innerText === "尚無數據") histBox.innerHTML = "";
+                histBox.innerHTML += `<div class="history-item"><span>${targetItem["Food Name"]}</span><span style="color:#ff9f0a;">+${fCal} KCAL</span></div>`;
+                
+                // 3. 聯動更新折線趨勢圖
+                weeklyData[weeklyData.length - 1] = cal;
+                drawChart();
+                
+                document.getElementById("foodSearchInput").value = "";
+            } else {
+                document.getElementById("result").innerHTML = "";
+                alert("在試算表中找不到包含「" + query + "」的食物，請檢查拼字！");
+            }
+        } else {
+            alert("後端伺服器回應異常，請確認 Apps Script 已成功發布為 Anyone 權限。");
+        }
+    } catch (err) {
+        alert("搜尋失敗，錯誤原因: " + err.toString());
+    }
+}
+
+function drawChart() {
+    let stepX = 260 / (weeklyData.length - 1);
+    let pts = [];
+    let txt = "";
+    
+    weeklyData.forEach((val, idx) => {
+        let x = 20 + idx * stepX;
+        let y = 50 - (val / 2500 * 40);
+        pts.push(`${x},${y}`);
+        txt += `<text x="${x}" y="58" fill="#8e8e93" font-size="8" text-anchor="middle">${20+idx}/6</text>`;
+    });
+    
+    document.getElementById("chartPathLine").setAttribute("d", "M " + pts.join(" L "));
+    document.getElementById("chartGridX").innerHTML = txt;
+}
+
+window.onload = function() {
+    drawChart();
+};
+</script>
+</body>
+</html>
