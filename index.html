@@ -58,37 +58,61 @@ body {
     text-align: center;
     margin-top: 15px;
 }
-.micro-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    text-align: center;
-    margin-top: 15px;
-}
 .macro-box {
     background: rgba(255,255,255,0.03);
     padding: 10px;
     border-radius: 14px;
 }
+.sub-macro-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+    font-size: 13px;
+}
+.sub-macro-box {
+    background: rgba(255,255,255,0.015);
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid rgba(255,255,255,0.03);
+}
+.sub-macro-box span:last-child {
+    color: #aeaea3;
+}
+.micronutrient-title {
+    font-size: 14px;
+    color: #ff375f;
+    margin: 16px 0 8px 0;
+    font-weight: bold;
+    text-align: left;
+}
+.micro-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    font-size: 11px;
+    text-align: center;
+}
 .micro-box {
     background: rgba(255,255,255,0.02);
-    padding: 8px 4px;
-    border-radius: 10px;
+    padding: 6px 4px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.02);
+}
+.micro-val {
+    color: #30d158;
+    font-weight: bold;
+    margin-top: 2px;
+}
+.iddsi-badge {
+    background: #5856d6;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
     font-size: 11px;
-}
-.micro-title {
-    color: #8e8e93;
-    font-size: 10px;
-    margin-bottom: 4px;
-}
-.section-title {
-    font-size: 14px;
-    color: #ff9f0a;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    text-align: left;
-    border-left: 3px solid #ff9f0a;
-    padding-left: 8px;
+    display: inline-block;
 }
 .chart-svg { width: 100%; height: 65px; overflow: visible; }
 .history-item {
@@ -98,6 +122,7 @@ body {
     margin-top: 8px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 </style>
 </head>
@@ -111,7 +136,7 @@ body {
 <div id="result" style="font-size: 13px; color: #ff9f0a; margin: 0 16px;"></div>
 
 <div class="card" style="text-align: center;">
-    <h3>🔥 今日熱量進度</h3>
+    <h3>🔥 今日熱量與營養總和</h3>
     <div class="rings">
         <div>
             <div id="cal" style="font-size: 24px; font-weight: bold;">0</div>
@@ -119,36 +144,34 @@ body {
         </div>
     </div>
     
-    <div class="section-title">核心大分子營養素</div>
     <div class="macro-grid">
-        <div class="macro-box"><div>🥩 蛋白質</div><div id="protein">0g</div></div>
-        <div class="macro-box"><div>🍞 碳水</div><div id="carbs">0g</div></div>
-        <div class="macro-box"><div>🧈 脂肪</div><div id="fat">0g</div></div>
+        <div class="macro-box"><div>🥩 蛋白質</div><div id="protein" style="font-weight: bold; color: #ff9f0a;">0g</div></div>
+        <div class="macro-box"><div>🍞 碳水</div><div id="carbs" style="font-weight: bold; color: #ffcc00;">0g</div></div>
+        <div class="macro-box"><div>🧈 脂肪</div><div id="fat" style="font-weight: bold; color: #4cd964;">0g</div></div>
     </div>
 
-    <div class="section-title">進階脂肪與糖分</div>
-    <div class="macro-grid">
-        <div class="macro-box" style="background: rgba(255,5b,74,0.05);"><div>🍟 飽和脂肪</div><div id="satfat">0g</div></div>
-        <div class="macro-box" style="background: rgba(255,5b,74,0.05);"><div>🍿 反式脂肪</div><div id="transfat">0g</div></div>
-        <div class="macro-box" style="background: rgba(255,149,0,0.05);"><div>🍳 膽固醇</div><div id="cholesterol">0mg</div></div>
-    </div>
-    <div class="macro-grid" style="grid-template-columns: repeat(2, 1fr); margin-top: 8px;">
-        <div class="macro-box" style="background: rgba(255,45,85,0.05);"><div>🍬 糖分</div><div id="sugar">0g</div></div>
-        <div class="macro-box" style="background: rgba(52,199,89,0.05);"><div>🥗 膳食纖維</div><div id="fiber">0g</div></div>
+    <div class="sub-macro-grid">
+        <div class="sub-macro-box"><span>⚖️ 累計克數</span><span id="grams">0g</span></div>
+        <div class="sub-macro-box"><span>🍬 糖分</span><span id="sugar">0g</span></div>
+        <div class="sub-macro-box"><span>🔒 飽和脂肪</span><span id="satFat">0g</span></div>
+        <div class="sub-macro-box"><span>⚠️ 反式脂肪</span><span id="transFat">0g</span></div>
+        <div class="sub-macro-box"><span>🍳 膽固醇</span><span id="cholesterol">0mg</span></div>
+        <div class="sub-macro-box"><span>🌿 膳食纖維</span><span id="fiber">0g</span></div>
+        <div class="sub-macro-box" style="grid-column: span 2; display: flex; justify-content: space-between; align-items: center;">
+            <span>🥣 IDDSI 安全等級</span>
+            <div id="iddsiMain"><span class="iddsi-badge">--</span></div>
+        </div>
     </div>
 
-    <div class="section-title">8 種關鍵微量元素</div>
+    <div class="micronutrient-title">🧬 今日微量元素累計</div>
     <div class="micro-grid">
-        <div class="micro-box"><div class="micro-title">🦴 鈣 (Ca)</div><div id="ca">0mg</div></div>
-        <div class="micro-box"><div class="micro-title">🧭 鐵 (Fe)</div><div id="fe">0mg</div></div>
-        <div class="micro-box"><div class="micro-title">🔩 鎂 (Mg)</div><div id="mg">0mg</div></div>
-        <div class="micro-box"><div class="micro-title">🧂 鈉 (Na)</div><div id="na">0mg</div></div>
-    </div>
-    <div class="micro-grid" style="margin-top: 8px;">
-        <div class="micro-box"><div class="micro-title">🍌 鉀 (K)</div><div id="k">0mg</div></div>
-        <div class="micro-box"><div class="micro-title">🛡️ 鋅 (Zn)</div><div id="zn">0mg</div></div>
-        <div class="micro-box"><div class="micro-title">🍊 維他命C</div><div id="vitc">0mg</div></div>
-        <div class="micro-box" style="opacity: 0.5;"><div class="micro-title">✨ 綜合</div><div>--</div></div>
+        <div class="micro-box"><div>🦴 鈣</div><div class="micro-val" id="micro_ca">0mg</div></div>
+        <div class="micro-box"><div>⚓ 鐵</div><div class="micro-val" id="micro_fe">0mg</div></div>
+        <div class="micro-box"><div>🧪 鎂</div><div class="micro-val" id="micro_mg">0mg</div></div>
+        <div class="micro-box"><div>🧂 鈉</div><div class="micro-val" id="micro_na">0mg</div></div>
+        <div class="micro-box"><div>🍌 鉀</div><div class="micro-val" id="micro_k">0mg</div></div>
+        <div class="micro-box"><div>🛡️ 鋅</div><div class="micro-val" id="micro_zn">0mg</div></div>
+        <div class="micro-box"><div>🍊 維他命C</div><div class="micro-val" id="micro_vitc">0mg</div></div>
     </div>
 </div>
 
@@ -166,14 +189,24 @@ body {
 </div>
 
 <script>
+// 🎯 請在此處替換為你的 Apps Script 正式網址
 const API_URL = "https://script.google.com/macros/s/AKfycbyUUlD_-S7d22LnTjoFDtHSWkuwkTWFJsyjmLgoJKuX-6HXJSc2ECFO1p037E1qaTvX/exec";
 
-// 擴充全域追蹤變數，包含微量元素與進階指標
-let cal = 0, protein = 0, carbs = 0, fat = 0;
-let satfat = 0, transfat = 0, cholesterol = 0, sugar = 0, fiber = 0;
-let ca = 0, fe = 0, mg = 0, na = 0, k = 0, zn = 0, vitc = 0;
+let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0;
+let satFat = 0, transFat = 0, cholesterol = 0, sugar = 0, fiber = 0;
+let micro_ca = 0, micro_fe = 0, micro_mg = 0, micro_na = 0, micro_k = 0, micro_zn = 0, micro_vitc = 0;
 
-let weeklyData = [1400, 1500, 1350, 1600, 0]; // 預設週均趨勢數據
+let weeklyData = [1400, 1500, 1350, 1600, 0];
+
+function parseValue(val) {
+    if (val === undefined || val === null || val === '') return 0;
+    let num = parseFloat(val.toString().replace(/[^\d.-]/g, ''));
+    return isNaN(num) ? 0 : num;
+}
+
+function formatOutput(num) {
+    return Number(num.toFixed(2)).toString();
+}
 
 async function searchFoodText() {
     const query = document.getElementById("foodSearchInput").value.trim();
@@ -187,88 +220,76 @@ async function searchFoodText() {
             let resData = await res.json();
             let foodList = resData.nutrition_data || [];
             
+            // 模糊搜尋食物名稱
             let targetItem = foodList.find(item => {
-                let dbName = (item["Food Name"] || "").toString().toLowerCase();
+                let dbName = (item["foodname"] || "").toString().toLowerCase();
                 return dbName.includes(query.toLowerCase());
             });
-
+            
             if (targetItem) {
                 document.getElementById("result").innerHTML = "<span style='color:#30d158;'>✅ 成功抓取試算表數據！</span>";
                 
-                // 清洗物件屬性名稱，抹除空格、特殊符號與括號以確保對接成功
-                let cleanItem = {};
-                for (let key in targetItem) {
-                    let cleanKey = key.toString().toLowerCase().replace(/[^a-z0-9]/g, "");
-                    cleanItem[cleanKey] = targetItem[key];
-                }
-                
-                // 讀取數據並進行嚴格的四捨五入優化處理
-                let fCal = Math.round(parseFloat(cleanItem["calories"] || 0));
-                let fP = Math.round(parseFloat(cleanItem["proteing"] || 0));
-                let fC = Math.round(parseFloat(cleanItem["carbsg"] || 0));
-                let fF = Math.round(parseFloat(cleanItem["fatg"] || 0));
-                
-                // 擴充進階與微量元素提取邏輯
-                let fSatFat = Math.round(parseFloat(cleanItem["saturatedfatg"] || cleanItem["satfatg"] || 0));
-                let fTransFat = Math.round(parseFloat(cleanItem["transfatg"] || 0));
-                let fChol = Math.round(parseFloat(cleanItem["cholesterolmg"] || cleanItem["cholmg"] || 0));
-                let fSugar = Math.round(parseFloat(cleanItem["sugarg"] || 0));
-                let fFiber = Math.round(parseFloat(cleanItem["dietaryfiberg"] || cleanItem["fiberg"] || 0));
-                
-                let fCa = Math.round(parseFloat(cleanItem["calciummg"] || cleanItem["camg"] || 0));
-                let fFe = Math.round(parseFloat(cleanItem["ironmg"] || cleanItem["femg"] || 0));
-                let fMg = Math.round(parseFloat(cleanItem["magnesiummg"] || cleanItem["mgmg"] || 0));
-                let fNa = Math.round(parseFloat(cleanItem["sodiummg"] || cleanItem["namg"] || 0));
-                let fK = Math.round(parseFloat(cleanItem["potassiummg"] || cleanItem["kmg"] || 0));
-                let fZn = Math.round(parseFloat(cleanItem["zincmg"] || cleanItem["znmg"] || 0));
-                let fVitC = Math.round(parseFloat(cleanItem["vitamincmg"] || cleanItem["vitcmg"] || 0));
-
-                // 數據累加
+                // 1. 大宗數據累加
+                let fCal = Math.round(parseValue(targetItem["calories"]));
                 cal += fCal;
-                protein += fP;
-                carbs += fC;
-                fat += fF;
-                satfat += fSatFat;
-                transfat += fTransFat;
-                cholesterol += fChol;
-                sugar += fSugar;
-                fiber += fFiber;
-                ca += fCa;
-                fe += fFe;
-                mg += fMg;
-                na += fNa;
-                k += fK;
-                zn += fZn;
-                vitc += fVitC;
+                grams += parseValue(targetItem["grams"]);
+                protein += parseValue(targetItem["protein"]);
+                carbs += parseValue(targetItem["carbs"]);
+                fat += parseValue(targetItem["fat"]);
 
-                // 1. 刷新主面板數據 (核心大分子)
-                document.getElementById("cal").innerText = cal;
-                document.getElementById("protein").innerText = protein + "g";
-                document.getElementById("carbs").innerText = carbs + "g";
-                document.getElementById("fat").innerText = fat + "g";
+                // 2. 進階細項與微量元素累加
+                fiber += parseValue(targetItem["dietaryfiber"]);
+                sugar += parseValue(targetItem["sugar"]);
+                satFat += parseValue(targetItem["saturatedfat"]);
+                transFat += parseValue(targetItem["transfat"]);
+                cholesterol += parseValue(targetItem["cholesterol"]);
                 
-                // 刷新進階指標
-                document.getElementById("satfat").innerText = satfat + "g";
-                document.getElementById("transfat").innerText = transfat + "g";
-                document.getElementById("cholesterol").innerText = cholesterol + "mg";
-                document.getElementById("sugar").innerText = sugar + "g";
-                document.getElementById("fiber").innerText = fiber + "g";
+                micro_ca += parseValue(targetItem["calcium"]);
+                micro_fe += parseValue(targetItem["iron"]);
+                micro_mg += parseValue(targetItem["magnesium"]);
+                micro_na += parseValue(targetItem["sodium"]);
+                micro_k += parseValue(targetItem["potassium"]);
+                micro_zn += parseValue(targetItem["zinc"]);
+                micro_vitc += parseValue(targetItem["vitaminc"]);
 
-                // 刷新微量元素面板
-                document.getElementById("ca").innerText = ca + "mg";
-                document.getElementById("fe").innerText = fe + "mg";
-                document.getElementById("mg").innerText = mg + "mg";
-                document.getElementById("na").innerText = na + "mg";
-                document.getElementById("k").innerText = k + "mg";
-                document.getElementById("zn").innerText = zn + "mg";
-                document.getElementById("vitc").innerText = vitc + "mg";
+                // 3. 讀取 IDDSI
+                let iddsiVal = targetItem["iddsi"] || "--";
 
-                // 2. 寫入今日餐食歷史紀錄
+                // ----- 刷新前端 UI -----
+                document.getElementById("cal").innerText = cal;
+                document.getElementById("grams").innerText = formatOutput(grams) + "g";
+                document.getElementById("protein").innerText = formatOutput(protein) + "g";
+                document.getElementById("carbs").innerText = formatOutput(carbs) + "g";
+                document.getElementById("fat").innerText = formatOutput(fat) + "g";
+                
+                document.getElementById("sugar").innerText = formatOutput(sugar) + "g";
+                document.getElementById("satFat").innerText = formatOutput(satFat) + "g";
+                document.getElementById("transFat").innerText = formatOutput(transFat) + "g";
+                document.getElementById("cholesterol").innerText = formatOutput(cholesterol) + "mg";
+                document.getElementById("fiber").innerText = formatOutput(fiber) + "g";
+                document.getElementById("iddsiMain").innerHTML = `<span class="iddsi-badge">${iddsiVal}</span>`;
+                
+                document.getElementById("micro_ca").innerText = formatOutput(micro_ca) + "mg";
+                document.getElementById("micro_fe").innerText = formatOutput(micro_fe) + "mg";
+                document.getElementById("micro_mg").innerText = formatOutput(micro_mg) + "mg";
+                document.getElementById("micro_na").innerText = formatOutput(micro_na) + "mg";
+                document.getElementById("micro_k").innerText = formatOutput(micro_k) + "mg";
+                document.getElementById("micro_zn").innerText = formatOutput(micro_zn) + "mg";
+                document.getElementById("micro_vitc").innerText = formatOutput(micro_vitc) + "mg";
+                
+                // 歷史餐食紀錄
+                let displayFoodName = targetItem["foodname"] || "未知食物";
                 let histBox = document.getElementById("history");
                 if (histBox.innerText === "尚無數據") histBox.innerHTML = "";
-                histBox.innerHTML += `<div class="history-item"><span>${targetItem["Food Name"]}</span><span style="color:#ff9f0a;">+${fCal} KCAL</span></div>`;
+                histBox.innerHTML += `
+                    <div class="history-item">
+                        <div>
+                            <div style="font-weight:bold;">${displayFoodName} (${formatOutput(parseValue(targetItem["grams"]))}g)</div>
+                            <div style="font-size:11px; color:#aaa; margin-top:2px;">IDDSI: ${iddsiVal}</div>
+                        </div>
+                        <span style="color:#ff9f0a; font-weight:bold;">+${fCal} KCAL</span>
+                    </div>`;
                 
-                // 3. 聯動更新折線趨勢圖
                 weeklyData[weeklyData.length - 1] = cal;
                 drawChart();
                 
