@@ -41,6 +41,28 @@ body {
     font-weight: bold;
     cursor: pointer;
 }
+.toggle-panel-btn {
+    display: block;
+    width: calc(100% - 32px);
+    margin: 16px auto;
+    padding: 14px;
+    border-radius: 16px;
+    background: linear-gradient(90deg, #1d1d26, #2c2c3e);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ff9f0a;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+}
+.toggle-panel-btn:active {
+    transform: scale(0.98);
+}
+#nutritionTotalPanel {
+    display: none; /* 今日累計總和預設隱藏 */
+}
 .rings {
     width: 120px;
     height: 120px;
@@ -49,8 +71,10 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 4px solid #ff9f0a;
 }
+.ring-single { border: 4px solid #ff375f; }
+.ring-total { border: 4px solid #ff9f0a; }
+
 .macro-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -135,9 +159,64 @@ body {
 
 <div id="result" style="font-size: 13px; color: #ff9f0a; margin: 0 16px;"></div>
 
-<div class="card" style="text-align: center;">
-    <h3>🔥 今日熱量與營養總和</h3>
-    <div class="rings">
+<div class="card">
+    <h3>📈 本週卡路里動態趨勢</h3>
+    <svg class="chart-svg" viewBox="0 0 300 60">
+        <path id="chartPathLine" d="M 10 50 L 290 50" fill="none" stroke="#ff9f0a" stroke-width="3"/>
+        <g id="chartGridX"></g>
+    </svg>
+</div>
+
+<div class="card" id="singleQueryResultCard" style="text-align: center;">
+    <h3>🔍 熱量與營養查詢結果 (<span id="single_foodname" style="color: #ff375f;">請輸入食物搜尋</span>)</h3>
+    <div class="rings ring-single">
+        <div>
+            <div id="single_cal" style="font-size: 24px; font-weight: bold; color: #ff375f;">0</div>
+            <div style="font-size: 10px; color: #8e8e93;">KCAL</div>
+        </div>
+    </div>
+    
+    <div class="macro-grid">
+        <div class="macro-box"><div>🥩 蛋白質</div><div id="single_protein" style="font-weight: bold; color: #ff9f0a;">0g</div></div>
+        <div class="macro-box"><div>🍞 碳水</div><div id="single_carbs" style="font-weight: bold; color: #ffcc00;">0g</div></div>
+        <div class="macro-box"><div>🧈 脂肪</div><div id="single_fat" style="font-weight: bold; color: #4cd964;">0g</div></div>
+    </div>
+
+    <div class="sub-macro-grid">
+        <div class="sub-macro-box"><span>⚖️ 食物克數</span><span id="single_grams">0g</span></div>
+        <div class="sub-macro-box"><span>🍬 糖分</span><span id="single_sugar">0g</span></div>
+        <div class="sub-macro-box"><span>🔒 飽和脂肪</span><span id="single_satFat">0g</span></div>
+        <div class="sub-macro-box"><span>⚠️ 反式脂肪</span><span id="single_transFat">0g</span></div>
+        <div class="sub-macro-box"><span>🍳 膽固醇</span><span id="single_cholesterol">0mg</span></div>
+        <div class="sub-macro-box"><span>🌿 膳食纖維</span><span id="single_fiber">0g</span></div>
+        <div class="sub-macro-box" style="grid-column: span 2; display: flex; justify-content: space-between; align-items: center;">
+            <span>🥣 IDDSI 安全等級</span>
+            <div id="single_iddsiMain"><span class="iddsi-badge">--</span></div>
+        </div>
+    </div>
+
+    <div class="micronutrient-title">🧬 單項微量元素指標</div>
+    <div class="micro-grid">
+        <div class="micro-box"><div>🦴 鈣</div><div class="micro-val" id="single_micro_ca">0mg</div></div>
+        <div class="micro-box"><div>⚓ 鐵</div><div class="micro-val" id="single_micro_fe">0mg</div></div>
+        <div class="micro-box"><div>🧪 鎂</div><div class="micro-val" id="micro_mg" style="display:none;"></div><div class="micro-val" id="single_micro_mg">0mg</div></div>
+        <div class="micro-box"><div>🧂 鈉</div><div class="micro-val" id="single_micro_na">0mg</div></div>
+        <div class="micro-box"><div>🍌 鉀</div><div class="micro-val" id="single_micro_k">0mg</div></div>
+        <div class="micro-box"><div>🛡️ 鋅</div><div class="micro-val" id="single_micro_zn">0mg</div></div>
+        <div class="micro-box"><div>🍊 維他命C</div><div class="micro-val" id="single_micro_vitc">0mg</div></div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>📜 今日餐食記錄</h3>
+    <div id="history">尚無數據</div>
+</div>
+
+<button class="toggle-panel-btn" onclick="toggleNutritionPanel()">📊 展開今日熱量與營養總和</button>
+
+<div class="card" id="nutritionTotalPanel" style="text-align: center;">
+    <h3>🔥 今日熱量與營養總和 (全天累計)</h3>
+    <div class="rings ring-total">
         <div>
             <div id="cal" style="font-size: 24px; font-weight: bold;">0</div>
             <div style="font-size: 10px; color: #8e8e93;">KCAL</div>
@@ -158,7 +237,7 @@ body {
         <div class="sub-macro-box"><span>🍳 膽固醇</span><span id="cholesterol">0mg</span></div>
         <div class="sub-macro-box"><span>🌿 膳食纖維</span><span id="fiber">0g</span></div>
         <div class="sub-macro-box" style="grid-column: span 2; display: flex; justify-content: space-between; align-items: center;">
-            <span>🥣 IDDSI 安全等級</span>
+            <span>🥣 當前食物 IDDSI</span>
             <div id="iddsiMain"><span class="iddsi-badge">--</span></div>
         </div>
     </div>
@@ -175,28 +254,28 @@ body {
     </div>
 </div>
 
-<div class="card">
-    <h3>📈 本週卡路里動態趨勢</h3>
-    <svg class="chart-svg" viewBox="0 0 300 60">
-        <path id="chartPathLine" d="M 10 50 L 290 50" fill="none" stroke="#ff9f0a" stroke-width="3"/>
-        <g id="chartGridX"></g>
-    </svg>
-</div>
-
-<div class="card">
-    <h3>📜 今日餐食記錄</h3>
-    <div id="history">尚無數據</div>
-</div>
-
 <script>
-// 🎯 請在此處替換為你的 Apps Script 正式網址
 const API_URL = "https://script.google.com/macros/s/AKfycbyUUlD_-S7d22LnTjoFDtHSWkuwkTWFJsyjmLgoJKuX-6HXJSc2ECFO1p037E1qaTvX/exec";
 
+// 初始化全天累計數據
 let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0;
 let satFat = 0, transFat = 0, cholesterol = 0, sugar = 0, fiber = 0;
 let micro_ca = 0, micro_fe = 0, micro_mg = 0, micro_na = 0, micro_k = 0, micro_zn = 0, micro_vitc = 0;
 
 let weeklyData = [1400, 1500, 1350, 1600, 0];
+
+function toggleNutritionPanel() {
+    let panel = document.getElementById("nutritionTotalPanel");
+    let btn = document.querySelector(".toggle-panel-btn");
+    if (panel.style.display === "none" || panel.style.display === "") {
+        panel.style.display = "block";
+        btn.innerText = "▲ 收合今日熱量與營養總和";
+        panel.scrollIntoView({ behavior: 'smooth' });
+    } else {
+        panel.style.display = "none";
+        btn.innerText = "📊 展開今日熱量與營養總和";
+    }
+}
 
 function parseValue(val) {
     if (val === undefined || val === null || val === '') return 0;
@@ -220,7 +299,6 @@ async function searchFoodText() {
             let resData = await res.json();
             let foodList = resData.nutrition_data || [];
             
-            // 模糊搜尋食物名稱
             let targetItem = foodList.find(item => {
                 let dbName = (item["foodname"] || "").toString().toLowerCase();
                 return dbName.includes(query.toLowerCase());
@@ -229,39 +307,75 @@ async function searchFoodText() {
             if (targetItem) {
                 document.getElementById("result").innerHTML = "<span style='color:#30d158;'>✅ 成功抓取試算表數據！</span>";
                 
-                // 1. 大宗數據累加
+                // 提取單次查詢數據
                 let fCal = Math.round(parseValue(targetItem["calories"]));
-                cal += fCal;
-                grams += parseValue(targetItem["grams"]);
-                protein += parseValue(targetItem["protein"]);
-                carbs += parseValue(targetItem["carbs"]);
-                fat += parseValue(targetItem["fat"]);
-
-                // 2. 進階細項與微量元素累加
-                fiber += parseValue(targetItem["dietaryfiber"]);
-                sugar += parseValue(targetItem["sugar"]);
-                satFat += parseValue(targetItem["saturatedfat"]);
-                transFat += parseValue(targetItem["transfat"]);
-                cholesterol += parseValue(targetItem["cholesterol"]);
+                let fGrams = parseValue(targetItem["grams"]);
+                let fProtein = parseValue(targetItem["protein"]);
+                let fCarbs = parseValue(targetItem["carbs"]);
+                let fFat = parseValue(targetItem["fat"]);
+                let fFiber = parseValue(targetItem["dietaryfiber"]);
+                let fSugar = parseValue(targetItem["sugar"]);
+                let fSatFat = parseValue(targetItem["saturatedfat"]);
+                let fTransFat = parseValue(targetItem["transfat"]);
+                let fChol = parseValue(targetItem["cholesterol"]);
                 
-                micro_ca += parseValue(targetItem["calcium"]);
-                micro_fe += parseValue(targetItem["iron"]);
-                micro_mg += parseValue(targetItem["magnesium"]);
-                micro_na += parseValue(targetItem["sodium"]);
-                micro_k += parseValue(targetItem["potassium"]);
-                micro_zn += parseValue(targetItem["zinc"]);
-                micro_vitc += parseValue(targetItem["vitaminc"]);
-
-                // 3. 讀取 IDDSI
+                let fCa = parseValue(targetItem["calcium"]);
+                let fFe = parseValue(targetItem["iron"]);
+                let fMg = parseValue(targetItem["magnesium"]);
+                let fNa = parseValue(targetItem["sodium"]);
+                let fK = parseValue(targetItem["potassium"]);
+                let fZn = parseValue(targetItem["zinc"]);
+                let fVitC = parseValue(targetItem["vitaminc"]);
                 let iddsiVal = targetItem["iddsi"] || "--";
 
-                // ----- 刷新前端 UI -----
+                // 🎯 A. 刷新「單次熱量與營養查詢結果」面板 (無累加)
+                document.getElementById("single_foodname").innerText = targetItem["foodname"];
+                document.getElementById("single_cal").innerText = fCal;
+                document.getElementById("single_grams").innerText = formatOutput(fGrams) + "g";
+                document.getElementById("single_protein").innerText = formatOutput(fProtein) + "g";
+                document.getElementById("single_carbs").innerText = formatOutput(fCarbs) + "g";
+                document.getElementById("single_fat").innerText = formatOutput(fFat) + "g";
+                document.getElementById("single_sugar").innerText = formatOutput(fSugar) + "g";
+                document.getElementById("single_satFat").innerText = formatOutput(fSatFat) + "g";
+                document.getElementById("single_transFat").innerText = formatOutput(fTransFat) + "g";
+                document.getElementById("single_cholesterol").innerText = formatOutput(fChol) + "mg";
+                document.getElementById("single_fiber").innerText = formatOutput(fFiber) + "g";
+                document.getElementById("single_iddsiMain").innerHTML = `<span class="iddsi-badge">${iddsiVal}</span>`;
+                
+                document.getElementById("single_micro_ca").innerText = formatOutput(fCa) + "mg";
+                document.getElementById("single_micro_fe").innerText = formatOutput(fFe) + "mg";
+                document.getElementById("single_micro_mg").innerText = formatOutput(fMg) + "mg";
+                document.getElementById("single_micro_na").innerText = formatOutput(fNa) + "mg";
+                document.getElementById("single_micro_k").innerText = formatOutput(fK) + "mg";
+                document.getElementById("single_micro_zn").innerText = formatOutput(fZn) + "mg";
+                document.getElementById("single_micro_vitc").innerText = formatOutput(fVitC) + "mg";
+
+                // B. 全天大宗數據累加
+                cal += fCal;
+                grams += fGrams;
+                protein += fProtein;
+                carbs += fCarbs;
+                fat += fFat;
+                fiber += fFiber;
+                sugar += fSugar;
+                satFat += fSatFat;
+                transFat += fTransFat;
+                cholesterol += fChol;
+                
+                micro_ca += fCa;
+                micro_fe += fFe;
+                micro_mg += fMg;
+                micro_na += fNa;
+                micro_k += fK;
+                micro_zn += fZn;
+                micro_vitc += fVitC;
+
+                // C. 刷新「今日熱量與營養總和」累計面板 (隱藏抽屜內)
                 document.getElementById("cal").innerText = cal;
                 document.getElementById("grams").innerText = formatOutput(grams) + "g";
                 document.getElementById("protein").innerText = formatOutput(protein) + "g";
                 document.getElementById("carbs").innerText = formatOutput(carbs) + "g";
                 document.getElementById("fat").innerText = formatOutput(fat) + "g";
-                
                 document.getElementById("sugar").innerText = formatOutput(sugar) + "g";
                 document.getElementById("satFat").innerText = formatOutput(satFat) + "g";
                 document.getElementById("transFat").innerText = formatOutput(transFat) + "g";
@@ -277,23 +391,26 @@ async function searchFoodText() {
                 document.getElementById("micro_zn").innerText = formatOutput(micro_zn) + "mg";
                 document.getElementById("micro_vitc").innerText = formatOutput(micro_vitc) + "mg";
                 
-                // 歷史餐食紀錄
+                // D. 歷史餐食記錄
                 let displayFoodName = targetItem["foodname"] || "未知食物";
                 let histBox = document.getElementById("history");
                 if (histBox.innerText === "尚無數據") histBox.innerHTML = "";
                 histBox.innerHTML += `
                     <div class="history-item">
                         <div>
-                            <div style="font-weight:bold;">${displayFoodName} (${formatOutput(parseValue(targetItem["grams"]))}g)</div>
+                            <div style="font-weight:bold;">${displayFoodName} (${formatOutput(fGrams)}g)</div>
                             <div style="font-size:11px; color:#aaa; margin-top:2px;">IDDSI: ${iddsiVal}</div>
                         </div>
                         <span style="color:#ff9f0a; font-weight:bold;">+${fCal} KCAL</span>
                     </div>`;
                 
+                // 動態趨勢圖聯動
                 weeklyData[weeklyData.length - 1] = cal;
                 drawChart();
                 
                 document.getElementById("foodSearchInput").value = "";
+                // 自動將焦點移回單次查詢結果卡片，使用者體驗更佳
+                document.getElementById("singleQueryResultCard").scrollIntoView({ behavior: 'smooth' });
             } else {
                 document.getElementById("result").innerHTML = "";
                 alert("在試算表中找不到包含「" + query + "」的食物，請檢查拼字！");
