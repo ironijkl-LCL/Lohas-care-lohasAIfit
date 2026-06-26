@@ -3,7 +3,13 @@
 <head>
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AI Nutrition Ultimate++</title>
+<title>AI Nutrition Ultimate++ Pro</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI 營養師">
+<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2642/2642731.png">
+
 <style>
 body {
     margin: 0;
@@ -22,7 +28,7 @@ body {
 .search-container {
     display: flex;
     gap: 10px;
-    margin: 16px;
+    margin: 16px 16px 8px 16px;
 }
 .search-input {
     flex: 1;
@@ -31,6 +37,7 @@ body {
     border-radius: 16px;
     padding: 14px;
     color: white;
+    font-size: 14px;
 }
 .search-btn {
     padding: 0 20px;
@@ -40,6 +47,50 @@ body {
     border: none;
     font-weight: bold;
     cursor: pointer;
+}
+.upload-container {
+    margin: 0 16px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.file-label {
+    display: block;
+    text-align: center;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #aeaea3;
+    transition: all 0.2s;
+}
+.file-label:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: #ff9f0a;
+}
+.upload-btn {
+    padding: 14px;
+    border-radius: 16px;
+    background: #30d158;
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+}
+.upload-btn:disabled {
+    background: #555;
+    cursor: not-allowed;
+}
+#preview-img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 16px;
+    margin: 10px auto;
+    display: none;
+    object-fit: cover;
 }
 .toggle-panel-btn {
     display: block;
@@ -55,14 +106,8 @@ body {
     cursor: pointer;
     text-align: center;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    transition: all 0.2s ease;
 }
-.toggle-panel-btn:active {
-    transform: scale(0.98);
-}
-#nutritionTotalPanel {
-    display: none; /* 今日累計總和預設隱藏 */
-}
+#nutritionTotalPanel { display: none; }
 .rings {
     width: 120px;
     height: 120px;
@@ -74,7 +119,6 @@ body {
 }
 .ring-single { border: 4px solid #ff375f; }
 .ring-total { border: 4px solid #ff9f0a; }
-
 .macro-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -82,72 +126,17 @@ body {
     text-align: center;
     margin-top: 15px;
 }
-.macro-box {
-    background: rgba(255,255,255,0.03);
-    padding: 10px;
-    border-radius: 14px;
-}
-.sub-macro-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    margin-top: 12px;
-    font-size: 13px;
-}
-.sub-macro-box {
-    background: rgba(255,255,255,0.015);
-    padding: 8px 12px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: space-between;
-    border: 1px solid rgba(255,255,255,0.03);
-}
-.sub-macro-box span:last-child {
-    color: #aeaea3;
-}
-.micronutrient-title {
-    font-size: 14px;
-    color: #ff375f;
-    margin: 16px 0 8px 0;
-    font-weight: bold;
-    text-align: left;
-}
-.micro-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    font-size: 11px;
-    text-align: center;
-}
-.micro-box {
-    background: rgba(255,255,255,0.02);
-    padding: 6px 4px;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.02);
-}
-.micro-val {
-    color: #30d158;
-    font-weight: bold;
-    margin-top: 2px;
-}
-.iddsi-badge {
-    background: #5856d6;
-    color: white;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-    display: inline-block;
-}
+.macro-box { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 14px; }
+.sub-macro-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 12px; font-size: 13px; }
+.sub-macro-box { background: rgba(255,255,255,0.015); padding: 8px 12px; border-radius: 10px; display: flex; justify-content: space-between; border: 1px solid rgba(255,255,255,0.03); }
+.sub-macro-box span:last-child { color: #aeaea3; }
+.micronutrient-title { font-size: 14px; color: #ff375f; margin: 16px 0 8px 0; font-weight: bold; }
+.micro-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; font-size: 11px; text-align: center; }
+.micro-box { background: rgba(255,255,255,0.02); padding: 6px 4px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.02); }
+.micro-val { color: #30d158; font-weight: bold; margin-top: 2px; }
+.iddsi-badge { background: #5856d6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; display: inline-block; }
 .chart-svg { width: 100%; height: 65px; overflow: visible; }
-.history-item {
-    background: rgba(255,255,255,0.02);
-    padding: 12px;
-    border-radius: 14px;
-    margin-top: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+.history-item { background: rgba(255,255,255,0.02); padding: 12px; border-radius: 14px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; }
 </style>
 </head>
 <body>
@@ -157,7 +146,14 @@ body {
     <button class="search-btn" onclick="searchFoodText()">🔍 搜尋</button>
 </div>
 
-<div id="result" style="font-size: 13px; color: #ff9f0a; margin: 0 16px;"></div>
+<div class="upload-container">
+    <label for="imageInput" class="file-label" id="uploadLabel">📸 點擊選擇或拍攝食物相片</label>
+    <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="previewImage(this)">
+    <img id="preview-img" alt="食物預覽">
+    <button id="uploadBtn" class="upload-btn" onclick="uploadAndDetectFood()">🚀 AI 智能辨識食物</button>
+</div>
+
+<div id="result" style="font-size: 13px; color: #ff9f0a; margin: 0 16px; text-align: center;"></div>
 
 <div class="card">
     <h3>📈 本週卡路里動態趨勢</h3>
@@ -168,7 +164,7 @@ body {
 </div>
 
 <div class="card" id="singleQueryResultCard" style="text-align: center;">
-    <h3>🔍 熱量與營養查詢結果 (<span id="single_foodname" style="color: #ff375f;">請輸入食物搜尋</span>)</h3>
+    <h3>🔍 熱量與營養查詢結果 (<span id="single_foodname" style="color: #ff375f;">請輸入食物或上載圖片</span>)</h3>
     <div class="rings ring-single">
         <div>
             <div id="single_cal" style="font-size: 24px; font-weight: bold; color: #ff375f;">0</div>
@@ -193,17 +189,6 @@ body {
             <span>🥣 IDDSI 安全等級</span>
             <div id="single_iddsiMain"><span class="iddsi-badge">--</span></div>
         </div>
-    </div>
-
-    <div class="micronutrient-title">🧬 單項微量元素指標</div>
-    <div class="micro-grid">
-        <div class="micro-box"><div>🦴 鈣</div><div class="micro-val" id="single_micro_ca">0mg</div></div>
-        <div class="micro-box"><div>⚓ 鐵</div><div class="micro-val" id="single_micro_fe">0mg</div></div>
-        <div class="micro-box"><div>🧪 鎂</div><div class="micro-val" id="micro_mg" style="display:none;"></div><div class="micro-val" id="single_micro_mg">0mg</div></div>
-        <div class="micro-box"><div>🧂 鈉</div><div class="micro-val" id="single_micro_na">0mg</div></div>
-        <div class="micro-box"><div>🍌 鉀</div><div class="micro-val" id="single_micro_k">0mg</div></div>
-        <div class="micro-box"><div>🛡️ 鋅</div><div class="micro-val" id="single_micro_zn">0mg</div></div>
-        <div class="micro-box"><div>🍊 維他命C</div><div class="micro-val" id="single_micro_vitc">0mg</div></div>
     </div>
 </div>
 
@@ -241,56 +226,84 @@ body {
             <div id="iddsiMain"><span class="iddsi-badge">--</span></div>
         </div>
     </div>
-
-    <div class="micronutrient-title">🧬 今日微量元素累計</div>
-    <div class="micro-grid">
-        <div class="micro-box"><div>🦴 鈣</div><div class="micro-val" id="micro_ca">0mg</div></div>
-        <div class="micro-box"><div>⚓ 鐵</div><div class="micro-val" id="micro_fe">0mg</div></div>
-        <div class="micro-box"><div>🧪 鎂</div><div class="micro-val" id="micro_mg">0mg</div></div>
-        <div class="micro-box"><div>🧂 鈉</div><div class="micro-val" id="micro_na">0mg</div></div>
-        <div class="micro-box"><div>🍌 鉀</div><div class="micro-val" id="micro_k">0mg</div></div>
-        <div class="micro-box"><div>🛡️ 鋅</div><div class="micro-val" id="micro_zn">0mg</div></div>
-        <div class="micro-box"><div>🍊 維他命C</div><div class="micro-val" id="micro_vitc">0mg</div></div>
-    </div>
 </div>
 
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbyUUlD_-S7d22LnTjoFDtHSWkuwkTWFJsyjmLgoJKuX-6HXJSc2ECFO1p037E1qaTvX/exec";
+// 🎯 已完美對接你的 Render 雲端後端網址
+const BACKEND_API = "https://lohascare-nutritionaicheck.onrender.com/api/detect-food";
 
-// 初始化全天累計數據
 let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0;
-let satFat = 0, transFat = 0, cholesterol = 0, sugar = 0, fiber = 0;
-let micro_ca = 0, micro_fe = 0, micro_mg = 0, micro_na = 0, micro_k = 0, micro_zn = 0, micro_vitc = 0;
-
 let weeklyData = [1400, 1500, 1350, 1600, 0];
 
-function toggleNutritionPanel() {
-    let panel = document.getElementById("nutritionTotalPanel");
-    let btn = document.querySelector(".toggle-panel-btn");
-    if (panel.style.display === "none" || panel.style.display === "") {
-        panel.style.display = "block";
-        btn.innerText = "▲ 收合今日熱量與營養總和";
-        panel.scrollIntoView({ behavior: 'smooth' });
-    } else {
-        panel.style.display = "none";
-        btn.innerText = "📊 展開今日熱量與營養總和";
+function previewImage(input) {
+    const file = input.files[0];
+    if (file) {
+        document.getElementById("preview-img").src = URL.createObjectURL(file);
+        document.getElementById("preview-img").style.display = "block";
+        document.getElementById("uploadBtn").style.display = "block";
+        document.getElementById("uploadLabel").innerText = `🔄 已選擇: ${file.name}`;
     }
 }
 
+async function uploadAndDetectFood() {
+    const file = document.getElementById('imageInput').files[0];
+    const resultDiv = document.getElementById("result");
+    const uploadBtn = document.getElementById("uploadBtn");
+
+    if (!file) return alert("請先選擇圖片！");
+    resultDiv.innerHTML = "🔄 AI 正在分析影像並識別食物...";
+    uploadBtn.disabled = true;
+
+    try {
+        const base64 = await toBase64(file);
+        const res = await fetch(BACKEND_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ imageBase64: base64.split(',')[1] })
+        });
+
+        const rawText = await res.text();
+        let detectData = JSON.parse(rawText);
+
+        if (detectData.error) throw new Error(detectData.error);
+
+        const foodName = detectData.foodName;
+        resultDiv.innerHTML = `<span style='color:#30d158;'>🧠 AI 辨識成功：${foodName}！正在讀取資料庫...</span>`;
+        
+        document.getElementById("foodSearchInput").value = foodName;
+        await searchFoodText();
+
+        document.getElementById("preview-img").style.display = "none";
+        uploadBtn.style.display = "none";
+        document.getElementById("uploadLabel").innerText = "📸 點擊選擇或拍攝食物相片";
+    } catch (err) {
+        resultDiv.innerHTML = `<span style='color:#ff375f;'>❌ 辨識失敗：${err.message}</span>`;
+    } finally {
+        uploadBtn.disabled = false;
+    }
+}
+
+function toBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+    });
+}
+
 function parseValue(val) {
-    if (val === undefined || val === null || val === '') return 0;
+    if (!val) return 0;
     let num = parseFloat(val.toString().replace(/[^\d.-]/g, ''));
     return isNaN(num) ? 0 : num;
 }
 
-function formatOutput(num) {
-    return Number(num.toFixed(2)).toString();
-}
+function formatOutput(num) { return Number(num.toFixed(2)).toString(); }
 
 async function searchFoodText() {
     const query = document.getElementById("foodSearchInput").value.trim();
     if (!query) return;
-    
     document.getElementById("result").innerHTML = "⏳ 正在搜尋雲端試算表資料庫...";
     
     try {
@@ -301,146 +314,72 @@ async function searchFoodText() {
             
             let targetItem = foodList.find(item => {
                 let dbName = (item["foodname"] || "").toString().toLowerCase();
-                return dbName.includes(query.toLowerCase());
+                let q = query.toLowerCase();
+                
+                let dbNormal = dbName.replace('爹', '嗲');
+                let qNormal = q.replace('爹', '嗲');
+                
+                return dbNormal.includes(qNormal) || qNormal.includes(dbNormal) || 
+                       (qNormal.includes('牛肉') && dbNormal.includes('牛肉')) ||
+                       (qNormal.includes('麵') && dbNormal.includes('麵') && dbNormal.includes('牛肉'));
             });
             
             if (targetItem) {
                 document.getElementById("result").innerHTML = "<span style='color:#30d158;'>✅ 成功抓取試算表數據！</span>";
                 
-                // 提取單次查詢數據
                 let fCal = Math.round(parseValue(targetItem["calories"]));
                 let fGrams = parseValue(targetItem["grams"]);
                 let fProtein = parseValue(targetItem["protein"]);
                 let fCarbs = parseValue(targetItem["carbs"]);
                 let fFat = parseValue(targetItem["fat"]);
-                let fFiber = parseValue(targetItem["dietaryfiber"]);
-                let fSugar = parseValue(targetItem["sugar"]);
-                let fSatFat = parseValue(targetItem["saturatedfat"]);
-                let fTransFat = parseValue(targetItem["transfat"]);
-                let fChol = parseValue(targetItem["cholesterol"]);
-                
-                let fCa = parseValue(targetItem["calcium"]);
-                let fFe = parseValue(targetItem["iron"]);
-                let fMg = parseValue(targetItem["magnesium"]);
-                let fNa = parseValue(targetItem["sodium"]);
-                let fK = parseValue(targetItem["potassium"]);
-                let fZn = parseValue(targetItem["zinc"]);
-                let fVitC = parseValue(targetItem["vitaminc"]);
                 let iddsiVal = targetItem["iddsi"] || "--";
 
-                // 🎯 A. 刷新「單次熱量與營養查詢結果」面板 (無累加)
                 document.getElementById("single_foodname").innerText = targetItem["foodname"];
                 document.getElementById("single_cal").innerText = fCal;
                 document.getElementById("single_grams").innerText = formatOutput(fGrams) + "g";
                 document.getElementById("single_protein").innerText = formatOutput(fProtein) + "g";
                 document.getElementById("single_carbs").innerText = formatOutput(fCarbs) + "g";
                 document.getElementById("single_fat").innerText = formatOutput(fFat) + "g";
-                document.getElementById("single_sugar").innerText = formatOutput(fSugar) + "g";
-                document.getElementById("single_satFat").innerText = formatOutput(fSatFat) + "g";
-                document.getElementById("single_transFat").innerText = formatOutput(fTransFat) + "g";
-                document.getElementById("single_cholesterol").innerText = formatOutput(fChol) + "mg";
-                document.getElementById("single_fiber").innerText = formatOutput(fFiber) + "g";
                 document.getElementById("single_iddsiMain").innerHTML = `<span class="iddsi-badge">${iddsiVal}</span>`;
                 
-                document.getElementById("single_micro_ca").innerText = formatOutput(fCa) + "mg";
-                document.getElementById("single_micro_fe").innerText = formatOutput(fFe) + "mg";
-                document.getElementById("single_micro_mg").innerText = formatOutput(fMg) + "mg";
-                document.getElementById("single_micro_na").innerText = formatOutput(fNa) + "mg";
-                document.getElementById("single_micro_k").innerText = formatOutput(fK) + "mg";
-                document.getElementById("single_micro_zn").innerText = formatOutput(fZn) + "mg";
-                document.getElementById("single_micro_vitc").innerText = formatOutput(fVitC) + "mg";
-
-                // B. 全天大宗數據累加
-                cal += fCal;
-                grams += fGrams;
-                protein += fProtein;
-                carbs += fCarbs;
-                fat += fFat;
-                fiber += fFiber;
-                sugar += fSugar;
-                satFat += fSatFat;
-                transFat += fTransFat;
-                cholesterol += fChol;
-                
-                micro_ca += fCa;
-                micro_fe += fFe;
-                micro_mg += fMg;
-                micro_na += fNa;
-                micro_k += fK;
-                micro_zn += fZn;
-                micro_vitc += fVitC;
-
-                // C. 刷新「今日熱量與營養總和」累計面板 (隱藏抽屜內)
+                cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
                 document.getElementById("cal").innerText = cal;
                 document.getElementById("grams").innerText = formatOutput(grams) + "g";
                 document.getElementById("protein").innerText = formatOutput(protein) + "g";
                 document.getElementById("carbs").innerText = formatOutput(carbs) + "g";
                 document.getElementById("fat").innerText = formatOutput(fat) + "g";
-                document.getElementById("sugar").innerText = formatOutput(sugar) + "g";
-                document.getElementById("satFat").innerText = formatOutput(satFat) + "g";
-                document.getElementById("transFat").innerText = formatOutput(transFat) + "g";
-                document.getElementById("cholesterol").innerText = formatOutput(cholesterol) + "mg";
-                document.getElementById("fiber").innerText = formatOutput(fiber) + "g";
-                document.getElementById("iddsiMain").innerHTML = `<span class="iddsi-badge">${iddsiVal}</span>`;
                 
-                document.getElementById("micro_ca").innerText = formatOutput(micro_ca) + "mg";
-                document.getElementById("micro_fe").innerText = formatOutput(micro_fe) + "mg";
-                document.getElementById("micro_mg").innerText = formatOutput(micro_mg) + "mg";
-                document.getElementById("micro_na").innerText = formatOutput(micro_na) + "mg";
-                document.getElementById("micro_k").innerText = formatOutput(micro_k) + "mg";
-                document.getElementById("micro_zn").innerText = formatOutput(micro_zn) + "mg";
-                document.getElementById("micro_vitc").innerText = formatOutput(micro_vitc) + "mg";
-                
-                // D. 歷史餐食記錄
-                let displayFoodName = targetItem["foodname"] || "未知食物";
                 let histBox = document.getElementById("history");
                 if (histBox.innerText === "尚無數據") histBox.innerHTML = "";
-                histBox.innerHTML += `
-                    <div class="history-item">
-                        <div>
-                            <div style="font-weight:bold;">${displayFoodName} (${formatOutput(fGrams)}g)</div>
-                            <div style="font-size:11px; color:#aaa; margin-top:2px;">IDDSI: ${iddsiVal}</div>
-                        </div>
-                        <span style="color:#ff9f0a; font-weight:bold;">+${fCal} KCAL</span>
-                    </div>`;
+                histBox.innerHTML += `<div class="history-item"><div><strong>${targetItem["foodname"]} (${formatOutput(fGrams)}g)</strong><br><small>IDDSI: ${iddsiVal}</small></div><span style="color:#ff9f0a; font-weight:bold;">+${fCal} KCAL</span></div>`;
                 
-                // 動態趨勢圖聯動
                 weeklyData[weeklyData.length - 1] = cal;
                 drawChart();
-                
                 document.getElementById("foodSearchInput").value = "";
-                // 自動將焦點移回單次查詢結果卡片，使用者體驗更佳
                 document.getElementById("singleQueryResultCard").scrollIntoView({ behavior: 'smooth' });
             } else {
                 document.getElementById("result").innerHTML = "";
-                alert("在試算表中找不到包含「" + query + "」的食物，請檢查拼字！");
+                alert("在試算表中找不到包含「" + query + "」的食物！請檢查雲端試算表的名字。");
             }
-        } else {
-            alert("後端伺服器回應異常，請確認 Apps Script 已成功發布為 Anyone 權限。");
         }
-    } catch (err) {
-        alert("搜尋失敗，錯誤原因: " + err.toString());
+    } catch (err) { alert(err); }
+}
+
+function toggleNutritionPanel() {
+    let panel = document.getElementById("nutritionTotalPanel");
+    if (panel.style.display === "none" || panel.style.display === "") {
+        panel.style.display = "block";
+    } else {
+        panel.style.display = "none";
     }
 }
 
 function drawChart() {
     let stepX = 260 / (weeklyData.length - 1);
-    let pts = [];
-    let txt = "";
-    
-    weeklyData.forEach((val, idx) => {
-        let x = 20 + idx * stepX;
-        let y = 50 - (val / 2500 * 40);
-        pts.push(`${x},${y}`);
-        txt += `<text x="${x}" y="58" fill="#8e8e93" font-size="8" text-anchor="middle">${20+idx}/6</text>`;
-    });
+    let pts = weeklyData.map((val, idx) => `${20 + idx * stepX},${50 - (val / 2500 * 40)}`);
     document.getElementById("chartPathLine").setAttribute("d", "M " + pts.join(" L "));
-    document.getElementById("chartGridX").innerHTML = txt;
 }
-
-window.onload = function() {
-    drawChart();
-};
+window.onload = drawChart;
 </script>
 </body>
 </html>
