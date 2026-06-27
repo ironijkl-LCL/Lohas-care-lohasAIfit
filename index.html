@@ -14,26 +14,33 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* 🎨 全新明亮復康色系配置 */
+        :root {
+            --primary-teal: #0d9488;       /* 主色調：專業穩重、健康復康 */
+            --accent-mint: #2dd4bf;        /* 輔助明亮色：薄荷綠 */
+            --bg-card: rgba(13, 148, 136, 0.06); /* 卡片背景：基於 Teal 的輕微透明層次 */
+            --border-teal: rgba(13, 148, 136, 0.2); /* 邊框 */
+            --warning-amber: #ff9500;      /* 警示色：琥珀橙 (IDDSI/熱量提示) */
+            --warning-purple: #af52de;     /* 警示色：優雅紫 (特別安全等級標籤) */
+        }
+
         body {
             margin: 0;
             font-family: -apple-system, 'PingFang HK', 'Microsoft JhengHei', sans-serif;
-            background: #ffffff; /* 底色轉白 */
-            color: #1f2937; /* 深灰文字，確保高對比度閱讀 */
+            background: #080f0e;           /* 深色背景微調為帶有極低飽和度藍綠的黑，更顯和諧 */
+            color: #f3f4f6;
             padding-bottom: 120px;
         }
         header {
-            background: linear-gradient(135deg, #0d9488, #0f766e); /* 主色調 Teal */
-            padding: 24px 16px;
+            background: linear-gradient(135deg, #041a18, #0b2e2b);
+            padding: 20px 16px;
             text-align: center;
-            color: white;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid var(--border-teal);
         }
         header h1 {
             margin: 0;
             font-size: 24px;
             font-weight: bold;
-            color: #ffffff;
+            color: var(--accent-mint);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -42,24 +49,24 @@
         header p {
             margin: 5px 0 0 0;
             font-size: 13px;
-            color: #ccfbf1; /* 淺藍綠副文字 */
+            color: #94a3b8;
         }
         .card {
             margin: 16px;
             padding: 20px;
             border-radius: 24px;
-            background: #f0fdfa; /* 輔助色 Mint/Light Teal 背景 */
-            border: 1px solid #99f6e4; /* 淺藍綠邊框 */
-            box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.05);
+            background: var(--bg-card);
+            border: 1px solid var(--border-teal);
+            backdrop-filter: blur(10px);
         }
         .card h3 {
             margin-top: 0;
             margin-bottom: 15px;
             font-size: 18px;
-            color: #0f766e; /* 深藍綠標題 */
             display: flex;
             align-items: center;
             gap: 8px;
+            color: #e2e8f0;
         }
         /* 搜尋與語音區塊 */
         .search-container {
@@ -69,26 +76,28 @@
         }
         .search-input {
             flex: 1;
-            background: #ffffff;
-            border: 2px solid #0d9488; /* 主色調邊框 */
+            background: rgba(13, 148, 136, 0.1);
+            border: 1px solid var(--border-teal);
             border-radius: 16px;
             padding: 14px;
-            color: #1f2937;
+            color: white;
             font-size: 16px;
         }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-mint);
+            box-shadow: 0 0 8px rgba(45, 212, 191, 0.4);
+        }
         .search-btn {
-            padding: 0 24px;
+            padding: 0 20px;
             border-radius: 16px;
-            background: #0d9488; /* 主色調 Teal */
+            background: linear-gradient(90deg, var(--primary-teal), var(--accent-mint));
             color: white;
             border: none;
             font-weight: bold;
             font-size: 15px;
             cursor: pointer;
-            transition: background 0.2s;
-        }
-        .search-btn:hover {
-            background: #0f766e;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
         }
         /* 語音大按鈕與動畫 */
         .voice-section {
@@ -99,35 +108,35 @@
             padding: 15px 0;
         }
         .mic-btn {
-            width: 95px;
-            height: 95px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            background: #ffffff;
-            border: 3px solid #0d9488;
-            color: #0d9488;
-            font-size: 34px;
+            background: rgba(13, 148, 136, 0.15);
+            border: 2px solid var(--border-teal);
+            color: var(--accent-mint);
+            font-size: 32px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
-            box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.2);
+            box-shadow: 0 0 15px rgba(0,0,0,0.4);
         }
         .mic-recording {
-            background: #d97706; /* 錄音時轉為溫暖的琥珀橙提示 */
+            background: var(--warning-amber);
             color: white;
-            border-color: #d97706;
+            border-color: var(--warning-amber);
             animation: pulse 1.5s infinite ease-in-out;
         }
         @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.9; box-shadow: 0 0 12px rgba(217, 119, 6, 0.5); }
-            50% { transform: scale(1.06); opacity: 1; box-shadow: 0 0 24px rgba(217, 119, 6, 0.8); }
+            0%, 100% { transform: scale(1); opacity: 0.9; box-shadow: 0 0 8px var(--warning-amber); }
+            50% { transform: scale(1.08); opacity: 1; box-shadow: 0 0 20px var(--warning-amber); }
         }
         .mic-status {
-            margin-top: 12px;
+            margin-top: 10px;
             font-size: 15px;
-            color: #0f766e;
-            font-weight: bold;
+            color: #94a3b8;
+            font-weight: 500;
         }
         
         /* 📸 相片上傳與動態掃描 */
@@ -141,34 +150,32 @@
             display: block;
             text-align: center;
             padding: 14px;
-            background: #f9fafb;
-            border: 2px dashed #cbd5e1;
+            background: rgba(13, 148, 136, 0.05);
+            border: 1px dashed rgba(13, 148, 136, 0.4);
             border-radius: 16px;
             cursor: pointer;
             font-size: 14px;
-            color: #4b5563;
-            font-weight: 500;
+            color: #a7f3d0; /* 薄荷淺綠文字 */
             transition: all 0.2s;
         }
         .file-label:hover {
-            background: #f0fdfa;
-            border-color: #0d9488;
-            color: #0d9488;
+            background: rgba(13, 148, 136, 0.15);
+            border-color: var(--accent-mint);
         }
         .upload-btn {
             padding: 14px;
             border-radius: 16px;
-            background: #10b981; /* 復康綠色 */
+            background: var(--primary-teal);
             color: white;
             border: none;
             font-weight: bold;
             cursor: pointer;
             font-size: 14px;
-            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
         }
         .upload-btn:disabled {
-            background: #9ca3af;
+            background: #334155;
             cursor: not-allowed;
+            color: #64748b;
         }
         
         /* 掃描外框容器 */
@@ -180,7 +187,7 @@
             border-radius: 16px;
             overflow: hidden;
             display: none;
-            border: 2px solid #0d9488;
+            border: 1px solid var(--border-teal);
         }
         #preview-img {
             width: 100%;
@@ -189,7 +196,7 @@
             object-fit: cover;
         }
         
-        /* 🟢 上下移動的智能雷射掃描線 */
+        /* 🟢 上下移動的 Teal/Mint 智能雷射掃描線 */
         .scanner-line {
             display: none;
             position: absolute;
@@ -197,8 +204,8 @@
             left: 0;
             width: 100%;
             height: 4px;
-            background: linear-gradient(90deg, transparent, #0d9488, #d97706, #0d9488, transparent);
-            box-shadow: 0 0 12px #0d9488, 0 0 20px #d97706;
+            background: linear-gradient(90deg, transparent, var(--accent-mint), var(--warning-amber), var(--accent-mint), transparent);
+            box-shadow: 0 0 12px var(--accent-mint), 0 0 20px var(--warning-amber);
             z-index: 10;
             animation: scanMove 2s infinite ease-in-out;
         }
@@ -215,14 +222,14 @@
             margin: 16px auto;
             padding: 14px;
             border-radius: 16px;
-            background: linear-gradient(90deg, #0d9488, #0f766e);
-            border: none;
-            color: white;
+            background: linear-gradient(90deg, #0f2d2a, #134e4a);
+            border: 1px solid var(--border-teal);
+            color: var(--accent-mint);
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         #nutritionTotalPanel { display: none; }
         
@@ -235,10 +242,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #ffffff;
+            background: rgba(0,0,0,0.2);
         }
-        .ring-single { border: 4px solid #0d9488; }
-        .ring-total { border: 4px solid #d97706; }
+        .ring-single { border: 4px solid var(--accent-mint); }
+        .ring-total { border: 4px solid var(--warning-amber); }
+        
         .macro-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -246,15 +254,15 @@
             text-align: center;
             margin-top: 15px;
         }
-        .macro-box { background: #ffffff; padding: 10px; border-radius: 14px; border: 1px solid #e5e7eb; }
+        .macro-box { background: rgba(13, 148, 136, 0.1); padding: 10px; border-radius: 14px; border: 1px solid rgba(13, 148, 136, 0.15); }
         .sub-macro-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 12px; font-size: 14px; }
-        .sub-macro-box { background: #ffffff; padding: 10px 12px; border-radius: 10px; display: flex; justify-content: space-between; border: 1px solid #e5e7eb; }
-        .sub-macro-box span:last-child { color: #4b5563; font-weight: bold; }
+        .sub-macro-box { background: rgba(13, 148, 136, 0.03); padding: 10px 12px; border-radius: 10px; display: flex; justify-content: space-between; border: 1px solid rgba(13, 148, 136, 0.08); }
+        .sub-macro-box span:last-child { color: #94a3b8; }
         
-        /* 🎨 警示色：優雅紫標記 IDDSI 安全等級 */
-        .iddsi-badge { background: #6b21a8; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; box-shadow: 0 2px 4px rgba(107, 33, 168, 0.2); }
+        /* 🎯 IDDSI 等級標籤使用高飽和警示紫色 / 琥珀橙 */
+        .iddsi-badge { background: var(--warning-purple); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; box-shadow: 0 2px 6px rgba(175, 82, 222, 0.4); }
         .chart-svg { width: 100%; height: 65px; overflow: visible; }
-        .history-item { background: #ffffff; padding: 12px; border-radius: 14px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #0d9488; border-top: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; }
+        .history-item { background: rgba(13, 148, 136, 0.08); padding: 12px; border-radius: 14px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent-mint); border-top: 1px solid var(--border-teal); }
     </style>
 </head>
 <body>
@@ -264,13 +272,13 @@
     <p>結合 Web Speech 語音辨識 + 雲端智慧監測看板</p>
 </header>
 
-<div id="result" style="font-size: 14px; color: #0f766e; margin: 12px 16px 0 16px; text-align: center; min-height: 20px; font-weight: bold;">
+<div id="result" style="font-size: 14px; color: var(--warning-amber); margin: 12px 16px 0 16px; text-align: center; min-height: 20px; font-weight: 500;">
     請選擇語音、文字或相片輸入餐食
 </div>
 
 <div class="card">
-    <h3><i class="fa-solid fa-microphone-lines" style="color: #0d9488;"></i> 廣東話語音智慧錄入</h3>
-    <p style="font-size: 14px; color: #4b5563; margin: 0 0 15px 0;">請點擊按鈕並講出你食咗咩（例如：「我今朝食咗一碗碎肉粥」）</p>
+    <h3><i class="fa-solid fa-microphone-lines" style="color: var(--accent-mint);"></i> 廣東話語音智慧錄入</h3>
+    <p style="font-size: 14px; color: #94a3b8; margin: 0 0 15px 0;">請點擊按鈕並講出你食咗咩（例如：「我今朝食咗一碗碎肉粥」）</p>
     <div class="voice-section">
         <button id="micBtn" class="mic-btn" onclick="toggleVoiceRecognition()">
             <i id="micIcon" class="fa-solid fa-microphone"></i>
@@ -297,26 +305,26 @@
 </div>
 
 <div class="card">
-    <h3><i class="fa-solid fa-chart-line" style="color: #d97706;"></i> 本週卡路里動態趨勢</h3>
+    <h3><i class="fa-solid fa-chart-line" style="color: var(--warning-amber);"></i> 本週卡路里動態趨勢</h3>
     <svg class="chart-svg" viewBox="0 0 300 60">
-        <path id="chartPathLine" d="M 10 50 L 290 50" fill="none" stroke="#0d9488" stroke-width="3"/>
+        <path id="chartPathLine" d="M 10 50 L 290 50" fill="none" stroke="#2dd4bf" stroke-width="3"/>
         <g id="chartGridX"></g>
     </svg>
 </div>
 
 <div class="card" id="singleQueryResultCard" style="text-align: center;">
-    <h3><i class="fa-solid fa-magnifying-glass" style="color: #0d9488;"></i> 熱量與營養查詢結果 (<span id="single_foodname" style="color: #0f766e;">未輸入</span>)</h3>
+    <h3><i class="fa-solid fa-magnifying-glass" style="color: var(--accent-mint);"></i> 熱量與營養查詢結果 (<span id="single_foodname" style="color: var(--accent-mint);">未輸入</span>)</h3>
     <div class="rings ring-single">
         <div>
-            <div id="single_cal" style="font-size: 24px; font-weight: bold; color: #0d9488;">0</div>
-            <div style="font-size: 10px; color: #4b5563;">KCAL</div>
+            <div id="single_cal" style="font-size: 24px; font-weight: bold; color: var(--accent-mint);">0</div>
+            <div style="font-size: 10px; color: #94a3b8;">KCAL</div>
         </div>
     </div>
     
     <div class="macro-grid">
-        <div class="macro-box"><div>🥩 蛋白質</div><div id="single_protein" style="font-weight: bold; color: #d97706;">0g</div></div>
-        <div class="macro-box"><div>🍞 碳水</div><div id="single_carbs" style="font-weight: bold; color: #0f766e;">0g</div></div>
-        <div class="macro-box"><div>🧈 脂肪</div><div id="single_fat" style="font-weight: bold; color: #10b981;">0g</div></div>
+        <div class="macro-box"><div>🥩 蛋白質</div><div id="single_protein" style="font-weight: bold; color: var(--warning-amber);">0g</div></div>
+        <div class="macro-box"><div>🍞 碳水</div><div id="single_carbs" style="font-weight: bold; color: var(--accent-mint);">0g</div></div>
+        <div class="macro-box"><div>🧈 脂肪</div><div id="single_fat" style="font-weight: bold; color: #e2e8f0;">0g</div></div>
     </div>
 
     <div class="sub-macro-grid">
@@ -334,25 +342,25 @@
 </div>
 
 <div class="card">
-    <h3><i class="fa-solid fa-list-check" style="color: #10b981;"></i> 📜 今日餐食記錄</h3>
-    <div id="history" style="color: #6b7280;">尚無數據</div>
+    <h3><i class="fa-solid fa-list-check" style="color: var(--accent-mint);"></i> 📜 今日餐食記錄</h3>
+    <div id="history">尚無數據</div>
 </div>
 
 <button class="toggle-panel-btn" onclick="toggleNutritionPanel()">📊 展開全天熱量與營養總和</button>
 
 <div class="card" id="nutritionTotalPanel" style="text-align: center;">
-    <h3 style="color: #d97706;">🔥 今日熱量與營養總和 (全天累計)</h3>
+    <h3>🔥 今日熱量與營養總和 (全天累計)</h3>
     <div class="rings ring-total">
         <div>
-            <div id="cal" style="font-size: 24px; font-weight: bold; color: #d97706;">0</div>
-            <div style="font-size: 10px; color: #4b5563;">KCAL</div>
+            <div id="cal" style="font-size: 24px; font-weight: bold; color: var(--warning-amber);">0</div>
+            <div style="font-size: 10px; color: #94a3b8;">KCAL</div>
         </div>
     </div>
     
     <div class="macro-grid">
-        <div class="macro-box"><div>🥩 蛋白質</div><div id="protein" style="font-weight: bold; color: #d97706;">0g</div></div>
-        <div class="macro-box"><div>🍞 碳水</div><div id="carbs" style="font-weight: bold; color: #0f766e;">0g</div></div>
-        <div class="macro-box"><div>🧈 脂肪</div><div id="fat" style="font-weight: bold; color: #10b981;">0g</div></div>
+        <div class="macro-box"><div>🥩 蛋白質</div><div id="protein" style="font-weight: bold; color: var(--warning-amber);">0g</div></div>
+        <div class="macro-box"><div>🍞 碳水</div><div id="carbs" style="font-weight: bold; color: var(--accent-mint);">0g</div></div>
+        <div class="macro-box"><div>🧈 脂肪</div><div id="fat" style="font-weight: bold; color: #e2e8f0;">0g</div></div>
     </div>
 
     <div class="sub-macro-grid">
@@ -423,7 +431,7 @@ function initSpeechAPI() {
         if(transcript.endsWith('。')) transcript = transcript.slice(0, -1);
         
         document.getElementById("foodSearchInput").value = transcript;
-        document.getElementById("result").innerHTML = `🗣️ 聽到了: <span style="color:#d97706;">「${transcript}」</span>，正在自動匹配試算表...`;
+        document.getElementById("result").innerHTML = `🗣️ 聽到了: <span style="color:var(--warning-amber);">「${transcript}」</span>，正在自動匹配試算表...`;
         
         toggleScanEffects(true);
         await searchFoodText();
@@ -480,13 +488,13 @@ async function uploadAndDetectFood() {
         if (detectData.error) throw new Error(detectData.error);
 
         const foodName = detectData.foodName;
-        resultDiv.innerHTML = `<span style='color:#10b981;'>🧠 AI 辨識成功：${foodName}！正在讀取資料庫...</span>`;
+        resultDiv.innerHTML = `<span style='color:var(--accent-mint);'>🧠 AI 辨識成功：${foodName}！正在讀取資料庫...</span>`;
         
         document.getElementById("foodSearchInput").value = foodName;
         await searchFoodText();
 
     } catch (err) {
-        resultDiv.innerHTML = `<span style='color:#dc2626;'>❌ 辨識失敗：${err.message}</span>`;
+        resultDiv.innerHTML = `<span style='color:#ef4444;'>❌ 辨識失敗：${err.message}</span>`;
         toggleScanEffects(false); 
     } finally {
         uploadBtn.disabled = false;
@@ -537,7 +545,7 @@ async function searchFoodText() {
             });
             
             if (targetItem) {
-                document.getElementById("result").innerHTML = "<span style='color:#10b981;'>✅ 成功抓取試算表數據！</span>";
+                document.getElementById("result").innerHTML = "<span style='color:var(--accent-mint);'>✅ 成功抓取試算表數據！</span>";
                 
                 let fCal = Math.round(parseValue(targetItem["calories"]));
                 let fGrams = parseValue(targetItem["grams"]);
@@ -593,11 +601,12 @@ async function searchFoodText() {
                     <div class="history-item">
                         <div>
                             <strong>${targetItem["foodname"]} (${formatOutput(fGrams)}g)</strong><br>
-                            <small style="color:#6b7280;">安全等級: ${iddsiVal}</small>
+                            <small style="color:#94a3b8;">安全等級: ${iddsiVal}</small>
                         </div>
-                        <span style="color:#0d9488; font-weight:bold;">+${fCal} KCAL</span>
+                        <span style="color:var(--warning-amber); font-weight:bold;">+${fCal} KCAL</span>
                     </div>`;
                 
+                // 更新 SVG 動態趨勢圖
                 weeklyData[weeklyData.length - 1] = cal;
                 drawChart();
                 
@@ -609,7 +618,7 @@ async function searchFoodText() {
                 toggleScanEffects(false); 
                 document.getElementById("singleQueryResultCard").scrollIntoView({ behavior: 'smooth' });
             } else {
-                document.getElementById("result").innerHTML = `<span style='color:#dc2626;'>⚠️ 未在試算表中找到包含「${query}」的食物。</span>`;
+                document.getElementById("result").innerHTML = `<span style='color:#ef4444;'>⚠️ 未在試算表中找到包含「${query}」的食物。</span>`;
                 toggleScanEffects(false); 
             }
         }
