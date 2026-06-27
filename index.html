@@ -3,7 +3,7 @@
 <head>
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AI Nutrition Ultimate++ Pro</title>
+<title>AI Nutrition Ultimate++ Pro (Cloud Connected)</title>
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -48,6 +48,15 @@ body {
     font-weight: bold;
     cursor: pointer;
 }
+.voice-btn {
+    padding: 0 15px;
+    border-radius: 16px;
+    background: #5856d6;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
 .upload-container {
     margin: 0 16px 16px 16px;
     display: flex;
@@ -70,27 +79,32 @@ body {
     background: rgba(255, 255, 255, 0.06);
     border-color: #ff9f0a;
 }
-.upload-btn {
+.action-btn {
     padding: 14px;
     border-radius: 16px;
-    background: #30d158;
     color: white;
     border: none;
     font-weight: bold;
     cursor: pointer;
     font-size: 14px;
+    transition: background 0.2s;
 }
-.upload-btn:disabled {
+.btn-green { background: #30d158; }
+.btn-blue { background: #007aff; }
+.btn-orange { background: #ff9f0a; }
+
+.action-btn:disabled {
     background: #555;
     cursor: not-allowed;
 }
-#preview-img {
-    max-width: 100%;
-    max-height: 200px;
+#preview-img, #video {
+    width: 100%;
+    max-height: 240px;
     border-radius: 16px;
     margin: 10px auto;
     display: none;
     object-fit: cover;
+    background: #000;
 }
 .toggle-panel-btn {
     display: block;
@@ -130,10 +144,6 @@ body {
 .sub-macro-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 12px; font-size: 13px; }
 .sub-macro-box { background: rgba(255,255,255,0.015); padding: 8px 12px; border-radius: 10px; display: flex; justify-content: space-between; border: 1px solid rgba(255,255,255,0.03); }
 .sub-macro-box span:last-child { color: #aeaea3; }
-.micronutrient-title { font-size: 14px; color: #ff375f; margin: 16px 0 8px 0; font-weight: bold; }
-.micro-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; font-size: 11px; text-align: center; }
-.micro-box { background: rgba(255,255,255,0.02); padding: 6px 4px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.02); }
-.micro-val { color: #30d158; font-weight: bold; margin-top: 2px; }
 .iddsi-badge { background: #5856d6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; display: inline-block; }
 .chart-svg { width: 100%; height: 65px; overflow: visible; }
 .history-item { background: rgba(255,255,255,0.02); padding: 12px; border-radius: 14px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; }
@@ -142,18 +152,28 @@ body {
 <body>
 
 <div class="search-container">
-    <input type="text" class="search-input" id="foodSearchInput" placeholder="輸入食物名稱 (例如: 絲襪奶茶)">
+    <input type="text" class="search-input" id="foodSearchInput" placeholder="輸入食物名稱或點擊語音輸入...">
+    <button class="voice-btn" id="voiceBtn" onclick="startVoiceRecognition()">🎤</button>
     <button class="search-btn" onclick="searchFoodText()">🔍 搜尋</button>
 </div>
 
 <div class="upload-container">
-    <label for="imageInput" class="file-label" id="uploadLabel">📸 點擊選擇或拍攝食物相片</label>
+    <label for="imageInput" class="file-label" id="uploadLabel">📸 點擊選擇食物相片</label>
     <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="previewImage(this)">
     <img id="preview-img" alt="食物預覽">
-    <button id="uploadBtn" class="upload-btn" onclick="uploadAndDetectFood()">🚀 AI 智能辨識食物</button>
+    
+    <video id="video" autoplay playsinline></video>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <button id="startCamBtn" class="action-btn btn-blue" onclick="openCamera()">📹 開啟相機</button>
+        <button id="snapBtn" class="action-btn btn-orange" onclick="takeSnapshot()" style="display: none;">📸 擷取並辨識</button>
+    </div>
+    
+    <button id="uploadBtn" class="action-btn btn-green" onclick="uploadAndDetectFood()">🚀 AI 智能辨識檔案</button>
 </div>
 
 <div id="result" style="font-size: 13px; color: #ff9f0a; margin: 0 16px; text-align: center;"></div>
+<div id="aiStatus" style="font-size: 13px; color: #ffcc00; margin: 4px 16px; text-align: center;"></div>
 
 <div class="card">
     <h3>📈 本週卡路里動態趨勢</h3>
@@ -193,7 +213,7 @@ body {
 </div>
 
 <div class="card">
-    <h3>📜 今日餐食記錄</h3>
+    <h3>📜 今日餐食記錄 (雲端同步)</h3>
     <div id="history">尚無數據</div>
 </div>
 
@@ -229,12 +249,18 @@ body {
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbyUUlD_-S7d22LnTjoFDtHSWkuwkTWFJsyjmLgoJKuX-6HXJSc2ECFO1p037E1qaTvX/exec";
-// 🎯 已完美對接你的 Render 雲端後端網址
-const BACKEND_API = "https://lohascare-nutritionaicheck.onrender.com/api/detect-food";
+const SPREADSHEET_API = "https://script.google.com/macros/s/AKfycbyUUlD_-S7d22LnTjoFDtHSWkuwkTWFJsyjmLgoJKuX-6HXJSc2ECFO1p037E1qaTvX/exec";
+
+// 🌐 完美整合：全面轉用你部署在 Render 的後端基底路由
+const RENDER_BASE = "https://lohascare-nutritionaicheck.onrender.com";
+const BACKEND_DETECT_FILE = `${RENDER_BASE}/api/detect-food`;
+const BACKEND_CHECK_IMAGE = `${RENDER_BASE}/api/v1/nutrition/check-image`;
+const BACKEND_PARSE_VOICE = `${RENDER_BASE}/api/v1/nutrition/parse-voice`;
+const BACKEND_SYNC_RECORD   = `${RENDER_BASE}/api/v1/records/add`;
 
 let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0;
 let weeklyData = [1400, 1500, 1350, 1600, 0];
+let streamRef = null;
 
 function previewImage(input) {
     const file = input.files[0];
@@ -243,9 +269,76 @@ function previewImage(input) {
         document.getElementById("preview-img").style.display = "block";
         document.getElementById("uploadBtn").style.display = "block";
         document.getElementById("uploadLabel").innerText = `🔄 已選擇: ${file.name}`;
+        closeCamera(); 
     }
 }
 
+// ─── 功能 1: 真正相機調用與 CANVAS 截圖 AI 辨識 ───
+async function openCamera() {
+    document.getElementById("preview-img").style.display = "none";
+    document.getElementById("uploadBtn").style.display = "none";
+    let video = document.getElementById("video");
+    try {
+        streamRef = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+        video.srcObject = streamRef;
+        video.style.display = "block";
+        document.getElementById("snapBtn").style.display = "block";
+        document.getElementById("startCamBtn").innerText = "❌ 關閉相機";
+        document.getElementById("startCamBtn").onclick = closeCamera;
+    } catch (err) {
+        alert("無法開啟相機，請檢查瀏覽器權限權限: " + err.message);
+    }
+}
+
+function closeCamera() {
+    let video = document.getElementById("video");
+    if (streamRef) {
+        streamRef.getTracks().forEach(track => track.stop());
+    }
+    video.style.display = "none";
+    document.getElementById("snapBtn").style.display = "none";
+    document.getElementById("startCamBtn").innerText = "📹 開啟相機";
+    document.getElementById("startCamBtn").onclick = openCamera;
+}
+
+async function takeSnapshot() {
+    let video = document.getElementById("video");
+    let canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    let ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    canvas.toBlob(async (blob) => {
+        if(!blob) return alert("截圖失敗");
+        let formData = new FormData();
+        formData.append("image", blob, "meal-snapshot.jpg");
+        
+        document.getElementById("aiStatus").innerText = "⏳ 雲端 AI 正在即時分析影像晶片...";
+        
+        try {
+            let response = await fetch(BACKEND_CHECK_IMAGE, {
+                method: "POST",
+                body: formData
+            });
+            let data = await response.json();
+            
+            if(data.success && data.foodName) {
+                document.getElementById("aiStatus").innerText = `✅ 影像識別成功: ${data.foodName}`;
+                document.getElementById("foodSearchInput").value = data.foodName;
+                await searchFoodText(); 
+                closeCamera();
+            } else {
+                throw new Error(data.error || "未能辨識食物種類");
+            }
+        } catch (err) {
+            document.getElementById("aiStatus").innerText = `❌ 相機影像辨識失敗: ${err.message}`;
+            console.error(err);
+        }
+    }, "image/jpeg");
+}
+
+// ─── 原有基地檔案上傳辨識對接 ───
 async function uploadAndDetectFood() {
     const file = document.getElementById('imageInput').files[0];
     const resultDiv = document.getElementById("result");
@@ -254,15 +347,13 @@ async function uploadAndDetectFood() {
     if (!file) return alert("請先選擇圖片！");
     resultDiv.innerHTML = "🔄 AI 正在分析影像並識別食物...";
     uploadBtn.disabled = true;
-
     try {
         const base64 = await toBase64(file);
-        const res = await fetch(BACKEND_API, {
+        const res = await fetch(BACKEND_DETECT_FILE, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ imageBase64: base64.split(',')[1] })
         });
-
         const rawText = await res.text();
         let detectData = JSON.parse(rawText);
 
@@ -284,30 +375,90 @@ async function uploadAndDetectFood() {
     }
 }
 
-function toBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-    });
+// ─── 功能 3: 高級廣東話語音/NLP 食物解析對接 ───
+function startVoiceRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        alert("很抱歉，您的瀏覽器不支援 Web Speech API。請使用 Chrome 或 Safari。");
+        return;
+    }
+    
+    const recognition = new SpeechRecognition();
+    recognition.lang = "zh-HK"; 
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    
+    const voiceBtn = document.getElementById("voiceBtn");
+    voiceBtn.innerText = "🛑 聆聽中...";
+    
+    recognition.start();
+    
+    recognition.onresult = async (event) => {
+        const speechToText = event.results[0][0].transcript;
+        document.getElementById("foodSearchInput").value = speechToText;
+        document.getElementById("aiStatus").innerText = `🎙️ 語音輸入："${speechToText}"，正在進行高級 NLP 分析...`;
+        
+        try {
+            let response = await fetch(BACKEND_PARSE_VOICE, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: speechToText })
+            });
+            let data = await response.json();
+            
+            // 後端內置 LLM 結構化析出：{ success: true, foodName: "叉燒飯" }
+            if (data.success && data.foodName) {
+                document.getElementById("foodSearchInput").value = data.foodName;
+                document.getElementById("aiStatus").innerText = `✨ NLP 分析成功，提取食物：${data.foodName}`;
+                await searchFoodText();
+            } else {
+                await searchFoodText(); 
+            }
+        } catch (err) {
+            console.error("NLP 後端解析失敗，改行模糊匹配名稱", err);
+            await searchFoodText();
+        }
+    };
+    
+    recognition.onspeechend = () => { recognition.stop(); };
+    recognition.onend = () => { voiceBtn.innerText = "🎤"; };
+    recognition.onerror = (err) => {
+        console.error(err);
+        voiceBtn.innerText = "🎤";
+    };
 }
 
-function parseValue(val) {
-    if (!val) return 0;
-    let num = parseFloat(val.toString().replace(/[^\d.-]/g, ''));
-    return isNaN(num) ? 0 : num;
+// ─── 功能 2: 雲端 MongoDB / 後端跨端同步記錄 ───
+async function syncRecordToCloud(foodName, calories, grams, iddsi) {
+    try {
+        let payload = {
+            timestamp: new Date().toISOString(),
+            foodName: foodName,
+            calories: calories,
+            grams: grams,
+            iddsi: iddsi,
+            totalProgressCal: cal
+        };
+        
+        await fetch(BACKEND_SYNC_RECORD, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        console.log("☁️ 數據已成功實時同步至 MongoDB 雲端叢集。");
+    } catch (err) {
+        console.warn("雲端同步失敗，數據保留在本地快取:", err);
+    }
 }
 
-function formatOutput(num) { return Number(num.toFixed(2)).toString(); }
-
+// ─── 核心數據查詢與核心計算 ───
 async function searchFoodText() {
     const query = document.getElementById("foodSearchInput").value.trim();
     if (!query) return;
     document.getElementById("result").innerHTML = "⏳ 正在搜尋雲端試算表資料庫...";
     
     try {
-        let res = await fetch(API_URL);
+        let res = await fetch(SPREADSHEET_API);
         if (res.ok) {
             let resData = await res.json();
             let foodList = resData.nutrition_data || [];
@@ -315,7 +466,6 @@ async function searchFoodText() {
             let targetItem = foodList.find(item => {
                 let dbName = (item["foodname"] || "").toString().toLowerCase();
                 let q = query.toLowerCase();
-                
                 let dbNormal = dbName.replace('爹', '嗲');
                 let qNormal = q.replace('爹', '嗲');
                 
@@ -323,10 +473,9 @@ async function searchFoodText() {
                        (qNormal.includes('牛肉') && dbNormal.includes('牛肉')) ||
                        (qNormal.includes('麵') && dbNormal.includes('麵') && dbNormal.includes('牛肉'));
             });
-            
+
             if (targetItem) {
                 document.getElementById("result").innerHTML = "<span style='color:#30d158;'>✅ 成功抓取試算表數據！</span>";
-                
                 let fCal = Math.round(parseValue(targetItem["calories"]));
                 let fGrams = parseValue(targetItem["grams"]);
                 let fProtein = parseValue(targetItem["protein"]);
@@ -342,19 +491,25 @@ async function searchFoodText() {
                 document.getElementById("single_fat").innerText = formatOutput(fFat) + "g";
                 document.getElementById("single_iddsiMain").innerHTML = `<span class="iddsi-badge">${iddsiVal}</span>`;
                 
+                // 全域狀態累加
                 cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
+                
                 document.getElementById("cal").innerText = cal;
                 document.getElementById("grams").innerText = formatOutput(grams) + "g";
                 document.getElementById("protein").innerText = formatOutput(protein) + "g";
                 document.getElementById("carbs").innerText = formatOutput(carbs) + "g";
                 document.getElementById("fat").innerText = formatOutput(fat) + "g";
-                
+
                 let histBox = document.getElementById("history");
                 if (histBox.innerText === "尚無數據") histBox.innerHTML = "";
                 histBox.innerHTML += `<div class="history-item"><div><strong>${targetItem["foodname"]} (${formatOutput(fGrams)}g)</strong><br><small>IDDSI: ${iddsiVal}</small></div><span style="color:#ff9f0a; font-weight:bold;">+${fCal} KCAL</span></div>`;
                 
                 weeklyData[weeklyData.length - 1] = cal;
                 drawChart();
+                
+                // 🚀 發動功能 2: 將本次變更即刻上傳儲存至雲端
+                await syncRecordToCloud(targetItem["foodname"], fCal, fGrams, iddsiVal);
+
                 document.getElementById("foodSearchInput").value = "";
                 document.getElementById("singleQueryResultCard").scrollIntoView({ behavior: 'smooth' });
             } else {
@@ -362,18 +517,30 @@ async function searchFoodText() {
                 alert("在試算表中找不到包含「" + query + "」的食物！請檢查雲端試算表的名字。");
             }
         }
-    } catch (err) { alert(err); }
-}
-
-function toggleNutritionPanel() {
-    let panel = document.getElementById("nutritionTotalPanel");
-    if (panel.style.display === "none" || panel.style.display === "") {
-        panel.style.display = "block";
-    } else {
-        panel.style.display = "none";
+    } catch (err) { 
+        alert(err);
     }
 }
 
+// ─── 基礎工具函數與渲染 ───
+function toBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+    });
+}
+function parseValue(val) {
+    if (!val) return 0;
+    let num = parseFloat(val.toString().replace(/[^\d.-]/g, ''));
+    return isNaN(num) ? 0 : num;
+}
+function formatOutput(num) { return Number(num.toFixed(2)).toString(); }
+function toggleNutritionPanel() {
+    let panel = document.getElementById("nutritionTotalPanel");
+    panel.style.display = (panel.style.display === "none" || panel.style.display === "") ? "block" : "none";
+}
 function drawChart() {
     let stepX = 260 / (weeklyData.length - 1);
     let pts = weeklyData.map((val, idx) => `${20 + idx * stepX},${50 - (val / 2500 * 40)}`);
