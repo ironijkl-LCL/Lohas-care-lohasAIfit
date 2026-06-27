@@ -144,6 +144,12 @@ body {
 .sub-macro-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 12px; font-size: 13px; }
 .sub-macro-box { background: rgba(255,255,255,0.015); padding: 8px 12px; border-radius: 10px; display: flex; justify-content: space-between; border: 1px solid rgba(255,255,255,0.03); }
 .sub-macro-box span:last-child { color: #aeaea3; }
+
+.micronutrient-title { font-size: 14px; color: #ff375f; margin: 16px 0 8px 0; font-weight: bold; }
+.micro-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; font-size: 11px; text-align: center; }
+.micro-box { background: rgba(255,255,255,0.02); padding: 6px 4px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.02); }
+.micro-val { color: #30d158; font-weight: bold; margin-top: 2px; }
+
 .iddsi-badge { background: #5856d6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; display: inline-block; }
 .chart-svg { width: 100%; height: 65px; overflow: visible; }
 .history-item { background: rgba(255,255,255,0.02); padding: 12px; border-radius: 14px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; }
@@ -152,13 +158,13 @@ body {
 <body>
 
 <div class="search-container">
-    <input type="text" class="search-input" id="foodSearchInput" placeholder="輸入食物名稱或點擊語音輸入...">
+    <input type="text" class="search-input" id="foodSearchInput" placeholder="輸入食物名稱 (例如: 絲襪奶茶)...">
     <button class="voice-btn" id="voiceBtn" onclick="startVoiceRecognition()">🎤</button>
     <button class="search-btn" onclick="searchFoodText()">🔍 搜尋</button>
 </div>
 
 <div class="upload-container">
-    <label for="imageInput" class="file-label" id="uploadLabel">📸 點擊選擇食物相片</label>
+    <label for="imageInput" class="file-label" id="uploadLabel">📸 點擊選擇或拍攝食物相片</label>
     <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="previewImage(this)">
     <img id="preview-img" alt="食物預覽">
     
@@ -169,7 +175,7 @@ body {
         <button id="snapBtn" class="action-btn btn-orange" onclick="takeSnapshot()" style="display: none;">📸 擷取並辨識</button>
     </div>
     
-    <button id="uploadBtn" class="action-btn btn-green" onclick="uploadAndDetectFood()">🚀 AI 智能辨識檔案</button>
+    <button id="uploadBtn" class="action-btn btn-green" onclick="uploadAndDetectFood()">🚀 AI 智能辨識食物</button>
 </div>
 
 <div id="result" style="font-size: 13px; color: #ff9f0a; margin: 0 16px; text-align: center;"></div>
@@ -210,10 +216,22 @@ body {
             <div id="single_iddsiMain"><span class="iddsi-badge">--</span></div>
         </div>
     </div>
+
+    <div class="micronutrient-title">🧪 微量元素與維他命資訊</div>
+    <div class="micro-grid">
+        <div class="micro-box"><div>🧂 鈉 (Na)</div><div class="micro-val" id="single_sodium">0mg</div></div>
+        <div class="micro-box"><div>🍌 鉀 (K)</div><div class="micro-val" id="single_potassium">0mg</div></div>
+        <div class="micro-box"><div>🥛 鈣 (Ca)</div><div class="micro-val" id="single_calcium">0mg</div></div>
+        <div class="micro-box"><div>🥩 鐵 (Fe)</div><div class="micro-val" id="single_iron">0mg</div></div>
+        <div class="micro-box"><div>☀️ 維他命D</div><div class="micro-val" id="single_vitD">0mcg</div></div>
+        <div class="micro-box"><div>🍊 維他命C</div><div class="micro-val" id="single_vitC">0mg</div></div>
+        <div class="micro-box"><div>🧠 維他命B12</div><div class="micro-val" id="single_vitB12">0mcg</div></div>
+        <div class="micro-box"><div>🥦 葉酸 (B9)</div><div class="micro-val" id="single_folate">0mcg</div></div>
+    </div>
 </div>
 
 <div class="card">
-    <h3>📜 今日餐食記錄 (雲端同步)</h3>
+    <h3>📜 今日餐食記錄 (雲端已連線)</h3>
     <div id="history">尚無數據</div>
 </div>
 
@@ -246,19 +264,33 @@ body {
             <div id="iddsiMain"><span class="iddsi-badge">--</span></div>
         </div>
     </div>
+
+    <div class="micronutrient-title">🧪 全天累計微量元素</div>
+    <div class="micro-grid">
+        <div class="micro-box"><div>🧂 鈉 (Na)</div><div class="micro-val" id="sodium">0mg</div></div>
+        <div class="micro-box"><div>🍌 鉀 (K)</div><div class="micro-val" id="potassium">0mg</div></div>
+        <div class="micro-box"><div>🥛 鈣 (Ca)</div><div class="micro-val" id="calcium">0mg</div></div>
+        <div class="micro-box"><div>🥩 鐵 (Fe)</div><div class="micro-val" id="iron">0mg</div></div>
+        <div class="micro-box"><div>☀️ 維他命D</div><div class="micro-val" id="vitD">0mcg</div></div>
+        <div class="micro-box"><div>🍊 維他命C</div><div class="micro-val" id="vitC">0mg</div></div>
+        <div class="micro-box"><div>🧠 維他命B12</div><div class="micro-val" id="vitB12">0mcg</div></div>
+        <div class="micro-box"><div>🥦 葉酸 (B9)</div><div class="micro-val" id="folate">0mcg</div></div>
+    </div>
 </div>
 
 <script>
-const SPREADSHEET_API = "https://script.google.com/macros/s/AKfycbyUUlD_-S7d22LnTjoFDtHSWkuwkTWFJsyjmLgoJKuX-6HXJSc2ECFO1p037E1qaTvX/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyUUlD_-S7d22LnTjoFDtHSWkuwkTWFJsyjmLgoJKuX-6HXJSc2ECFO1p037E1qaTvX/exec";
 
-// 🌐 完美整合：全面轉用你部署在 Render 的後端基底路由
+// 🌐 核心對接路由設定
 const RENDER_BASE = "https://lohascare-nutritionaicheck.onrender.com";
 const BACKEND_DETECT_FILE = `${RENDER_BASE}/api/detect-food`;
 const BACKEND_CHECK_IMAGE = `${RENDER_BASE}/api/v1/nutrition/check-image`;
 const BACKEND_PARSE_VOICE = `${RENDER_BASE}/api/v1/nutrition/parse-voice`;
 const BACKEND_SYNC_RECORD   = `${RENDER_BASE}/api/v1/records/add`;
 
+// 全域數據追蹤狀態（含微量元素）
 let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0;
+let sodium = 0, potassium = 0, calcium = 0, iron = 0, vitD = 0, vitC = 0, vitB12 = 0, folate = 0;
 let weeklyData = [1400, 1500, 1350, 1600, 0];
 let streamRef = null;
 
@@ -269,11 +301,11 @@ function previewImage(input) {
         document.getElementById("preview-img").style.display = "block";
         document.getElementById("uploadBtn").style.display = "block";
         document.getElementById("uploadLabel").innerText = `🔄 已選擇: ${file.name}`;
-        closeCamera(); 
+        closeCamera();
     }
 }
 
-// ─── 功能 1: 真正相機調用與 CANVAS 截圖 AI 辨識 ───
+// ─── 功能 1: 實時本機硬體相機控制與畫布擷圖對接 ───
 async function openCamera() {
     document.getElementById("preview-img").style.display = "none";
     document.getElementById("uploadBtn").style.display = "none";
@@ -286,7 +318,7 @@ async function openCamera() {
         document.getElementById("startCamBtn").innerText = "❌ 關閉相機";
         document.getElementById("startCamBtn").onclick = closeCamera;
     } catch (err) {
-        alert("無法開啟相機，請檢查瀏覽器權限權限: " + err.message);
+        alert("無法開啟本機網絡相機視窗: " + err.message);
     }
 }
 
@@ -310,11 +342,11 @@ async function takeSnapshot() {
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     
     canvas.toBlob(async (blob) => {
-        if(!blob) return alert("截圖失敗");
+        if(!blob) return alert("畫布截圖轉換 Blob 錯誤");
         let formData = new FormData();
         formData.append("image", blob, "meal-snapshot.jpg");
         
-        document.getElementById("aiStatus").innerText = "⏳ 雲端 AI 正在即時分析影像晶片...";
+        document.getElementById("aiStatus").innerText = "⏳ 雲端影像核心運算分析中...";
         
         try {
             let response = await fetch(BACKEND_CHECK_IMAGE, {
@@ -324,21 +356,21 @@ async function takeSnapshot() {
             let data = await response.json();
             
             if(data.success && data.foodName) {
-                document.getElementById("aiStatus").innerText = `✅ 影像識別成功: ${data.foodName}`;
+                document.getElementById("aiStatus").innerText = `✅ 影像識別命中: ${data.foodName}`;
                 document.getElementById("foodSearchInput").value = data.foodName;
-                await searchFoodText(); 
+                await searchFoodText();
                 closeCamera();
             } else {
-                throw new Error(data.error || "未能辨識食物種類");
+                throw new Error(data.error || "未能結構化提取特徵");
             }
         } catch (err) {
-            document.getElementById("aiStatus").innerText = `❌ 相機影像辨識失敗: ${err.message}`;
+            document.getElementById("aiStatus").innerText = `❌ 相機影像對接失敗: ${err.message}`;
             console.error(err);
         }
     }, "image/jpeg");
 }
 
-// ─── 原有基地檔案上傳辨識對接 ───
+// ─── 既有 Base64 檔案上傳分析邏輯對接 ───
 async function uploadAndDetectFood() {
     const file = document.getElementById('imageInput').files[0];
     const resultDiv = document.getElementById("result");
@@ -375,28 +407,26 @@ async function uploadAndDetectFood() {
     }
 }
 
-// ─── 功能 3: 高級廣東話語音/NLP 食物解析對接 ───
+// ─── 功能 3: 高級廣東話語音 Web Speech + 雲端 LLM 語意模型解析 ───
 function startVoiceRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-        alert("很抱歉，您的瀏覽器不支援 Web Speech API。請使用 Chrome 或 Safari。");
+        alert("目前瀏覽器環境未支援內置 Web Speech 模組");
         return;
     }
     
     const recognition = new SpeechRecognition();
     recognition.lang = "zh-HK"; 
     recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
     
     const voiceBtn = document.getElementById("voiceBtn");
     voiceBtn.innerText = "🛑 聆聽中...";
-    
     recognition.start();
     
     recognition.onresult = async (event) => {
         const speechToText = event.results[0][0].transcript;
         document.getElementById("foodSearchInput").value = speechToText;
-        document.getElementById("aiStatus").innerText = `🎙️ 語音輸入："${speechToText}"，正在進行高級 NLP 分析...`;
+        document.getElementById("aiStatus").innerText = `🎙️ 語音解析："${speechToText}" -> 傳送 LLM 模型優化中...`;
         
         try {
             let response = await fetch(BACKEND_PARSE_VOICE, {
@@ -406,30 +436,26 @@ function startVoiceRecognition() {
             });
             let data = await response.json();
             
-            // 後端內置 LLM 結構化析出：{ success: true, foodName: "叉燒飯" }
             if (data.success && data.foodName) {
                 document.getElementById("foodSearchInput").value = data.foodName;
-                document.getElementById("aiStatus").innerText = `✨ NLP 分析成功，提取食物：${data.foodName}`;
+                document.getElementById("aiStatus").innerText = `✨ LLM 模型萃取成功: ${data.foodName}`;
                 await searchFoodText();
             } else {
                 await searchFoodText(); 
             }
         } catch (err) {
-            console.error("NLP 後端解析失敗，改行模糊匹配名稱", err);
+            console.warn("高級語意解析故障，直接採用口語值比對試算表", err);
             await searchFoodText();
         }
     };
     
     recognition.onspeechend = () => { recognition.stop(); };
     recognition.onend = () => { voiceBtn.innerText = "🎤"; };
-    recognition.onerror = (err) => {
-        console.error(err);
-        voiceBtn.innerText = "🎤";
-    };
+    recognition.onerror = () => { voiceBtn.innerText = "🎤"; };
 }
 
-// ─── 功能 2: 雲端 MongoDB / 後端跨端同步記錄 ───
-async function syncRecordToCloud(foodName, calories, grams, iddsi) {
+// ─── 功能 2: 雲端 MongoDB 跨端持久化資料同步 ───
+async function syncRecordToCloud(foodName, calories, grams, iddsi, fullItem) {
     try {
         let payload = {
             timestamp: new Date().toISOString(),
@@ -437,7 +463,8 @@ async function syncRecordToCloud(foodName, calories, grams, iddsi) {
             calories: calories,
             grams: grams,
             iddsi: iddsi,
-            totalProgressCal: cal
+            nutrientsSnapshot: fullItem,
+            cumulativeCalories: cal
         };
         
         await fetch(BACKEND_SYNC_RECORD, {
@@ -445,20 +472,20 @@ async function syncRecordToCloud(foodName, calories, grams, iddsi) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         });
-        console.log("☁️ 數據已成功實時同步至 MongoDB 雲端叢集。");
+        console.log("☁️ 健康數據已成功封裝並異步推送至雲端叢集數據庫。");
     } catch (err) {
-        console.warn("雲端同步失敗，數據保留在本地快取:", err);
+        console.warn("網絡連線異常，雲端同步受阻:", err);
     }
 }
 
-// ─── 核心數據查詢與核心計算 ───
+// ─── 數據處理與運算核心 ───
 async function searchFoodText() {
     const query = document.getElementById("foodSearchInput").value.trim();
     if (!query) return;
     document.getElementById("result").innerHTML = "⏳ 正在搜尋雲端試算表資料庫...";
     
     try {
-        let res = await fetch(SPREADSHEET_API);
+        let res = await fetch(API_URL);
         if (res.ok) {
             let resData = await res.json();
             let foodList = resData.nutrition_data || [];
@@ -476,6 +503,8 @@ async function searchFoodText() {
 
             if (targetItem) {
                 document.getElementById("result").innerHTML = "<span style='color:#30d158;'>✅ 成功抓取試算表數據！</span>";
+                
+                // 解析各項大類與巨量營養素數值
                 let fCal = Math.round(parseValue(targetItem["calories"]));
                 let fGrams = parseValue(targetItem["grams"]);
                 let fProtein = parseValue(targetItem["protein"]);
@@ -483,6 +512,17 @@ async function searchFoodText() {
                 let fFat = parseValue(targetItem["fat"]);
                 let iddsiVal = targetItem["iddsi"] || "--";
 
+                // 解析各項微量元素數值
+                let fSodium = parseValue(targetItem["sodium"]);
+                let fPotassium = parseValue(targetItem["potassium"]);
+                let fCalcium = parseValue(targetItem["calcium"]);
+                let fIron = parseValue(targetItem["iron"]);
+                let fVitD = parseValue(targetItem["vitD"]);
+                let fVitC = parseValue(targetItem["vitC"]);
+                let fVitB12 = parseValue(targetItem["vitB12"]);
+                let fFolate = parseValue(targetItem["folate"]);
+
+                // 渲染單次查詢面板 UI
                 document.getElementById("single_foodname").innerText = targetItem["foodname"];
                 document.getElementById("single_cal").innerText = fCal;
                 document.getElementById("single_grams").innerText = formatOutput(fGrams) + "g";
@@ -491,15 +531,52 @@ async function searchFoodText() {
                 document.getElementById("single_fat").innerText = formatOutput(fFat) + "g";
                 document.getElementById("single_iddsiMain").innerHTML = `<span class="iddsi-badge">${iddsiVal}</span>`;
                 
-                // 全域狀態累加
-                cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
+                document.getElementById("single_sugar").innerText = formatOutput(parseValue(targetItem["sugar"])) + "g";
+                document.getElementById("single_satFat").innerText = formatOutput(parseValue(targetItem["satFat"])) + "g";
+                document.getElementById("single_transFat").innerText = formatOutput(parseValue(targetItem["transFat"])) + "g";
+                document.getElementById("single_cholesterol").innerText = formatOutput(parseValue(targetItem["cholesterol"])) + "mg";
+                document.getElementById("single_fiber").innerText = formatOutput(parseValue(targetItem["fiber"])) + "g";
+
+                // 渲染單次查詢之微量元素 UI
+                document.getElementById("single_sodium").innerText = formatOutput(fSodium) + "mg";
+                document.getElementById("single_potassium").innerText = formatOutput(fPotassium) + "mg";
+                document.getElementById("single_calcium").innerText = formatOutput(fCalcium) + "mg";
+                document.getElementById("single_iron").innerText = formatOutput(fIron) + "mg";
+                document.getElementById("single_vitD").innerText = formatOutput(fVitD) + "mcg";
+                document.getElementById("single_vitC").innerText = formatOutput(fVitC) + "mg";
+                document.getElementById("single_vitB12").innerText = formatOutput(fVitB12) + "mcg";
+                document.getElementById("single_folate").innerText = formatOutput(fFolate) + "mcg";
                 
+                // 全域累加計算
+                cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
+                sodium += fSodium; potassium += fPotassium; calcium += fCalcium; iron += fIron;
+                vitD += fVitD; vitC += fVitC; vitB12 += fVitB12; folate += fFolate;
+                
+                // 渲染今日全天累計總和 UI
                 document.getElementById("cal").innerText = cal;
                 document.getElementById("grams").innerText = formatOutput(grams) + "g";
                 document.getElementById("protein").innerText = formatOutput(protein) + "g";
                 document.getElementById("carbs").innerText = formatOutput(carbs) + "g";
                 document.getElementById("fat").innerText = formatOutput(fat) + "g";
+                
+                document.getElementById("sugar").innerText = formatOutput(parseValue(targetItem["sugar"])) + "g";
+                document.getElementById("satFat").innerText = formatOutput(parseValue(targetItem["satFat"])) + "g";
+                document.getElementById("transFat").innerText = formatOutput(parseValue(targetItem["transFat"])) + "g";
+                document.getElementById("cholesterol").innerText = formatOutput(parseValue(targetItem["cholesterol"])) + "mg";
+                document.getElementById("fiber").innerText = formatOutput(parseValue(targetItem["fiber"])) + "g";
+                document.getElementById("iddsiMain").innerHTML = `<span class="iddsi-badge">${iddsiVal}</span>`;
 
+                // 渲染累計微量元素 UI
+                document.getElementById("sodium").innerText = formatOutput(sodium) + "mg";
+                document.getElementById("potassium").innerText = formatOutput(potassium) + "mg";
+                document.getElementById("calcium").innerText = formatOutput(calcium) + "mg";
+                document.getElementById("iron").innerText = formatOutput(iron) + "mg";
+                document.getElementById("vitD").innerText = formatOutput(vitD) + "mcg";
+                document.getElementById("vitC").innerText = formatOutput(vitC) + "mg";
+                document.getElementById("vitB12").innerText = formatOutput(vitB12) + "mcg";
+                document.getElementById("folate").innerText = formatOutput(folate) + "mcg";
+
+                // 新增至歷史餐食記錄列表板塊
                 let histBox = document.getElementById("history");
                 if (histBox.innerText === "尚無數據") histBox.innerHTML = "";
                 histBox.innerHTML += `<div class="history-item"><div><strong>${targetItem["foodname"]} (${formatOutput(fGrams)}g)</strong><br><small>IDDSI: ${iddsiVal}</small></div><span style="color:#ff9f0a; font-weight:bold;">+${fCal} KCAL</span></div>`;
@@ -507,8 +584,8 @@ async function searchFoodText() {
                 weeklyData[weeklyData.length - 1] = cal;
                 drawChart();
                 
-                // 🚀 發動功能 2: 將本次變更即刻上傳儲存至雲端
-                await syncRecordToCloud(targetItem["foodname"], fCal, fGrams, iddsiVal);
+                // 🚀 發動雲端同步：儲存數據
+                await syncRecordToCloud(targetItem["foodname"], fCal, fGrams, iddsiVal, targetItem);
 
                 document.getElementById("foodSearchInput").value = "";
                 document.getElementById("singleQueryResultCard").scrollIntoView({ behavior: 'smooth' });
@@ -522,7 +599,7 @@ async function searchFoodText() {
     }
 }
 
-// ─── 基礎工具函數與渲染 ───
+// ─── 底層結構工具集 ───
 function toBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
