@@ -1,162 +1,289 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
-<meta name="referrer" content="no-referrer">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AI Nutrition Ultimate++ Pro</title>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="no-referrer">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>樂活健康管理系統 - 智能飲食與雲端監測</title>
 
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="AI 營養師">
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2642/2642731.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="樂活健康管理">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2642/2642731.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<style>
-body {
-    margin: 0;
-    font-family: -apple-system, sans-serif;
-    background: #0a0a0f;
-    color: white;
-    padding-bottom: 110px;
-}
-.card {
-    margin: 16px;
-    padding: 20px;
-    border-radius: 24px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-.search-container {
-    display: flex;
-    gap: 10px;
-    margin: 16px 16px 8px 16px;
-}
-.search-input {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 16px;
-    padding: 14px;
-    color: white;
-    font-size: 14px;
-}
-.search-btn {
-    padding: 0 20px;
-    border-radius: 16px;
-    background: linear-gradient(90deg, #ff9f0a, #ff375f);
-    color: white;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-}
-.upload-container {
-    margin: 0 16px 16px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.file-label {
-    display: block;
-    text-align: center;
-    padding: 14px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px dashed rgba(255, 255, 255, 0.2);
-    border-radius: 16px;
-    cursor: pointer;
-    font-size: 14px;
-    color: #aeaea3;
-    transition: all 0.2s;
-}
-.file-label:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: #ff9f0a;
-}
-.upload-btn {
-    padding: 14px;
-    border-radius: 16px;
-    background: #30d158;
-    color: white;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 14px;
-}
-.upload-btn:disabled {
-    background: #555;
-    cursor: not-allowed;
-}
-#preview-img {
-    max-width: 100%;
-    max-height: 200px;
-    border-radius: 16px;
-    margin: 10px auto;
-    display: none;
-    object-fit: cover;
-}
-.toggle-panel-btn {
-    display: block;
-    width: calc(100% - 32px);
-    margin: 16px auto;
-    padding: 14px;
-    border-radius: 16px;
-    background: linear-gradient(90deg, #1d1d26, #2c2c3e);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #ff9f0a;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-#nutritionTotalPanel { display: none; }
-.rings {
-    width: 120px;
-    height: 120px;
-    margin: 10px auto;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.ring-single { border: 4px solid #ff375f; }
-.ring-total { border: 4px solid #ff9f0a; }
-.macro-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    text-align: center;
-    margin-top: 15px;
-}
-.macro-box { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 14px; }
-.sub-macro-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 12px; font-size: 13px; }
-.sub-macro-box { background: rgba(255,255,255,0.015); padding: 8px 12px; border-radius: 10px; display: flex; justify-content: space-between; border: 1px solid rgba(255,255,255,0.03); }
-.sub-macro-box span:last-child { color: #aeaea3; }
-.micronutrient-title { font-size: 14px; color: #ff375f; margin: 16px 0 8px 0; font-weight: bold; }
-.micro-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; font-size: 11px; text-align: center; }
-.micro-box { background: rgba(255,255,255,0.02); padding: 6px 4px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.02); }
-.micro-val { color: #30d158; font-weight: bold; margin-top: 2px; }
-.iddsi-badge { background: #5856d6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; display: inline-block; }
-.chart-svg { width: 100%; height: 65px; overflow: visible; }
-.history-item { background: rgba(255,255,255,0.02); padding: 12px; border-radius: 14px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; }
-</style>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, 'PingFang HK', 'Microsoft JhengHei', sans-serif;
+            background: #0a0a0f;
+            color: white;
+            padding-bottom: 120px;
+        }
+        header {
+            background: linear-gradient(135deg, #111118, #1a1a26);
+            padding: 20px 16px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: #30d158;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        header p {
+            margin: 5px 0 0 0;
+            font-size: 13px;
+            color: #aeaea3;
+        }
+        .card {
+            margin: 16px;
+            padding: 20px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        /* 搜尋與語音區塊 */
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin: 16px;
+        }
+        .search-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 14px;
+            color: white;
+            font-size: 16px;
+        }
+        .search-btn {
+            padding: 0 20px;
+            border-radius: 16px;
+            background: linear-gradient(90deg, #ff9f0a, #ff375f);
+            color: white;
+            border: none;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        /* 語音大按鈕與動畫 */
+        .voice-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 0;
+        }
+        .mic-btn {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #ff9f0a;
+            font-size: 32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        .mic-recording {
+            background: #ff375f;
+            color: white;
+            border-color: #ff375f;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.9; box-shadow: 0 0 8px #ff375f; }
+            50% { transform: scale(1.08); opacity: 1; box-shadow: 0 0 20px #ff375f; }
+        }
+        .mic-status {
+            margin-top: 10px;
+            font-size: 15px;
+            color: #aeaea3;
+            font-weight: 500;
+        }
+        
+        /* 📸 相片上傳與動態掃描核心樣式 */
+        .upload-container {
+            margin: 0 16px 16px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .file-label {
+            display: block;
+            text-align: center;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #aeaea3;
+            transition: all 0.2s;
+        }
+        .file-label:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: #ff9f0a;
+        }
+        .upload-btn {
+            padding: 14px;
+            border-radius: 16px;
+            background: #30d158;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .upload-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+        
+        /* 掃描外框容器 */
+        .preview-wrapper {
+            position: relative;
+            max-width: 100%;
+            max-height: 240px;
+            margin: 10px auto;
+            border-radius: 16px;
+            overflow: hidden;
+            display: none; /* 有相片時由 JS 開啟 */
+        }
+        #preview-img {
+            width: 100%;
+            max-height: 240px;
+            display: block;
+            object-fit: cover;
+        }
+        
+        /* 🟢 上下移動的智能雷射掃描線 */
+        .scanner-line {
+            display: none; /* 預設隱藏，分析時動態顯示 */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #30d158, #ff9f0a, #30d158, transparent);
+            box-shadow: 0 0 12px #30d158, 0 0 20px #ff9f0a;
+            z-index: 10;
+            animation: scanMove 2s infinite ease-in-out;
+        }
+        @keyframes scanMove {
+            0% { top: 0%; }
+            50% { top: 98%; }
+            100% { top: 0%; }
+        }
+
+        /* 展開面板按鈕 */
+        .toggle-panel-btn {
+            display: block;
+            width: calc(100% - 32px);
+            margin: 16px auto;
+            padding: 14px;
+            border-radius: 16px;
+            background: linear-gradient(90deg, #1d1d26, #2c2c3e);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ff9f0a;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        #nutritionTotalPanel { display: none; }
+        
+        /* 圓環與網格樣式 */
+        .rings {
+            width: 120px;
+            height: 120px;
+            margin: 10px auto;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ring-single { border: 4px solid #ff375f; }
+        .ring-total { border: 4px solid #ff9f0a; }
+        .macro-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            text-align: center;
+            margin-top: 15px;
+        }
+        .macro-box { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 14px; }
+        .sub-macro-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 12px; font-size: 14px; }
+        .sub-macro-box { background: rgba(255,255,255,0.015); padding: 10px 12px; border-radius: 10px; display: flex; justify-content: space-between; border: 1px solid rgba(255,255,255,0.03); }
+        .sub-macro-box span:last-child { color: #aeaea3; }
+        
+        .iddsi-badge { background: #5856d6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; }
+        .chart-svg { width: 100%; height: 65px; overflow: visible; }
+        .history-item { background: rgba(255,255,255,0.02); padding: 12px; border-radius: 14px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #30d158; }
+    </style>
 </head>
 <body>
 
+<header>
+    <h1><i class="fa-solid fa-heart-pulse"></i> 樂活健康管理系統 v3.5</h1>
+    <p>結合 Web Speech 語音辨識 + 雲端智慧監測看板</p>
+</header>
+
+<div id="result" style="font-size: 14px; color: #ff9f0a; margin: 12px 16px 0 16px; text-align: center; min-height: 20px;">
+    請選擇語音、文字或相片輸入餐食
+</div>
+
+<div class="card">
+    <h3><i class="fa-solid fa-microphone-lines" style="color: #ff9f0a;"></i> 廣東話語音智慧錄入</h3>
+    <p style="font-size: 14px; color: #aeaea3; margin: 0 0 15px 0;">請點擊按鈕並講出你食咗咩（例如：「我今朝食咗一碗碎肉粥」）</p>
+    <div class="voice-section">
+        <button id="micBtn" class="mic-btn" onclick="toggleVoiceRecognition()">
+            <i id="micIcon" class="fa-solid fa-microphone"></i>
+        </button>
+        <p id="micStatus" class="mic-status">點擊開始說話</p>
+    </div>
+</div>
+
 <div class="search-container">
-    <input type="text" class="search-input" id="foodSearchInput" placeholder="輸入食物名稱 (例如: 絲襪奶茶)">
+    <input type="text" class="search-input" id="foodSearchInput" placeholder="輸入或修改食物名稱 (如: 絲襪奶茶)">
     <button class="search-btn" onclick="searchFoodText()">🔍 搜尋</button>
 </div>
 
 <div class="upload-container">
     <label for="imageInput" class="file-label" id="uploadLabel">📸 點擊選擇或拍攝食物相片</label>
     <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="previewImage(this)">
-    <img id="preview-img" alt="食物預覽">
+    
+    <div class="preview-wrapper" id="previewWrapper">
+        <div class="scanner-line" id="scannerLine"></div>
+        <img id="preview-img" alt="食物預覽">
+    </div>
+    
     <button id="uploadBtn" class="upload-btn" style="display: none;" onclick="uploadAndDetectFood()">🚀 AI 智能辨識食物</button>
 </div>
 
-<div id="result" style="font-size: 13px; color: #ff9f0a; margin: 0 16px; text-align: center;"></div>
-
 <div class="card">
-    <h3>📈 本週卡路里動態趨勢</h3>
+    <h3><i class="fa-solid fa-chart-line" style="color: #ffcc00;"></i> 本週卡路里動態趨勢</h3>
     <svg class="chart-svg" viewBox="0 0 300 60">
         <path id="chartPathLine" d="M 10 50 L 290 50" fill="none" stroke="#ff9f0a" stroke-width="3"/>
         <g id="chartGridX"></g>
@@ -164,7 +291,7 @@ body {
 </div>
 
 <div class="card" id="singleQueryResultCard" style="text-align: center;">
-    <h3>🔍 熱量與營養查詢結果 (<span id="single_foodname" style="color: #ff375f;">請輸入食物或上載圖片</span>)</h3>
+    <h3><i class="fa-solid fa-magnifying-glass" style="color: #ff375f;"></i> 熱量與營養查詢結果 (<span id="single_foodname" style="color: #ff375f;">未輸入</span>)</h3>
     <div class="rings ring-single">
         <div>
             <div id="single_cal" style="font-size: 24px; font-weight: bold; color: #ff375f;">0</div>
@@ -193,11 +320,11 @@ body {
 </div>
 
 <div class="card">
-    <h3>📜 今日餐食記錄</h3>
+    <h3><i class="fa-solid fa-list-check" style="color: #30d158;"></i> 📜 今日餐食記錄</h3>
     <div id="history">尚無數據</div>
 </div>
 
-<button class="toggle-panel-btn" onclick="toggleNutritionPanel()">📊 展開今日熱量與營養總和</button>
+<button class="toggle-panel-btn" onclick="toggleNutritionPanel()">📊 展開全天熱量與營養總和</button>
 
 <div class="card" id="nutritionTotalPanel" style="text-align: center;">
     <h3>🔥 今日熱量與營養總和 (全天累計)</h3>
@@ -229,21 +356,89 @@ body {
 </div>
 
 <script>
+// 雲端後端端點配置
 const API_URL = "https://script.google.com/macros/s/AKfycbyUUlD_-S7d22LnTjoFDtHSWkuwkTWFJsyjmLgoJKuX-6HXJSc2ECFO1p037E1qaTvX/exec";
 const BACKEND_API = "https://lohascare-nutritionaicheck.onrender.com/api/detect-food";
 
-// 初始化累計數據變量
+// 初始化變量
 let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0;
 let sugar = 0, satFat = 0, transFat = 0, cholesterol = 0, fiber = 0;
 let weeklyData = [1400, 1500, 1350, 1600, 0];
+
+let recognition = null;
+let isRecording = false;
+
+// 控制動態掃描線顯示/隱藏的輔助函數
+function toggleScanEffects(show) {
+    const scanLine = document.getElementById("scannerLine");
+    if(scanLine) {
+        scanLine.style.display = show ? "block" : "none";
+    }
+}
+
+// 初始化瀏覽器 Web Speech API
+function initSpeechAPI() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        document.getElementById('micStatus').innerText = "瀏覽器不支援語音錄入，請使用 Chrome";
+        document.getElementById('micBtn').disabled = true;
+        return;
+    }
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.lang = 'zh-HK'; 
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+        isRecording = true;
+        document.getElementById('micIcon').className = "fa-solid fa-microphone-lines";
+        document.getElementById('micBtn').classList.add('mic-recording');
+        document.getElementById('micStatus').innerText = "聆聽中...請說出餐食名稱";
+        document.getElementById("result").innerText = "🎙️ 正在收集廣東話語音...";
+    };
+
+    recognition.onend = () => {
+        isRecording = false;
+        document.getElementById('micIcon').className = "fa-solid fa-microphone";
+        document.getElementById('micBtn').classList.remove('mic-recording');
+        document.getElementById('micStatus').innerText = "點擊開始說話";
+    };
+
+    recognition.onresult = async (event) => {
+        let transcript = event.results[0][0].transcript;
+        if(transcript.endsWith('。')) transcript = transcript.slice(0, -1);
+        
+        document.getElementById("foodSearchInput").value = transcript;
+        document.getElementById("result").innerHTML = `🗣️ 聽到了: <span style="color:#ff9f0a;">「${transcript}」</span>，正在自動匹配試算表...`;
+        
+        // 語音輸入後開始匹配試算表時，開啟掃描動畫反饋
+        toggleScanEffects(true);
+        await searchFoodText();
+    };
+
+    recognition.onerror = (e) => {
+        console.error(e);
+        document.getElementById("result").innerText = "❌ 語音收音不清，請再試一次。";
+    };
+}
+
+function toggleVoiceRecognition() {
+    if (!recognition) return;
+    if (isRecording) {
+        recognition.stop();
+    } else {
+        recognition.start();
+    }
+}
 
 function previewImage(input) {
     const file = input.files[0];
     if (file) {
         document.getElementById("preview-img").src = URL.createObjectURL(file);
-        document.getElementById("preview-img").style.display = "block";
+        document.getElementById("previewWrapper").style.display = "block"; // 顯示圖片外框
         document.getElementById("uploadBtn").style.display = "block";
         document.getElementById("uploadLabel").innerText = `🔄 已選擇: ${file.name}`;
+        toggleScanEffects(false); // 剛選擇好圖片時先不掃描
     }
 }
 
@@ -253,8 +448,11 @@ async function uploadAndDetectFood() {
     const uploadBtn = document.getElementById("uploadBtn");
 
     if (!file) return alert("請先選擇圖片！");
-    resultDiv.innerHTML = "🔄 AI 正在分析影像並識別食物...";
+    resultDiv.innerHTML = "🔄 Render AI 後端正在分析影像識別食物...";
     uploadBtn.disabled = true;
+    
+    // 📸 開啟動態上下滑動掃描線
+    toggleScanEffects(true);
 
     try {
         const base64 = await toBase64(file);
@@ -275,12 +473,9 @@ async function uploadAndDetectFood() {
         document.getElementById("foodSearchInput").value = foodName;
         await searchFoodText();
 
-        // 成功查詢後清理預覽介面
-        document.getElementById("preview-img").style.display = "none";
-        uploadBtn.style.display = "none";
-        document.getElementById("uploadLabel").innerText = "📸 點擊選擇或拍攝食物相片";
     } catch (err) {
         resultDiv.innerHTML = `<span style='color:#ff375f;'>❌ 辨識失敗：${err.message}</span>`;
+        toggleScanEffects(false); // 失敗時停止掃描
     } finally {
         uploadBtn.disabled = false;
     }
@@ -306,7 +501,10 @@ function formatOutput(num) { return Number(num.toFixed(2)).toString(); }
 async function searchFoodText() {
     const query = document.getElementById("foodSearchInput").value.trim();
     if (!query) return;
-    document.getElementById("result").innerHTML = "⏳ 正在搜尋雲端試算表資料庫...";
+    document.getElementById("result").innerHTML = "⏳ 正在搜尋 Google 試算表資料庫...";
+    
+    // 文字按鈕直接搜尋時，也同步亮起掃描線反饋
+    toggleScanEffects(true);
     
     try {
         let res = await fetch(API_URL);
@@ -323,13 +521,13 @@ async function searchFoodText() {
                 
                 return dbNormal.includes(qNormal) || qNormal.includes(dbNormal) || 
                        (qNormal.includes('牛肉') && dbNormal.includes('牛肉')) ||
-                       (qNormal.includes('麵') && dbNormal.includes('麵') && dbNormal.includes('牛肉'));
+                       (qNormal.includes('麵') && dbNormal.includes('麵') && dbNormal.includes('牛肉')) ||
+                       (qNormal.includes('粥') && dbNormal.includes('粥'));
             });
             
             if (targetItem) {
                 document.getElementById("result").innerHTML = "<span style='color:#30d158;'>✅ 成功抓取試算表數據！</span>";
                 
-                // 解析主要與次要營養素欄位 (對齊試算表的 Key 鍵名，請確保 GAS 導出的 JSON 鍵名對應)
                 let fCal = Math.round(parseValue(targetItem["calories"]));
                 let fGrams = parseValue(targetItem["grams"]);
                 let fProtein = parseValue(targetItem["protein"]);
@@ -380,21 +578,36 @@ async function searchFoodText() {
                 // 更新歷史紀錄
                 let histBox = document.getElementById("history");
                 if (histBox.innerText === "尚無數據") histBox.innerHTML = "";
-                histBox.innerHTML += `<div class="history-item"><div><strong>${targetItem["foodname"]} (${formatOutput(fGrams)}g)</strong><br><small>IDDSI: ${iddsiVal}</small></div><span style="color:#ff9f0a; font-weight:bold;">+${fCal} KCAL</span></div>`;
+                histBox.innerHTML += `
+                    <div class="history-item">
+                        <div>
+                            <strong>${targetItem["foodname"]} (${formatOutput(fGrams)}g)</strong><br>
+                            <small style="color:#aeaea3;">安全等級: ${iddsiVal}</small>
+                        </div>
+                        <span style="color:#ff9f0a; font-weight:bold;">+${fCal} KCAL</span>
+                    </div>`;
                 
-                // 更新圖表
+                // 更新 SVG 動態趨勢圖
                 weeklyData[weeklyData.length - 1] = cal;
                 drawChart();
+                
+                // 成功抓取數據後，自動清空輸入框、隱藏相片與掃描線
                 document.getElementById("foodSearchInput").value = "";
+                document.getElementById("previewWrapper").style.display = "none";
+                document.getElementById("uploadBtn").style.display = "none";
+                document.getElementById("uploadLabel").innerText = "📸 點擊選擇或拍攝食物相片";
+                
+                toggleScanEffects(false); // 關閉掃描線
                 document.getElementById("singleQueryResultCard").scrollIntoView({ behavior: 'smooth' });
             } else {
                 document.getElementById("result").innerHTML = `<span style='color:#ff375f;'>⚠️ 未在試算表中找到包含「${query}」的食物。</span>`;
-                alert("在試算表中找不到包含「" + query + "」的食物！請檢查雲端試算表的名字。");
+                toggleScanEffects(false); // 未找到時也關閉掃描線
             }
         }
     } catch (err) { 
         console.error(err);
-        alert("資料庫查詢發生錯誤: " + err); 
+        document.getElementById("result").innerText = "❌ 查詢錯誤，請檢查雲端試算表連線";
+        toggleScanEffects(false);
     }
 }
 
@@ -402,6 +615,7 @@ function toggleNutritionPanel() {
     let panel = document.getElementById("nutritionTotalPanel");
     if (panel.style.display === "none" || panel.style.display === "") {
         panel.style.display = "block";
+        panel.scrollIntoView({ behavior: 'smooth' });
     } else {
         panel.style.display = "none";
     }
@@ -412,7 +626,11 @@ function drawChart() {
     let pts = weeklyData.map((val, idx) => `${20 + idx * stepX},${50 - (val / 2500 * 40)}`);
     document.getElementById("chartPathLine").setAttribute("d", "M " + pts.join(" L "));
 }
-window.onload = drawChart;
+
+window.onload = () => {
+    drawChart();
+    initSpeechAPI();
+};
 </script>
 </body>
 </html>
