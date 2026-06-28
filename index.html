@@ -1,1074 +1,967 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
-<meta charset="UTF-8">
-<title>FIFA World Cup 2026 - LOHAS’s Edition (Full 104 Matches)</title>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="no-referrer">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>樂活健康管理系統 - 智能流線高精準版</title>
 
-<style>
-body{
-  background: #0b0f19;
-  color: #f3f4f6;
-  font-family: Arial, sans-serif;
-  padding: 20px;
-  line-height: 25px;
-}
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="樂活健康管理">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2642/2642731.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-h1, h2 { color: #ffffff; text-align: center; }
-h1 { font-size: 2.2rem; color: #dfaa2a; text-shadow: 0 0 10px rgba(223,170,42,0.3); margin-bottom: 5px; }
+    <style>
+        :root {
+            --bg-canvas: #f5f7fb;       
+            --card-bg: #ffffff;         
+            --text-main: #1f2937;       
+            --text-sub: #6b7280;        
+            --teal-main: #0d9488;       
+            --teal-dark: #0f766e;       
+            --amber-accent: #d97706;    
+            --mint-light: #f0fdfa;      
+            --border-radius: 24px;
+        }
 
-.countdown-container {
-  background: linear-gradient(135deg, #1e293b, #0f172a);
-  border: 2px solid #10b981;
-  box-shadow: 0 0 15px rgba(16,185,129,0.3);
-  border-radius: 12px;
-  max-width: 600px;
-  margin: 15px auto;
-  padding: 15px;
-  text-align: center;
-}
-.countdown-title {
-  font-size: 14px;
-  color: #10b981;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-.live-msg {
-  font-size: 1.3rem;
-  font-weight: bold;
-  color: #dfaa2a;
-  text-shadow: 0 0 10px rgba(223,170,42,0.4);
-  padding: 10px;
-  line-height: 25px;
-}
+        body {
+            margin: 0;
+            font-family: -apple-system, 'PingFang HK', 'Microsoft JhengHei', sans-serif;
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+            padding-bottom: 60px;
+            display: flex;
+            justify-content: center;
+        }
 
-.info{
-  background: #111827;
-  padding: 15px;
-  border-radius: 12px;
-  margin: 20px auto;
-  max-width: 1200px;
-  border: 1px solid #1f2937;
-  border-left: 5px solid #dfaa2a;
-  font-size: 14px;
-  line-height: 25px;
-}
-.info img{
-  width: 26px;
-  margin: 0 4px;
-  vertical-align: middle;
-}
+        .app-container {
+            width: 100%;
+            max-width: 412px;
+            background: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 30px rgba(0,0,0,0.05);
+        }
 
-.predict-rank-container {
-  background: #111827;
-  border: 1px solid #dfaa2a;
-  border-radius: 8px;
-  padding: 12px 15px;
-  margin-top: 12px;
-  font-size: 13px;
-}
-.predict-rank-title {
-  color: #dfaa2a;
-  font-weight: bold;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.predict-rank-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 5px;
-}
-.predict-rank-item {
-  background: #1f2937;
-  padding: 8px 12px;
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  border-left: 4px solid #10b981;
-  position: relative;
-}
-.predict-rank-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: bold;
-  z-index: 2;
-}
-.predict-bar-bg {
-  background: #111827;
-  height: 8px;
-  border-radius: 4px;
-  width: 100%;
-  overflow: hidden;
-  border: 1px solid #374151;
-}
-.predict-bar-fill {
-  background: linear-gradient(90deg, #10b981, #059669);
-  height: 100%;
-  width: 0%;
-  border-radius: 4px;
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
+        /* 一、頂部 App Store 格式基本信息欄 */
+        .app-header-block {
+            padding: 24px 20px;
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border-bottom: 1px solid #e2e8f0;
+        }
 
-.friendly-section {
-  background: linear-gradient(180deg, #111827, #0f172a);
-  padding: 25px;
-  border-radius: 16px;
-  margin: 25px auto;
-  max-width: 1200px;
-  border: 1px solid #1e293b;
-  border-left: 6px solid #38bdf8;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-  box-sizing: border-box;
-}
-.friendly-title {
-  font-size: 1.4rem;
-  color: #38bdf8;
-  font-weight: bold;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  letter-spacing: 1px;
-}
-.friendly-desc-box {
-  background: rgba(30, 41, 59, 0.5);
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  margin-bottom: 20px;
-  font-size: 14px;
-  line-height: 25px;
-  color: #e5e7eb;
-}
-.friendly-subtitle {
-  font-size: 15px;
-  color: #dfaa2a;
-  font-weight: bold;
-  margin-top: 25px;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  text-transform: uppercase;
-}
-.friendly-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  margin: 12px 0;
-  font-size: 13px;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid #374151;
-}
-.friendly-table th, .friendly-table td {
-  padding: 12px 14px;
-  text-align: center;
-  vertical-align: middle;
-}
-.friendly-table th {
-  background-color: #1f2937;
-  color: #dfaa2a;
-  font-weight: bold;
-  border-bottom: 2px solid #374151;
-}
-.friendly-table td {
-  background-color: #111827;
-  border-bottom: 1px solid #1f2937;
-  color: #e5e7eb;
-}
-.friendly-table tr:hover td {
-  background-color: #1e293b;
-}
-.table-team-cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-.score-badge {
-  background: #1e293b;
-  color: #dfaa2a;
-  font-weight: 900;
-  font-size: 14px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  border: 1px solid #dfaa2a;
-  display: inline-block;
-}
+        .app-brand-icon {
+            width: 76px;
+            height: 76px;
+            background: linear-gradient(135deg, #50e3c2, var(--teal-main));
+            border-radius: 18px;
+            box-shadow: 0 8px 16px rgba(13, 148, 136, 0.15);
+            margin-right: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+        }
 
-.timeline-container {
-  position: relative;
-  margin: 20px 0 20px 10px;
-  padding-left: 24px;
-  border-left: 2px solid #374151;
-}
-.timeline-item {
-  position: relative;
-  margin-bottom: 20px;
-}
-.timeline-dot {
-  position: absolute;
-  left: -33px;
-  top: 2px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #1f2937;
-  border: 2px solid #9ca3af;
-  z-index: 2;
-}
-.timeline-dot.goal { border-color: #10b981; background: #064e3b; }
-.timeline-dot.redcard { border-color: #ef4444; background: #7f1d1d; }
-.timeline-dot.stadium { border-color: #38bdf8; background: #0c4a6e; }
+        .app-header-info {
+            flex: 1;
+        }
 
-.timeline-content {
-  background: #1f2937;
-  padding: 14px;
-  border-radius: 10px;
-  border: 1px solid #374151;
-}
-.timeline-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-.event-tag {
-  font-size: 11px;
-  font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-.event-tag.goal { background-color: #10b981; color: #fff; }
-.event-tag.redcard { background-color: #ef4444; color: #fff; }
-.event-tag.stadium { background-color: #38bdf8; color: #0b0f19; }
+        .app-header-info h1 {
+            margin: 0 0 4px 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
 
-.event-time {
-  font-family: monospace;
-  font-size: 12px;
-  color: #9ca3af;
-  font-weight: bold;
-}
-.event-body {
-  font-size: 13px;
-  line-height: 25px;
-  color: #d1d5db;
-}
+        .app-header-info p {
+            margin: 0 0 10px 0;
+            font-size: 13px;
+            color: var(--text-sub);
+        }
 
-.analysis-list {
-  list-style: none;
-  padding: 0;
-  margin: 10px 0 0 0;
-}
-.analysis-list li {
-  position: relative;
-  padding-left: 18px;
-  margin-bottom: 12px;
-  font-size: 13px;
-  line-height: 25px;
-  color: #d1d5db;
-}
-.analysis-list li::before {
-  content: "•";
-  position: absolute;
-  left: 0;
-  top: 0px;
-  font-size: 16px;
-  color: #dfaa2a;
-}
+        .badge-version {
+            background: var(--mint-light);
+            color: var(--teal-dark);
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            border: 1px solid #ccfbf1;
+        }
 
-.title-panel-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 30px auto 15px auto;
-  padding: 0 5px;
-}
-.lock-control-panel {
-  background: #111827;
-  border: 1px dashed #dfaa2a;
-  padding: 6px 10px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.lock-input {
-  background: #1f2937;
-  border: 1px solid #4b5563;
-  color: #fff;
-  padding: 5px 10px;
-  border-radius: 6px;
-  width: 100px;
-  text-align: center;
-}
-.lock-btn {
-  background: #dfaa2a;
-  color: #0b0f19;
-  border: none;
-  padding: 6px 16px;
-  font-size: 14px;
-  font-weight: bold;
-  border-radius: 6px;
-  cursor: pointer;
-}
+        /* 二、核心累計數據網格 (Metadata Grid) */
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 14px 0;
+            border-bottom: 1px solid #e2e8f0;
+            background: var(--card-bg);
+        }
 
-.groups{
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-@media(max-width:1200px){.groups{grid-template-columns: repeat(3, 1fr);}}
-@media(max-width:900px){.groups{grid-template-columns: repeat(2, 1fr);}}
-@media(max-width:600px){.groups{grid-template-columns: 1fr;}}
+        .meta-item {
+            text-align: center;
+            border-right: 1px solid #e2e8f0;
+        }
 
-.group {
-  background: #1f2937;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #374151;
-}
-.group-title {
-  display: block; 
-  margin-bottom: 10px; 
-  font-size: 1.1rem; 
-  color: #dfaa2a;
-  border-bottom: 1px solid #4b5563;
-  padding-bottom: 4px;
-}
-.row{
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-  min-height: 25px;
-}
-.flag{
-  width: 38px;
-  height: 25px;
-  object-fit: cover;
-  border-radius: 4px;
-}
+        .meta-item:last-child {
+            border-right: none;
+        }
 
-.cheer-btn-inline {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: #fff;
-  border: none;
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-left: auto;
-}
-.cheer-count-text {
-  font-size: 11px;
-  color: #f3f4f6;
-  font-weight: bold;
-  background: #111827;
-  padding: 1px 5px;
-  border-radius: 3px;
-  border: 1px solid #374151;
-}
+        .meta-label {
+            font-size: 11px;
+            color: var(--text-sub);
+            margin-bottom: 4px;
+        }
 
-.btn-lock-container {
-  display: none;
-  align-items: center;
-  gap: 8px;
-}
-button.win, button.draw, button.lose, button.hot-btn {
-  border: none;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: bold;
-  cursor: pointer;
-}
-.win{background: #10b981; color: white;}
-.draw{background: #f59e0b; color: black;}
-.lose{background: #4b5563; color: white;}
-.hot-btn {
-  background: linear-gradient(135deg, #f59e0b, #dfaa2a);
-  color: #0b0f19;
-  padding: 4px 10px;
-  font-size: 12px;
-  margin-left: 8px;
-}
+        .meta-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--teal-dark);
+        }
 
-.date-selector-container {
-  max-width: 1200px;
-  margin: 15px auto;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  background: #111827;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid #1f2937;
-}
-.date-btn {
-  background: #1f2937;
-  color: #d1d5db;
-  border: 1px solid #374151;
-  padding: 6px 14px;
-  font-size: 12px;
-  border-radius: 20px;
-  cursor: pointer;
-}
-.date-btn.active, .date-btn:hover {
-  background: #dfaa2a;
-  color: #0b0f19;
-  border-color: #dfaa2a;
-}
+        .meta-sub-value {
+            font-size: 10px;
+            color: var(--text-sub);
+            margin-top: 1px;
+        }
 
-.table-area { margin-top: 12px; border-top: 2px dashed #4b5563; padding-top: 8px; }
-.table-row{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #111827;
-  padding: 4px 8px;
-  margin: 3px 0;
-  border-radius: 4px;
-  font-size: 13px;
-}
-.table-row.rank-0, .table-row.rank-1 { border-left: 4px solid #10b981; background: #064e3b; }
+        /* 狀態提示列 */
+        .status-bar-banner {
+            font-size: 13px;
+            color: var(--teal-dark);
+            margin: 12px 16px 4px 16px;
+            text-align: center;
+            min-height: 20px;
+            font-weight: bold;
+            padding: 8px;
+            background: #e6f4f1;
+            border-radius: 12px;
+        }
 
-.matches{
-  margin: 20px auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 15px;
-  max-width: 1200px;
-}
-.match-card{
-  background: #1f2937;
-  border-radius: 10px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid #374151;
-  cursor: pointer;
-}
-.match-card:hover {
-  border-color: #dfaa2a;
-}
-.match-time {
-  font-size: 11px;
-  color: #dfaa2a;
-  background: #1e293b;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-weight: bold;
-  text-align: center;
-  width: 92%;
-}
-.match-teams {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-.team-slot { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 13px; font-weight: bold; min-width: 95px;}
-.vs { font-size: 15px; color: #dfaa2a; font-weight: bold; }
-.view-btn { font-size: 11px; color: #38bdf8; text-decoration: underline; margin-top: 4px;}
+        /* 三、應用內界面通用卡片 */
+        .ui-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin: 12px 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+            border: 1px solid #edf2f7;
+        }
 
-.modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.85);
-  z-index: 1000;
-  justify-content: center;
-  align-items: center;
-}
-.modal-content {
-  background: #1f2937;
-  padding: 25px;
-  border-radius: 15px;
-  max-width: 600px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  border: 1px solid #dfaa2a;
-  position: relative;
-}
-.close-modal {
-  position: absolute;
-  top: 15px; right: 20px;
-  font-size: 28px; color: #9ca3af; cursor: pointer;
-}
-.squad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
-.squad-box { background: #111827; padding: 12px; border-radius: 8px; }
-.squad-box h4 { margin-top: 0; color: #dfaa2a; border-bottom: 1px solid #374151; padding-bottom: 4px;}
-.player-list { list-style: none; padding: 0; margin: 0; font-size: 13px;}
-.player-list li { color: #d1d5db; border-bottom: 1px dashed #1f2937; padding: 2px 0;}
+        .ui-card h3 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-size: 16px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-.scorers-box {
-  background: #111827;
-  margin-top: 15px;
-  padding: 12px;
-  border-radius: 8px;
-  border-left: 4px solid #38bdf8;
-}
-.scorers-title {
-  font-size: 13px;
-  color: #38bdf8;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
-.scorers-list {
-  font-size: 12px;
-  color: #9ca3af;
-  line-height: 25px;
-  white-space: pre-line;
-}
+        /* 語音錄入排版 */
+        .voice-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
+        }
 
-.predict-form { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
-.form-group { display: flex; flex-direction: column; gap: 5px; }
-.form-group label { font-size: 13px; color: #dfaa2a; font-weight: bold; }
-.form-input { background: #111827; border: 1px solid #4b5563; color: #fff; padding: 8px 12px; border-radius: 6px; }
-.submit-btn { background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; padding: 10px; font-weight: bold; border-radius: 6px; cursor: pointer; }
-</style>
+        .mic-btn {
+            width: 86px;
+            height: 86px;
+            border-radius: 50%;
+            background: var(--mint-light);
+            border: 3px solid var(--teal-main);
+            color: var(--teal-main);
+            font-size: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 6px 14px rgba(13, 148, 136, 0.1);
+        }
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+        .mic-recording {
+            background: var(--amber-accent);
+            color: white;
+            border-color: var(--amber-accent);
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 12px rgba(217, 119, 6, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(217, 119, 6, 0.7); }
+        }
+
+        .mic-status {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--teal-dark);
+            font-weight: 600;
+        }
+
+        /* 雙列網格整合搜尋/上傳功能區 */
+        .function-pill-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 4px 16px;
+        }
+
+        .search-box-full {
+            grid-column: span 2;
+            display: flex;
+            gap: 8px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1.5px solid #cbd5e1;
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        .search-input:focus {
+            border-color: var(--teal-main);
+            outline: none;
+        }
+
+        .search-btn {
+            padding: 0 16px;
+            border-radius: 14px;
+            background: var(--teal-main);
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 影像上傳小卡片 */
+        .file-label-pill {
+            background: var(--card-bg);
+            border: 1.5px dashed #cbd5e1;
+            padding: 12px;
+            border-radius: 14px;
+            text-align: center;
+            font-size: 13px;
+            cursor: pointer;
+            color: var(--text-sub);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .action-upload-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.15);
+        }
+
+        /* 📸 【第 3 層優化】雷射動態掃描 + 智能聚焦引導外框 */
+        .preview-wrapper {
+            position: relative;
+            max-width: 100%;
+            height: 240px;
+            margin: 10px 16px;
+            border-radius: 20px;
+            overflow: hidden;
+            display: none;
+            border: 2px solid var(--teal-main);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        #preview-img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* 智能聚焦相機格網 (Camera Target Overlay) */
+        .camera-guide-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 0 20px rgba(0,0,0,0.4); /* 周圍暗化聚焦 */
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .camera-target-box {
+            width: 140px;
+            height: 140px;
+            border: 2px dashed #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 999px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .camera-target-box::after {
+            content: "請將食物置於圓框中央";
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffffff;
+            font-size: 11px;
+            white-space: nowrap;
+            background: rgba(0,0,0,0.6);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .scanner-line {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--teal-main), var(--amber-accent), var(--teal-main), transparent);
+            box-shadow: 0 0 10px var(--teal-main);
+            animation: scanMove 2s infinite ease-in-out;
+            z-index: 5;
+        }
+
+        @keyframes scanMove {
+            0% { top: 0%; }
+            50% { top: 96%; }
+            100% { top: 0%; }
+        }
+
+        /* 數據可視化圓環與多重層級排版 */
+        .chart-ring-layout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            padding: 10px 0;
+        }
+
+        .modern-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: inset 0 0 0 8px #f1f5f9;
+        }
+
+        .ring-teal-accent { background: conic-gradient(var(--teal-main) 0%, #f1f5f9 0%); }
+        .ring-amber-accent { background: conic-gradient(var(--amber-accent) 0%, #f1f5f9 0%); }
+
+        .circle-inner-plate {
+            position: absolute;
+            width: 84px;
+            height: 84px;
+            background: var(--card-bg);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 核心三列網格 */
+        .macro-three-column {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .inner-white-box {
+            background: #f8fafc;
+            padding: 10px 6px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .inner-white-box div:last-child {
+            font-weight: 700;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* 次級微擬物多行網格 */
+        .sub-macro-flex-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        .sub-macro-cell {
+            background: var(--card-bg);
+            padding: 10px 12px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #edf2f7;
+        }
+
+        .sub-macro-cell span:last-child {
+            font-weight: 600;
+        }
+
+        .iddsi-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            color: #ffffff;
+            background-color: #9ca3af;
+        }
+
+        .chart-svg { width: 100%; height: 60px; overflow: visible; }
+
+        /* 歷史記錄卡片項目 */
+        .history-item-row {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 14px;
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--teal-main);
+            border-top: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .toggle-floating-panel-btn {
+            display: block;
+            width: calc(100% - 32px);
+            margin: 16px auto;
+            padding: 12px;
+            border-radius: 14px;
+            background: linear-gradient(90deg, var(--teal-main), var(--teal-dark));
+            border: none;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.15);
+        }
+
+        #nutritionTotalPanel { display: none; }
+    </style>
 </head>
-
 <body>
 
-<h1>🏆 FIFA WORLD CUP 2026 - LOHAS’S EDITION</h1>
-
-<div class="countdown-container">
-  <div class="countdown-title">🔥 2026 美加墨世界盃盛大開戰 · 賽事激戰中 🔥</div>
-  <div id="timerDisplay">
-    <div class="live-msg">⚽ 2026年美加墨世界盃小組賽已進入最後一天的煞科階段！截至香港時間6月28日上午，大部分分組的最終排名與出線隊伍已獲得官方確認。首創的48隊制帶來全新「32強淘汰賽」骨架，生死戰將於香港時間6月29日凌晨火熱開鑼！</div>
-  </div>
-</div>
-
-<div class="info">
-  🏆 <b>FIFA 全新擴軍賽制：</b>共有 12 個小組（Group A 至 Group L），共 48 支世界頂尖球隊參賽，一齊演繹 104 場精彩絕倫的足球賽事！<br>
-  🇺🇸 聯合主辦國：
-  <img src="https://flagcdn.com/w80/us.png" alt="US" title="美國">
-  <img src="https://flagcdn.com/w80/ca.png" alt="CA" title="加拿大">
-  <img src="https://flagcdn.com/w80/mx.png" alt="MX" title="墨西哥">
-  <br>⚽ 衛冕冠軍：<img src="https://flagcdn.com/w80/ar.png" alt="AR" title="阿根廷">
-  <br>🔮 預測今届奪冠熱門：
-  <img src="https://flagcdn.com/w80/es.png" alt="ES" style="width:24px; vertical-align:middle;"> <b>西班牙 (Spain)</b> / 
-  <img src="https://flagcdn.com/w80/fr.png" alt="FR" style="width:24px; vertical-align:middle;"> <b>法國 (France)</b> 
-  <button class="hot-btn" onclick="openPredictModal()">🏆 誰會是冠軍隊伍？點擊參與預測！</button>
-
-  <div class="predict-rank-container">
-    <div class="predict-rank-title">🔥 全網奪冠預測熱度榜</div>
-    <div class="predict-rank-grid" id="predictGrid"></div>
-  </div>
-</div>
-
-<div class="friendly-section">
-  <div class="friendly-title">⚽ 最新世界盃比賽資訊</div>
-  <div id="friendlyDesc" class="friendly-desc-box">最新賽事戰報動態載入中...</div>
-  
-  <div class="friendly-subtitle">📊 2026世界盃 32強已晉級隊伍名單大盤點（截至6月28日）</div>
-  <table class="friendly-table">
-    <thead>
-      <tr>
-        <th style="width: 15%;">小組</th>
-        <th style="width: 28%;">第一名 (直接晉級)</th>
-        <th style="width: 28%;">第二名 (直接晉級)</th>
-        <th style="width: 29%;">以「最佳小組第三」晉級隊伍</th>
-      </tr>
-    </thead>
-    <tbody id="friendlyResultsBody"></tbody>
-  </table>
-
-  <div id="friendlyTimelineSection">
-    <div class="friendly-subtitle">⏱️ 賽事精采實況時間軸</div>
-    <div id="friendlyTimelineContainer" class="timeline-container"></div>
-  </div>
-
-  <div class="friendly-subtitle">💡 本屆淘汰賽全新看點與出線亮點</div>
-  <ul class="analysis-list" id="friendlyUpcomingList"></ul>
-</div>
-
-<div class="title-panel-container">
-  <h2>🌍 (A-L) 小組積分榜模擬校準區</h2>
-  <div class="lock-control-panel" id="lockControlPanel">
-    <input type="password" id="scorePassword" class="lock-input">
-    <button class="lock-btn" onclick="checkScoreUnlock()">🔒 解鎖</button>
-  </div>
-</div>
-
-<div id="groups" class="groups"></div>
-
-<h2>🤝 2026 世界盃 104 場全賽事日曆表 (香港時間 HKT)</h2>
-<div id="dateSelector" class="date-selector-container"></div>
-<div id="matches" class="matches"></div>
-
-<div id="squadModal" class="modal">
-  <div class="modal-content">
-    <span class="close-modal" onclick="closeSquad()">&times;</span>
-    <h3 id="modalTitle" style="text-align:center; margin-top:0;">🏆 官方賽事詳細資訊</h3>
+<div class="app-container">
     
-    <div id="modalScorersBox" class="scorers-box">
-      <div class="scorers-title">🏟️ 比賽動態與體育場焦點戰報</div>
-      <div id="modalScorersList" class="scorers-list"></div>
+    <div class="app-header-block">
+        <div class="app-brand-icon">
+            <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <div class="app-header-info">
+            <h1>樂活健康管理系統</h1>
+            <p>智能飲食與吞嚥安全雲端監測平台</p>
+            <span class="badge-version">v3.5 Core System</span>
+        </div>
     </div>
 
-    <div class="squad-grid">
-      <div class="squad-box">
-        <h4 id="team1Name">球隊 1</h4>
-        <ul id="team1Players" class="player-list"></ul>
-      </div>
-      <div class="squad-box">
-        <h4 id="team2Name">球隊 2</h4>
-        <ul id="team2Players" class="player-list"></ul>
-      </div>
+    <div class="metadata-grid">
+        <div class="meta-item">
+            <div class="meta-label">今日熱量</div>
+            <div class="meta-value" id="meta-cal-total">0</div>
+            <div class="meta-sub-value">KCAL</div>
+        </div>
+        <div class="meta-item">
+            <div class="meta-label">累計克數</div>
+            <div class="meta-value" id="meta-grams-total">0</div>
+            <div class="meta-sub-value">Grams</div>
+        </div>
+        <div class="meta-item">
+            <div class="meta-label">餐食記錄</div>
+            <div class="meta-value" id="meta-count-total">0</div>
+            <div class="meta-sub-value">項已登錄</div>
+        </div>
+        <div class="meta-item">
+            <div class="meta-label">安全吞嚥</div>
+            <div class="meta-value" id="meta-iddsi-highest">-</div>
+            <div class="meta-sub-value">最高級別</div>
+        </div>
     </div>
-  </div>
+
+    <div id="result" class="status-bar-banner">
+        請使用語音、文字或相片快速輸入長者餐食
+    </div>
+
+    <div class="ui-card">
+        <h3><i class="fa-solid fa-microphone-lines" style="color: var(--teal-main);"></i> 廣東話語音智慧智慧錄入</h3>
+        <p style="font-size: 13px; color: var(--text-sub); margin: 0 0 12px 0;">點擊後講出長者進食內容（例：「食左半碗碎肉粥」）</p>
+        <div class="voice-section">
+            <button id="micBtn" class="mic-btn" onclick="toggleVoiceRecognition()">
+                <i id="micIcon" class="fa-solid fa-microphone"></i>
+            </button>
+            <p id="micStatus" class="mic-status">點擊開始錄音</p>
+        </div>
+    </div>
+
+    <div class="function-pill-grid">
+        <div class="search-box-full">
+            <input type="text" class="search-input" id="foodSearchInput" placeholder="修改或在此手動輸入食物名稱...">
+            <button class="search-btn" onclick="searchFoodText()">🔍 搜尋</button>
+        </div>
+        
+        <label for="imageInput" class="file-label-pill" id="uploadLabel">
+            <i class="fa-solid fa-camera"></i> 拍攝/選擇相片
+        </label>
+        <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="processAndPreviewImage(this)">
+        
+        <button id="uploadBtn" class="action-upload-btn" style="display: none;" onclick="uploadAndDetectFood()">🚀 AI 辨識食物</button>
+    </div>
+
+    <div class="preview-wrapper" id="previewWrapper">
+        <div class="scanner-line" id="scannerLine"></div>
+        <img id="preview-img" alt="食物預覽">
+        <div class="camera-guide-overlay">
+            <div class="camera-target-box"></div>
+        </div>
+    </div>
+
+    <div class="ui-card" id="singleQueryResultCard">
+        <h3><i class="fa-solid fa-magnifying-glass" style="color: var(--teal-main);"></i> 本次餐食營養細目 (<span id="single_foodname" style="color: var(--teal-dark);">未輸入</span>)</h3>
+        
+        <div class="chart-ring-layout">
+            <div class="modern-circle ring-teal-accent" id="single_ring_progress">
+                <div class="circle-inner-plate">
+                    <div id="single_cal" style="font-size: 22px; font-weight: 700; color: var(--teal-main);">0</div>
+                    <div style="font-size: 9px; color: var(--text-sub); font-weight:600;">KCAL</div>
+                </div>
+            </div>
+            <div style="flex:1;">
+                <div style="font-size: 12px; color:var(--text-sub); margin-bottom: 4px;">🥣 IDDSI 安全吞嚥等級</div>
+                <div id="single_iddsiMain"><span class="iddsi-badge">未指定</span></div>
+            </div>
+        </div>
+        
+        <div class="macro-three-column">
+            <div class="inner-white-box"><div style="color:var(--text-sub);">🥩 蛋白質</div><div id="single_protein" style="color: var(--amber-accent);">0g</div></div>
+            <div class="inner-white-box"><div style="color:var(--text-sub);">🍞 碳水</div><div id="single_carbs" style="color: var(--teal-dark);">0g</div></div>
+            <div class="inner-white-box"><div style="color:var(--text-sub);">🧈 脂肪</div><div id="single_fat" style="color: #10b981;">0g</div></div>
+        </div>
+
+        <div class="sub-macro-flex-grid">
+            <div class="sub-macro-cell"><span>⚖️ 食物克數</span><span id="single_grams">0g</span></div>
+            <div class="sub-macro-cell"><span>🍬 糖分</span><span id="single_sugar">0g</span></div>
+            <div class="sub-macro-cell"><span>🔒 飽和脂肪</span><span id="single_satFat">0g</span></div>
+            <div class="sub-macro-cell"><span>⚠️ 反式脂肪</span><span id="single_transFat">0g</span></div>
+            <div class="sub-macro-cell"><span>🍳 膽固醇</span><span id="single_cholesterol">0mg</span></div>
+            <div class="sub-macro-cell"><span>🌿 膳食纖維</span><span id="single_fiber">0g</span></div>
+        </div>
+    </div>
+
+    <div class="ui-card">
+        <h3><i class="fa-solid fa-chart-line" style="color: var(--amber-accent);"></i> 本週卡路里動態趨勢</h3>
+        <svg class="chart-svg" viewBox="0 0 300 60">
+            <path id="chartPathLine" d="M 10 50 L 290 50" fill="none" stroke="#0d9488" stroke-width="3"/>
+            <g id="chartGridX"></g>
+        </svg>
+    </div>
+
+    <div class="ui-card">
+        <h3><i class="fa-solid fa-list-check" style="color: #10b981;"></i> 今日已登錄餐食歷史</h3>
+        <div id="history" style="color: var(--text-sub); font-size: 13px;">尚無餐食記錄數據</div>
+    </div>
+
+    <button class="toggle-floating-panel-btn" onclick="toggleNutritionPanel()">📊 展開全天累計營養總和面版</button>
+
+    <div class="ui-card" id="nutritionTotalPanel">
+        <h3 style="color: var(--amber-accent);"><i class="fa-solid fa-gauge-high"></i> 🔥 全天累計總合核心看板</h3>
+        
+        <div class="chart-ring-layout">
+            <div class="modern-circle ring-amber-accent" id="total_ring_progress">
+                <div class="circle-inner-plate">
+                    <div id="cal" style="font-size: 22px; font-weight: 700; color: var(--amber-accent);">0</div>
+                    <div style="font-size: 9px; color: var(--text-sub); font-weight:600;">KCAL</div>
+                </div>
+            </div>
+            <div style="flex:1;">
+                <div style="font-size: 12px; color:var(--text-sub); margin-bottom: 4px;">當前登錄 IDDSI 現況</div>
+                <div id="iddsiMain"><span class="iddsi-badge">未指定</span></div>
+            </div>
+        </div>
+        
+        <div class="macro-three-column">
+            <div class="inner-white-box"><div style="color:var(--text-sub);">🥩 蛋白質</div><div id="protein" style="color: var(--amber-accent);">0g</div></div>
+            <div class="inner-white-box"><div style="color:var(--text-sub);">🍞 碳水</div><div id="carbs" style="color: var(--teal-dark);">0g</div></div>
+            <div class="inner-white-box"><div style="color:var(--text-sub);">🧈 脂肪</div><div id="fat" style="color: #10b981;">0g</div></div>
+        </div>
+
+        <div class="sub-macro-flex-grid">
+            <div class="sub-macro-cell"><span>⚖️ 累計克數</span><span id="grams">0g</span></div>
+            <div class="sub-macro-cell"><span>🍬 糖分</span><span id="sugar">0g</span></div>
+            <div class="sub-macro-cell"><span>🔒 飽和脂肪</span><span id="satFat">0g</span></div>
+            <div class="sub-macro-cell"><span>⚠️ 反式脂肪</span><span id="transFat">0g</span></div>
+            <div class="sub-macro-cell"><span>🍳 膽固醇</span><span id="cholesterol">0mg</span></div>
+            <div class="sub-macro-cell"><span>🌿 膳食纖維</span><span id="fiber">0g</span></div>
+        </div>
+    </div>
+
 </div>
 
-<div id="predictModal" class="modal">
-  <div class="modal-content" style="max-width: 450px;">
-    <span class="close-modal" onclick="closePredictModal()">&times;</span>
-    <h3 style="text-align:center; margin-top:0; color: #dfaa2a;">🔮 2026世界盃奪冠大預測</h3>
-    <form class="predict-form" onsubmit="submitPrediction(event)">
-      <div class="form-group">
-        <label>電話尾數 (驗證用)</label>
-        <input type="text" id="userPhone" class="form-input" required placeholder="請填寫電話尾數">
-      </div>
-      <div class="form-group">
-        <label>名稱</label>
-        <input type="text" id="userName" class="form-input" required>
-      </div>
-      <div class="form-group">
-        <label>心水冠軍隊伍</label>
-        <input type="text" id="userChampTeam" class="form-input" required placeholder="例如: 西班牙 / 法國 / 葡萄牙">
-      </div>
-      <button type="submit" class="submit-btn">提交預測</button>
-    </form>
-  </div>
-</div>
+<canvas id="processedCanvas" style="display:none;"></canvas>
 
 <script>
-const firebaseConfig = {
-  databaseURL: "https://lohas-worldcupgamedata-default-rtdb.firebaseio.com/"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+const API_URL = "https://script.google.com/macros/s/AKfycbyUUlD_-S7d22LnTjoFDtHSWkuwkTWFJsyjmLgoJKuX-6HXJSc2ECFO1p037E1qaTvX/exec";
+const BACKEND_API = "https://lohascare-nutritionaicheck.onrender.com/api/detect-food";
 
-const teamDatabase = {
-  "tbd": { name: "待定 (TBD)", stars: ["隨比賽進程解鎖"] },
-  "mx": { name: "墨西哥 (Mexico)", stars: ["胡利安·基紐尼斯", "艾臣·馬天尼斯", "奧祖亞"] },
-  "za": { name: "南非 (South Africa)", stars: ["珀西·陶", "莫哥拿"] },
-  "kr": { name: "韓國 (South Korea)", stars: ["孫興慜", "金玟哉", "李剛仁"] },
-  "cz": { name: "捷克 (Czechia)", stars: ["柏德列·希克", "蘇錫"] },
-  "ca": { name: "加拿大 (Canada)", stars: ["艾方素·戴維斯", "祖拿芬·戴維"] },
-  "ba": { name: "波斯尼亞 (Bosnia)", stars: ["哲科", "哥拉辛拿斯"] },
-  "qa": { name: "卡塔爾 (Qatar)", stars: ["阿菲夫", "阿里"] },
-  "ch": { name: "瑞士 (Switzerland)", stars: ["沙加", "岩保路"] },
-  "br": { name: "巴西 (Brazil)", stars: ["雲尼斯奧斯", "洛迪高", "尼馬"] },
-  "ma": { name: "摩洛哥 (Morocco)", stars: ["阿舒拉夫", "薛耶治"] },
-  "ht": { name: "海地 (Haiti)", stars: ["派洛特", "納松"] },
-  "gb-sct": { name: "蘇格蘭 (Scotland)", stars: ["麥湯米尼", "羅拔臣"] },
-  "us": { name: "美國 (USA)", stars: ["普列錫", "麥堅尼"] },
-  "py": { name: "巴拉圭 (Paraguay)", stars: ["阿米朗", "恩錫素"] },
-  "au": { name: "澳洲 (Australia)", stars: ["賴恩", "蘇達"] },
-  "tr": { name: "土耳其 (Türkiye)", stars: ["阿達·居萊爾", "恰爾汗奧盧"] },
-  "de": { name: "德國 (Germany)", stars: ["維斯", "梅斯亞拿", "夏維斯"] },
-  "cw": { name: "庫拉索 (Curaçao)", stars: ["巴干拿"] },
-  "ci": { name: "科特迪瓦 (Ivory Coast)", stars: ["阿萊", "基斯爾"] },
-  "ec": { name: "厄瓜多爾 (Ecuador)", stars: ["卡些度", "華倫西亞"] },
-  "nl": { name: "荷蘭 (Netherlands)", stars: ["雲迪克", "加普"] },
-  "jp": { name: "日本 (Japan)", stars: ["三笘薰", "遠藤航", "久保建英"] },
-  "se": { name: "瑞典 (Sweden)", stars: ["伊薩克", "基奧基尼斯"] },
-  "tn": { name: "突尼西亞 (Tunisia)", stars: ["斯希里"] },
-  "be": { name: "比利時 (Belgium)", stars: ["迪布尼", "盧卡古", "托沙特"] },
-  "eg": { name: "埃及 (Egypt)", stars: ["沙拿", "馬摩殊"] },
-  "ir": { name: "伊朗 (Iran)", stars: ["泰利米", "阿斯蒙"] },
-  "nz": { name: "紐西蘭 (New Zealand)", stars: ["基斯·活特"] },
-  "es": { name: "西班牙 (Spain)", stars: ["洛迪", "耶馬爾", "巴安拿"] },
-  "cv": { name: "佛得角 (Cape Verde)", stars: ["文迪斯"] },
-  "sa": { name: "沙特阿拉伯 (Saudi Arabia)", stars: ["達華沙利"] },
-  "uy": { name: "烏拉圭 (Uruguay)", stars: ["華維迪", "紐尼斯"] },
-  "fr": { name: "法國 (France)", stars: ["麥巴比", "基沙文", "奧士文·迪比利"] },
-  "sn": { name: "塞內加爾 (Senegal)", stars: ["文尼", "積臣"] },
-  "iq": { name: "伊拉克 (Iraq)", stars: ["侯賽因"] },
-  "no": { name: "挪威 (Norway)", stars: ["夏蘭德", "奧迪加特"] },
-  "ar": { name: "阿根廷 (Argentina)", stars: ["美斯", "迪馬利亞"] },
-  "dz": { name: "阿爾及利亞 (Algeria)", stars: ["馬列斯"] },
-  "at": { name: "奧地利 (Austria)", stars: ["阿拉巴", "薩比沙"] },
-  "jo": { name: "約旦 (Jordan)", stars: ["塔馬里"] },
-  "pt": { name: "葡萄牙 (Portugal)", stars: ["C朗拿度", "般奴·費南迪斯"] },
-  "cd": { name: "剛果民主 (DR Congo)", stars: ["韋沙"] },
-  "uz": { name: "烏茲別克 (Uzbekistan)", stars: ["紹穆羅多夫"] },
-  "co": { name: "哥倫比亞 (Colombia)", stars: ["戴亞斯", "占士·洛迪古斯"] },
-  "gb-eng": { name: "英格蘭 (England)", stars: ["簡尼", "比寧咸"] },
-  "hr": { name: "克羅地亞 (Croatia)", stars: ["摩迪", "格華迪奧"] },
-  "gh": { name: "加納 (Ghana)", stars: ["庫杜斯"] },
-  "pa": { name: "巴拿馬 (Panama)", stars: ["法查度"] }
+const IDDSI_COLORS = {
+    "0": { bg: "#ffffff", text: "#000000", label: "Level 0 微稠/稀薄 (White)" },
+    "1": { bg: "#666666", text: "#ffffff", label: "Level 1 極微稠 (Grey)" },
+    "2": { bg: "#ea4e96", text: "#ffffff", label: "Level 2 低度稠 (Pink)" },
+    "3": { bg: "#ffff00", text: "#000000", label: "Level 3 中度稠/流質 (Yellow)" },
+    "4": { bg: "#33cc33", text: "#ffffff", label: "Level 4 高度稠/糊狀 (Green)" },
+    "5": { bg: "#ff6600", text: "#ffffff", label: "Level 5 剁碎及濕軟 (Orange)" },
+    "6": { bg: "#0067b2", text: "#ffffff", label: "Level 6 軟質及一口大小 (Blue)" },
+    "7": { bg: "#000000", text: "#ffffff", label: "Level 7 常規/容易咀嚼 (Black)" },
+    "7EC": { bg: "#000000", text: "#ffffff", label: "Level 7 容易咀嚼 (Black)" }
 };
 
-const groups={
-  "A": ["mx", "za", "kr", "cz"], "B": ["ch", "ca", "ba", "qa"], "C": ["br", "ma", "gb-sct", "ht"],
-  "D": ["us", "au", "py", "tr"], "E": ["de", "ci", "ec", "cw"], "F": ["nl", "jp", "se", "tn"],
-  "G": ["be", "eg", "ir", "nz"], "H": ["es", "cv", "uy", "sa"], "I": ["fr", "no", "sn", "iq"],
-  "J": ["ar", "at", "dz", "jo"], "K": ["br", "pt", "cd", "uz"], "L": ["gb-eng", "hr", "gh", "pa"]
-};
+let processedBase64 = ""; // 儲存優化後的影像資料
 
-const store = {};
+function generateIddsiBadgeHTML(iddsiRaw) {
+    if (!iddsiRaw) return `<span class="iddsi-badge" style="background-color:#9ca3af; color:white;">未指定</span>`;
+    let cleanKey = iddsiRaw.toString().trim();
+    let match = cleanKey.match(/\d+/);
+    let lookupKey = match ? match[0] : "1";
+    if (cleanKey.toUpperCase().includes("7EC")) lookupKey = "7EC";
 
-function initGroupsData() {
-  const groupsContainer = document.getElementById("groups");
-  groupsContainer.innerHTML = "";
+    const config = IDDSI_COLORS[lookupKey] || { bg: "#666666", text: "#ffffff", label: `Level ${iddsiRaw}` };
+    let borderStyle = lookupKey === "0" ? "border: 1px solid #cbd5e1;" : "";
+    return `<span class="iddsi-badge" style="background-color: ${config.bg}; color: ${config.text}; ${borderStyle}">${config.label}</span>`;
+}
 
-  const defaultPoints = {
-    "mx": 9, "za": 4, "kr": 3, "cz": 1, 
-    "ch": 7, "ca": 5, "ba": 4, "qa": 0, 
-    "br": 7, "ma": 6, "gb-sct": 2, "ht": 1, 
-    "us": 9, "au": 4, "py": 3, "tr": 1, 
-    "de": 9, "ci": 6, "ec": 3, "cw": 0, 
-    "nl": 7, "jp": 6, "se": 3, "tn": 1, 
-    "be": 5, "eg": 5, "ir": 3, "nz": 1, 
-    "es": 7, "cv": 3, "uy": 2, "sa": 2, 
-    "fr": 9, "no": 6, "sn": 3, "iq": 0, 
-    "ar": 6, "at": 3, "dz": 3, "jo": 0, 
-    "co": 4, "pt": 4, "cd": 2, "uz": 0, 
-    "gb-eng": 9, "hr": 6, "gh": 3, "pa": 0 
-  };
+let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0;
+let sugar = 0, satFat = 0, transFat = 0, cholesterol = 0, fiber = 0;
+let recordCount = 0;
+let maxIddsiText = "-";
+let weeklyData = [1400, 1500, 1350, 1600, 0];
 
-  Object.keys(groups).forEach(gName => {
-    let groupDiv = document.createElement("div");
-    groupDiv.className = "group";
+let recognition = null;
+let isRecording = false;
+
+function toggleScanEffects(show) {
+    const scanLine = document.getElementById("scannerLine");
+    if(scanLine) scanLine.style.display = show ? "block" : "none";
+}
+
+function updateRingProgress(elementId, value, targetMax = 2000) {
+    const percentage = Math.min((value / targetMax) * 100, 100);
+    const element = document.getElementById(elementId);
+    if(element) {
+        const activeColor = elementId.includes('teal') ? '#0d9488' : '#d97706';
+        element.style.background = `conic-gradient(${activeColor} ${percentage}%, #f1f5f9 0%)`;
+    }
+}
+
+/* 📸 【第 3 點優化】前端影像優化與增強處理器 */
+function processAndPreviewImage(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    // 1. 先顯示原生預覽供用戶確認
+    document.getElementById("preview-img").src = URL.createObjectURL(file);
+    document.getElementById("previewWrapper").style.display = "block"; 
+    document.getElementById("uploadBtn").style.display = "block";
+    document.getElementById("uploadLabel").innerText = `🔄 已選: ${file.name.substring(0,8)}...`;
+    toggleScanEffects(false); 
+
+    // 2. 進行 Canvas 影像矩陣增強（提升對比度、裁切壓縮至 640px 最佳辨識尺寸）
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function(event) {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = function() {
+            const canvas = document.getElementById("processedCanvas");
+            const ctx = canvas.getContext("2d");
+            
+            // 限制長寬最大 640px，兼顧辨識精準度與傳輸速度
+            let maxW = 640;
+            let targetW = img.width;
+            let targetH = img.height;
+            if (targetW > maxW) {
+                targetH = Math.round((maxW / targetW) * targetH);
+                targetW = maxW;
+            }
+            
+            canvas.width = targetW;
+            canvas.height = targetH;
+            ctx.drawImage(img, 0, 0, targetW, targetH);
+            
+            // 輕微增強對比度與飽和度，讓邊緣與陰影下的食物特徵更清晰
+            ctx.globalCompositeOperation = 'brightness';
+            ctx.filter = "contrast(1.15) saturate(1.10)"; 
+            ctx.drawImage(canvas, 0, 0);
+            
+            // 導出優化後的 Base64 字串
+            processedBase64 = canvas.toDataURL("image/jpeg", 0.85);
+        }
+    }
+}
+
+async function uploadAndDetectFood() {
+    const resultDiv = document.getElementById("result");
+    const uploadBtn = document.getElementById("uploadBtn");
+
+    if (!processedBase64) return alert("請先選擇圖片！");
+    resultDiv.innerHTML = "🔄 AI 正在識別食物影像並對齊白名單限制...";
+    uploadBtn.disabled = true;
+    toggleScanEffects(true);
+
+    try {
+        const res = await fetch(BACKEND_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ imageBase64: processedBase64.split(',')[1] })
+        });
+
+        const rawText = await res.text();
+        let detectData = JSON.parse(rawText);
+        if (detectData.error) throw new Error(detectData.error);
+
+        const foodName = detectData.foodName;
+        resultDiv.innerHTML = `<span style='color:#10b981;'>🧠 AI 辨識成功：${foodName}</span>`;
+        document.getElementById("foodSearchInput").value = foodName;
+        
+        // 自動執行高容錯試算表匹配
+        await searchFoodText();
+
+    } catch (err) {
+        resultDiv.innerHTML = `<span style='color:#dc2626;'>❌ 辨識失敗：${err.message}</span>`;
+        toggleScanEffects(false); 
+    } finally {
+        uploadBtn.disabled = false;
+    }
+}
+
+/* 🗣️ 廣東話語音辨識模組 */
+function initSpeechAPI() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        document.getElementById('micStatus').innerText = "瀏覽器不支援語音";
+        document.getElementById('micBtn').disabled = true;
+        return;
+    }
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.lang = 'zh-HK'; 
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+        isRecording = true;
+        document.getElementById('micIcon').className = "fa-solid fa-microphone-lines";
+        document.getElementById('micBtn').classList.add('mic-recording');
+        document.getElementById('micStatus').innerText = "聆聽中...";
+        document.getElementById("result").innerText = "🎙️ 正在收集廣東話語音...";
+    };
+
+    recognition.onend = () => {
+        isRecording = false;
+        document.getElementById('micIcon').className = "fa-solid fa-microphone";
+        document.getElementById('micBtn').classList.remove('mic-recording');
+        document.getElementById('micStatus').innerText = "點擊開始錄音";
+    };
+
+    recognition.onresult = async (event) => {
+        let transcript = event.results[0][0].transcript;
+        if(transcript.endsWith('。')) transcript = transcript.slice(0, -1);
+        document.getElementById("foodSearchInput").value = transcript;
+        document.getElementById("result").innerHTML = `🗣️ 聽到了: <span style="color:#d97706;">「${transcript}」</span>，正在自動匹配...`;
+        toggleScanEffects(true);
+        await searchFoodText();
+    };
+
+    recognition.onerror = () => {
+        document.getElementById("result").innerText = "❌ 語音收音不清，請重試。";
+    };
+}
+
+function toggleVoiceRecognition() {
+    if (!recognition) return;
+    if (isRecording) { recognition.stop(); } else { recognition.start(); }
+}
+
+function parseValue(val) {
+    if (!val) return 0;
+    let num = parseFloat(val.toString().replace(/[^\d.-]/g, ''));
+    return isNaN(num) ? 0 : num;
+}
+
+function formatOutput(num) { return Number(num.toFixed(2)).toString(); }
+
+async function searchFoodText() {
+    const query = document.getElementById("foodSearchInput").value.trim();
+    if (!query) return;
+    document.getElementById("result").innerHTML = "⏳ 正在搜尋雲端數據庫...";
+    toggleScanEffects(true);
     
-    let title = document.createElement("span");
-    title.className = "group-title";
-    title.innerText = `GROUP ${gName} 積分榜`;
-    groupDiv.appendChild(title);
+    try {
+        let res = await fetch(API_URL);
+        if (res.ok) {
+            let resData = await res.json();
+            let foodList = resData.nutrition_data || [];
+            
+            let targetItem = foodList.find(item => {
+                let dbName = (item["foodname"] || "").toString().toLowerCase();
+                let q = query.toLowerCase();
+                let dbNormal = dbName.replace('爹', '嗲');
+                let qNormal = q.replace('爹', '嗲');
+                return dbNormal.includes(qNormal) || qNormal.includes(dbNormal) || 
+                       (qNormal.includes('牛肉') && dbNormal.includes('牛肉')) ||
+                       (qNormal.includes('麵') && dbNormal.includes('麵') && dbNormal.includes('牛肉')) ||
+                       (qNormal.includes('粥') && dbNormal.includes('粥'));
+            });
+            
+            if (targetItem) {
+                document.getElementById("result").innerHTML = "<span style='color:#10b981;'>✅ 數據比對匹配完成！</span>";
+                
+                let fCal = Math.round(parseValue(targetItem["calories"]));
+                let fGrams = parseValue(targetItem["grams"]);
+                let fProtein = parseValue(targetItem["protein"]);
+                let fCarbs = parseValue(targetItem["carbs"]);
+                let fFat = parseValue(targetItem["fat"]);
+                let fSugar = parseValue(targetItem["sugar"]);
+                let fSatFat = parseValue(targetItem["satfat"] || targetItem["saturatedfat"]);
+                let fTransFat = parseValue(targetItem["transfat"]);
+                let fCholesterol = parseValue(targetItem["cholesterol"]);
+                let fFiber = parseValue(targetItem["fiber"]);
+                let iddsiVal = targetItem["iddsi"] || "";
 
-    let tableArea = document.createElement("div");
-    tableArea.className = "table-area";
-    groupDiv.appendChild(tableArea);
-    groupsContainer.appendChild(groupDiv);
+                // 更新單次查詢面板
+                document.getElementById("single_foodname").innerText = targetItem["foodname"];
+                document.getElementById("single_cal").innerText = fCal;
+                document.getElementById("single_grams").innerText = formatOutput(fGrams) + "g";
+                document.getElementById("single_protein").innerText = formatOutput(fProtein) + "g";
+                document.getElementById("single_carbs").innerText = formatOutput(fCarbs) + "g";
+                document.getElementById("single_fat").innerText = formatOutput(fFat) + "g";
+                document.getElementById("single_sugar").innerText = formatOutput(fSugar) + "g";
+                document.getElementById("single_satFat").innerText = formatOutput(fSatFat) + "g";
+                document.getElementById("single_transFat").innerText = formatOutput(fTransFat) + "g";
+                document.getElementById("single_cholesterol").innerText = formatOutput(fCholesterol) + "mg";
+                document.getElementById("single_fiber").innerText = formatOutput(fFiber) + "g";
+                document.getElementById("single_iddsiMain").innerHTML = generateIddsiBadgeHTML(iddsiVal);
+                
+                updateRingProgress("single_ring_progress", fCal, 800);
 
-    store[gName] = {
-      table: tableArea,
-      data: groups[gName].map(code => ({
-        code: code,
-        points: defaultPoints[code] || 0
-      }))
-    };
+                // 累加核心運算
+                cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
+                sugar += fSugar; satFat += fSatFat; transFat += fTransFat; cholesterol += fCholesterol; fiber += fFiber;
+                recordCount += 1;
+                if(iddsiVal) maxIddsiText = iddsiVal;
 
-    render(gName);
-  });
+                // 更新頂部 Metadata Grid
+                document.getElementById("meta-cal-total").innerText = cal;
+                document.getElementById("meta-grams-total").innerText = Math.round(grams);
+                document.getElementById("meta-count-total").innerText = recordCount;
+                document.getElementById("meta-iddsi-highest").innerText = maxIddsiText;
+
+                // 更新全天累計面版
+                document.getElementById("cal").innerText = cal;
+                document.getElementById("grams").innerText = formatOutput(grams) + "g";
+                document.getElementById("protein").innerText = formatOutput(fProtein) + "g";
+                document.getElementById("carbs").innerText = formatOutput(carbs) + "g";
+                document.getElementById("fat").innerText = formatOutput(fat) + "g";
+                document.getElementById("sugar").innerText = formatOutput(sugar) + "g";
+                document.getElementById("satFat").innerText = formatOutput(satFat) + "g";
+                document.getElementById("transFat").innerText = formatOutput(transFat) + "g";
+                document.getElementById("cholesterol").innerText = formatOutput(cholesterol) + "mg";
+                document.getElementById("fiber").innerText = formatOutput(fiber) + "g";
+                document.getElementById("iddsiMain").innerHTML = generateIddsiBadgeHTML(iddsiVal);
+                
+                updateRingProgress("total_ring_progress", cal, 2000);
+
+                // 歷史流水線
+                let histBox = document.getElementById("history");
+                if (histBox.innerText === "尚無餐食記錄數據") histBox.innerHTML = "";
+                histBox.innerHTML += `
+                    <div class="history-item-row">
+                        <div>
+                            <strong>${targetItem["foodname"]} (${formatOutput(fGrams)}g)</strong><br>
+                            <div style="margin-top: 4px;">${generateIddsiBadgeHTML(iddsiVal)}</div>
+                        </div>
+                        <span style="color:var(--teal-main); font-weight:700;">+${fCal} KCAL</span>
+                    </div>`;
+                
+                weeklyData[weeklyData.length - 1] = cal;
+                drawChart();
+                
+                // 重置
+                document.getElementById("foodSearchInput").value = "";
+                document.getElementById("previewWrapper").style.display = "none";
+                document.getElementById("uploadBtn").style.display = "none";
+                document.getElementById("uploadLabel").innerText = "📸 拍攝/選擇相片";
+                processedBase64 = ""; 
+                toggleScanEffects(false); 
+                document.getElementById("singleQueryResultCard").scrollIntoView({ behavior: 'smooth' });
+            } else {
+                document.getElementById("result").innerHTML = `<span style='color:#dc2626;'>⚠️ 未在試算表中找到符合「${query}」的物件。</span>`;
+                toggleScanEffects(false); 
+            }
+        }
+    } catch (err) { 
+        document.getElementById("result").innerText = "❌ 讀取失敗，請檢查網路連線。";
+        toggleScanEffects(false);
+    }
 }
 
-// Ref: image.png 完美校準 32強淘汰賽頂級閉合流 (M73-M104) 焦點組合
-const centralSchedule = [
-  /* === Group A === */
-  { id: "M1", stage: "小組賽 Group A", dateStr: "2026-06-12", time: "03:00", t1: "mx", t2: "za", score: "2 - 0", scorers: "已完賽 | 揭幕戰！墨西哥 2-0 輕取南非，基紐尼斯轟入全球首球！" },
-  { id: "M2", stage: "小組賽 Group A", dateStr: "2026-06-12", time: "09:00", t1: "kr", t2: "cz", score: "2 - 1", scorers: "已完賽 | 韓國隊 2-1 逆轉捷克，黃仁範上演絕地反擊！" },
-  { id: "M3", stage: "小組賽 Group A", dateStr: "2026-06-18", time: "03:00", t1: "mx", t2: "kr", score: "1 - 0", scorers: "已完賽 | 東道主墨西哥 1-0 力克韓國喜迎兩連勝。" },
-  { id: "M4", stage: "小組賽 Group A", dateStr: "2026-06-18", time: "09:00", t1: "cz", t2: "za", score: "1 - 1", scorers: "已完賽 | 捷克與南非 1-1 握手言和。" },
-  { id: "M5", stage: "小組賽 Group A", dateStr: "2026-06-24", time: "23:00", t1: "mx", t2: "cz", score: "2 - 1", scorers: "已完賽 | 墨西哥 2-1 力克捷克，三戰全勝首名晉級！" },
-  { id: "M6", stage: "小組賽 Group A", dateStr: "2026-06-24", time: "23:00", t1: "za", t2: "kr", score: "1 - 0", scorers: "已完賽 | 南非 1-0 爆冷擊敗南韓，次名殺入32強，韓國淘汰！" },
-
-  /* === Group B === */
-  { id: "M7", stage: "小組賽 Group B", dateStr: "2026-06-12", time: "03:00", t1: "ca", t2: "ba", score: "1 - 1", scorers: "已完賽 | 加拿大主場 1-1 戰平波斯尼亞。" },
-  { id: "M8", stage: "小組賽 Group B", dateStr: "2026-06-12", time: "09:00", t1: "qa", t2: "ch", score: "1 - 2", scorers: "已完賽 | 瑞士 2-1 力克卡塔爾。" },
-  { id: "M9", stage: "小組賽 Group B", dateStr: "2026-06-18", time: "03:00", t1: "ca", t2: "qa", score: "6 - 0", scorers: "已完賽 | 加拿大 6-0 狂勝卡塔爾，刷新隊史紀錄。" },
-  { id: "M10", stage: "小組賽 Group B", dateStr: "2026-06-18", time: "09:00", t1: "ch", t2: "ba", score: "4 - 1", scorers: "已完賽 | 瑞士十字軍 4-1 狂勝波黑。" },
-  { id: "M11", stage: "小組賽 Group B", dateStr: "2026-06-24", time: "23:00", t1: "ca", t2: "ch", score: "1 - 3", scorers: "已完賽 | 瑞士 3-1 擊敗加拿大勇奪榜首！加拿大第二晉級。" },
-  { id: "M12", stage: "小組賽 Group B", dateStr: "2026-06-24", time: "23:00", t1: "ba", t2: "qa", score: "2 - 0", scorers: "已完賽 | 波黑 2-0 送卡塔爾出局，波黑以最佳小組第三晉級。" },
-
-  /* === Group C === */
-  { id: "M13", stage: "小組賽 Group C", dateStr: "2026-06-13", time: "03:00", t1: "br", t2: "ma", score: "3 - 1", scorers: "已完賽 | 巴西首輪 3-1 擊敗摩洛哥。" },
-  { id: "M14", stage: "小組賽 Group C", dateStr: "2026-06-13", time: "09:00", t1: "ht", t2: "gb-sct", score: "0 - 1", scorers: "已完賽 | 蘇格蘭 1-0 險勝海地。" },
-  { id: "M15", stage: "小組賽 Group C", dateStr: "2026-06-19", time: "03:00", t1: "br", t2: "ht", score: "3 - 0", scorers: "已完賽 | 巴西 3-0 輕取海地，重回勝軌。" },
-  { id: "M16", stage: "小組賽 Group C", dateStr: "2026-06-19", time: "09:00", t1: "gb-sct", t2: "ma", score: "0 - 2", scorers: "已完賽 | 摩洛哥 2-0 完勝蘇格蘭。" },
-  { id: "M17", stage: "小組賽 Group C", dateStr: "2026-06-25", time: "23:00", t1: "br", t2: "gb-sct", score: "1 - 1", scorers: "已完賽 | 巴西 1-1 戰平蘇格蘭，鎖定首名。" },
-  { id: "M18", stage: "小組賽 Group C", dateStr: "2026-06-25", time: "23:00", t1: "ma", t2: "ht", score: "2 - 1", scorers: "已完賽 | 摩洛哥 2-1 掀翻海地，次名晉級，蘇格蘭出局！" },
-
-  /* === Group D === */
-  { id: "M19", stage: "小組賽 Group D", dateStr: "2026-06-13", time: "03:00", t1: "us", t2: "py", score: "4 - 1", scorers: "已完賽 | 美國隊 4-1 大勝巴拉圭。" },
-  { id: "M20", stage: "小組賽 Group D", dateStr: "2026-06-13", time: "09:00", t1: "au", t2: "tr", score: "2 - 0", scorers: "已完賽 | 袋鼠兵團 2-0 完勝土耳其。" },
-  { id: "M21", stage: "小組賽 Group D", dateStr: "2026-06-19", time: "03:00", t1: "us", t2: "au", score: "2 - 0", scorers: "已完賽 | 美國隊 2-0 完勝澳洲領跑。" },
-  { id: "M22", stage: "小組賽 Group D", dateStr: "2026-06-19", time: "09:00", t1: "tr", t2: "py", score: "1 - 2", scorers: "已完賽 | 土耳其 1-2 不敵巴拉圭。" },
-  { id: "M23", stage: "小組賽 Group D", dateStr: "2026-06-25", time: "23:00", t1: "us", t2: "tr", score: "2 - 1", scorers: "已完賽 | 美國隊 2-1 力克土耳其，三連勝小組首名！" },
-  { id: "M24", stage: "小組賽 Group D", dateStr: "2026-06-25", time: "23:00", t1: "py", t2: "au", score: "1 - 2", scorers: "已完賽 | 澳洲 2-1 險勝巴拉圭奪得次名，巴拉圭以最佳第三晉級。" },
-
-  /* === Group E === */
-  { id: "M25", stage: "小組賽 Group E", dateStr: "2026-06-14", time: "03:00", t1: "de", t2: "cw", score: "7 - 1", scorers: "已完賽 | 德國隊 7-1 狂勝庫拉索。" },
-  { id: "M26", stage: "小組賽 Group E", dateStr: "2026-06-14", time: "09:00", t1: "ci", t2: "ec", score: "1 - 0", scorers: "已完賽 | 象牙海岸 1-0 險勝厄瓜多爾。" },
-  { id: "M27", stage: "小組賽 Group E", dateStr: "2026-06-20", time: "03:00", t1: "de", t2: "ci", score: "2 - 1", scorers: "已完賽 | 德國隊 2-1 絕殺象牙海岸。" },
-  { id: "M28", stage: "小組賽 Group E", dateStr: "2026-06-20", time: "09:00", t1: "cw", t2: "ec", score: "0 - 2", scorers: "已完賽 | 庫拉索 0-2 不敵厄瓜多爾。" },
-  { id: "M29", stage: "小組賽 Group E", dateStr: "2026-06-26", time: "23:00", t1: "de", t2: "ec", score: "2 - 0", scorers: "已完賽 | 德國隊 2-0 輕取厄瓜多爾，三戰全勝第一！" },
-  { id: "M30", stage: "小組賽 Group E", dateStr: "2026-06-26", time: "23:00", t1: "ci", t2: "cw", score: "3 - 1", scorers: "已完賽 | 象牙海岸 3-1 鎖定小組次名，厄瓜多爾最佳第三晉級。" },
-
-  /* === Group F === */
-  { id: "M31", stage: "小組賽 Group F", dateStr: "2026-06-14", time: "03:00", t1: "nl", t2: "jp", score: "2 - 2", scorers: "已完賽 | 日本隊 2-2 戰平強敵荷蘭。" },
-  { id: "M32", stage: "小組賽 Group F", dateStr: "2026-06-14", time: "09:00", t1: "se", t2: "tn", score: "5 - 1", scorers: "已完賽 | 瑞典 5-1 大勝突尼西亞。" },
-  { id: "M33", stage: "小組賽 Group F", dateStr: "2026-06-20", time: "03:00", t1: "nl", t2: "se", score: "5 - 1", scorers: "已完賽 | 荷蘭隊 5-1 狂勝瑞典。" },
-  { id: "M34", stage: "小組賽 Group F", dateStr: "2026-06-20", time: "09:00", t1: "tn", t2: "jp", score: "0 - 4", scorers: "已完賽 | 日本隊 4-0 大勝突尼西亞。" },
-  { id: "M35", stage: "小組賽 Group F", dateStr: "2026-06-26", time: "23:00", t1: "nl", t2: "tn", score: "3 - 1", scorers: "已完賽 | 荷蘭 3-1 奪得小組榜首。" },
-  { id: "M36", stage: "小組賽 Group F", dateStr: "2026-06-26", time: "23:00", t1: "jp", t2: "se", score: "2 - 1", scorers: "已完賽 | 日本隊 2-1 擊敗瑞典，小組次名晉級，瑞典以最佳第三出線。" },
-
-  /* === Group G === */
-  { id: "M37", stage: "小組賽 Group G", dateStr: "2026-06-15", time: "03:00", t1: "be", t2: "eg", score: "1 - 1", scorers: "已完賽 | 比利時 1-1 戰平埃及。" },
-  { id: "M38", stage: "小組賽 Group G", dateStr: "2026-06-15", time: "09:00", t1: "ir", t2: "nz", score: "2 - 2", scorers: "已完賽 | 伊朗 2-2 戰平紐西蘭。" },
-  { id: "M39", stage: "小組賽 Group G", dateStr: "2026-06-21", time: "03:00", t1: "be", t2: "ir", score: "0 - 0", scorers: "已完賽 | 十人比利時 0-0 戰平伊朗。" },
-  { id: "M40", stage: "小組賽 Group G", dateStr: "2026-06-21", time: "09:00", t1: "nz", t2: "eg", score: "1 - 3", scorers: "已完賽 | 埃及 3-1 輕取紐西蘭。" },
-  { id: "M41", stage: "小組賽 Group G", dateStr: "2026-06-27", time: "12:00", t1: "nz", t2: "be", score: "1 - 5", scorers: "已完賽 | 托沙特梅開二度，比利時 5-1 大勝新西蘭首名晉級！" },
-  { id: "M42", stage: "小組賽 Group G", dateStr: "2026-06-27", time: "12:00", t1: "eg", t2: "ir", score: "1 - 1", scorers: "已完賽 | 埃及 1-1 戰平伊朗，埃及次名直接晉級。伊朗3分等待結算。" },
-
-  /* === Group H === */
-  { id: "M43", stage: "小組賽 Group H", dateStr: "2026-06-15", time: "03:00", t1: "es", t2: "cv", score: "0 - 0", scorers: "已完賽 | 西班牙 0-0 悶和佛得角。" },
-  { id: "M44", stage: "小組賽 Group H", dateStr: "2026-06-15", time: "09:00", t1: "sa", t2: "uy", score: "1 - 1", scorers: "已完賽 | 沙地 1-1 戰平烏拉圭。" },
-  { id: "M45", stage: "小組賽 Group H", dateStr: "2026-06-22", time: "03:00", t1: "es", t2: "sa", score: "4 - 0", scorers: "已完賽 | 西班牙 4-0 大勝沙地阿拉伯。" },
-  { id: "M46", stage: "小組賽 Group H", dateStr: "2026-06-22", time: "09:00", t1: "cv", t2: "uy", score: "2 - 2", scorers: "已完賽 | 佛得角 2-2 戰平烏拉圭。" },
-  { id: "M47", stage: "小組賽 Group H", dateStr: "2026-06-27", time: "09:00", t1: "uy", t2: "es", score: "0 - 1", scorers: "已完賽 | 巴安拿致勝，西班牙 1-0 力克烏拉圭首名過關。烏拉圭淘汰！" },
-  { id: "M48", stage: "小組賽 Group H", dateStr: "2026-06-27", time: "09:00", t1: "cv", t2: "sa", score: "0 - 0", scorers: "已完賽 | 佛得角 0-0 逼平沙地阿拉伯，新丁奇蹟奪得次名出線！" },
-
-  /* === Group I === */
-  { id: "M49", stage: "小組賽 Group I", dateStr: "2026-06-16", time: "03:00", t1: "fr", t2: "sn", score: "3 - 1", scorers: "已完賽 | 法國隊 3-1 輕取塞內加爾。" },
-  { id: "M50", stage: "小組賽 Group I", dateStr: "2026-06-16", time: "09:00", t1: "iq", t2: "no", score: "1 - 4", scorers: "已完賽 | 挪威 4-1 橫掃伊拉克。" },
-  { id: "M51", stage: "小組賽 Group I", dateStr: "2026-06-22", time: "03:00", t1: "fr", t2: "iq", score: "3 - 0", scorers: "已完賽 | 法國 3-0 伊拉克提前晉級。" },
-  { id: "M52", stage: "小組賽 Group I", dateStr: "2026-06-22", time: "09:00", t1: "no", t2: "sn", score: "3 - 2", scorers: "已完賽 | 挪威 3-2 險勝塞內加爾。" },
-  { id: "M53", stage: "小組賽 Group I", dateStr: "2026-06-27", time: "03:00", t1: "no", t2: "fr", score: "1 - 4", scorers: "已完賽 | 迪比利帽子戲法，法國隊 4-1 橫掃挪威首名。挪威次名，塞內加爾第三晉級。" },
-  { id: "M54", stage: "小組賽 Group I", dateStr: "2026-06-27", time: "03:00", t1: "sn", t2: "iq", score: "5 - 0", scorers: "已完賽 | 塞內加爾 5-0 狂勝十人伊拉克。" },
-
-  /* === Group J === */
-  { id: "M55", stage: "小組賽 Group J", dateStr: "2026-06-16", time: "03:00", t1: "ar", t2: "dz", score: "3 - 0", scorers: "已完賽 | 美斯戴帽，阿根廷 3-0 獲勝。" },
-  { id: "M56", stage: "小組賽 Group J", dateStr: "2026-06-16", time: "09:00", t1: "at", t2: "jo", score: "3 - 1", scorers: "已完賽 | 奧地利 3-1 擊敗約旦。" },
-  { id: "M57", stage: "小組賽 Group J", dateStr: "2026-06-22", time: "03:00", t1: "ar", t2: "at", score: "1 - 0", scorers: "已完賽 | 阿根廷 1-0 小勝奧地利鎖定提前出線。" },
-  { id: "M58", stage: "小組賽 Group J", dateStr: "2026-06-22", time: "09:00", t1: "jo", t2: "dz", score: "1 - 2", scorers: "已完賽 | 阿爾及利亞 2-1 約旦。" },
-  { id: "M59", stage: "小組賽 Group J", dateStr: "2026-06-28", time: "10:00", t1: "at", t2: "dz", score: "VS", scorers: "⏳ 即將開賽 | 奧地利生死決戰阿爾及利亞。" },
-  { id: "M60", stage: "小組賽 Group J", dateStr: "2026-06-28", time: "10:00", t1: "jo", t2: "ar", score: "VS", scorers: "⏳ 即將開賽 | 阿根廷迎戰約旦進行煞科收官。" },
-
-  /* === Group K === */
-  { id: "M61", stage: "小組賽 Group K", dateStr: "2026-06-17", time: "03:00", t1: "pt", t2: "cd", score: "1 - 1", scorers: "已完賽 | 葡萄牙 1-1 戰平剛果民主共和國。" },
-  { id: "M62", stage: "小組賽 Group K", dateStr: "2026-06-17", time: "09:00", t1: "uz", t2: "co", score: "1 - 3", scorers: "已完賽 | 哥倫比亞 3-1 擊敗烏茲別克。" },
-  { id: "M63", stage: "小組賽 Group K", dateStr: "2026-06-23", time: "17:00", t1: "pt", t2: "uz", score: "2 - 0", scorers: "已完賽 | C朗破荒開齋，葡萄牙 2-0 提前鎖定出線席位。" },
-  { id: "M64", stage: "小組賽 Group K", dateStr: "2026-06-23", time: "17:00", t1: "co", t2: "cd", score: "1 - 1", scorers: "已完賽 | 哥倫比亞 1-1 戰平剛果，提前雙雙確保出線。" },
-  { id: "M65", stage: "小組賽 Group K", dateStr: "2026-06-28", time: "07:30", t1: "co", t2: "pt", score: "VS", scorers: "⏳ 進行中 / 即將開賽 | 哥倫比亞與葡萄牙爭奪榜首權杖。" },
-  { id: "M66_2", stage: "小組賽 Group K", dateStr: "2026-06-28", time: "07:30", t1: "cd", t2: "uz", score: "VS", scorers: "⏳ 進行中 / 即將開賽 | 剛果與烏茲別克展開出線搶灘。" },
-
-  /* === Group L === */
-  { id: "M67_2", stage: "小組賽 Group L", dateStr: "2026-06-17", time: "03:00", t1: "gb-eng", t2: "hr", score: "4 - 2", scorers: "已完賽 | 英格蘭 4-2 克羅地亞。" },
-  { id: "M68_2", stage: "小組賽 Group L", dateStr: "2026-06-17", time: "09:00", t1: "gh", t2: "pa", score: "1 - 0", scorers: "已完賽 | 加納 1-0 險勝巴拿馬。" },
-  { id: "M69_2", stage: "小組賽 Group L", dateStr: "2026-06-23", time: "20:00", t1: "gb-eng", t2: "gh", score: "2 - 0", scorers: "已完賽 | 三獅軍團 2-0 完勝加納。" },
-  { id: "M70_2", stage: "小組賽 Group L", dateStr: "2026-06-23", time: "23:00", t1: "pa", t2: "hr", score: "1 - 3", scorers: "已完賽 | 克羅地亞 3-1 擊敗巴拿馬。" },
-  { id: "M71_2", stage: "小組賽 Group L", dateStr: "2026-06-28", time: "05:00", t1: "hr", t2: "gh", score: "2 - 1", scorers: "已完賽 | 克羅地亞 2-1 險勝加納奪得次名。加納淘汰！" },
-  { id: "M72", stage: "小組賽 Group L", dateStr: "2026-06-28", time: "05:00", t1: "pa", t2: "gb-eng", score: "0 - 2", scorers: "已完賽 | 英格蘭 2-0 輕取巴拿馬奪榜首，巴拿馬出局。" },
-
-  /* === 🏆 Ref: image.png 32強淘汰賽火熱更新骨架 (M73-M88) === */
-  { id: "M73", stage: "32強淘汰賽", dateStr: "2026-06-29", time: "03:00", t1: "za", t2: "ca", score: "VS", scorers: "🏟️ 洛杉磯體育場 (SoFi Stadium) | 焦點對撞！南非 vs 加拿大" },
-  { id: "M74", stage: "32強淘汰賽", dateStr: "2026-06-29", time: "22:30", t1: "br", t2: "jp", score: "VS", scorers: "🏟️ 侯斯頓體育場 (NRG Stadium) | 強強生死戰！巴西 vs 日本" },
-  { id: "M75", stage: "32強淘汰賽", dateStr: "2026-06-30", time: "01:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "⏳ 待定籤位 | 隨今日收官戰FIFA系統即時排序更新" },
-  { id: "M76", stage: "32強淘汰賽", dateStr: "2026-06-30", time: "02:00", t1: "de", t2: "py", score: "VS", scorers: "🏟️ 波士頓體育場 (Gillette Stadium) | 戰車出擊！德國 vs 巴拉圭" },
-  { id: "M77", stage: "32強淘汰賽", dateStr: "2026-06-30", time: "06:30", t1: "nl", t2: "ma", score: "VS", scorers: "🏟️ 瓜達拉哈拉體育場 (Estadio Akron) | 歐非大碰撞！荷蘭 vs 摩洛哥" },
-  { id: "M78", stage: "32強淘汰賽", dateStr: "2026-06-30", time: "22:30", t1: "ci", t2: "no", score: "VS", scorers: "🏟️ 達拉斯體育場 (AT&T Stadium) | 力量對決！象牙海岸 vs 挪威" },
-  { id: "M79", stage: "32強淘汰賽", dateStr: "2026-07-01", time: "02:30", t1: "fr", t2: "se", score: "VS", scorers: "🏟️ 紐約新澤西體育場 (MetLife Stadium) | 高盧雄雞 vs 瑞典" },
-  { id: "M80", stage: "32強淘汰賽", dateStr: "2026-07-01", time: "04:30", t1: "tbd", t2: "tbd", score: "VS", scorers: "⏳ 待定籤位 | 交叉對陣骨架生成中" },
-  { id: "M81", stage: "32強淘汰賽", dateStr: "2026-07-01", time: "09:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "⏳ 待定籤位 | 交叉對陣骨架生成中" },
-  { id: "M82", stage: "32強淘汰賽", dateStr: "2026-07-02", time: "01:30", t1: "be", t2: "tbd", score: "VS", scorers: "🏟️ 西雅圖體育場 (Lumen Field) | 比利時 vs [小組第三名]野生籤位" },
-  { id: "M83", stage: "32強淘汰賽", dateStr: "2026-07-02", time: "05:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "⏳ 待定籤位 | 交叉對陣骨架生成中" },
-  { id: "M84", stage: "32強淘汰賽", dateStr: "2026-07-02", time: "05:30", t1: "us", t2: "ba", score: "VS", scorers: "🏟️ 聖克拉拉體育場 (Levi's Stadium) | 東道主出擊！美國 vs 波斯尼亞" },
-  { id: "M85", stage: "32強淘汰賽", dateStr: "2026-07-02", time: "09:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "⏳ 待定籤位 | 交叉對陣骨架生成中" },
-  { id: "M86", stage: "32強淘汰賽", dateStr: "2026-07-03", time: "00:30", t1: "es", t2: "tbd", score: "VS", scorers: "🏟️ 洛杉磯體育場 (SoFi Stadium) | 西班牙 vs [J組次名] (奧地利/阿爾及利亞)" },
-  { id: "M87", stage: "32強淘汰賽", dateStr: "2026-07-03", time: "03:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "⏳ 待定籤位" },
-  { id: "M88", stage: "32強淘汰賽", dateStr: "2026-07-04", time: "15:30", t1: "ar", t2: "cv", score: "VS", scorers: "🏟️ 邁阿密體育場 (Hard Rock Stadium) | 潘帕斯雄鷹！阿根廷 vs 佛得角" },
-
-  /* --- 後續 16強、8強、4強及決賽頂級流 --- */
-  { id: "M89", stage: "16強淘汰賽", dateStr: "2026-07-06", time: "01:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "16強賽 1" },
-  { id: "M90", stage: "16強淘汰賽", dateStr: "2026-07-06", time: "05:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "16強賽 2" },
-  { id: "M91", stage: "16強淘汰賽", dateStr: "2026-07-07", time: "04:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "16強賽 3" },
-  { id: "M92", stage: "16強淘汰賽", dateStr: "2026-07-07", time: "08:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "16強賽 4" },
-  { id: "M93", stage: "16強淘汰賽", dateStr: "2026-07-08", time: "03:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "16強賽 5" },
-  { id: "M94", stage: "16強淘汰賽", dateStr: "2026-07-08", time: "08:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "16強賽 6" },
-  { id: "M95", stage: "16強淘汰賽", dateStr: "2026-07-09", time: "00:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "16強賽 7" },
-  { id: "M96", stage: "16強淘汰賽", dateStr: "2026-07-09", time: "04:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "16強賽 8" },
-  { id: "M97", stage: "8強半準決賽", dateStr: "2026-07-11", time: "04:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "半準決賽 1" },
-  { id: "M98", stage: "8強半準決賽", dateStr: "2026-07-12", time: "03:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "半準決賽 2" },
-  { id: "M99", stage: "8強半準決賽", dateStr: "2026-07-13", time: "05:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "半準決賽 3" },
-  { id: "M100", stage: "8強半準決賽", dateStr: "2026-07-13", time: "09:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "半準決賽 4" },
-  { id: "M101", stage: "4強準決賽", dateStr: "2026-07-15", time: "03:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "準決賽上半區" },
-  { id: "M102", stage: "4強準決賽", dateStr: "2026-07-16", time: "03:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "準決賽下半區" },
-  { id: "M103", stage: "季軍爭奪賽", dateStr: "2026-07-19", time: "05:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "季軍榮譽之戰" },
-  { id: "M104", stage: "👑 冠軍總決賽", dateStr: "2026-07-20", time: "03:00", t1: "tbd", t2: "tbd", score: "VS", scorers: "2026美加墨世界盃終極總決賽！" }
-];
-
-function render(g){
-  let d=store[g]; if(!d) return;
-  let sortedData = [...d.data].sort((a,b)=>b.points-a.points); d.table.innerHTML="";
-  sortedData.forEach((t,i)=>{
-    let row=document.createElement("div"); row.className="table-row rank-"+i;
-    let img=document.createElement("img"); img.src="https://flagcdn.com/w80/"+t.code+".png"; img.className="flag"; img.style.width = "22px"; img.style.height="15px";
-    let txt=document.createElement("span"); txt.innerText = `${i+1}. ${teamDatabase[t.code]?teamDatabase[t.code].name.split(" ")[0]:t.code.toUpperCase()} (${t.points} 分)`;
-    row.append(img, txt); d.table.appendChild(row);
-  });
+function toggleNutritionPanel() {
+    let panel = document.getElementById("nutritionTotalPanel");
+    if (panel.style.display === "none" || panel.style.display === "") {
+        panel.style.display = "block";
+        panel.scrollIntoView({ behavior: 'smooth' });
+    } else {
+        panel.style.display = "none";
+    }
 }
 
-const matchBox = document.getElementById("matches");
-
-function initDateSelector() {
-  const container = document.getElementById("dateSelector"); container.innerHTML = "";
-  let allBtn = document.createElement("button"); allBtn.className = "date-btn active"; allBtn.innerText = "🗓️ 全部 104 場賽程日曆";
-  allBtn.onclick = function() { document.querySelectorAll(".date-btn").forEach(b => b.classList.remove("active")); allBtn.classList.add("active"); renderMatches("all"); };
-  container.appendChild(allBtn);
-  const uniqueStages = [...new Set(centralSchedule.map(m => m.stage))];
-  uniqueStages.forEach(stage => {
-    let btn = document.createElement("button"); btn.className = "date-btn"; btn.innerText = stage;
-    btn.onclick = function() { document.querySelectorAll(".date-btn").forEach(b => b.classList.remove("active")); btn.classList.add("active"); renderMatches(stage); };
-    container.appendChild(btn);
-  });
+function drawChart() {
+    let stepX = 260 / (weeklyData.length - 1);
+    let pts = weeklyData.map((val, idx) => `${20 + idx * stepX},${50 - (val / 2500 * 40)}`);
+    document.getElementById("chartPathLine").setAttribute("d", "M " + pts.join(" L "));
 }
 
-function renderMatches(filterStage) {
-  matchBox.innerHTML = "";
-  centralSchedule.forEach(m => {
-    if(filterStage !== "all" && m.stage !== filterStage) return;
-    let matchCard = document.createElement("div"); matchCard.className = "match-card"; matchCard.onclick = () => openSquad(m.t1, m.t2, m.scorers, m.stage, m.dateStr);
-    let timeTag = document.createElement("div"); timeTag.className = "match-time";
-    let matchStatusText = (m.score !== "VS" && m.score !== "") ? `⚽ 已完賽 / 進行中 | 比分 ${m.score}` : "⏳ 尚未開賽 / 進行中";
-    timeTag.innerText = `${matchStatusText} | [${m.stage}] ${m.dateStr} ${m.time} HKT`;
-    let teamsDiv = document.createElement("div"); teamsDiv.className = "match-teams";
-    let slot1 = document.createElement("div"); slot1.className = "team-slot";
-    let img1 = document.createElement("img"); img1.src = m.t1 === "tbd" ? "https://flagcdn.com/w80/un.png" : "https://flagcdn.com/w80/"+m.t1+".png"; img1.className="flag";
-    let name1 = document.createElement("span"); name1.innerText = teamDatabase[m.t1] ? teamDatabase[m.t1].name.split(" ")[0] : m.t1; slot1.append(img1, name1);
-    let vs = document.createElement("span"); vs.className = "vs"; vs.innerText = m.score;
-    let slot2 = document.createElement("div"); slot2.className = "team-slot";
-    let img2 = document.createElement("img"); img2.src = m.t2 === "tbd" ? "https://flagcdn.com/w80/un.png" : "https://flagcdn.com/w80/"+m.t2+".png"; img2.className="flag";
-    let name2 = document.createElement("span"); name2.innerText = teamDatabase[m.t2] ? teamDatabase[m.t2].name.split(" ")[0] : m.t2; slot2.append(img2, name2);
-    teamsDiv.append(slot1, vs, slot2);
-    let viewHint = document.createElement("div"); viewHint.className = "view-btn"; viewHint.innerText = "📄 查看比賽球場場館與詳細戰報事件簿";
-    matchCard.append(timeTag, teamsDiv, viewHint); matchBox.appendChild(matchCard);
-  });
-}
-
-function openSquad(code1, code2, scorers, stageName, dateStr) {
-  const t1 = teamDatabase[code1]; const t2 = teamDatabase[code2];
-  document.getElementById("modalScorersList").innerText = scorers; document.getElementById("modalTitle").innerText = `🏆 FIFA 官方真實賽事看板 (${stageName})`;
-  document.getElementById("team1Name").innerText = t1 ? t1.name : "待定"; document.getElementById("team2Name").innerText = t2 ? t2.name : "待定";
-  let ul1 = document.getElementById("team1Players"); ul1.innerHTML = ""; if(t1) t1.stars.forEach(p => { let li = document.createElement("li"); li.innerText = p; ul1.appendChild(li); });
-  let ul2 = document.getElementById("team2Players"); ul2.innerHTML = ""; if(t2) t2.stars.forEach(p => { let li = document.createElement("li"); li.innerText = p; ul2.appendChild(li); });
-  document.getElementById("squadModal").style.display = "flex";
-}
-function closeSquad() { document.getElementById("squadModal").style.display = "none"; }
-function openPredictModal() { document.getElementById("predictModal").style.display = "flex"; }
-function closePredictModal() { document.getElementById("predictModal").style.display = "none"; }
-
-function submitPrediction(event) {
-  event.preventDefault(); const phone = document.getElementById("userPhone").value.trim(); const name = document.getElementById("userName").value.trim(); const champTeam = document.getElementById("userChampTeam").value.trim(); const gasWebAppUrl = "https://script.google.com/macros/s/AKfycbwCi6xmPfFRDuy12wlzlhWoM6BoRC8mBoZ2iZ8b1ZRBDXEN4Etu8mq-vCUVTEIESRvq/exec";
-  const submitBtn = event.target.querySelector(".submit-btn"); submitBtn.innerText = "正在同步數據..."; submitBtn.disabled = true;
-  const formData = new URLSearchParams(); formData.append("phone", phone); formData.append("name", name); formData.append("predicted_champion", champTeam);
-  fetch(gasWebAppUrl, { method: "POST", mode: "cors", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: formData.toString() })
-  .then(res => { if (res.ok) { db.ref(`predict_stats/${champTeam}`).transaction((currentVotes) => { return (currentVotes || 0) + 1; }); alert(`🎉 預測提交成功！\n\n感謝 ${name} 參與！`); closePredictModal(); } else { alert("❌ 傳輸失敗，錯誤碼：" + res.status); } })
-  .catch(err => { alert("❌ 網絡連線錯誤！"); }).finally(() => { submitBtn.innerText = "提交預測"; submitBtn.disabled = false; });
-}
-window.onclick = function(e) { if (e.target == document.getElementById("squadModal")) closeSquad(); if (e.target == document.getElementById("predictModal")) closePredictModal(); }
-
-// 實時從 Firebase 監聽全網奪冠預測熱度榜
-db.ref("predict_stats").on("value", (snapshot) => {
-  const stats = snapshot.val() || {};
-  const predictGrid = document.getElementById("predictGrid");
-  predictGrid.innerHTML = "";
-  if (Object.keys(stats).length === 0) {
-    stats["西班牙"] = 18;
-    stats["法國"] = 15;
-    stats["葡萄牙"] = 11;
-    stats["英格蘭"] = 8;
-  }
-  const sortedVotes = Object.keys(stats).map(team => ({ team: team, votes: stats[team] })).sort((a, b) => b.votes - a.votes);
-  const maxVotes = sortedVotes[0]?.votes || 1;
-  sortedVotes.slice(0, 4).forEach((item) => {
-    const percentage = Math.round((item.votes / maxVotes) * 100);
-    const rankItem = document.createElement("div"); rankItem.className = "predict-rank-item";
-    rankItem.innerHTML = `<div class="predict-rank-info"><span>⚽ ${item.team}</span><span>${item.votes} 票 (${percentage}%)</span></div><div class="predict-bar-bg"><div class="predict-bar-fill" style="width: ${percentage}%"></div></div>`;
-    predictGrid.appendChild(rankItem);
-  });
-});
-
-// 實時從 Firebase 監聽最新賽事數據與出線名單 (欄位修正完全適配 32強全部大盤點)
-db.ref("friendly_news").on("value", (snapshot) => {
-  const data = snapshot.val();
-  if (!data || !data.results || data.results[0].groupName !== "A組") {
-    const freshFriendlyData = {
-      description: "2026年美加墨世界盃小組賽已進入最後一天的煞科階段！截至香港時間6月28日上午，本屆首創的48隊制小組賽中，大部分分組的最終排名與出線隊伍已獲得官方確認。每組前兩名直接晉級，加上12個小組中表現最好的8支小組第三名攜手殺入全新的「32強淘汰賽」架構。生死戰將於香港時間6月29日凌晨火熱開鑼！",
-      results: [
-        { groupName: "A組", first: "墨西哥 🇲🇽", second: "南非 🇿🇦", third: "— (捷克、南韓淘汰)" },
-        { groupName: "B組", first: "瑞士 🇨🇭", second: "加拿大 🇨🇦", third: "波斯尼亞 🇧🇦 (擇優晉級)" },
-        { groupName: "C組", first: "巴西 🇧🇷", second: "摩洛哥 🇲🇦", third: "— (蘇格蘭、海地淘汰)" },
-        { groupName: "D組", first: "美國 🇺🇸", second: "澳洲 🇦🇺", third: "巴拉圭 🇵🇾 (擇優晉級)" },
-        { groupName: "E組", first: "德國 🇩🇪", second: "象牙海岸 🇨🇮", third: "厄瓜多爾 🇪🇨 (擇優晉級)" },
-        { groupName: "F組", first: "荷蘭 🇳🇱", second: "日本 🇯🇵", third: "瑞典 🇸🇪 (擇優晉級)" },
-        { groupName: "G組", first: "比利時 🇧🇪", second: "埃及 🇪🇬", third: "伊朗 (3分待定結算)" },
-        { groupName: "H組", first: "西班牙 🇪🇸", second: "佛得角 🇨🇻", third: "— (烏拉圭、沙地淘汰)" },
-        { groupName: "I組", first: "法國 🇫🇷", second: "挪威 🇳🇴", third: "塞內加爾 🇸🇳 (擇優晉級)" },
-        { groupName: "J組", first: "*阿根廷 🇦研 (已晉級)*", second: "*待定 (今日煞科)*", third: "*待定 (今日煞科)*" },
-        { groupName: "K組", first: "*哥倫比亞/葡萄牙 (已晉級)*", second: "*待定 (今日煞科)*", third: "*待定 (今日煞科)*" },
-        { groupName: "L組", first: "英格蘭 🏴󠁧󠁢󠁥󠁮󠁧󠁿", second: "克羅地亞 🇭🇷", third: "— (加納、巴拿馬淘汰)" }
-      ],
-      timeline: [
-        { type: "stadium", time: "6月29日 03:00 / 洛杉磯體育場", body: "32強淘汰賽揭幕戰！非洲勇士南非 🇿🇦 跨界火拼北美東道主加拿大 🇨🇦，SoFi Stadium 現場熱度拉滿！" },
-        { type: "goal", time: "6月29日 22:30 / 侯斯頓體育場", body: "超級強強對決！五星森巴軍團巴西 🇧🇷 淘汰賽首圈即遭遇藍武士日本 🇯🇵，引爆全網收視最高潮！" },
-        { type: "stadium", time: "7月4日 15:30 / 邁阿密體育場", body: "球王再次亮相！衛冕冠軍阿根廷 🇦🇷 將在邁阿密硬石體育場迎戰寫下童話晉級篇章的世界盃新丁佛得角 🇨🇻！" }
-      ],
-      upcoming_list: [
-        "<b>🔥 三大東道主全數出線：</b>墨西哥、美國、加拿大強勢在主場球迷吶喊下突圍，淘汰賽交叉對陣極具看點！",
-        "<b>✨ 擇優晉級(最佳小組第三)敲定：</b>瑞典 🇸🇪、厄瓜多爾 🇪🇨、波斯尼亞 🇧🇦、巴拉圭 🇵🇾、塞內加爾 🇸🇳 憑藉4分優勢率先強勢卡位！",
-        "<b>🛑 傳統強權悲喜交加：</b>法國、德國、英格蘭首名統治力盡顯；巴西次名驚險出線；而烏拉圭、南韓則抱憾落馬淘汰出局。",
-        "<b>💡 觀賽備忘：</b>小組賽最後四場（含阿根廷 vs 約旦、葡萄牙 vs 哥倫比亞）將於今日下午至晚間全數完場，FIFA系統隨即公佈完整對陣總籤表！"
-      ]
-    };
-    db.ref("friendly_news").set(freshFriendlyData); return;
-  }
-  
-  document.getElementById("friendlyDesc").innerText = data.description || "";
-  const resultsBody = document.getElementById("friendlyResultsBody"); resultsBody.innerHTML = "";
-  if (data.results) {
-    data.results.forEach(r => {
-      let tr = document.createElement("tr");
-      tr.innerHTML = `<td style="color:#dfaa2a; font-weight:bold;">${r.groupName}</td><td style="color:#10b981; font-weight:bold;">${r.first}</td><td style="color:#38bdf8; font-weight:bold;">${r.second}</td><td style="color:#d1d5db;">${r.third}</td>`;
-      resultsBody.appendChild(tr);
-    });
-  }
-
-  const timelineContainer = document.getElementById("friendlyTimelineContainer"); timelineContainer.innerHTML = "";
-  if(data.timeline) {
-    data.timeline.forEach(t => {
-      let item = document.createElement("div"); item.className = "timeline-item";
-      item.innerHTML = `<div class="timeline-dot ${t.type}"></div><div class="timeline-content"><div class="timeline-header"><span class="event-tag ${t.type}">${t.type.toUpperCase()}</span><span class="event-time">${t.time}</span></div><div class="event-body">${t.body}</div></div>`;
-      timelineContainer.appendChild(item);
-    });
-  }
-
-  const upcomingList = document.getElementById("friendlyUpcomingList"); upcomingList.innerHTML = "";
-  if(data.upcoming_list) {
-    data.upcoming_list.forEach(u => {
-      let li = document.createElement("li"); li.innerHTML = u; upcomingList.appendChild(li);
-    });
-  }
-});
-
-window.addEventListener("DOMContentLoaded", () => {
-  initGroupsData();
-  initDateSelector();
-  renderMatches("all");
-});
+window.onload = () => {
+    drawChart();
+    initSpeechAPI();
+};
 </script>
-
 </body>
 </html>
