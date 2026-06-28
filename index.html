@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="referrer" content="no-referrer">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>樂活健康管理系統 - 智能流線高精準版</title>
+    <title>樂活健康管理系統 - 個人化精準動態版</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -96,7 +96,7 @@
             border: 1px solid #ccfbf1;
         }
 
-        /* 二、核心累計數據網格 (Metadata Grid) */
+        /* 二、核心累計數據網格 */
         .metadata-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -121,7 +121,7 @@
         }
 
         .meta-value {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
             color: var(--teal-dark);
         }
@@ -132,7 +132,6 @@
             margin-top: 1px;
         }
 
-        /* 狀態提示列 */
         .status-bar-banner {
             font-size: 13px;
             color: var(--teal-dark);
@@ -145,7 +144,7 @@
             border-radius: 12px;
         }
 
-        /* 三、應用內界面通用卡片 */
+        /* 應用內界面通用卡片 */
         .ui-card {
             background: var(--card-bg);
             border-radius: var(--border-radius);
@@ -163,6 +162,38 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        /* 👤 【新功能】個人生理數據設定面板 */
+        .profile-input-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .profile-input-grid label {
+            font-size: 11px;
+            color: var(--text-sub);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .profile-input-grid input, .profile-input-grid select {
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+        .calc-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--teal-main);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
         }
 
         /* 語音錄入排版 */
@@ -247,7 +278,6 @@
             cursor: pointer;
         }
 
-        /* 影像上傳小卡片 */
         .file-label-pill {
             background: var(--card-bg);
             border: 1.5px dashed #cbd5e1;
@@ -276,7 +306,7 @@
             box-shadow: 0 4px 10px rgba(16, 185, 129, 0.15);
         }
 
-        /* 📸 【第 3 層優化】雷射動態掃描 + 智能聚焦引導外框 */
+        /* 📸 雷射動態掃描影像外框 */
         .preview-wrapper {
             position: relative;
             max-width: 100%;
@@ -296,14 +326,13 @@
             object-fit: cover;
         }
 
-        /* 智能聚焦相機格網 (Camera Target Overlay) */
         .camera-guide-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            box-shadow: inset 0 0 0 20px rgba(0,0,0,0.4); /* 周圍暗化聚焦 */
+            box-shadow: inset 0 0 0 20px rgba(0,0,0,0.4); 
             pointer-events: none;
             display: flex;
             align-items: center;
@@ -353,7 +382,7 @@
             100% { top: 0%; }
         }
 
-        /* 數據可視化圓環與多重層級排版 */
+        /* 🔄 【核心修改】動態渲染進度圓環排版 */
         .chart-ring-layout {
             display: flex;
             align-items: center;
@@ -370,11 +399,9 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            box-shadow: inset 0 0 0 8px #f1f5f9;
+            background: #f1f5f9; /* 預設底色 */
+            transition: background 0.4s ease; /* 平滑增長動畫 */
         }
-
-        .ring-teal-accent { background: conic-gradient(var(--teal-main) 0%, #f1f5f9 0%); }
-        .ring-amber-accent { background: conic-gradient(var(--amber-accent) 0%, #f1f5f9 0%); }
 
         .circle-inner-plate {
             position: absolute;
@@ -407,7 +434,7 @@
 
         .inner-white-box div:last-child {
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             margin-top: 4px;
         }
 
@@ -446,7 +473,6 @@
 
         .chart-svg { width: 100%; height: 60px; overflow: visible; }
 
-        /* 歷史記錄卡片項目 */
         .history-item-row {
             background: #f8fafc;
             padding: 12px;
@@ -491,14 +517,43 @@
         <div class="app-header-info">
             <h1>樂活健康管理系統</h1>
             <p>智能飲食與吞嚥安全雲端監測平台</p>
-            <span class="badge-version">v3.5 Core System</span>
+            <span class="badge-version">v3.6 Dynamic Personal Edition</span>
         </div>
+    </div>
+
+    <div class="ui-card">
+        <h3><i class="fa-solid fa-user-gear" style="color: var(--teal-main);"></i> 個人身體數據與每日目標配置</h3>
+        <div class="profile-input-grid">
+            <label>性別
+                <select id="user-gender">
+                    <option value="male">男</option>
+                    <option value="female" selected>女</option>
+                </select>
+            </label>
+            <label>年齡 (歲)
+                <input type="number" id="user-age" value="65">
+            </label>
+            <label>身高 (cm)
+                <input type="number" id="user-height" value="155">
+            </label>
+            <label>體重 (kg)
+                <input type="number" id="user-weight" value="55">
+            </label>
+            <label style="grid-column: span 2;">日常活動量
+                <select id="user-activity">
+                    <option value="1.2">久坐 / 臥床院友 (1.2)</option>
+                    <option value="1.375" selected>輕度活動 / 定期復康訓練 (1.375)</option>
+                    <option value="1.55">中度活動量 (1.55)</option>
+                </select>
+            </label>
+        </div>
+        <button class="calc-btn" onclick="calculatePersonalTargets()">🔄 更新並動態重新計算每日目標</button>
     </div>
 
     <div class="metadata-grid">
         <div class="meta-item">
-            <div class="meta-label">今日熱量</div>
-            <div class="meta-value" id="meta-cal-total">0</div>
+            <div class="meta-label">全天累計</div>
+            <div class="meta-value"><span id="meta-cal-total">0</span> / <span id="target-cal-lbl">1600</span></div>
             <div class="meta-sub-value">KCAL</div>
         </div>
         <div class="meta-item">
@@ -559,15 +614,16 @@
         <h3><i class="fa-solid fa-magnifying-glass" style="color: var(--teal-main);"></i> 本次餐食營養細目 (<span id="single_foodname" style="color: var(--teal-dark);">未輸入</span>)</h3>
         
         <div class="chart-ring-layout">
-            <div class="modern-circle ring-teal-accent" id="single_ring_progress">
+            <div class="modern-circle" id="single_ring_progress">
                 <div class="circle-inner-plate">
-                    <div id="single_cal" style="font-size: 22px; font-weight: 700; color: var(--teal-main);">0</div>
+                    <div id="single_cal" style="font-size: 20px; font-weight: 700; color: var(--teal-main);">0</div>
                     <div style="font-size: 9px; color: var(--text-sub); font-weight:600;">KCAL</div>
                 </div>
             </div>
             <div style="flex:1;">
                 <div style="font-size: 12px; color:var(--text-sub); margin-bottom: 4px;">🥣 IDDSI 安全吞嚥等級</div>
                 <div id="single_iddsiMain"><span class="iddsi-badge">未指定</span></div>
+                <div style="font-size: 11px; color: var(--text-sub); margin-top: 6px;" id="single-pct-lbl">佔每日目標：0%</div>
             </div>
         </div>
         
@@ -606,22 +662,23 @@
         <h3 style="color: var(--amber-accent);"><i class="fa-solid fa-gauge-high"></i> 🔥 全天累計總合核心看板</h3>
         
         <div class="chart-ring-layout">
-            <div class="modern-circle ring-amber-accent" id="total_ring_progress">
+            <div class="modern-circle" id="total_ring_progress">
                 <div class="circle-inner-plate">
-                    <div id="cal" style="font-size: 22px; font-weight: 700; color: var(--amber-accent);">0</div>
+                    <div id="cal" style="font-size: 20px; font-weight: 700; color: var(--amber-accent);">0</div>
                     <div style="font-size: 9px; color: var(--text-sub); font-weight:600;">KCAL</div>
                 </div>
             </div>
             <div style="flex:1;">
                 <div style="font-size: 12px; color:var(--text-sub); margin-bottom: 4px;">當前登錄 IDDSI 現況</div>
                 <div id="iddsiMain"><span class="iddsi-badge">未指定</span></div>
+                <div style="font-size: 11px; color: var(--text-main); font-weight: bold; margin-top: 6px;" id="total-pct-lbl">全天達標率：0%</div>
             </div>
         </div>
         
         <div class="macro-three-column">
-            <div class="inner-white-box"><div style="color:var(--text-sub);">🥩 蛋白質</div><div id="protein" style="color: var(--amber-accent);">0g</div></div>
-            <div class="inner-white-box"><div style="color:var(--text-sub);">🍞 碳水</div><div id="carbs" style="color: var(--teal-dark);">0g</div></div>
-            <div class="inner-white-box"><div style="color:var(--text-sub);">🧈 脂肪</div><div id="fat" style="color: #10b981;">0g</div></div>
+            <div class="inner-white-box"><div style="color:var(--text-sub);">🥩 蛋白質目標</div><div style="color: var(--amber-accent);"><span id="protein">0</span>g / <span id="target-protein-lbl">60</span>g</div></div>
+            <div class="inner-white-box"><div style="color:var(--text-sub);">🍞 碳水目標</div><div style="color: var(--teal-dark);"><span id="carbs">0</span>g / <span id="target-carbs-lbl">200</span>g</div></div>
+            <div class="inner-white-box"><div style="color:var(--text-sub);">🧈 脂肪目標</div><div style="color: #10b981;"><span id="fat">0</span>g / <span id="target-fat-lbl">50</span>g</div></div>
         </div>
 
         <div class="sub-macro-flex-grid">
@@ -654,7 +711,68 @@ const IDDSI_COLORS = {
     "7EC": { bg: "#000000", text: "#ffffff", label: "Level 7 容易咀嚼 (Black)" }
 };
 
-let processedBase64 = ""; // 儲存優化後的影像資料
+// 🌟 核心個人精準化管理變數 (預設基本盤)
+let dailyTargets = { cal: 1600, protein: 60, carbs: 220, fat: 50 };
+
+let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0;
+let sugar = 0, satFat = 0, transFat = 0, cholesterol = 0, fiber = 0;
+let recordCount = 0;
+let maxIddsiText = "-";
+let weeklyData = [1400, 1500, 1350, 1600, 0];
+
+let recognition = null;
+let isRecording = false;
+let processedBase64 = ""; 
+
+// 👤 【新邏輯】基於年齡身高體重計算專屬 TDEE 與四大營養素目標
+function calculatePersonalTargets() {
+    const gender = document.getElementById("user-gender").value;
+    const age = parseFloat(document.getElementById("user-age").value) || 65;
+    const height = parseFloat(document.getElementById("user-height").value) || 155;
+    const weight = parseFloat(document.getElementById("user-weight").value) || 55;
+    const activity = parseFloat(document.getElementById("user-activity").value) || 1.375;
+
+    // Mifflin-St Jeor 公式計算基礎代謝率 BMR
+    let bmr = (10 * weight) + (6.25 * height) - (5 * age);
+    if (gender === "male") {
+        bmr += 5;
+    } else {
+        bmr -= 161;
+    }
+
+    // 總消耗能量 TDEE
+    let tdee = Math.round(bmr * activity);
+    if(tdee < 1200) tdee = 1200; // 安全下限底盤限制
+
+    // 依據長者與常規黃金比例分拆四大巨量營養素 (55% 碳水, 20% 蛋白質, 25% 脂肪)
+    dailyTargets.cal = tdee;
+    dailyTargets.protein = Math.round((tdee * 0.20) / 4);
+    dailyTargets.carbs = Math.round((tdee * 0.55) / 4);
+    dailyTargets.fat = Math.round((tdee * 0.25) / 9);
+
+    // 刷新 UI 上的目標對齊標籤
+    document.getElementById("target-cal-lbl").innerText = dailyTargets.cal;
+    document.getElementById("target-protein-lbl").innerText = dailyTargets.protein;
+    document.getElementById("target-carbs-lbl").innerText = dailyTargets.carbs;
+    document.getElementById("target-fat-lbl").innerText = dailyTargets.fat;
+
+    // 即時動態重繪所有圓環進度條
+    updateRingProgress("total_ring_progress", cal, dailyTargets.cal);
+    document.getElementById("total-pct-lbl").innerText = `全天達標率：${Math.round((cal/dailyTargets.cal)*100)}%`;
+    
+    document.getElementById("result").innerHTML = `<span style='color:var(--teal-main);'>🎯 已更新目標！每日建議攝取：${tdee} KCAL</span>`;
+}
+
+// 🔄 【新邏輯】動態計算百分比，並透過 CSS Conic-Gradient 直接繪製圓環增長
+function updateRingProgress(elementId, value, targetMax) {
+    const percentage = Math.min((value / targetMax) * 100, 100);
+    const element = document.getElementById(elementId);
+    if(element) {
+        // 根據不同面板賦予相應的主題漸變色
+        const activeColor = elementId.includes('teal') || elementId.includes('single') ? '#0d9488' : '#d97706';
+        element.style.background = `conic-gradient(${activeColor} 0% ${percentage}%, #f1f5f9 ${percentage}% 100%)`;
+    }
+}
 
 function generateIddsiBadgeHTML(iddsiRaw) {
     if (!iddsiRaw) return `<span class="iddsi-badge" style="background-color:#9ca3af; color:white;">未指定</span>`;
@@ -668,42 +786,21 @@ function generateIddsiBadgeHTML(iddsiRaw) {
     return `<span class="iddsi-badge" style="background-color: ${config.bg}; color: ${config.text}; ${borderStyle}">${config.label}</span>`;
 }
 
-let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0;
-let sugar = 0, satFat = 0, transFat = 0, cholesterol = 0, fiber = 0;
-let recordCount = 0;
-let maxIddsiText = "-";
-let weeklyData = [1400, 1500, 1350, 1600, 0];
-
-let recognition = null;
-let isRecording = false;
-
 function toggleScanEffects(show) {
     const scanLine = document.getElementById("scannerLine");
     if(scanLine) scanLine.style.display = show ? "block" : "none";
 }
 
-function updateRingProgress(elementId, value, targetMax = 2000) {
-    const percentage = Math.min((value / targetMax) * 100, 100);
-    const element = document.getElementById(elementId);
-    if(element) {
-        const activeColor = elementId.includes('teal') ? '#0d9488' : '#d97706';
-        element.style.background = `conic-gradient(${activeColor} ${percentage}%, #f1f5f9 0%)`;
-    }
-}
-
-/* 📸 【第 3 點優化】前端影像優化與增強處理器 */
 function processAndPreviewImage(input) {
     const file = input.files[0];
     if (!file) return;
 
-    // 1. 先顯示原生預覽供用戶確認
     document.getElementById("preview-img").src = URL.createObjectURL(file);
     document.getElementById("previewWrapper").style.display = "block"; 
     document.getElementById("uploadBtn").style.display = "block";
     document.getElementById("uploadLabel").innerText = `🔄 已選: ${file.name.substring(0,8)}...`;
     toggleScanEffects(false); 
 
-    // 2. 進行 Canvas 影像矩陣增強（提升對比度、裁切壓縮至 640px 最佳辨識尺寸）
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = function(event) {
@@ -712,8 +809,6 @@ function processAndPreviewImage(input) {
         img.onload = function() {
             const canvas = document.getElementById("processedCanvas");
             const ctx = canvas.getContext("2d");
-            
-            // 限制長寬最大 640px，兼顧辨識精準度與傳輸速度
             let maxW = 640;
             let targetW = img.width;
             let targetH = img.height;
@@ -721,17 +816,12 @@ function processAndPreviewImage(input) {
                 targetH = Math.round((maxW / targetW) * targetH);
                 targetW = maxW;
             }
-            
             canvas.width = targetW;
             canvas.height = targetH;
             ctx.drawImage(img, 0, 0, targetW, targetH);
-            
-            // 輕微增強對比度與飽和度，讓邊緣與陰影下的食物特徵更清晰
             ctx.globalCompositeOperation = 'brightness';
             ctx.filter = "contrast(1.15) saturate(1.10)"; 
             ctx.drawImage(canvas, 0, 0);
-            
-            // 導出優化後的 Base64 字串
             processedBase64 = canvas.toDataURL("image/jpeg", 0.85);
         }
     }
@@ -760,8 +850,6 @@ async function uploadAndDetectFood() {
         const foodName = detectData.foodName;
         resultDiv.innerHTML = `<span style='color:#10b981;'>🧠 AI 辨識成功：${foodName}</span>`;
         document.getElementById("foodSearchInput").value = foodName;
-        
-        // 自動執行高容錯試算表匹配
         await searchFoodText();
 
     } catch (err) {
@@ -772,7 +860,6 @@ async function uploadAndDetectFood() {
     }
 }
 
-/* 🗣️ 廣東話語音辨識模組 */
 function initSpeechAPI() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -790,7 +877,6 @@ function initSpeechAPI() {
         document.getElementById('micIcon').className = "fa-solid fa-microphone-lines";
         document.getElementById('micBtn').classList.add('mic-recording');
         document.getElementById('micStatus').innerText = "聆聽中...";
-        document.getElementById("result").innerText = "🎙️ 正在收集廣東話語音...";
     };
 
     recognition.onend = () => {
@@ -804,13 +890,7 @@ function initSpeechAPI() {
         let transcript = event.results[0][0].transcript;
         if(transcript.endsWith('。')) transcript = transcript.slice(0, -1);
         document.getElementById("foodSearchInput").value = transcript;
-        document.getElementById("result").innerHTML = `🗣️ 聽到了: <span style="color:#d97706;">「${transcript}」</span>，正在自動匹配...`;
-        toggleScanEffects(true);
         await searchFoodText();
-    };
-
-    recognition.onerror = () => {
-        document.getElementById("result").innerText = "❌ 語音收音不清，請重試。";
     };
 }
 
@@ -865,7 +945,7 @@ async function searchFoodText() {
                 let fFiber = parseValue(targetItem["fiber"]);
                 let iddsiVal = targetItem["iddsi"] || "";
 
-                // 更新單次查詢面板
+                // 1. 更新單次查詢面板數據
                 document.getElementById("single_foodname").innerText = targetItem["foodname"];
                 document.getElementById("single_cal").innerText = fCal;
                 document.getElementById("single_grams").innerText = formatOutput(fGrams) + "g";
@@ -879,26 +959,29 @@ async function searchFoodText() {
                 document.getElementById("single_fiber").innerText = formatOutput(fFiber) + "g";
                 document.getElementById("single_iddsiMain").innerHTML = generateIddsiBadgeHTML(iddsiVal);
                 
-                updateRingProgress("single_ring_progress", fCal, 800);
+                // 🔄 動態繪製單次查詢圓環 (以個人每日總目標為基底算比例)
+                updateRingProgress("single_ring_progress", fCal, dailyTargets.cal);
+                let singlePct = Math.round((fCal / dailyTargets.cal) * 100);
+                document.getElementById("single-pct-lbl").innerText = `佔每日目標：${singlePct}%`;
 
-                // 累加核心運算
+                // 2. 累加核心總量運算
                 cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
                 sugar += fSugar; satFat += fSatFat; transFat += fTransFat; cholesterol += fCholesterol; fiber += fFiber;
                 recordCount += 1;
                 if(iddsiVal) maxIddsiText = iddsiVal;
 
-                // 更新頂部 Metadata Grid
+                // 更新頂部 Metadata Grid 總和欄位
                 document.getElementById("meta-cal-total").innerText = cal;
                 document.getElementById("meta-grams-total").innerText = Math.round(grams);
                 document.getElementById("meta-count-total").innerText = recordCount;
                 document.getElementById("meta-iddsi-highest").innerText = maxIddsiText;
 
-                // 更新全天累計面版
+                // 更新全天累計底盤面板
                 document.getElementById("cal").innerText = cal;
                 document.getElementById("grams").innerText = formatOutput(grams) + "g";
-                document.getElementById("protein").innerText = formatOutput(fProtein) + "g";
-                document.getElementById("carbs").innerText = formatOutput(carbs) + "g";
-                document.getElementById("fat").innerText = formatOutput(fat) + "g";
+                document.getElementById("protein").innerText = formatOutput(protein);
+                document.getElementById("carbs").innerText = formatOutput(carbs);
+                document.getElementById("fat").innerText = formatOutput(fat);
                 document.getElementById("sugar").innerText = formatOutput(sugar) + "g";
                 document.getElementById("satFat").innerText = formatOutput(satFat) + "g";
                 document.getElementById("transFat").innerText = formatOutput(transFat) + "g";
@@ -906,9 +989,12 @@ async function searchFoodText() {
                 document.getElementById("fiber").innerText = formatOutput(fiber) + "g";
                 document.getElementById("iddsiMain").innerHTML = generateIddsiBadgeHTML(iddsiVal);
                 
-                updateRingProgress("total_ring_progress", cal, 2000);
+                // 🔄 動態繪製全天累計總圓環
+                updateRingProgress("total_ring_progress", cal, dailyTargets.cal);
+                let totalPct = Math.round((cal / dailyTargets.cal) * 100);
+                document.getElementById("total-pct-lbl").innerText = `全天達標率：${totalPct}%`;
 
-                // 歷史流水線
+                // 注入歷史流水線
                 let histBox = document.getElementById("history");
                 if (histBox.innerText === "尚無餐食記錄數據") histBox.innerHTML = "";
                 histBox.innerHTML += `
@@ -923,7 +1009,7 @@ async function searchFoodText() {
                 weeklyData[weeklyData.length - 1] = cal;
                 drawChart();
                 
-                // 重置
+                // 清空重置
                 document.getElementById("foodSearchInput").value = "";
                 document.getElementById("previewWrapper").style.display = "none";
                 document.getElementById("uploadBtn").style.display = "none";
@@ -937,7 +1023,7 @@ async function searchFoodText() {
             }
         }
     } catch (err) { 
-        document.getElementById("result").innerText = "❌ 讀取失敗，請檢查網路連線。";
+        document.getElementById("result").innerText = "❌ 讀取失敗，請檢查網絡。";
         toggleScanEffects(false);
     }
 }
@@ -959,6 +1045,8 @@ function drawChart() {
 }
 
 window.onload = () => {
+    // 初始執行一次生理數據計算，綁定底盤數據
+    calculatePersonalTargets();
     drawChart();
     initSpeechAPI();
 };
