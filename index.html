@@ -47,6 +47,7 @@
             overflow-x: hidden;
         }
 
+        /* 一、頂部 App Store 格式基本信息欄 */
         .app-header-block {
             padding: 20px;
             display: flex;
@@ -104,6 +105,7 @@
             border: 1px solid #ccfbf1;
         }
 
+        /* 🔄 5組資料格仔完美自適應排版 */
         .metadata-grid {
             display: flex;
             justify-content: space-between;
@@ -180,6 +182,7 @@
             40%, 80% { transform: translateX(4px); }
         }
 
+        /* 應用內界面通用卡片 */
         .ui-card {
             background: var(--card-bg);
             border-radius: var(--border-radius);
@@ -199,6 +202,7 @@
             gap: 8px;
         }
 
+        /* 個人生理數據設定面板 */
         .profile-input-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -232,6 +236,7 @@
             font-size: 13px;
         }
 
+        /* 語音錄入排版 */
         .voice-section {
             display: flex;
             flex-direction: column;
@@ -274,6 +279,7 @@
             font-weight: 600;
         }
 
+        /* 雙列網格整合搜尋/上傳功能區 */
         .function-pill-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -343,16 +349,17 @@
             box-shadow: none;
         }
 
+        /* 📸 【全框修正】雷射動態掃描改為全視野外框，移除圓形局限 */
         .preview-wrapper {
             position: relative;
             max-width: 100%;
-            height: 240px;
+            height: 300px; 
             margin: 10px 16px;
             border-radius: 20px;
             overflow: hidden;
             display: none;
-            border: 2px solid var(--teal-main);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            border: 3px solid var(--teal-main); /* 增強外框邊緣感 */
+            box-shadow: 0 8px 24px rgba(13, 148, 136, 0.2);
         }
 
         #preview-img {
@@ -368,7 +375,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            box-shadow: inset 0 0 0 20px rgba(0,0,0,0.4); 
+            background: rgba(0, 0, 0, 0.15); /* 改用全框淡色微遮罩 */
             pointer-events: none;
             display: flex;
             align-items: center;
@@ -376,27 +383,28 @@
         }
 
         .camera-target-box {
-            width: 140px;
-            height: 140px;
-            border: 2px dashed #ffffff;
-            border-radius: 50%;
-            box-shadow: 0 0 0 999px rgba(0,0,0,0.2);
+            width: calc(100% - 32px);  /* 適應整個視窗寬度，留出安全邊距 */
+            height: calc(100% - 32px); /* 適應整個視窗高度，留出安全邊距 */
+            border: 2px dashed rgba(255, 255, 255, 0.85);
+            border-radius: 12px;      /* 改為矩形微圓角，實現全框定位 */
             position: relative;
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.3); /* 邊框自帶流光緩衝底色 */
         }
 
         .camera-target-box::after {
-            content: "請將食物置於圓框中央";
+            content: "請將餐食置於全框對焦範圍內";
             position: absolute;
-            bottom: -30px;
+            bottom: 12px;
             left: 50%;
             transform: translateX(-50%);
             color: #ffffff;
             font-size: 11px;
             white-space: nowrap;
-            background: rgba(0,0,0,0.6);
-            padding: 2px 8px;
+            background: rgba(13, 148, 136, 0.85); /* 迎合主題色 */
+            padding: 4px 10px;
             border-radius: 6px;
             font-weight: bold;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
 
         .scanner-line {
@@ -407,17 +415,18 @@
             width: 100%;
             height: 4px;
             background: linear-gradient(90deg, transparent, var(--teal-main), var(--amber-accent), var(--teal-main), transparent);
-            box-shadow: 0 0 10px var(--teal-main);
+            box-shadow: 0 0 10px var(--teal-main), 0 0 4px var(--amber-accent);
             animation: scanMove 2s infinite ease-in-out;
             z-index: 5;
         }
 
         @keyframes scanMove {
             0% { top: 0%; }
-            50% { top: 96%; }
+            50% { top: 98%; }
             100% { top: 0%; }
         }
 
+        /* 動態渲染進度圓環排版 */
         .chart-ring-layout {
             display: flex;
             align-items: center;
@@ -451,6 +460,7 @@
             justify-content: center;
         }
 
+        /* 核心三列網格 */
         .macro-three-column {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -473,6 +483,7 @@
             margin-top: 4px;
         }
 
+        /* 次級微擬物多行網格 */
         .sub-macro-flex-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -938,21 +949,22 @@ async function uploadAndDetectFood() {
         fileFormData.append('file', file);
         fileFormData.append('user', 'lohas_user_001');
 
+        // 1. 上傳檔案至 Dify 換取 file_id
         const uploadRes = await fetch('https://api.dify.ai/v1/files/upload', {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer app-DDxSN3LKBKgmoDmSLqCd3IgZ'
+                'Authorization': 'Bearer YOUR_DIFY_API_KEY_HERE'
             },
             body: fileFormData
         });
         const uploadResult = await uploadRes.json();
         if (!uploadResult.id) throw new Error("圖片上傳至 AI 失敗");
 
-        // 🔀【核心修正】：網址從舊版聊天改為工作流專用的 workflows/run
+        // 2. 使用正確的「workflows/run」網址執行工作流
         const workflowRes = await fetch('https://api.dify.ai/v1/workflows/run', {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer app-DDxSN3LKBKgmoDmSLqCd3IgZ',
+                'Authorization': 'Bearer YOUR_DIFY_API_KEY_HERE',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
