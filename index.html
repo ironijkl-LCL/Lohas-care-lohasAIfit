@@ -44,7 +44,7 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 0 30px rgba(0,0,0,0.05);
-            overflow-x: hidden; /* 確保主容器絕不超出左右邊界 */
+            overflow-x: hidden;
         }
 
         /* 一、頂部 App Store 格式基本信息欄 */
@@ -105,7 +105,7 @@
             border: 1px solid #ccfbf1;
         }
 
-        /* 🔄【核心修改】5組資料格仔完美自適應排版（防超界、按比例自動縮小） */
+        /* 🔄【核心修改】5組資料格仔完美自適應排版 */
         .metadata-grid {
             display: flex;
             justify-content: space-between;
@@ -119,7 +119,7 @@
 
         .meta-item {
             flex: 1;
-            min-width: 0; /* 關鍵：允許 Flex 項目縮小到小於內容寬度 */
+            min-width: 0;
             text-align: center;
             border-right: 1px solid #e2e8f0;
             padding: 0 2px;
@@ -144,7 +144,7 @@
             color: var(--teal-dark);
             white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis; /* 萬一數字超長，自動變成 ... 防止爆版 */
+            text-overflow: ellipsis;
         }
 
         .meta-sub-value {
@@ -166,6 +166,20 @@
             padding: 8px;
             background: #e6f4f1;
             border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .status-bar-banner.alert-danger {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fee2e2;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-4px); }
+            40%, 80% { transform: translateX(4px); }
         }
 
         /* 應用內界面通用卡片 */
@@ -328,12 +342,18 @@
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(16, 185, 129, 0.15);
         }
+        
+        .action-upload-btn:disabled {
+            background: #a7f3d0;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
 
-        /* 📸 雷射動態掃描影像外框 */
+        /* 📸 雷射動態掃描影像外框 - 範圍放大版 */
         .preview-wrapper {
             position: relative;
             max-width: 100%;
-            height: 240px;
+            height: 300px;
             margin: 10px 16px;
             border-radius: 20px;
             overflow: hidden;
@@ -363,8 +383,8 @@
         }
 
         .camera-target-box {
-            width: 140px;
-            height: 140px;
+            width: 200px;
+            height: 200px;
             border: 2px dashed #ffffff;
             border-radius: 50%;
             box-shadow: 0 0 0 999px rgba(0,0,0,0.2);
@@ -570,6 +590,19 @@
                     <option value="1.55">中度活動量 (1.55)</option>
                 </select>
             </label>
+            <label style="grid-column: span 3; margin-top: 4px;">⚠️ 長者指定安全吞嚥限度
+                <select id="user-iddsi-target" onchange="checkCurrentIddsiRisk()">
+                    <option value="0">Level 0 微稠 (White)</option>
+                    <option value="1">Level 1 極微 (Grey)</option>
+                    <option value="2">Level 2 低度 (Pink)</option>
+                    <option value="3">Level 3 中度 (Yellow)</option>
+                    <option value="4" selected>Level 4 糊狀 (Green)</option>
+                    <option value="5">Level 5 剁碎 (Orange)</option>
+                    <option value="6">Level 6 軟質 (Blue)</option>
+                    <option value="7">Level 7 常規 (Black)</option>
+                    <option value="7EC">Level 7 易嚼 (Black)</option>
+                </select>
+            </label>
         </div>
         <button class="calc-btn" onclick="calculatePersonalTargets()">🔄 更新並動態重新計算每日目標</button>
     </div>
@@ -726,7 +759,9 @@
 
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbyUUlD_-S7d22LnTjoFDtHSWkuwkTWFJsyjmLgoJKuX-6HXJSc2ECFO1p037E1qaTvX/exec";
-const BACKEND_API = "https://lohascare-nutritionaicheck.onrender.com/api/detect-food";
+// 🟢 修改為 Dify 專用 API 網址
+const DIFY_UPLOAD_URL = "https://api.dify.ai/v1/files/upload";
+const DIFY_WORKFLOW_URL = "https://api.dify.ai/v1/workflows/run";
 
 const IDDSI_COLORS = {
     "0": { bg: "#ffffff", text: "#000000", label: "Level 0 微稠 (White)" },
@@ -751,6 +786,59 @@ let weeklyData = [1400, 1500, 1350, 1600, 0];
 let recognition = null;
 let isRecording = false;
 let processedBase64 = ""; 
+let cachedNutritionData = null; // 本地快取記憶體變數
+
+// 取得包含 LocalStorage 支援的快取數據
+async function getNutritionData() {
+    if (cachedNutritionData) return cachedNutritionData;
+    
+    const localCached = localStorage.getItem("lohas_nutrition_cache");
+    if (localCached) {
+        try {
+            cachedNutritionData = JSON.parse(localCached);
+            return cachedNutritionData;
+        } catch(e) {
+            localStorage.removeItem("lohas_nutrition_cache");
+        }
+    }
+    
+    let res = await fetch(API_URL);
+    if (!res.ok) throw new Error("網絡傳輸異常");
+    let resData = await res.json();
+    cachedNutritionData = resData.nutrition_data || [];
+    localStorage.setItem("lohas_nutrition_cache", JSON.stringify(cachedNutritionData));
+    return cachedNutritionData;
+}
+
+// 提取 IDDSI 的數字級別以便進行安全風險比對
+function parseIddsiLevel(iddsiRaw) {
+    if (!iddsiRaw) return -1;
+    let cleanKey = iddsiRaw.toString().trim().toUpperCase();
+    if (cleanKey.includes("7EC")) return 7;
+    let match = cleanKey.match(/\d+/);
+    return match ? parseInt(match[0]) : 1;
+}
+
+// 主動比對當前登錄的最高級別是否超出長者限制
+function checkCurrentIddsiRisk() {
+    if (maxIddsiText === "-") return;
+    const targetSelect = document.getElementById("user-iddsi-target");
+    const allowedRaw = targetSelect.value;
+    
+    let allowedLevel = allowedRaw === "7EC" ? 7 : parseInt(allowedRaw);
+    let currentLevel = parseIddsiLevel(maxIddsiText);
+    
+    const resultDiv = document.getElementById("result");
+    if (currentLevel > allowedLevel) {
+        resultDiv.className = "status-bar-banner alert-danger";
+        resultDiv.innerHTML = `⚠️ 吞嚥風險警告：今日最高級別 (${maxIddsiText}) 已超出該長者指定之安全界限！`;
+    } else {
+        resultDiv.className = "status-bar-banner";
+        if (!resultDiv.innerHTML.includes("辨識成功") && !resultDiv.innerHTML.includes("匹配完成")) {
+            resultDiv.innerText = "請使用語音、文字或相片快速輸入長者餐食";
+        }
+    }
+}
 
 function calculatePersonalTargets() {
     const gender = document.getElementById("user-gender").value;
@@ -779,7 +867,10 @@ function calculatePersonalTargets() {
     document.getElementById("total-pct-lbl").innerText = `全天達標率：${Math.round((cal/dailyTargets.cal)*100)}%`;
     document.getElementById("meta-cal-total").innerText = cal;
     
-    document.getElementById("result").innerHTML = `<span style='color:var(--teal-main);'>🎯 已更新目標！每日建議攝取：${tdee} KCAL</span>`;
+    const resultDiv = document.getElementById("result");
+    resultDiv.className = "status-bar-banner";
+    resultDiv.innerHTML = `<span style='color:var(--teal-main);'>🎯 已更新目標！每日建議攝取：${tdee} KCAL</span>`;
+    checkCurrentIddsiRisk();
 }
 
 function updateRingProgress(elementId, value, targetMax) {
@@ -844,36 +935,79 @@ function processAndPreviewImage(input) {
     }
 }
 
+// 🟢 徹底重寫的 uploadAndDetectFood 函數，包含 Dify 雙階上傳與工作流邏輯
 async function uploadAndDetectFood() {
     const resultDiv = document.getElementById("result");
     const uploadBtn = document.getElementById("uploadBtn");
 
     if (!processedBase64) return alert("請先選擇圖片！");
+    resultDiv.className = "status-bar-banner";
     resultDiv.innerHTML = "🔄 AI 正在識別食物影像並對齊白名單限制...";
     uploadBtn.disabled = true;
+    uploadBtn.innerText = "⏳ 識別中...";
     toggleScanEffects(true);
 
     try {
-        const res = await fetch(BACKEND_API, {
+        // 1. 將圖片轉為 FormData
+        const blob = await (await fetch(processedBase64)).blob();
+        const file = new File([blob], "food_image.jpg", { type: "image/jpeg" });
+        const fileFormData = new FormData();
+        fileFormData.append('file', file);
+        fileFormData.append('user', 'lohas_user_001');
+
+        // 2. 上傳圖片到 Dify
+        const uploadRes = await fetch(DIFY_UPLOAD_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ imageBase64: processedBase64.split(',')[1] })
+            headers: {
+                // ⚠️ 請在下方貼上你專屬的 Dify API Key (保留 Bearer 與空格)
+                'Authorization': 'Bearer app-DDxSN3LKBKgmoDmSLqCd3IgZ'
+            },
+            body: fileFormData
+        });
+        const uploadResult = await uploadRes.json();
+        if (!uploadResult.id) throw new Error("圖片上傳至 AI 失敗");
+
+        // 3. 呼叫 Dify 工作流執行 AI 辨識
+        const workflowRes = await fetch(DIFY_WORKFLOW_URL, {
+            method: 'POST',
+            headers: {
+                // ⚠️ 請在下方貼上與上面相同的 Dify API Key
+                'Authorization': 'Bearer app-DDxSN3LKBKgmoDmSLqCd3IgZ',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                inputs: {
+                    image: {
+                        transfer_method: "local_file",
+                        upload_file_id: uploadResult.id,
+                        type: "image"
+                    }
+                },
+                response_mode: "blocking",
+                user: "lohas_user_001"
+            })
         });
 
-        const rawText = await res.text();
-        let detectData = JSON.parse(rawText);
-        if (detectData.error) throw new Error(detectData.error);
-
-        const foodName = detectData.foodName;
-        resultDiv.innerHTML = `<span style='color:#10b981;'>🧠 AI 辨識成功：${foodName}</span>`;
-        document.getElementById("foodSearchInput").value = foodName;
-        await searchFoodText();
+        const workflowResult = await workflowRes.json();
+        if (workflowResult.data && workflowResult.data.outputs) {
+            const foodName = workflowResult.data.outputs.foodName.trim();
+            
+            resultDiv.innerHTML = `<span style='color:#10b981;'>🧠 AI 辨識成功：${foodName}</span>`;
+            document.getElementById("foodSearchInput").value = foodName;
+            
+            // 4. 去 Google Sheets 白名單庫搜尋營養
+            await searchFoodText();
+        } else {
+            throw new Error("AI 未能成功返回辨識結果");
+        }
 
     } catch (err) {
-        resultDiv.innerHTML = `<span style='color:#dc2626;'>❌ 辨識失敗：${err.message}</span>`;
+        resultDiv.className = "status-bar-banner alert-danger";
+        resultDiv.innerHTML = `❌ 辨識失敗：${err.message}`;
         toggleScanEffects(false); 
     } finally {
         uploadBtn.disabled = false;
+        uploadBtn.innerText = "🚀 AI 辨識食物";
     }
 }
 
@@ -925,114 +1059,132 @@ function parseValue(val) {
 function formatOutput(num) { return Number(num.toFixed(2)).toString(); }
 
 async function searchFoodText() {
-    const query = document.getElementById("foodSearchInput").value.trim();
-    if (!query) return;
-    document.getElementById("result").innerHTML = "⏳ 正在搜尋雲端數據庫...";
+    const rawQuery = document.getElementById("foodSearchInput").value.trim();
+    if (!rawQuery) return;
+    
+    // 廣東話口語過濾與文本清理
+    let query = rawQuery.replace(/(食咗|飲咗|食左|飲左|幾口|一碗|半碗|大半碗|細碗|碟|個|餐|咗|左)/g, '').trim();
+    if(!query) query = rawQuery;
+
+    const resultDiv = document.getElementById("result");
+    resultDiv.className = "status-bar-banner";
+    resultDiv.innerHTML = "⏳ 正在搜尋雲端及本地數據庫...";
     toggleScanEffects(true);
     
     try {
-        let res = await fetch(API_URL);
-        if (res.ok) {
-            let resData = await res.json();
-            let foodList = resData.nutrition_data || [];
+        let foodList = await getNutritionData();
+        
+        let targetItem = foodList.find(item => {
+            let dbName = (item["foodname"] || "").toString().toLowerCase();
+            let q = query.toLowerCase();
+            let dbNormal = dbName.replace('爹', '嗲');
+            let qNormal = q.replace('爹', '嗲');
+            return dbNormal.includes(qNormal) || qNormal.includes(dbNormal) || 
+                   (qNormal.includes('牛肉') && dbNormal.includes('牛肉')) ||
+                   (qNormal.includes('麵') && dbNormal.includes('麵') && dbNormal.includes('牛肉')) ||
+                   (qNormal.includes('粥') && dbNormal.includes('粥'));
+        });
+        
+        if (targetItem) {
+            resultDiv.innerHTML = "<span style='color:#10b981;'>✅ 數據比對匹配完成！</span>";
             
-            let targetItem = foodList.find(item => {
-                let dbName = (item["foodname"] || "").toString().toLowerCase();
-                let q = query.toLowerCase();
-                let dbNormal = dbName.replace('爹', '嗲');
-                let qNormal = q.replace('爹', '嗲');
-                return dbNormal.includes(qNormal) || qNormal.includes(dbNormal) || 
-                       (qNormal.includes('牛肉') && dbNormal.includes('牛肉')) ||
-                       (qNormal.includes('麵') && dbNormal.includes('麵') && dbNormal.includes('牛肉')) ||
-                       (qNormal.includes('粥') && dbNormal.includes('粥'));
-            });
+            let fCal = Math.round(parseValue(targetItem["calories"]));
+            let fGrams = parseValue(targetItem["grams"]);
+            let fProtein = parseValue(targetItem["protein"]);
+            let fCarbs = parseValue(targetItem["carbs"]);
+            let fFat = parseValue(targetItem["fat"]);
+            let fSugar = parseValue(targetItem["sugar"]);
+            let fSatFat = parseValue(targetItem["satfat"] || targetItem["saturatedfat"]);
+            let fTransFat = parseValue(targetItem["transfat"]);
+            let fCholesterol = parseValue(targetItem["cholesterol"]);
+            let fFiber = parseValue(targetItem["fiber"]);
+            let iddsiVal = targetItem["iddsi"] || "";
+
+            document.getElementById("single_foodname").innerText = targetItem["foodname"];
+            document.getElementById("single_cal").innerText = fCal;
+            document.getElementById("single_grams").innerText = formatOutput(fGrams) + "g";
+            document.getElementById("single_protein").innerText = formatOutput(fProtein) + "g";
+            document.getElementById("single_carbs").innerText = formatOutput(fCarbs) + "g";
+            document.getElementById("single_fat").innerText = formatOutput(fFat) + "g";
+            document.getElementById("single_sugar").innerText = formatOutput(fSugar) + "g";
+            document.getElementById("single_satFat").innerText = formatOutput(fSatFat) + "g";
+            document.getElementById("single_transFat").innerText = formatOutput(fTransFat) + "g";
+            document.getElementById("single_cholesterol").innerText = formatOutput(fCholesterol) + "mg";
+            document.getElementById("single_fiber").innerText = formatOutput(fFiber) + "g";
+            document.getElementById("single_iddsiMain").innerHTML = generateIddsiBadgeHTML(iddsiVal);
             
-            if (targetItem) {
-                document.getElementById("result").innerHTML = "<span style='color:#10b981;'>✅ 數據比對匹配完成！</span>";
-                
-                let fCal = Math.round(parseValue(targetItem["calories"]));
-                let fGrams = parseValue(targetItem["grams"]);
-                let fProtein = parseValue(targetItem["protein"]);
-                let fCarbs = parseValue(targetItem["carbs"]);
-                let fFat = parseValue(targetItem["fat"]);
-                let fSugar = parseValue(targetItem["sugar"]);
-                let fSatFat = parseValue(targetItem["satfat"] || targetItem["saturatedfat"]);
-                let fTransFat = parseValue(targetItem["transfat"]);
-                let fCholesterol = parseValue(targetItem["cholesterol"]);
-                let fFiber = parseValue(targetItem["fiber"]);
-                let iddsiVal = targetItem["iddsi"] || "";
+            updateRingProgress("single_ring_progress", fCal, dailyTargets.cal);
+            let singlePct = Math.round((fCal / dailyTargets.cal) * 100);
+            document.getElementById("single-pct-lbl").innerText = `佔每日目標：${singlePct}%`;
 
-                document.getElementById("single_foodname").innerText = targetItem["foodname"];
-                document.getElementById("single_cal").innerText = fCal;
-                document.getElementById("single_grams").innerText = formatOutput(fGrams) + "g";
-                document.getElementById("single_protein").innerText = formatOutput(fProtein) + "g";
-                document.getElementById("single_carbs").innerText = formatOutput(fCarbs) + "g";
-                document.getElementById("single_fat").innerText = formatOutput(fFat) + "g";
-                document.getElementById("single_sugar").innerText = formatOutput(fSugar) + "g";
-                document.getElementById("single_satFat").innerText = formatOutput(fSatFat) + "g";
-                document.getElementById("single_transFat").innerText = formatOutput(fTransFat) + "g";
-                document.getElementById("single_cholesterol").innerText = formatOutput(fCholesterol) + "mg";
-                document.getElementById("single_fiber").innerText = formatOutput(fFiber) + "g";
-                document.getElementById("single_iddsiMain").innerHTML = generateIddsiBadgeHTML(iddsiVal);
-                
-                updateRingProgress("single_ring_progress", fCal, dailyTargets.cal);
-                let singlePct = Math.round((fCal / dailyTargets.cal) * 100);
-                document.getElementById("single-pct-lbl").innerText = `佔每日目標：${singlePct}%`;
-
-                cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
-                sugar += fSugar; satFat += fSatFat; transFat += fTransFat; cholesterol += fCholesterol; fiber += fFiber;
-                recordCount += 1;
-                if(iddsiVal) maxIddsiText = iddsiVal;
-
-                document.getElementById("meta-cal-total").innerText = cal;
-                document.getElementById("meta-grams-total").innerText = Math.round(grams);
-                document.getElementById("meta-count-total").innerText = recordCount;
-                document.getElementById("meta-iddsi-highest").innerText = maxIddsiText;
-
-                document.getElementById("cal").innerText = cal;
-                document.getElementById("grams").innerText = formatOutput(grams) + "g";
-                document.getElementById("protein").innerText = formatOutput(protein);
-                document.getElementById("carbs").innerText = formatOutput(carbs);
-                document.getElementById("fat").innerText = formatOutput(fat);
-                document.getElementById("sugar").innerText = formatOutput(sugar) + "g";
-                document.getElementById("satFat").innerText = formatOutput(satFat) + "g";
-                document.getElementById("transFat").innerText = formatOutput(transFat) + "g";
-                document.getElementById("cholesterol").innerText = formatOutput(cholesterol) + "mg";
-                document.getElementById("fiber").innerText = formatOutput(fiber) + "g";
-                document.getElementById("iddsiMain").innerHTML = generateIddsiBadgeHTML(iddsiVal);
-                
-                updateRingProgress("total_ring_progress", cal, dailyTargets.cal);
-                let totalPct = Math.round((cal / dailyTargets.cal) * 100);
-                document.getElementById("total-pct-lbl").innerText = `全天達標率：${totalPct}%`;
-
-                let histBox = document.getElementById("history");
-                if (histBox.innerText === "尚無餐食記錄數據") histBox.innerHTML = "";
-                histBox.innerHTML += `
-                    <div class="history-item-row">
-                        <div>
-                            <strong>${targetItem["foodname"]} (${formatOutput(fGrams)}g)</strong><br>
-                            <div style="margin-top: 4px;">${generateIddsiBadgeHTML(iddsiVal)}</div>
-                        </div>
-                        <span style="color:var(--teal-main); font-weight:700;">+${fCal} KCAL</span>
-                    </div>`;
-                
-                weeklyData[weeklyData.length - 1] = cal;
-                drawChart();
-                
-                document.getElementById("foodSearchInput").value = "";
-                document.getElementById("previewWrapper").style.display = "none";
-                document.getElementById("uploadBtn").style.display = "none";
-                document.getElementById("uploadLabel").innerText = "📸 拍攝/選擇相片";
-                processedBase64 = ""; 
-                toggleScanEffects(false); 
-                document.getElementById("singleQueryResultCard").scrollIntoView({ behavior: 'smooth' });
-            } else {
-                document.getElementById("result").innerHTML = `<span style='color:#dc2626;'>⚠️ 未在試算表中找到符合「${query}」的物件。</span>`;
-                toggleScanEffects(false); 
+            cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
+            sugar += fSugar; satFat += fSatFat; transFat += fTransFat; cholesterol += fCholesterol; fiber += fFiber;
+            recordCount += 1;
+            
+            // 安全吞嚥等級風險權重比對
+            if (iddsiVal) {
+                if (maxIddsiText === "-") {
+                    maxIddsiText = iddsiVal;
+                } else {
+                    let currentMaxLevel = parseIddsiLevel(maxIddsiText);
+                    let newLevel = parseIddsiLevel(iddsiVal);
+                    if (newLevel > currentMaxLevel) {
+                        maxIddsiText = iddsiVal;
+                    }
+                }
             }
+
+            document.getElementById("meta-cal-total").innerText = cal;
+            document.getElementById("meta-grams-total").innerText = Math.round(grams);
+            document.getElementById("meta-count-total").innerText = recordCount;
+            document.getElementById("meta-iddsi-highest").innerText = maxIddsiText;
+
+            document.getElementById("cal").innerText = cal;
+            document.getElementById("grams").innerText = formatOutput(grams) + "g";
+            document.getElementById("protein").innerText = formatOutput(protein);
+            document.getElementById("carbs").innerText = formatOutput(carbs);
+            document.getElementById("fat").innerText = formatOutput(fat);
+            document.getElementById("sugar").innerText = formatOutput(sugar) + "g";
+            document.getElementById("satFat").innerText = formatOutput(satFat) + "g";
+            document.getElementById("transFat").innerText = formatOutput(transFat) + "g";
+            document.getElementById("cholesterol").innerText = formatOutput(cholesterol) + "mg";
+            document.getElementById("fiber").innerText = formatOutput(fiber) + "g";
+            document.getElementById("iddsiMain").innerHTML = generateIddsiBadgeHTML(iddsiVal);
+            
+            updateRingProgress("total_ring_progress", cal, dailyTargets.cal);
+            let totalPct = Math.round((cal / dailyTargets.cal) * 100);
+            document.getElementById("total-pct-lbl").innerText = `全天達標率：${totalPct}%`;
+
+            let histBox = document.getElementById("history");
+            if (histBox.innerText === "尚無餐食記錄數據") histBox.innerHTML = "";
+            histBox.innerHTML += `
+                <div class="history-item-row">
+                    <div>
+                        <strong>${targetItem["foodname"]} (${formatOutput(fGrams)}g)</strong><br>
+                        <div style="margin-top: 4px;">${generateIddsiBadgeHTML(iddsiVal)}</div>
+                    </div>
+                    <span style="color:var(--teal-main); font-weight:700;">+${fCal} KCAL</span>
+                </div>`;
+            
+            weeklyData[weeklyData.length - 1] = cal;
+            drawChart();
+            checkCurrentIddsiRisk(); // 觸發主動風險防護檢查
+            
+            document.getElementById("foodSearchInput").value = "";
+            document.getElementById("previewWrapper").style.display = "none";
+            document.getElementById("uploadBtn").style.display = "none";
+            document.getElementById("uploadLabel").innerText = "📸 拍攝/選擇相片";
+            processedBase64 = ""; 
+            toggleScanEffects(false); 
+            document.getElementById("singleQueryResultCard").scrollIntoView({ behavior: 'smooth' });
+        } else {
+            resultDiv.className = "status-bar-banner alert-danger";
+            resultDiv.innerHTML = `⚠️ 未在數據庫中找到符合「${query}」的物件。`;
+            toggleScanEffects(false); 
         }
     } catch (err) { 
-        document.getElementById("result").innerText = "❌ 讀取失敗，請檢查網絡。";
+        resultDiv.className = "status-bar-banner alert-danger";
+        resultDiv.innerText = "❌ 讀取失敗，請檢查網絡連結。";
         toggleScanEffects(false);
     }
 }
