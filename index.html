@@ -47,7 +47,6 @@
             overflow-x: hidden;
         }
 
-        /* 一、頂部 App Store 格式基本信息欄 */
         .app-header-block {
             padding: 20px;
             display: flex;
@@ -105,7 +104,6 @@
             border: 1px solid #ccfbf1;
         }
 
-        /* 🔄【核心修改】5組資料格仔完美自適應排版 */
         .metadata-grid {
             display: flex;
             justify-content: space-between;
@@ -182,7 +180,6 @@
             40%, 80% { transform: translateX(4px); }
         }
 
-        /* 應用內界面通用卡片 */
         .ui-card {
             background: var(--card-bg);
             border-radius: var(--border-radius);
@@ -202,7 +199,6 @@
             gap: 8px;
         }
 
-        /* 個人生理數據設定面板 */
         .profile-input-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -236,7 +232,6 @@
             font-size: 13px;
         }
 
-        /* 語音錄入排版 */
         .voice-section {
             display: flex;
             flex-direction: column;
@@ -279,7 +274,6 @@
             font-weight: 600;
         }
 
-        /* 雙列網格整合搜尋/上傳功能區 */
         .function-pill-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -349,7 +343,6 @@
             box-shadow: none;
         }
 
-        /* 📸 雷射動態掃描影像外框 - 範圍放大版 */
         .preview-wrapper {
             position: relative;
             max-width: 100%;
@@ -375,7 +368,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            box-shadow: inset 0 0 0 20px rgba(0,0,0,0.4); 
             pointer-events: none;
             display: flex;
             align-items: center;
@@ -383,27 +375,28 @@
         }
 
         .camera-target-box {
-            width: 200px;
-            height: 200px;
-            border: 2px dashed #ffffff;
-            border-radius: 50%;
-            box-shadow: 0 0 0 999px rgba(0,0,0,0.2);
+            width: 88%;
+            height: 88%;
+            border: 2px dashed rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
             position: relative;
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.2);
         }
 
         .camera-target-box::after {
-            content: "請將食物置於圓框中央";
+            content: "✨ 全鏡頭 AI 智慧辨識範圍";
             position: absolute;
-            bottom: -30px;
+            bottom: 12px;
             left: 50%;
             transform: translateX(-50%);
             color: #ffffff;
             font-size: 11px;
             white-space: nowrap;
-            background: rgba(0,0,0,0.6);
-            padding: 2px 8px;
-            border-radius: 6px;
+            background: rgba(13, 148, 136, 0.9);
+            padding: 4px 12px;
+            border-radius: 20px;
             font-weight: bold;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
 
         .scanner-line {
@@ -425,7 +418,6 @@
             100% { top: 0%; }
         }
 
-        /* 動態渲染進度圓環排版 */
         .chart-ring-layout {
             display: flex;
             align-items: center;
@@ -459,7 +451,6 @@
             justify-content: center;
         }
 
-        /* 核心三列網格 */
         .macro-three-column {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -482,7 +473,6 @@
             margin-top: 4px;
         }
 
-        /* 次級微擬物多行網格 */
         .sub-macro-flex-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -561,7 +551,7 @@
         <div class="app-header-info">
             <h1>樂活健康管理系統</h1>
             <p>智能飲食與吞嚥安全雲端監測平台</p>
-            <span class="badge-version">v3.6 Dynamic Personal Edition</span>
+            <span class="badge-version">v3.6 Dynamic Consolidated Edition</span>
         </div>
     </div>
 
@@ -758,10 +748,7 @@
 <canvas id="processedCanvas" style="display:none;"></canvas>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbyUUlD_-S7d22LnTjoFDtHSWkuwkTWFJsyjmLgoJKuX-6HXJSc2ECFO1p037E1qaTvX/exec";
-// 🟢 修改為 Dify 專用 API 網址
-const DIFY_UPLOAD_URL = "https://api.dify.ai/v1/files/upload";
-const DIFY_WORKFLOW_URL = "https://api.dify.ai/v1/workflows/run";
+const API_URL = "https://script.google.com/macros/s/AKfycbzdZ6EAqhkPTWopaYu7eYwUMfaSofHlezkyaQXo5hAiw_mghFclW7zwYimZp4sKwew/exec";
 
 const IDDSI_COLORS = {
     "0": { bg: "#ffffff", text: "#000000", label: "Level 0 微稠 (White)" },
@@ -776,7 +763,6 @@ const IDDSI_COLORS = {
 };
 
 let dailyTargets = { cal: 1600, protein: 60, carbs: 220, fat: 50 };
-
 let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0;
 let sugar = 0, satFat = 0, transFat = 0, cholesterol = 0, fiber = 0;
 let recordCount = 0;
@@ -786,12 +772,10 @@ let weeklyData = [1400, 1500, 1350, 1600, 0];
 let recognition = null;
 let isRecording = false;
 let processedBase64 = ""; 
-let cachedNutritionData = null; // 本地快取記憶體變數
+let cachedNutritionData = null;
 
-// 取得包含 LocalStorage 支援的快取數據
 async function getNutritionData() {
     if (cachedNutritionData) return cachedNutritionData;
-    
     const localCached = localStorage.getItem("lohas_nutrition_cache");
     if (localCached) {
         try {
@@ -810,7 +794,6 @@ async function getNutritionData() {
     return cachedNutritionData;
 }
 
-// 提取 IDDSI 的數字級別以便進行安全風險比對
 function parseIddsiLevel(iddsiRaw) {
     if (!iddsiRaw) return -1;
     let cleanKey = iddsiRaw.toString().trim().toUpperCase();
@@ -819,12 +802,10 @@ function parseIddsiLevel(iddsiRaw) {
     return match ? parseInt(match[0]) : 1;
 }
 
-// 主動比對當前登錄的最高級別是否超出長者限制
 function checkCurrentIddsiRisk() {
     if (maxIddsiText === "-") return;
     const targetSelect = document.getElementById("user-iddsi-target");
     const allowedRaw = targetSelect.value;
-    
     let allowedLevel = allowedRaw === "7EC" ? 7 : parseInt(allowedRaw);
     let currentLevel = parseIddsiLevel(maxIddsiText);
     
@@ -846,7 +827,6 @@ function calculatePersonalTargets() {
     const height = parseFloat(document.getElementById("user-height").value) || 155;
     const weight = parseFloat(document.getElementById("user-weight").value) || 55;
     const activity = parseFloat(document.getElementById("user-activity").value) || 1.375;
-
     let bmr = (10 * weight) + (6.25 * height) - (5 * age);
     if (gender === "male") { bmr += 5; } else { bmr -= 161; }
 
@@ -862,7 +842,6 @@ function calculatePersonalTargets() {
     document.getElementById("target-protein-lbl").innerText = dailyTargets.protein;
     document.getElementById("target-carbs-lbl").innerText = dailyTargets.carbs;
     document.getElementById("target-fat-lbl").innerText = dailyTargets.fat;
-
     updateRingProgress("total_ring_progress", cal, dailyTargets.cal);
     document.getElementById("total-pct-lbl").innerText = `全天達標率：${Math.round((cal/dailyTargets.cal)*100)}%`;
     document.getElementById("meta-cal-total").innerText = cal;
@@ -888,7 +867,6 @@ function generateIddsiBadgeHTML(iddsiRaw) {
     let match = cleanKey.match(/\d+/);
     let lookupKey = match ? match[0] : "1";
     if (cleanKey.toUpperCase().includes("7EC")) lookupKey = "7EC";
-
     const config = IDDSI_COLORS[lookupKey] || { bg: "#666666", text: "#ffffff", label: `Level ${iddsiRaw}` };
     let borderStyle = lookupKey === "0" ? "border: 1px solid #cbd5e1;" : "";
     return `<span class="iddsi-badge" style="background-color: ${config.bg}; color: ${config.text}; ${borderStyle}">${config.label}</span>`;
@@ -907,8 +885,7 @@ function processAndPreviewImage(input) {
     document.getElementById("previewWrapper").style.display = "block"; 
     document.getElementById("uploadBtn").style.display = "block";
     document.getElementById("uploadLabel").innerText = `🔄 已選: ${file.name.substring(0,8)}...`;
-    toggleScanEffects(false); 
-
+    toggleScanEffects(false);
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = function(event) {
@@ -926,82 +903,50 @@ function processAndPreviewImage(input) {
             }
             canvas.width = targetW;
             canvas.height = targetH;
+            
+            ctx.filter = "brightness(1.10) contrast(1.15) saturate(1.10)"; 
             ctx.drawImage(img, 0, 0, targetW, targetH);
-            ctx.globalCompositeOperation = 'brightness';
-            ctx.filter = "contrast(1.15) saturate(1.10)"; 
-            ctx.drawImage(canvas, 0, 0);
             processedBase64 = canvas.toDataURL("image/jpeg", 0.85);
         }
     }
 }
 
-// 🟢 徹底重寫的 uploadAndDetectFood 函數，包含 Dify 雙階上傳與工作流邏輯
 async function uploadAndDetectFood() {
     const resultDiv = document.getElementById("result");
     const uploadBtn = document.getElementById("uploadBtn");
 
     if (!processedBase64) return alert("請先選擇圖片！");
     resultDiv.className = "status-bar-banner";
-    resultDiv.innerHTML = "🔄 AI 正在識別食物影像並對齊白名單限制...";
+    resultDiv.innerHTML = "🔄 正在經由安全通道上傳影像至雲端中轉站...";
     uploadBtn.disabled = true;
     uploadBtn.innerText = "⏳ 識別中...";
     toggleScanEffects(true);
 
     try {
-        // 1. 將圖片轉為 FormData
-        const blob = await (await fetch(processedBase64)).blob();
-        const file = new File([blob], "food_image.jpg", { type: "image/jpeg" });
-        const fileFormData = new FormData();
-        fileFormData.append('file', file);
-        fileFormData.append('user', 'lohas_user_001');
-
-        // 2. 上傳圖片到 Dify
-        const uploadRes = await fetch(DIFY_UPLOAD_URL, {
+        const response = await fetch(API_URL, {
             method: 'POST',
-            headers: {
-                // ⚠️ 請在下方貼上你專屬的 Dify API Key (保留 Bearer 與空格)
-                'Authorization': 'Bearer app-DDxSN3LKBKgmoDmSLqCd3IgZ'
-            },
-            body: fileFormData
-        });
-        const uploadResult = await uploadRes.json();
-        if (!uploadResult.id) throw new Error("圖片上傳至 AI 失敗");
-
-        // 3. 呼叫 Dify 工作流執行 AI 辨識
-        const workflowRes = await fetch(DIFY_WORKFLOW_URL, {
-            method: 'POST',
-            headers: {
-                // ⚠️ 請在下方貼上與上面相同的 Dify API Key
-                'Authorization': 'Bearer app-DDxSN3LKBKgmoDmSLqCd3IgZ',
-                'Content-Type': 'application/json'
-            },
             body: JSON.stringify({
-                inputs: {
-                    image: {
-                        transfer_method: "local_file",
-                        upload_file_id: uploadResult.id,
-                        type: "image"
-                    }
-                },
-                response_mode: "blocking",
-                user: "lohas_user_001"
+                action: "uploadAndDetect",
+                image: processedBase64
             })
         });
 
-        const workflowResult = await workflowRes.json();
-        if (workflowResult.data && workflowResult.data.outputs) {
-            const foodName = workflowResult.data.outputs.foodName.trim();
-            
+        if (!response.ok) throw new Error(`GAS 雲端中轉伺服器無回應 (${response.status})`);
+        
+        const resData = await response.json();
+
+        if (resData.success && resData.foodName) {
+            const foodName = resData.foodName.trim();
             resultDiv.innerHTML = `<span style='color:#10b981;'>🧠 AI 辨識成功：${foodName}</span>`;
             document.getElementById("foodSearchInput").value = foodName;
             
-            // 4. 去 Google Sheets 白名單庫搜尋營養
             await searchFoodText();
         } else {
-            throw new Error("AI 未能成功返回辨識結果");
+            throw new Error(resData.error || "GAS 中轉服務端未能順利解析出有效的食物名稱變數。");
         }
 
     } catch (err) {
+        console.error(err);
         resultDiv.className = "status-bar-banner alert-danger";
         resultDiv.innerHTML = `❌ 辨識失敗：${err.message}`;
         toggleScanEffects(false); 
@@ -1022,7 +967,6 @@ function initSpeechAPI() {
     recognition.continuous = false;
     recognition.lang = 'zh-HK'; 
     recognition.interimResults = false;
-
     recognition.onstart = () => {
         isRecording = true;
         document.getElementById('micIcon').className = "fa-solid fa-microphone-lines";
@@ -1062,32 +1006,35 @@ async function searchFoodText() {
     const rawQuery = document.getElementById("foodSearchInput").value.trim();
     if (!rawQuery) return;
     
-    // 廣東話口語過濾與文本清理
-    let query = rawQuery.replace(/(食咗|飲咗|食左|飲左|幾口|一碗|半碗|大半碗|細碗|碟|個|餐|咗|左)/g, '').trim();
+    let query = rawQuery.replace(/(食咗|飲咗|食left|飲left|幾口|一碗|半碗|大大半碗|大半碗|細碗|碟|個|餐|咗|左)/g, '').trim();
     if(!query) query = rawQuery;
 
     const resultDiv = document.getElementById("result");
     resultDiv.className = "status-bar-banner";
     resultDiv.innerHTML = "⏳ 正在搜尋雲端及本地數據庫...";
     toggleScanEffects(true);
-    
     try {
         let foodList = await getNutritionData();
-        
         let targetItem = foodList.find(item => {
-            let dbName = (item["foodname"] || "").toString().toLowerCase();
-            let q = query.toLowerCase();
+            let rawName = item["foodname"] || "";
+            let dbName = rawName.toString().toLowerCase().trim();
+            let q = query.toLowerCase().trim();
+            
+            if (!dbName) return false;
+            
             let dbNormal = dbName.replace('爹', '嗲');
             let qNormal = q.replace('爹', '嗲');
             return dbNormal.includes(qNormal) || qNormal.includes(dbNormal) || 
                    (qNormal.includes('牛肉') && dbNormal.includes('牛肉')) ||
                    (qNormal.includes('麵') && dbNormal.includes('麵') && dbNormal.includes('牛肉')) ||
-                   (qNormal.includes('粥') && dbNormal.includes('粥'));
+                   (qNormal.includes('粥') && dbNormal.includes('粥')) ||
+                   (qNormal.includes('奶茶') && dbNormal.includes('奶茶'));
         });
         
         if (targetItem) {
             resultDiv.innerHTML = "<span style='color:#10b981;'>✅ 數據比對匹配完成！</span>";
             
+            let fFoodName = targetItem["foodname"] || "未知食物";
             let fCal = Math.round(parseValue(targetItem["calories"]));
             let fGrams = parseValue(targetItem["grams"]);
             let fProtein = parseValue(targetItem["protein"]);
@@ -1100,7 +1047,7 @@ async function searchFoodText() {
             let fFiber = parseValue(targetItem["fiber"]);
             let iddsiVal = targetItem["iddsi"] || "";
 
-            document.getElementById("single_foodname").innerText = targetItem["foodname"];
+            document.getElementById("single_foodname").innerText = fFoodName;
             document.getElementById("single_cal").innerText = fCal;
             document.getElementById("single_grams").innerText = formatOutput(fGrams) + "g";
             document.getElementById("single_protein").innerText = formatOutput(fProtein) + "g";
@@ -1120,8 +1067,6 @@ async function searchFoodText() {
             cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
             sugar += fSugar; satFat += fSatFat; transFat += fTransFat; cholesterol += fCholesterol; fiber += fFiber;
             recordCount += 1;
-            
-            // 安全吞嚥等級風險權重比對
             if (iddsiVal) {
                 if (maxIddsiText === "-") {
                     maxIddsiText = iddsiVal;
@@ -1150,7 +1095,6 @@ async function searchFoodText() {
             document.getElementById("cholesterol").innerText = formatOutput(cholesterol) + "mg";
             document.getElementById("fiber").innerText = formatOutput(fiber) + "g";
             document.getElementById("iddsiMain").innerHTML = generateIddsiBadgeHTML(iddsiVal);
-            
             updateRingProgress("total_ring_progress", cal, dailyTargets.cal);
             let totalPct = Math.round((cal / dailyTargets.cal) * 100);
             document.getElementById("total-pct-lbl").innerText = `全天達標率：${totalPct}%`;
@@ -1160,15 +1104,14 @@ async function searchFoodText() {
             histBox.innerHTML += `
                 <div class="history-item-row">
                     <div>
-                        <strong>${targetItem["foodname"]} (${formatOutput(fGrams)}g)</strong><br>
+                        <strong>${fFoodName} (${formatOutput(fGrams)}g)</strong><br>
                         <div style="margin-top: 4px;">${generateIddsiBadgeHTML(iddsiVal)}</div>
                     </div>
                     <span style="color:var(--teal-main); font-weight:700;">+${fCal} KCAL</span>
                 </div>`;
-            
             weeklyData[weeklyData.length - 1] = cal;
             drawChart();
-            checkCurrentIddsiRisk(); // 觸發主動風險防護檢查
+            checkCurrentIddsiRisk();
             
             document.getElementById("foodSearchInput").value = "";
             document.getElementById("previewWrapper").style.display = "none";
@@ -1206,6 +1149,7 @@ function drawChart() {
 }
 
 window.onload = () => {
+    localStorage.removeItem("lohas_nutrition_cache");
     calculatePersonalTargets();
     drawChart();
     initSpeechAPI();
