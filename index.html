@@ -53,6 +53,7 @@
             align-items: center;
             background: var(--card-bg);
             border-bottom: 1px solid #e2e8f0;
+            position: relative;
         }
 
         .app-brand-icon {
@@ -94,6 +95,28 @@
             text-overflow: ellipsis;
         }
 
+        /* 👤 登入/登出狀態控制鍵 */
+        .login-badge-btn {
+            background: var(--teal-main);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(13, 148, 136, 0.2);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .login-badge-btn.logged-in {
+            background: #10b981;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+        }
+
         .badge-version {
             background: var(--mint-light);
             color: var(--teal-dark);
@@ -102,6 +125,59 @@
             font-size: 10px;
             font-weight: bold;
             border: 1px solid #ccfbf1;
+            display: inline-block;
+        }
+
+        .login-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .login-modal-overlay.active {
+            opacity: 1; pointer-events: auto;
+        }
+
+        .login-modal-box {
+            background: #ffffff;
+            width: 88%; max-width: 340px;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .modal-close-btn {
+            position: absolute; top: 16px; right: 16px;
+            background: #f1f5f9; border: none; width: 28px; height: 28px;
+            border-radius: 50%; color: var(--text-sub); cursor: pointer;
+        }
+
+        .login-field-group {
+            margin-top: 14px;
+            display: flex; flex-direction: column; gap: 6px;
+        }
+
+        .login-field-group label { font-size: 12px; color: var(--text-sub); font-weight: 600; }
+        
+        .login-field-group input {
+            padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 12px; font-size: 14px;
+        }
+
+        .captcha-wrapper {
+            display: flex; align-items: center; gap: 10px; margin-top: 8px;
+        }
+
+        #captchaCanvas {
+            background: #f1f5f9; border-radius: 10px; border: 1px solid #cbd5e1; cursor: pointer;
         }
 
         .metadata-grid {
@@ -206,6 +282,7 @@
             gap: 10px;
             margin-bottom: 12px;
         }
+
         .profile-input-grid label {
             font-size: 11px;
             color: var(--text-sub);
@@ -213,6 +290,7 @@
             flex-direction: column;
             gap: 4px;
         }
+
         .profile-input-grid input, .profile-input-grid select {
             padding: 8px;
             border: 1px solid #cbd5e1;
@@ -221,6 +299,7 @@
             width: 100%;
             box-sizing: border-box;
         }
+
         .calc-btn {
             width: 100%;
             padding: 10px;
@@ -506,7 +585,11 @@
             background-color: #9ca3af;
         }
 
-        .chart-svg { width: 100%; height: 60px; overflow: visible; }
+        .chart-svg { 
+            width: 100%; 
+            height: 68px; 
+            overflow: visible; 
+        }
 
         .history-item-row {
             background: #f8fafc;
@@ -553,6 +636,34 @@
             <h1>樂活健康管理系統</h1>
             <p>智能飲食與吞嚥安全雲端監測平台</p>
             <span class="badge-version">v3.6 Dynamic Consolidated Edition</span>
+        </div>
+        <!-- 👤 登入/登出多功能整合按鍵 -->
+        <button id="loginBadgeBtn" class="login-badge-btn" onclick="handleAuthAction()">
+            <i id="loginIcon" class="fa-solid fa-user-lock"></i> <span id="operatorDisplay">職員登入</span>
+        </button>
+    </div>
+
+    <div id="loginModalOverlay" class="login-modal-overlay">
+        <div class="login-modal-box">
+            <button class="modal-close-btn" onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h3 style="margin: 0 0 16px 0; color: var(--teal-dark);"><i class="fa-solid fa-shield-halved"></i> 樂活醫護安管登入</h3>
+            
+            <div class="login-field-group">
+                <label>職員編號 / 照顧者 ID</label>
+                <input type="text" id="staffIdInput" placeholder="例如: Staff_001" value="Staff_001">
+            </div>
+            
+            <div class="login-field-group">
+                <label>安全驗證碼 (點擊圖片可刷新)</label>
+                <div class="captcha-wrapper">
+                    <input type="text" id="captchaInput" placeholder="請輸入右圖 4 位數" style="flex:1; min-width:0;">
+                    <canvas id="captchaCanvas" width="90" height="38" onclick="drawCaptcha()"></canvas>
+                </div>
+            </div>
+            
+            <button class="calc-btn" style="margin-top: 20px; background: var(--teal-dark);" onclick="submitLoginAuth()">
+                <i class="fa-solid fa-key"></i> 驗證並解鎖安全通道
+            </button>
         </div>
     </div>
 
@@ -698,7 +809,7 @@
 
     <div class="ui-card">
         <h3><i class="fa-solid fa-chart-line" style="color: var(--amber-accent);"></i> 本週卡路里動態趨勢</h3>
-        <svg class="chart-svg" viewBox="0 0 300 60">
+        <svg class="chart-svg" viewBox="0 0 300 68">
             <path id="chartPathLine" d="M 10 50 L 290 50" fill="none" stroke="#0d9488" stroke-width="3"/>
             <g id="chartGridX"></g>
         </svg>
@@ -775,6 +886,103 @@ let isRecording = false;
 let processedBase64 = ""; 
 let cachedNutritionData = null;
 
+let currentOperatorId = "Guest_User"; 
+let captchaCode = "";
+
+function drawCaptcha() {
+    const canvas = document.getElementById("captchaCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    captchaCode = Math.floor(1000 + Math.random() * 9000).toString();
+    
+    ctx.fillStyle = "#e2e8f0";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < 4; i++) {
+        ctx.strokeStyle = `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255},0.3)`;
+        ctx.beginPath();
+        ctx.moveTo(Math.random()*canvas.width, Math.random()*canvas.height);
+        ctx.lineTo(Math.random()*canvas.width, Math.random()*canvas.height);
+        ctx.stroke();
+    }
+    
+    ctx.font = "bold 20px -apple-system, sans-serif";
+    for (let i = 0; i < captchaCode.length; i++) {
+        ctx.fillStyle = `rgb(${Math.floor(Math.random()*100)},${Math.floor(Math.random()*150)},${Math.floor(Math.random()*100)})`;
+        ctx.save();
+        ctx.translate(15 + i * 18, 26);
+        ctx.rotate((Math.random() * 20 - 10) * Math.PI / 180); 
+        ctx.fillText(captchaCode[i], 0, 0);
+        ctx.restore();
+    }
+}
+
+// 💡 智慧認證與登出決策控制核心
+function handleAuthAction() {
+    if (currentOperatorId !== "Guest_User") {
+        // 🔒 已登入狀態 ➡️ 直接執行登出確認機制
+        if (confirm(`當前登入人員為 [ ${currentOperatorId} ]，確定要登出系統嗎？`)) {
+            executeLogoutProcedure();
+        }
+    } else {
+        // 🔑 未登入狀態 ➡️ 開啟安全登入彈窗
+        openLoginModal();
+    }
+}
+
+function openLoginModal() {
+    document.getElementById("loginModalOverlay").classList.add("active");
+    document.getElementById("captchaInput").value = "";
+    drawCaptcha();
+}
+
+function closeLoginModal() {
+    document.getElementById("loginModalOverlay").classList.remove("active");
+}
+
+function submitLoginAuth() {
+    const staffId = document.getElementById("staffIdInput").value.trim();
+    const userInput = document.getElementById("captchaInput").value.trim();
+    const resultDiv = document.getElementById("result");
+    
+    if (!staffId) return alert("請輸入職員編號！");
+    
+    if (userInput !== captchaCode) {
+        alert("驗證碼輸入錯誤，請重試！");
+        drawCaptcha();
+        return;
+    }
+    
+    currentOperatorId = staffId;
+    
+    // UI 反饋更新：更換為解鎖打勾圖示與高亮翠綠色
+    const badgeBtn = document.getElementById("loginBadgeBtn");
+    badgeBtn.className = "login-badge-btn logged-in";
+    document.getElementById("operatorDisplay").innerText = `已登入: ${currentOperatorId}`;
+    document.getElementById("loginIcon").className = "fa-solid fa-user-check";
+    
+    resultDiv.className = "status-bar-banner";
+    resultDiv.innerHTML = `<span style='color:#10b981;'>🔒 醫護防線驗證完成！當前紀錄人員：${currentOperatorId}</span>`;
+    
+    closeLoginModal();
+}
+
+// 🔓 執行標準登出重設程序
+function executeLogoutProcedure() {
+    currentOperatorId = "Guest_User";
+    
+    // UI 反饋還原：還原為鎖頭圖示與標準青綠色
+    const badgeBtn = document.getElementById("loginBadgeBtn");
+    badgeBtn.className = "login-badge-btn";
+    document.getElementById("operatorDisplay").innerText = "職員登入";
+    document.getElementById("loginIcon").className = "fa-solid fa-user-lock";
+    
+    const resultDiv = document.getElementById("result");
+    resultDiv.className = "status-bar-banner";
+    resultDiv.innerHTML = "🔓 您已順利安全登出，後端分析上報身分已還原為訪客。";
+}
+
 async function getNutritionData() {
     if (cachedNutritionData) return cachedNutritionData;
     const localCached = localStorage.getItem("lohas_nutrition_cache");
@@ -804,7 +1012,7 @@ function parseIddsiLevel(iddsiRaw) {
 }
 
 function checkCurrentIddsiRisk() {
-    if (maxIddsiText === "-") return;
+    if (maxIddsiText === "-") return 0;
     const targetSelect = document.getElementById("user-iddsi-target");
     const allowedRaw = targetSelect.value;
     let allowedLevel = allowedRaw === "7EC" ? 7 : parseInt(allowedRaw);
@@ -814,11 +1022,13 @@ function checkCurrentIddsiRisk() {
     if (currentLevel > allowedLevel) {
         resultDiv.className = "status-bar-banner alert-danger";
         resultDiv.innerHTML = `⚠️ 吞嚥風險警告：今日最高級別 (${maxIddsiText}) 已超出該長者指定之安全界限！`;
+        return 1; 
     } else {
         resultDiv.className = "status-bar-banner";
         if (!resultDiv.innerHTML.includes("辨識成功") && !resultDiv.innerHTML.includes("匹配完成")) {
             resultDiv.innerText = "請使用語音、文字或相片快速輸入長者餐食";
         }
+        return 0; 
     }
 }
 
@@ -1003,16 +1213,13 @@ function parseValue(val) {
 
 function formatOutput(num) { return Number(num.toFixed(2)).toString(); }
 
-// 💡 模擬前端專用言語辨識/表情追蹤函數預留接口
 function startSpeechTracking(type) {
     alert(`[Lohas AI ST] 正在啟動 MediaPipe 舌肌追蹤與語音辨識訓練。類型：${type}`);
 }
 
-// 🧠 IDDSI 全自動四維自適應自平衡應對模組
 function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
     const cleanLevel = parseIddsiLevel(iddsiVal);
     if (cleanLevel !== 5) {
-        // 💡 如果不是 Level 5，主動清除舊有的言語治療訓練卡片
         const oldCard = document.getElementById("st-adaptive-training-card");
         if (oldCard) oldCard.remove();
         return; 
@@ -1021,7 +1228,6 @@ function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
     console.log(`[Adaptive Trigger] 檢測到 IDDSI Level 5 餐食: ${foodName}`);
     const resultDiv = document.getElementById("result");
 
-    // 維度一：安全核對 (Safety Verification)
     const targetSelect = document.getElementById("user-iddsi-target");
     const allowedLevel = targetSelect.value === "7EC" ? 7 : parseInt(targetSelect.value);
     
@@ -1029,10 +1235,9 @@ function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
         resultDiv.className = "status-bar-banner alert-danger";
         resultDiv.innerHTML = `⚠️ 吞嚥風險危險！長者最高限制為 Level ${targetSelect.value}，當前餐食已超出界限！`;
         if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-        return; // 出現嚴重錯配，截斷後續普通引導
+        return; 
     }
 
-    // 維度二：互動引導 (Interactive Guidance)
     resultDiv.style.background = "#ffedd5"; 
     resultDiv.style.color = "#c2410c";
     resultDiv.innerHTML = `💡 <b>進食指導 (Level 5)</b>：${foodName}為細碎濕軟食物，請每口分量不超過一茶匙，慢慢吞嚥。`;
@@ -1043,15 +1248,13 @@ function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
         window.speechSynthesis.speak(msg);
     }
 
-    // 維度三：照護紀錄 (Care Records)
     let histBox = document.getElementById("history");
     const lastRecord = histBox.firstElementChild; 
     if (lastRecord) {
-        lastRecord.style.borderLeft = "4px solid #ff6600"; // 切換為 Level 5 專屬橙色邊框
+        lastRecord.style.borderLeft = "4px solid #ff6600"; 
         lastRecord.innerHTML += `<div style="font-size: 11px; color: #c2410c; margin-top:4px;"><i class="fa-solid fa-user-shield"></i> 照護備忘：啟動 Level 5 餵飼輔助防哽噎監察。</div>`;
     }
 
-    // 維度四：復康訓練連動 (Rehabilitation Training)
     const trainingCardId = "st-adaptive-training-card";
     let trainingCard = document.getElementById(trainingCardId);
     if (!trainingCard) {
@@ -1066,6 +1269,20 @@ function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
         <p style="font-size: 13px; color: var(--text-main); margin: 0 0 10px 0;">進食 <b>${foodName}</b> 前，建議先進行 3 分鐘<b>「舌肌力量與兩頰協調度訓練」</b>以活化吞嚥反射。</p>
         <button class="calc-btn" style="background: #ff6600;" onclick="startSpeechTracking('level5_tongue')">🎯 開啟 AI 表情追蹤：啟動舌部復康練習</button>
     `;
+}
+
+async function reportDataToGoogleSheetAnalysis(payload) {
+    try {
+        fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: "logRecord",
+                data: payload
+            })
+        });
+    } catch(e) {
+        console.error("雲端上報背景同步失敗:", e);
+    }
 }
 
 async function searchFoodText() {
@@ -1168,7 +1385,6 @@ async function searchFoodText() {
             let histBox = document.getElementById("history");
             if (histBox.innerText === "尚無餐食記錄數據") histBox.innerHTML = "";
             
-            // 💡 改為使用 insertAdjacentHTML 並置頂插入，以便自適應機制能精準捕捉最新的這列元素
             histBox.insertAdjacentHTML('afterbegin', `
                 <div class="history-item-row">
                     <div>
@@ -1180,10 +1396,22 @@ async function searchFoodText() {
             
             weeklyData[weeklyData.length - 1] = cal;
             drawChart();
-            checkCurrentIddsiRisk();
             
-            // 🚀 核心嵌入點：立刻執行 Level 5 的跨維度自適應感知機制
+            let isRiskTriggered = checkCurrentIddsiRisk();
+            
             triggerIddsiAdaptiveMechanism(iddsiVal, fFoodName);
+
+            await reportDataToGoogleSheetAnalysis({
+                operator_id: currentOperatorId,
+                food_name: fFoodName,
+                grams: fGrams,
+                calories: fCal,
+                protein: fProtein,
+                carbs: fCarbs,
+                fat: fFat,
+                iddsi_level: parseIddsiLevel(iddsiVal),
+                risk_alert: isRiskTriggered
+            });
 
             document.getElementById("foodSearchInput").value = "";
             document.getElementById("previewWrapper").style.display = "none";
@@ -1215,8 +1443,48 @@ function toggleNutritionPanel() {
 }
 
 function drawChart() {
+    let gridX = document.getElementById("chartGridX");
+    if (!gridX) return;
+    gridX.innerHTML = ""; 
+
     let stepX = 260 / (weeklyData.length - 1);
-    let pts = weeklyData.map((val, idx) => `${20 + idx * stepX},${50 - (val / 2500 * 40)}`);
+    let pts = [];
+    const dayLabels = ["一", "二", "三", "四", "五", "六", "日"];
+
+    weeklyData.forEach((val, idx) => {
+        let x = 20 + idx * stepX;
+        let y = 46 - (val / 2500 * 24);
+        pts.push(`${x},${y}`);
+
+        let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", x);
+        circle.setAttribute("cy", y);
+        circle.setAttribute("r", "3.5");
+        circle.setAttribute("fill", "#ffffff");
+        circle.setAttribute("stroke", "#0d9488");
+        circle.setAttribute("stroke-width", "2");
+        gridX.appendChild(circle);
+
+        let textVal = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        textVal.setAttribute("x", x);
+        textVal.setAttribute("y", y - 7);
+        textVal.setAttribute("text-anchor", "middle");
+        textVal.setAttribute("font-size", "8.5px");
+        textVal.setAttribute("fill", "#d97706");
+        textVal.setAttribute("font-weight", "bold");
+        textVal.textContent = val + "卡";
+        gridX.appendChild(textVal);
+
+        let textDay = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        textDay.setAttribute("x", x);
+        textDay.setAttribute("y", "59");
+        textDay.setAttribute("text-anchor", "middle");
+        textDay.setAttribute("font-size", "10px");
+        textDay.setAttribute("fill", "#6b7280");
+        textDay.textContent = dayLabels[idx] || (idx + 1);
+        gridX.appendChild(textDay);
+    });
+
     document.getElementById("chartPathLine").setAttribute("d", "M " + pts.join(" L "));
 }
 
