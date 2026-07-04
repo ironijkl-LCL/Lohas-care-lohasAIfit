@@ -187,6 +187,7 @@
             margin: 12px 16px;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
             border: 1px solid #edf2f7;
+            transition: all 0.3s ease;
         }
 
         .ui-card h3 {
@@ -1002,6 +1003,71 @@ function parseValue(val) {
 
 function formatOutput(num) { return Number(num.toFixed(2)).toString(); }
 
+// 💡 模擬前端專用言語辨識/表情追蹤函數預留接口
+function startSpeechTracking(type) {
+    alert(`[Lohas AI ST] 正在啟動 MediaPipe 舌肌追蹤與語音辨識訓練。類型：${type}`);
+}
+
+// 🧠 IDDSI 全自動四維自適應自平衡應對模組
+function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
+    const cleanLevel = parseIddsiLevel(iddsiVal);
+    if (cleanLevel !== 5) {
+        // 💡 如果不是 Level 5，主動清除舊有的言語治療訓練卡片
+        const oldCard = document.getElementById("st-adaptive-training-card");
+        if (oldCard) oldCard.remove();
+        return; 
+    }
+
+    console.log(`[Adaptive Trigger] 檢測到 IDDSI Level 5 餐食: ${foodName}`);
+    const resultDiv = document.getElementById("result");
+
+    // 維度一：安全核對 (Safety Verification)
+    const targetSelect = document.getElementById("user-iddsi-target");
+    const allowedLevel = targetSelect.value === "7EC" ? 7 : parseInt(targetSelect.value);
+    
+    if (allowedLevel < 5) {
+        resultDiv.className = "status-bar-banner alert-danger";
+        resultDiv.innerHTML = `⚠️ 吞嚥風險危險！長者最高限制為 Level ${targetSelect.value}，當前餐食已超出界限！`;
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        return; // 出現嚴重錯配，截斷後續普通引導
+    }
+
+    // 維度二：互動引導 (Interactive Guidance)
+    resultDiv.style.background = "#ffedd5"; 
+    resultDiv.style.color = "#c2410c";
+    resultDiv.innerHTML = `💡 <b>進食指導 (Level 5)</b>：${foodName}為細碎濕軟食物，請每口分量不超過一茶匙，慢慢吞嚥。`;
+    
+    if ('speechSynthesis' in window) {
+        const msg = new SpeechSynthesisUtterance(`${foodName}屬於細碎濕軟食物，請長者每口食一茶匙，慢慢吞。`);
+        msg.lang = 'zh-HK';
+        window.speechSynthesis.speak(msg);
+    }
+
+    // 維度三：照護紀錄 (Care Records)
+    let histBox = document.getElementById("history");
+    const lastRecord = histBox.firstElementChild; 
+    if (lastRecord) {
+        lastRecord.style.borderLeft = "4px solid #ff6600"; // 切換為 Level 5 專屬橙色邊框
+        lastRecord.innerHTML += `<div style="font-size: 11px; color: #c2410c; margin-top:4px;"><i class="fa-solid fa-user-shield"></i> 照護備忘：啟動 Level 5 餵飼輔助防哽噎監察。</div>`;
+    }
+
+    // 維度四：復康訓練連動 (Rehabilitation Training)
+    const trainingCardId = "st-adaptive-training-card";
+    let trainingCard = document.getElementById(trainingCardId);
+    if (!trainingCard) {
+        trainingCard = document.createElement("div");
+        trainingCard.id = trainingCardId;
+        trainingCard.className = "ui-card";
+        trainingCard.style.border = "1px solid #ff6600";
+        document.getElementById("singleQueryResultCard").insertAdjacentElement('afterend', trainingCard);
+    }
+    trainingCard.innerHTML = `
+        <h3 style="color: #ff6600;"><i class="fa-solid fa-brain"></i> 言語治療復康連動訓練 (Level 5 專屬)</h3>
+        <p style="font-size: 13px; color: var(--text-main); margin: 0 0 10px 0;">進食 <b>${foodName}</b> 前，建議先進行 3 分鐘<b>「舌肌力量與兩頰協調度訓練」</b>以活化吞嚥反射。</p>
+        <button class="calc-btn" style="background: #ff6600;" onclick="startSpeechTracking('level5_tongue')">🎯 開啟 AI 表情追蹤：啟動舌部復康練習</button>
+    `;
+}
+
 async function searchFoodText() {
     const rawQuery = document.getElementById("foodSearchInput").value.trim();
     if (!rawQuery) return;
@@ -1101,18 +1167,24 @@ async function searchFoodText() {
 
             let histBox = document.getElementById("history");
             if (histBox.innerText === "尚無餐食記錄數據") histBox.innerHTML = "";
-            histBox.innerHTML += `
+            
+            // 💡 改為使用 insertAdjacentHTML 並置頂插入，以便自適應機制能精準捕捉最新的這列元素
+            histBox.insertAdjacentHTML('afterbegin', `
                 <div class="history-item-row">
                     <div>
                         <strong>${fFoodName} (${formatOutput(fGrams)}g)</strong><br>
                         <div style="margin-top: 4px;">${generateIddsiBadgeHTML(iddsiVal)}</div>
                     </div>
                     <span style="color:var(--teal-main); font-weight:700;">+${fCal} KCAL</span>
-                </div>`;
+                </div>`);
+            
             weeklyData[weeklyData.length - 1] = cal;
             drawChart();
             checkCurrentIddsiRisk();
             
+            // 🚀 核心嵌入點：立刻執行 Level 5 的跨維度自適應感知機制
+            triggerIddsiAdaptiveMechanism(iddsiVal, fFoodName);
+
             document.getElementById("foodSearchInput").value = "";
             document.getElementById("previewWrapper").style.display = "none";
             document.getElementById("uploadBtn").style.display = "none";
