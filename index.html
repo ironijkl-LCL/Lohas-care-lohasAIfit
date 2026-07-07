@@ -1,4 +1,1489 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="no-referrer">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>樂活健康管理系統 - 全兼容自適應版</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="樂活健康管理">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2642/2642731.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-canvas: #f5f7fb;
+            --card-bg: #ffffff;         
+            --text-main: #1f2937;       
+            --text-sub: #6b7280;        
+            --teal-main: #0d9488;       
+            --teal-dark: #0f766e;       
+            --amber-accent: #d97706;    
+            --mint-light: #f0fdfa;      
+            --border-radius: 24px;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, 'PingFang HK', 'Microsoft JhengHei', sans-serif;
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+            padding-bottom: 60px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 412px;
+            background: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 30px rgba(0,0,0,0.05);
+            overflow-x: hidden;
+        }
+
+        .app-header-block {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border-bottom: 1px solid #e2e8f0;
+            position: relative;
+        }
+
+        .app-brand-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #50e3c2, var(--teal-main));
+            border-radius: 16px;
+            box-shadow: 0 6px 12px rgba(13, 148, 136, 0.15);
+            margin-right: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .app-header-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .app-header-info h1 {
+            margin: 0 0 4px 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .app-header-info p {
+            margin: 0 0 8px 0;
+            font-size: 12px;
+            color: var(--text-sub);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 👤 登入/登出狀態控制鍵 */
+        .login-badge-btn {
+            background: var(--teal-main);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(13, 148, 136, 0.2);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .login-badge-btn.logged-in {
+            background: #10b981;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+        }
+
+        .badge-version {
+            background: var(--mint-light);
+            color: var(--teal-dark);
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: bold;
+            border: 1px solid #ccfbf1;
+            display: inline-block;
+        }
+
+        .login-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .login-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .login-modal-box {
+            background: #ffffff;
+            width: 88%; max-width: 340px;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 16px; right: 16px;
+            background: #f1f5f9; border: none; width: 28px; height: 28px;
+            border-radius: 50%; color: var(--text-sub); cursor: pointer;
+        }
+
+        .login-field-group {
+            margin-top: 14px;
+            display: flex; flex-direction: column; gap: 6px;
+        }
+
+        .login-field-group label { font-size: 12px;
+            color: var(--text-sub); font-weight: 600; }
+        
+        .login-field-group input {
+            padding: 10px 12px;
+            border: 1.5px solid #cbd5e1; border-radius: 12px; font-size: 14px;
+        }
+
+        .captcha-wrapper {
+            display: flex;
+            align-items: center; gap: 10px; margin-top: 8px;
+        }
+
+        #captchaCanvas {
+            background: #f1f5f9;
+            border-radius: 10px; border: 1px solid #cbd5e1; cursor: pointer;
+        }
+
+        .metadata-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 6px;
+            border-bottom: 1px solid #e2e8f0;
+            background: var(--card-bg);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .meta-item {
+            flex: 1;
+            min-width: 0;
+            text-align: center;
+            border-right: 1px solid #e2e8f0;
+            padding: 0 2px;
+        }
+
+        .meta-item:last-child {
+            border-right: none;
+        }
+
+        .meta-label {
+            font-size: 10px;
+            color: var(--text-sub);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .meta-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--teal-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .meta-sub-value {
+            font-size: 9px;
+            color: var(--text-sub);
+            margin-top: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .status-bar-banner {
+            font-size: 13px;
+            color: var(--teal-dark);
+            margin: 12px 16px 4px 16px;
+            text-align: center;
+            min-height: 20px;
+            font-weight: bold;
+            padding: 8px;
+            background: #e6f4f1;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .status-bar-banner.alert-danger {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fee2e2;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-4px); }
+            40%, 80% { transform: translateX(4px); }
+        }
+
+        .ui-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin: 12px 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+            border: 1px solid #edf2f7;
+            transition: all 0.3s ease;
+        }
+
+        .ui-card h3 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-size: 16px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .profile-input-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .profile-input-grid label {
+            font-size: 11px;
+            color: var(--text-sub);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .profile-input-grid input, .profile-input-grid select {
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 13px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .calc-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--teal-main);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .voice-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .mic-btn {
+            width: 86px;
+            height: 86px;
+            border-radius: 50%;
+            background: var(--mint-light);
+            border: 3px solid var(--teal-main);
+            color: var(--teal-main);
+            font-size: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 6px 14px rgba(13, 148, 136, 0.1);
+        }
+
+        .mic-recording {
+            background: var(--amber-accent);
+            color: white;
+            border-color: var(--amber-accent);
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 12px rgba(217, 119, 6, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(217, 119, 6, 0.7); }
+        }
+
+        .mic-status {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--teal-dark);
+            font-weight: 600;
+        }
+
+        .function-pill-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 4px 16px;
+        }
+
+        .search-box-full {
+            grid-column: span 2;
+            display: flex;
+            gap: 8px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1.5px solid #cbd5e1;
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 14px;
+            color: var(--text-main);
+            min-width: 0;
+        }
+
+        .search-btn {
+            padding: 0 16px;
+            border-radius: 14px;
+            background: var(--teal-main);
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .file-label-pill {
+            background: var(--card-bg);
+            border: 1.5px dashed #cbd5e1;
+            padding: 12px;
+            border-radius: 14px;
+            text-align: center;
+            font-size: 13px;
+            cursor: pointer;
+            color: var(--text-sub);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .action-upload-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.15);
+        }
+        
+        .action-upload-btn:disabled {
+            background: #a7f3d0;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .preview-wrapper {
+            position: relative;
+            max-width: 100%;
+            height: 300px;
+            margin: 10px 16px;
+            border-radius: 20px;
+            overflow: hidden;
+            display: none;
+            border: 2px solid var(--teal-main);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        #preview-img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .camera-guide-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .camera-target-box {
+            width: 88%;
+            height: 88%;
+            border: 2px dashed rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            position: relative;
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.2);
+        }
+
+        .camera-target-box::after {
+            content: "✨ 全鏡頭 AI 智慧辨識範圍";
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffffff;
+            font-size: 11px;
+            white-space: nowrap;
+            background: rgba(13, 148, 136, 0.9);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .scanner-line {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--teal-main), var(--amber-accent), var(--teal-main), transparent);
+            box-shadow: 0 0 10px var(--teal-main);
+            animation: scanMove 2s infinite ease-in-out;
+            z-index: 5;
+        }
+
+        @keyframes scanMove {
+            0% { top: 0%; }
+            50% { top: 96%; }
+            100% { top: 0%; }
+        }
+
+        .chart-ring-layout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            padding: 10px 0;
+        }
+
+        .modern-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: #f1f5f9; 
+            transition: background 0.4s ease; 
+            flex-shrink: 0;
+        }
+
+        .circle-inner-plate {
+            position: absolute;
+            width: 84px;
+            height: 84px;
+            background: var(--card-bg);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .macro-three-column {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .inner-white-box {
+            background: #f8fafc;
+            padding: 10px 6px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .inner-white-box div:last-child {
+            font-weight: 700;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .sub-macro-flex-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        .sub-macro-cell {
+            background: var(--card-bg);
+            padding: 10px 12px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #edf2f7;
+        }
+
+        .sub-macro-cell span:last-child {
+            font-weight: 600;
+        }
+
+        .iddsi-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            color: #ffffff;
+            background-color: #9ca3af;
+        }
+
+        .chart-svg { 
+            width: 100%;
+            height: 68px; 
+            overflow: visible; 
+        }
+
+        .history-item-row {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 14px;
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--teal-main);
+            border-top: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .toggle-floating-panel-btn {
+            display: block;
+            width: calc(100% - 32px);
+            margin: 16px auto;
+            padding: 12px;
+            border-radius: 14px;
+            background: linear-gradient(90deg, var(--teal-main), var(--teal-dark));
+            border: none;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.15);
+        }
+
+        #nutritionTotalPanel { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <div class="app-header-block">
+        <div class="app-brand-icon">
+            <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <div class="app-header-info">
+            <h1>樂活健康管理系統</h1>
+            <p>智能飲食與吞嚥安全雲端監測平台</p>
+            <span class="badge-version">v3.6 Dynamic Consolidated Edition</span>
+        </div>
+        <button id="loginBadgeBtn" class="login-badge-btn" onclick="handleAuthAction()">
+            <i id="loginIcon" class="fa-solid fa-user-lock"></i> <span id="operatorDisplay">職員登入</span>
+        </button>
+    </div>
+
+    <div id="loginModalOverlay" class="login-modal-overlay">
+        <div class="login-modal-box">
+            <button class="modal-close-btn" onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h3 style="margin: 0 0 16px 0; color: var(--teal-dark);"><i class="fa-solid fa-shield-halved"></i> 樂活醫護安管登入</h3>
+            
+            <div class="login-field-group">
+                <label>職員編號 / 照顧者 ID</label>
+                <input type="text" id="staffIdInput" placeholder="例如: Staff_001" value="Staff_001">
+            </div>
+            
+            <div class="login-field-group">
+                <label>安全驗證碼 (點擊圖片可刷新)</label>
+                <div class="captcha-wrapper">
+                    <input type="text" id="captchaInput" placeholder="請輸入右圖 4 位數" style="flex:1; min-width:0;">
+                    <canvas id="captchaCanvas" width="90" height="38" onclick="drawCaptcha()"></canvas>
+                </div>
+            </div>
+            
+            <button class="calc-btn" style="margin-top: 20px; background: var(--teal-dark);" onclick="submitLoginAuth()">
+                <i class="fa-solid fa-key"></i> 驗證並解鎖安全通道
+            </button>
+        </div>
+    </div>
+
+    <div class="ui-card">
+        <h3><i class="fa-solid fa-user-gear" style="color: var(--teal-main);"></i> 個人身體數據與每日目標配置</h3>
+        <div class="profile-input-grid">
+            <label>性別
+                <select id="user-gender">
+                    <option value="male">男</option>
+                    <option value="female" selected>女</option>
+                </select>
+            </label>
+            <label>年齡 (歲)
+                <input type="number" id="user-age" value="65">
+            </label>
+            <label>身高 (cm)
+                <input type="number" id="user-height" value="155">
+            </label>
+            <label>體重 (kg)
+                <input type="number" id="user-weight" value="55">
+            </label>
+            <label style="grid-column: span 2;">日常活動量
+                <select id="user-activity">
+                    <option value="1.2">久坐 / 臥床院友 (1.2)</option>
+                    <option value="1.375" selected>輕度活動 / 定期復康訓練 (1.375)</option>
+                    <option value="1.55">中度活動量 (1.55)</option>
+                </select>
+            </label>
+            <label style="grid-column: span 3; margin-top: 4px;">⚠️ 長者指定安全吞嚥限度
+                <select id="user-iddsi-target" onchange="checkCurrentIddsiRisk()">
+                    <option value="0">Level 0 微稠 (White)</option>
+                    <option value="1">Level 1 極微 (Grey)</option>
+                    <option value="2">Level 2 低度 (Pink)</option>
+                    <option value="3">Level 3 中度 (Yellow)</option>
+                    <option value="4" selected>Level 4 糊狀 (Green)</option>
+                    <option value="5">Level 5 剁碎 (Orange)</option>
+                    <option value="6">Level 6 軟質 (Blue)</option>
+                    <option value="7">Level 7 常規 (Black)</option>
+                    <option value="7EC">Level 7 易嚼 (Black)</option>
+                </select>
+            </label>
+        </div>
+        <button class="calc-btn" onclick="calculatePersonalTargets()">🔄 更新並動態重新計算每日目標</button>
+    </div>
+
+    <div class="metadata-grid">
+        <div class="meta-item">
+            <div class="meta-label">今日累計</div>
+            <div class="meta-value" id="meta-cal-total">0</div>
+            <div class="meta-sub-value">KCAL</div>
+        </div>
+        <div class="meta-item">
+            <div class="meta-label">每日目標</div>
+            <div class="meta-value" id="target-cal-lbl">1600</div>
+            <div class="meta-sub-value">目標值</div>
+        </div>
+        <div class="meta-item">
+            <div class="meta-label">累計克數</div>
+            <div class="meta-value" id="meta-grams-total">0</div>
+            <div class="meta-sub-value">Grams</div>
+        </div>
+        <div class="meta-item">
+            <div class="meta-label">餐食記錄</div>
+            <div class="meta-value" id="meta-count-total">0</div>
+            <div class="meta-sub-value">項已登錄</div>
+        </div>
+        <div class="meta-item">
+            <div class="meta-label">安全吞嚥</div>
+            <div class="meta-value" id="meta-iddsi-highest">-</div>
+            <div class="meta-sub-value">最高級別</div>
+        </div>
+    </div>
+
+    <div id="result" class="status-bar-banner">
+        請使用語音、文字或相片快速輸入長者餐食
+    </div>
+
+    <div class="ui-card">
+        <h3><i class="fa-solid fa-microphone-lines" style="color: var(--teal-main);"></i> 廣東話語音智慧智慧錄入</h3>
+        <p style="font-size: 13px; color: var(--text-sub); margin: 0 0 12px 0;">點擊後講出長者進食內容（例：「食左半碗碎肉粥」）</p>
+        <div class="voice-section">
+            <button id="micBtn" class="mic-btn" onclick="toggleVoiceRecognition()">
+                <i id="micIcon" class="fa-solid fa-microphone"></i>
+            </button>
+            <p id="micStatus" class="mic-status">點擊開始錄音</p>
+        </div>
+    </div>
+
+    <div class="function-pill-grid">
+        <div class="search-box-full">
+            <input type="text" class="search-input" id="foodSearchInput" placeholder="修改或在此手動輸入食物名稱...">
+            <button class="search-btn" onclick="searchFoodText()">🔍 搜尋</button>
+        </div>
+        
+        <label for="imageInput" class="file-label-pill" id="uploadLabel">
+            <i class="fa-solid fa-camera"></i> 拍攝/選擇相片
+        </label>
+        <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="processAndPreviewImage(this)">
+        
+        <button id="uploadBtn" class="action-upload-btn" style="display: none;" onclick="uploadAndDetectFood()">🚀 AI 辨識食物</button>
+    </div>
+
+    <div class="preview-wrapper" id="previewWrapper">
+        <div class="scanner-line" id="scannerLine"></div>
+        <img id="preview-img" alt="食物預覽">
+        <div class="camera-guide-overlay">
+            <div class="camera-target-box"></div>
+        </div>
+    </div>
+
+    <div class="ui-card" id="singleQueryResultCard">
+        <h3><i class="fa-solid fa-magnifying-glass" style="color: var(--teal-main);"></i> 本次餐食營養細目 (<span id="single_foodname" style="color: var(--teal-dark);">未輸入</span>)</h3>
+        
+        <div class="chart-ring-layout">
+            <div class="modern-circle" id="single_ring_progress">
+                <div class="circle-inner-plate">
+                    <div id="single_cal" style="font-size: 18px; font-weight: 700; color: var(--teal-main);">0</div>
+                    <div style="font-size: 9px; color: var(--text-sub); font-weight:600;">KCAL</div>
+                </div>
+            </div>
+            <div style="flex:1; min-width:0;">
+                <div style="font-size: 12px; color:var(--text-sub); margin-bottom: 4px;">🥣 IDDSI 安全吞嚥等級</div>
+                <div id="single_iddsiMain"><span class="iddsi-badge">未指定</span></div>
+                <div style="font-size: 11px; color: var(--text-sub); margin-top: 6px;" id="single-pct-lbl">佔每日目標：0%</div>
+            </div>
+        </div>
+        
+        <div class="macro-three-column">
+            <div class="inner-white-box"><div style="color:var(--text-sub);">🥩 蛋白質</div><div id="single_protein" style="color: var(--amber-accent);">0g</div></div>
+            <div class="inner-white-box"><div style="color:var(--text-sub);">🍞 碳水</div><div id="single_carbs" style="color: var(--teal-dark);">0g</div></div>
+            <div class="inner-white-box"><div style="color:var(--text-sub);">🧈 脂肪</div><div id="single_fat" style="color: #10b981;">0g</div></div>
+        </div>
+
+        <div class="sub-macro-flex-grid">
+            <div class="sub-macro-cell"><span>⚖️ 食物克數</span><span id="single_grams">0g</span></div>
+            <div class="sub-macro-cell"><span>🍬 糖分</span><span id="single_sugar">0g</span></div>
+            <div class="sub-macro-cell"><span>🔒 飽和脂肪</span><span id="single_satFat">0g</span></div>
+            <div class="sub-macro-cell"><span>⚠️ 反式脂肪</span><span id="single_transFat">0g</span></div>
+            <div class="sub-macro-cell"><span>🍳 膽固醇</span><span id="single_cholesterol">0mg</span></div>
+            <div class="sub-macro-cell"><span>🌿 膳膳食纖維</span><span id="single_fiber">0g</span></div>
+        </div>
+    </div>
+
+    <div class="ui-card">
+        <h3><i class="fa-solid fa-chart-line" style="color: var(--amber-accent);"></i> 本週卡路里動態趨勢</h3>
+        <svg class="chart-svg" viewBox="0 0 300 68">
+            <path id="chartPathLine" d="M 10 50 L 290 50" fill="none" stroke="#0d9488" stroke-width="3"/>
+            <g id="chartGridX"></g>
+        </svg>
+    </div>
+
+    <div class="ui-card">
+        <h3><i class="fa-solid fa-list-check" style="color: #10b981;"></i> 今日已登錄餐食歷史</h3>
+        <div id="history" style="color: var(--text-sub); font-size: 13px;">尚無餐食記錄數據</div>
+    </div>
+
+    <button class="toggle-floating-panel-btn" onclick="toggleNutritionPanel()">📊 展開全天累計營養總和面版</button>
+
+    <div class="ui-card" id="nutritionTotalPanel">
+        <h3 style="color: var(--amber-accent);"><i class="fa-solid fa-gauge-high"></i> 🔥 全天累計總合核心看板</h3>
+        
+        <div class="chart-ring-layout">
+            <div class="modern-circle" id="total_ring_progress">
+                <div class="circle-inner-plate">
+                    <div id="cal" style="font-size: 18px; font-weight: 700; color: var(--amber-accent);">0</div>
+                    <div style="font-size: 9px; color: var(--text-sub); font-weight:600;">KCAL</div>
+                </div>
+            </div>
+            <div style="flex:1; min-width:0;">
+                <div style="font-size: 12px; color:var(--text-sub); margin-bottom: 4px;">當前登錄 IDDSI 現況</div>
+                <div id="iddsiMain"><span class="iddsi-badge">未指定</span></div>
+                <div style="font-size: 11px; color: var(--text-main); font-weight: bold; margin-top: 6px;" id="total-pct-lbl">全天達標率：0%</div>
+            </div>
+        </div>
+        
+        <div class="macro-three-column">
+            <div class="inner-white-box"><div style="color:var(--text-sub);">🥩 蛋白質目標</div><div style="color: var(--amber-accent);"><span id="protein">0</span>g / <span id="target-protein-lbl">60</span>g</div></div>
+            <div class="inner-white-box"><div style="color:var(--text-sub);">🍞 碳水目標</div><div style="color: var(--teal-dark);"><span id="carbs">0</span>g / <span id="target-carbs-lbl">200</span>g</div></div>
+            <div class="inner-white-box"><div style="color:var(--text-sub);">🧈 脂肪目標</div><div style="color: #10b981;"><span id="fat">0</span>g / <span id="target-fat-lbl">50</span>g</div></div>
+        </div>
+
+        <div class="sub-macro-flex-grid">
+            <div class="sub-macro-cell"><span>⚖️ 累計克數</span><span id="grams">0g</span></div>
+            <div class="sub-macro-cell"><span>🍬 糖分</span><span id="sugar">0g</span></div>
+            <div class="sub-macro-cell"><span>🔒 飽和脂肪</span><span id="satFat">0g</span></div>
+            <div class="sub-macro-cell"><span>⚠️ 反式脂肪</span><span id="transFat">0g</span></div>
+            <div class="sub-macro-cell"><span>🍳 膽固醇</span><span id="cholesterol">0mg</span></div>
+            <div class="sub-macro-cell"><span>🌿 膳食纖維</span><span id="fiber">0g</span></div>
+        </div>
+    </div>
+
+</div>
+
+<canvas id="processedCanvas" style="display:none;"></canvas>
+
+<script>
+// 🚀 已成功替換為你專屬的 Google Apps Script 雲端 API 節點
+const API_URL = "https://script.google.com/macros/s/AKfycbwOgthCxMHgU-7nsuYd91AMSWUrr48qU8pm02j4qCYk_TE5nN7dJOB_o5nrUc932kZr/exec";
+const IDDSI_COLORS = {
+    "0": { bg: "#ffffff", text: "#000000", label: "Level 0 微稠 (White)" },
+    "1": { bg: "#666666", text: "#ffffff", label: "Level 1 極微 (Grey)" },
+    "2": { bg: "#ea4e96", text: "#ffffff", label: "Level 2 低度 (Pink)" },
+    "3": { bg: "#ffff00", text: "#000000", label: "Level 3 中度 (Yellow)" },
+    "4": { bg: "#33cc33", text: "#ffffff", label: "Level 4 糊狀 (Green)" },
+    "5": { bg: "#ff6600", text: "#ffffff", label: "Level 5 剁碎 (Orange)" },
+    "6": { bg: "#0067b2", text: "#ffffff", label: "Level 6 軟質 (Blue)" },
+    "7": { bg: "#000000", text: "#ffffff", label: "Level 7 常規 (Black)" },
+    "7EC": { bg: "#000000", text: "#ffffff", label: "Level 7 易嚼 (Black)" }
+};
+let dailyTargets = { cal: 1600, protein: 60, carbs: 220, fat: 50 };
+let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0;
+let sugar = 0, satFat = 0, transFat = 0, cholesterol = 0, fiber = 0;
+let recordCount = 0;
+let maxIddsiText = "-";
+let weeklyData = [1400, 1500, 1350, 1600, 0];
+
+let recognition = null;
+let isRecording = false;
+let processedBase64 = ""; 
+let cachedNutritionData = null;
+
+let currentOperatorId = "Guest_User"; 
+let captchaCode = "";
+function drawCaptcha() {
+    const canvas = document.getElementById("captchaCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    captchaCode = Math.floor(1000 + Math.random() * 9000).toString();
+    
+    ctx.fillStyle = "#e2e8f0";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < 4; i++) {
+        ctx.strokeStyle = `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255},0.3)`;
+        ctx.beginPath();
+        ctx.moveTo(Math.random()*canvas.width, Math.random()*canvas.height);
+        ctx.lineTo(Math.random()*canvas.width, Math.random()*canvas.height);
+        ctx.stroke();
+    }
+    
+    ctx.font = "bold 20px -apple-system, sans-serif";
+    for (let i = 0; i < captchaCode.length; i++) {
+        ctx.fillStyle = `rgb(${Math.floor(Math.random()*100)},${Math.floor(Math.random()*150)},${Math.floor(Math.random()*100)})`;
+        ctx.save();
+        ctx.translate(15 + i * 18, 26);
+        ctx.rotate((Math.random() * 20 - 10) * Math.PI / 180); 
+        ctx.fillText(captchaCode[i], 0, 0);
+        ctx.restore();
+    }
+}
+
+// 💡 智慧認證與登出決策控制核心
+function handleAuthAction() {
+    if (currentOperatorId !== "Guest_User") {
+        // 🔒 已登入狀態 ➡️ 直接執行登出確認機制
+        if (confirm(`當前登入人員為 [ ${currentOperatorId} ]，確定要登出系統嗎？`)) {
+            executeLogoutProcedure();
+        }
+    } else {
+        // 🔑 未登入狀態 ➡️ 開啟安全登入彈窗
+        openLoginModal();
+    }
+}
+
+function openLoginModal() {
+    document.getElementById("loginModalOverlay").classList.add("active");
+    document.getElementById("captchaInput").value = "";
+    drawCaptcha();
+}
+
+function closeLoginModal() {
+    document.getElementById("loginModalOverlay").classList.remove("active");
+}
+
+function submitLoginAuth() {
+    const staffId = document.getElementById("staffIdInput").value.trim();
+    const userInput = document.getElementById("captchaInput").value.trim();
+    const resultDiv = document.getElementById("result");
+    if (!staffId) return alert("請輸入職員編號！");
+    
+    if (userInput !== captchaCode) {
+        alert("驗證碼輸入錯誤，請重試！");
+        drawCaptcha();
+        return;
+    }
+    
+    currentOperatorId = staffId;
+    // UI 反饋更新：更換為解鎖打勾圖示與高亮翠綠色
+    const badgeBtn = document.getElementById("loginBadgeBtn");
+    badgeBtn.className = "login-badge-btn logged-in";
+    document.getElementById("operatorDisplay").innerText = `已登入: ${currentOperatorId}`;
+    document.getElementById("loginIcon").className = "fa-solid fa-user-check";
+    
+    resultDiv.className = "status-bar-banner";
+    resultDiv.innerHTML = `<span style='color:#10b981;'>🔒 醫護防線驗證完成！當前紀錄人員：${currentOperatorId}</span>`;
+    
+    closeLoginModal();
+}
+
+// 🔓 執行標準登出重設程序
+function executeLogoutProcedure() {
+    currentOperatorId = "Guest_User";
+    // UI 反饋還原：還原為鎖頭圖示與標準青綠色
+    const badgeBtn = document.getElementById("loginBadgeBtn");
+    badgeBtn.className = "login-badge-btn";
+    document.getElementById("operatorDisplay").innerText = "職員登入";
+    document.getElementById("loginIcon").className = "fa-solid fa-user-lock";
+    const resultDiv = document.getElementById("result");
+    resultDiv.className = "status-bar-banner";
+    resultDiv.innerHTML = "🔓 您已順利安全登出，後端分析上報身分已還原為訪客。";
+}
+
+async function getNutritionData() {
+    if (cachedNutritionData) return cachedNutritionData;
+    const localCached = localStorage.getItem("lohas_nutrition_cache");
+    if (localCached) {
+        try {
+            cachedNutritionData = JSON.parse(localCached);
+            return cachedNutritionData;
+        } catch(e) {
+            localStorage.removeItem("lohas_nutrition_cache");
+        }
+    }
+    
+    let res = await fetch(API_URL);
+    if (!res.ok) throw new Error("網絡傳輸異常");
+    let resData = await res.json();
+    cachedNutritionData = resData.nutrition_data || [];
+    localStorage.setItem("lohas_nutrition_cache", JSON.stringify(cachedNutritionData));
+    return cachedNutritionData;
+}
+
+function parseIddsiLevel(iddsiRaw) {
+    if (!iddsiRaw) return -1;
+    let cleanKey = iddsiRaw.toString().trim().toUpperCase();
+    if (cleanKey.includes("7EC")) return 7;
+    let match = cleanKey.match(/\d+/);
+    return match ? parseInt(match[0]) : 1;
+}
+
+function checkCurrentIddsiRisk() {
+    if (maxIddsiText === "-") return 0;
+    const targetSelect = document.getElementById("user-iddsi-target");
+    const allowedRaw = targetSelect.value;
+    let allowedLevel = allowedRaw === "7EC" ? 7 : parseInt(allowedRaw);
+    let currentLevel = parseIddsiLevel(maxIddsiText);
+    
+    const resultDiv = document.getElementById("result");
+    if (currentLevel > allowedLevel) {
+        resultDiv.className = "status-bar-banner alert-danger";
+        resultDiv.innerHTML = `⚠️ 吞嚥風險警告：今日最高級別 (${maxIddsiText}) 已超出該長者指定之安全界限！`;
+        return 1; 
+    } else {
+        resultDiv.className = "status-bar-banner";
+        if (!resultDiv.innerHTML.includes("辨識成功") && !resultDiv.innerHTML.includes("匹配完成")) {
+            resultDiv.innerText = "請使用語音、文字或相片快速輸入長者餐食";
+        }
+        return 0; 
+    }
+}
+
+function calculatePersonalTargets() {
+    const gender = document.getElementById("user-gender").value;
+    const age = parseFloat(document.getElementById("user-age").value) || 65;
+    const height = parseFloat(document.getElementById("user-height").value) || 155;
+    const weight = parseFloat(document.getElementById("user-weight").value) || 55;
+    const activity = parseFloat(document.getElementById("user-activity").value) || 1.375;
+    let bmr = (10 * weight) + (6.25 * height) - (5 * age);
+    if (gender === "male") { bmr += 5; } else { bmr -= 161; }
+
+    let tdee = Math.round(bmr * activity);
+    if(tdee < 1200) tdee = 1200; 
+
+    dailyTargets.cal = tdee;
+    dailyTargets.protein = Math.round((tdee * 0.20) / 4);
+    dailyTargets.carbs = Math.round((tdee * 0.55) / 4);
+    dailyTargets.fat = Math.round((tdee * 0.25) / 9);
+
+    document.getElementById("target-cal-lbl").innerText = dailyTargets.cal;
+    document.getElementById("target-protein-lbl").innerText = dailyTargets.protein;
+    document.getElementById("target-carbs-lbl").innerText = dailyTargets.carbs;
+    document.getElementById("target-fat-lbl").innerText = dailyTargets.fat;
+    updateRingProgress("total_ring_progress", cal, dailyTargets.cal);
+    document.getElementById("total-pct-lbl").innerText = `全天達標率：${Math.round((cal/dailyTargets.cal)*100)}%`;
+    document.getElementById("meta-cal-total").innerText = cal;
+    
+    const resultDiv = document.getElementById("result");
+    resultDiv.className = "status-bar-banner";
+    resultDiv.innerHTML = `<span style='color:var(--teal-main);'>🎯 已更新目標！每日建議攝取：${tdee} KCAL</span>`;
+    checkCurrentIddsiRisk();
+}
+
+function updateRingProgress(elementId, value, targetMax) {
+    const percentage = Math.min((value / targetMax) * 100, 100);
+    const element = document.getElementById(elementId);
+    if(element) {
+        const activeColor = elementId.includes('teal') || elementId.includes('single') ? '#0d9488' : '#d97706';
+        element.style.background = `conic-gradient(${activeColor} 0% ${percentage}%, #f1f5f9 ${percentage}% 100%)`;
+    }
+}
+
+function generateIddsiBadgeHTML(iddsiRaw) {
+    if (!iddsiRaw) return `<span class="iddsi-badge" style="background-color:#9ca3af; color:white;">未指定</span>`;
+    let cleanKey = iddsiRaw.toString().trim();
+    let match = cleanKey.match(/\d+/);
+    let lookupKey = match ? match[0] : "1";
+    if (cleanKey.toUpperCase().includes("7EC")) lookupKey = "7EC";
+    const config = IDDSI_COLORS[lookupKey] || { bg: "#666666", text: "#ffffff", label: `Level ${iddsiRaw}` };
+    let borderStyle = lookupKey === "0" ? "border: 1px solid #cbd5e1;" : "";
+    return `<span class="iddsi-badge" style="background-color: ${config.bg}; color: ${config.text}; ${borderStyle}">${config.label}</span>`;
+}
+
+function toggleScanEffects(show) {
+    const scanLine = document.getElementById("scannerLine");
+    if(scanLine) scanLine.style.display = show ? "block" : "none";
+}
+
+function processAndPreviewImage(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    document.getElementById("preview-img").src = URL.createObjectURL(file);
+    document.getElementById("previewWrapper").style.display = "block"; 
+    document.getElementById("uploadBtn").style.display = "block";
+    document.getElementById("uploadLabel").innerText = `🔄 已選: ${file.name.substring(0,8)}...`;
+    toggleScanEffects(false);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function(event) {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = function() {
+            const canvas = document.getElementById("processedCanvas");
+            const ctx = canvas.getContext("2d");
+            let maxW = 640;
+            let targetW = img.width;
+            let targetH = img.height;
+            if (targetW > maxW) {
+                targetH = Math.round((maxW / targetW) * targetH);
+                targetW = maxW;
+            }
+            canvas.width = targetW;
+            canvas.height = targetH;
+            
+            ctx.filter = "brightness(1.10) contrast(1.15) saturate(1.10)"; 
+            ctx.drawImage(img, 0, 0, targetW, targetH);
+            processedBase64 = canvas.toDataURL("image/jpeg", 0.85);
+        }
+    }
+}
+
+async function uploadAndDetectFood() {
+    const resultDiv = document.getElementById("result");
+    const uploadBtn = document.getElementById("uploadBtn");
+    if (!processedBase64) return alert("請先選擇圖片！");
+    resultDiv.className = "status-bar-banner";
+    resultDiv.innerHTML = "🔄 正在經由安全通道上傳影像至雲端中轉站...";
+    uploadBtn.disabled = true;
+    uploadBtn.innerText = "⏳ 識別中...";
+    toggleScanEffects(true);
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: "uploadAndDetect",
+                image: processedBase64
+            })
+        });
+        if (!response.ok) throw new Error(`GAS 雲端中轉伺服器無回應 (${response.status})`);
+        
+        const resData = await response.json();
+        if (resData.success && resData.foodName) {
+            const foodName = resData.foodName.trim();
+            resultDiv.innerHTML = `<span style='color:#10b981;'>🧠 AI 辨識成功：${foodName}</span>`;
+            document.getElementById("foodSearchInput").value = foodName;
+            
+            await searchFoodText();
+        } else {
+            throw new Error(resData.error || "GAS 中轉服務端未能順利解析出有效的食物名稱變數。");
+        }
+
+    } catch (err) {
+        console.error(err);
+        resultDiv.className = "status-bar-banner alert-danger";
+        resultDiv.innerHTML = `❌ 辨識失敗：${err.message}`;
+        toggleScanEffects(false); 
+    } finally {
+        uploadBtn.disabled = false;
+        uploadBtn.innerText = "🚀 AI 辨識食物";
+    }
+}
+
+function initSpeechAPI() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        document.getElementById('micStatus').innerText = "瀏覽器不支援語音";
+        document.getElementById('micBtn').disabled = true;
+        return;
+    }
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.lang = 'zh-HK'; 
+    recognition.interimResults = false;
+    recognition.onstart = () => {
+        isRecording = true;
+        document.getElementById('micIcon').className = "fa-solid fa-microphone-lines";
+        document.getElementById('micBtn').classList.add('mic-recording');
+        document.getElementById('micStatus').innerText = "聆聽中...";
+    };
+
+    recognition.onend = () => {
+        isRecording = false;
+        document.getElementById('micIcon').className = "fa-solid fa-microphone";
+        document.getElementById('micBtn').classList.remove('mic-recording');
+        document.getElementById('micStatus').innerText = "點擊開始錄音";
+    };
+
+    recognition.onresult = async (event) => {
+        let transcript = event.results[0][0].transcript;
+        if(transcript.endsWith('。')) transcript = transcript.slice(0, -1);
+        document.getElementById("foodSearchInput").value = transcript;
+        await searchFoodText();
+    };
+}
+
+function toggleVoiceRecognition() {
+    if (!recognition) return;
+    if (isRecording) { recognition.stop(); } else { recognition.start(); }
+}
+
+function parseValue(val) {
+    if (!val) return 0;
+    let num = parseFloat(val.toString().replace(/[^\d.-]/g, ''));
+    return isNaN(num) ? 0 : num;
+}
+
+function formatOutput(num) { return Number(num.toFixed(2)).toString(); }
+
+function startSpeechTracking(type) {
+    alert(`[Lohas AI ST] 正在啟動 MediaPipe 舌肌追蹤與語音辨識訓練。類型：${type}`);
+}
+
+function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
+    const cleanLevel = parseIddsiLevel(iddsiVal);
+    if (cleanLevel !== 5) {
+        const oldCard = document.getElementById("st-adaptive-training-card");
+        if (oldCard) oldCard.remove();
+        return;
+    }
+
+    console.log(`[Adaptive Trigger] 檢測到 IDDSI Level 5 餐食: ${foodName}`);
+    const resultDiv = document.getElementById("result");
+
+    const targetSelect = document.getElementById("user-iddsi-target");
+    const allowedLevel = targetSelect.value === "7EC" ? 7 : parseInt(targetSelect.value);
+    if (allowedLevel < 5) {
+        resultDiv.className = "status-bar-banner alert-danger";
+        resultDiv.innerHTML = `⚠️ 吞嚥風險危險！長者最高限制為 Level ${targetSelect.value}，當前餐食已超出界限！`;
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        return; 
+    }
+
+    resultDiv.style.background = "#ffedd5";
+    resultDiv.style.color = "#c2410c";
+    resultDiv.innerHTML = `💡 <b>進食指導 (Level 5)</b>：${foodName}為細碎濕軟食物，請每口分量不超過一茶匙，慢慢吞嚥。`;
+    
+    if ('speechSynthesis' in window) {
+        const msg = new SpeechSynthesisUtterance(`${foodName}屬於細碎濕軟食物，請長者每口食一茶匙，慢慢吞。`);
+        msg.lang = 'zh-HK';
+        window.speechSynthesis.speak(msg);
+    }
+
+    let histBox = document.getElementById("history");
+    const lastRecord = histBox.firstElementChild;
+    if (lastRecord) {
+        lastRecord.style.borderLeft = "4px solid #ff6600";
+        lastRecord.innerHTML += `<div style="font-size: 11px; color: #c2410c; margin-top:4px;"><i class="fa-solid fa-user-shield"></i> 照護備忘：啟動 Level 5 餵飼輔助防哽噎監察。</div>`;
+    }
+
+    const trainingCardId = "st-adaptive-training-card";
+    let trainingCard = document.getElementById(trainingCardId);
+    if (!trainingCard) {
+        trainingCard = document.createElement("div");
+        trainingCard.id = trainingCardId;
+        trainingCard.className = "ui-card";
+        trainingCard.style.border = "1px solid #ff6600";
+        document.getElementById("singleQueryResultCard").insertAdjacentElement('afterend', trainingCard);
+    }
+    trainingCard.innerHTML = `
+        <h3 style="color: #ff6600;"><i class="fa-solid fa-brain"></i> 言語治療復康連動訓練 (Level 5 專屬)</h3>
+        <p style="font-size: 13px; color: var(--text-main); margin: 0 0 10px 0;">進食 <b>${foodName}</b> 前，建議先進行 3 分鐘<b>「舌肌力量與兩頰協調度訓練」</b>以活化吞嚥反射。</p>
+        <button class="calc-btn" style="background: #ff6600;" onclick="startSpeechTracking('level5_tongue')">🎯 開啟 AI 表情追蹤：啟動舌部復康練習</button>
+    `;
+}
+
+async function reportDataToGoogleSheetAnalysis(payload) {
+    try {
+        fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: "logRecord",
+                data: payload
+            })
+        });
+    } catch(e) {
+        console.error("雲端上報背景同步失敗:", e);
+    }
+}
+
+async function searchFoodText() {
+    const rawQuery = document.getElementById("foodSearchInput").value.trim();
+    if (!rawQuery) return;
+    
+    let query = rawQuery.replace(/(食咗|飲咗|食left|飲left|幾口|一碗|半碗|大大半碗|大半碗|細碗|碟|個|餐|咗|左)/g, '').trim();
+    if(!query) query = rawQuery;
+
+    const resultDiv = document.getElementById("result");
+    resultDiv.className = "status-bar-banner";
+    resultDiv.innerHTML = "⏳ 正在搜尋雲端及本地數據庫...";
+    toggleScanEffects(true);
+    try {
+        let foodList = await getNutritionData();
+        let targetItem = foodList.find(item => {
+            let rawName = item["foodname"] || "";
+            let dbName = rawName.toString().toLowerCase().trim();
+            let q = query.toLowerCase().trim();
+            
+            if (!dbName) return false;
+            
+            let dbNormal = dbName.replace('爹', '嗲');
+            let qNormal = q.replace('爹', '嗲');
+            return dbNormal.includes(qNormal) || qNormal.includes(dbNormal) || 
+                   (qNormal.includes('牛肉') && dbNormal.includes('牛肉')) ||
+                   (qNormal.includes('麵') && dbNormal.includes('麵') && dbNormal.includes('牛肉')) ||
+                   (qNormal.includes('粥') && dbNormal.includes('粥')) ||
+                   (qNormal.includes('奶茶') && dbNormal.includes('奶茶'));
+        });
+        if (targetItem) {
+            resultDiv.innerHTML = "<span style='color:#10b981;'>✅ 數據比對匹配完成！</span>";
+            let fFoodName = targetItem["foodname"] || "未知食物";
+            let fCal = Math.round(parseValue(targetItem["calories"]));
+            let fGrams = parseValue(targetItem["grams"]);
+            let fProtein = parseValue(targetItem["protein"]);
+            let fCarbs = parseValue(targetItem["carbs"]);
+            let fFat = parseValue(targetItem["fat"]);
+            let fSugar = parseValue(targetItem["sugar"]);
+            let fSatFat = parseValue(targetItem["satfat"] || targetItem["saturatedfat"]);
+            let fTransFat = parseValue(targetItem["transfat"]);
+            let fCholesterol = parseValue(targetItem["cholesterol"]);
+            let fFiber = parseValue(targetItem["fiber"]);
+            let iddsiVal = targetItem["iddsi"] || "";
+            document.getElementById("single_foodname").innerText = fFoodName;
+            document.getElementById("single_cal").innerText = fCal;
+            document.getElementById("single_grams").innerText = formatOutput(fGrams) + "g";
+            document.getElementById("single_protein").innerText = formatOutput(fProtein) + "g";
+            document.getElementById("single_carbs").innerText = formatOutput(fCarbs) + "g";
+            document.getElementById("single_fat").innerText = formatOutput(fFat) + "g";
+            document.getElementById("single_sugar").innerText = formatOutput(fSugar) + "g";
+            document.getElementById("single_satFat").innerText = formatOutput(fSatFat) + "g";
+            document.getElementById("single_transFat").innerText = formatOutput(fTransFat) + "g";
+            document.getElementById("single_cholesterol").innerText = formatOutput(fCholesterol) + "mg";
+            document.getElementById("single_fiber").innerText = formatOutput(fFiber) + "g";
+            document.getElementById("single_iddsiMain").innerHTML = generateIddsiBadgeHTML(iddsiVal);
+            updateRingProgress("single_ring_progress", fCal, dailyTargets.cal);
+            let singlePct = Math.round((fCal / dailyTargets.cal) * 100);
+            document.getElementById("single-pct-lbl").innerText = `佔每日目標：${singlePct}%`;
+
+            cal += fCal; grams += fGrams;
+            protein += fProtein; carbs += fCarbs; fat += fFat;
+            sugar += fSugar; satFat += fSatFat; transFat += fTransFat;
+            cholesterol += fCholesterol; fiber += fFiber;
+            recordCount += 1;
+            if (iddsiVal) {
+                if (maxIddsiText === "-") {
+                    maxIddsiText = iddsiVal;
+                } else {
+                    let currentMaxLevel = parseIddsiLevel(maxIddsiText);
+                    let newLevel = parseIddsiLevel(iddsiVal);
+                    if (newLevel > currentMaxLevel) {
+                        maxIddsiText = iddsiVal;
+                    }
+                }
+            }
+
+            document.getElementById("meta-cal-total").innerText = cal;
+            document.getElementById("meta-grams-total").innerText = Math.round(grams);
+            document.getElementById("meta-count-total").innerText = recordCount;
+            document.getElementById("meta-iddsi-highest").innerText = maxIddsiText;
+
+            document.getElementById("cal").innerText = cal;
+            document.getElementById("grams").innerText = formatOutput(grams) + "g";
+            document.getElementById("protein").innerText = formatOutput(protein);
+            document.getElementById("carbs").innerText = formatOutput(carbs);
+            document.getElementById("fat").innerText = formatOutput(fat);
+            document.getElementById("sugar").innerText = formatOutput(sugar) + "g";
+            document.getElementById("satFat").innerText = formatOutput(satFat) + "g";
+            document.getElementById("transFat").innerText = formatOutput(transFat) + "g";
+            document.getElementById("cholesterol").innerText = formatOutput(cholesterol) + "mg";
+            document.getElementById("fiber").innerText = formatOutput(fiber) + "g";
+            document.getElementById("iddsiMain").innerHTML = generateIddsiBadgeHTML(iddsiVal);
+            updateRingProgress("total_ring_progress", cal, dailyTargets.cal);
+            let totalPct = Math.round((cal / dailyTargets.cal) * 100);
+            document.getElementById("total-pct-lbl").innerText = `全天達標率：${totalPct}%`;
+
+            let histBox = document.getElementById("history");
+            if (histBox.innerText === "尚無餐食記錄數據") histBox.innerHTML = "";
+            
+            histBox.insertAdjacentHTML('afterbegin', `
+                <div class="history-item-row">
+                    <div>
+                        <strong>${fFoodName} (${formatOutput(fGrams)}g)</strong><br>
+                        <div style="margin-top: 4px;">${generateIddsiBadgeHTML(iddsiVal)}</div>
+                    </div>
+                    <span style="color:var(--teal-main); font-weight:700;">+${fCal} KCAL</span>
+                </div>`);
+            weeklyData[weeklyData.length - 1] = cal;
+            drawChart();
+            
+            let isRiskTriggered = checkCurrentIddsiRisk();
+            
+            triggerIddsiAdaptiveMechanism(iddsiVal, fFoodName);
+            await reportDataToGoogleSheetAnalysis({
+                operator_id: currentOperatorId,
+                food_name: fFoodName,
+                grams: fGrams,
+                calories: fCal,
+                protein: fProtein,
+                carbs: fCarbs,
+                fat: fFat,
+                iddsi_level: parseIddsiLevel(iddsiVal),
+                risk_alert: isRiskTriggered
+            });
+            document.getElementById("foodSearchInput").value = "";
+            document.getElementById("previewWrapper").style.display = "none";
+            document.getElementById("uploadBtn").style.display = "none";
+            document.getElementById("uploadLabel").innerText = "📸 拍攝/選擇相片";
+            processedBase64 = ""; 
+            toggleScanEffects(false);
+            document.getElementById("singleQueryResultCard").scrollIntoView({ behavior: 'smooth' });
+        } else {
+            resultDiv.className = "status-bar-banner alert-danger";
+            resultDiv.innerHTML = `⚠️ 未在數據庫中找到符合「${query}」的物件。`;
+            toggleScanEffects(false); 
+        }
+    } catch (err) { 
+        resultDiv.className = "status-bar-banner alert-danger";
+        resultDiv.innerText = "❌ 讀取失敗，請檢查網絡連結。";
+        toggleScanEffects(false);
+    }
+}
+
+function toggleNutritionPanel() {
+    let panel = document.getElementById("nutritionTotalPanel");
+    if (panel.style.display === "none" || panel.style.display === "") {
+        panel.style.display = "block";
+        panel.scrollIntoView({ behavior: 'smooth' });
+    } else {
+        panel.style.display = "none";
+    }
+}
+
+function drawChart() {
+    let gridX = document.getElementById("chartGridX");
+    if (!gridX) return;
+    gridX.innerHTML = "";
+    let stepX = 260 / (weeklyData.length - 1);
+    let pts = [];
+    const dayLabels = ["一", "二", "三", "四", "五", "六", "日"];
+    weeklyData.forEach((val, idx) => {
+        let x = 20 + idx * stepX;
+        let y = 46 - (val / 2500 * 24);
+        pts.push(`${x},${y}`);
+
+        let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", x);
+        circle.setAttribute("cy", y);
+        circle.setAttribute("r", "3.5");
+        circle.setAttribute("fill", "#ffffff");
+        circle.setAttribute("stroke", "#0d9488");
+        circle.setAttribute("stroke-width", "2");
+        gridX.appendChild(circle);
+
+        let textVal = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        textVal.setAttribute("x", x);
+        textVal.setAttribute("y", y - 7);
+        textVal.setAttribute("text-anchor", "middle");
+        textVal.setAttribute("font-size", "8.5px");
+        textVal.setAttribute("fill", "#d97706");
+        textVal.setAttribute("font-weight", "bold");
+        textVal.textContent = val + "卡";
+        gridX.appendChild(textVal);
+
+        let textDay = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        textDay.setAttribute("x", x);
+        textDay.setAttribute("y", "59");
+        textDay.setAttribute("text-anchor", "middle");
+        textDay.setAttribute("font-size", "10px");
+        textDay.setAttribute("fill", "#6b7280");
+        textDay.textContent = dayLabels[idx] || (idx + 1);
+        gridX.appendChild(textDay);
+    });
+
+    document.getElementById("chartPathLine").setAttribute("d", "M " + pts.join(" L "));
+}
+
+window.onload = () => {
+    localStorage.removeItem("lohas_nutrition_cache");
+    calculatePersonalTargets();
+    drawChart();
+    initSpeechAPI();
+};
+</script>
+</body>
+</html>
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
