@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="樂活健康管理">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2642/2642731.png">
+    <link class="apple-touch-icon" rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2642/2642731.png">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -128,6 +128,7 @@
             display: inline-block;
         }
 
+        /* 彈窗 UI */
         .login-modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -628,6 +629,46 @@
         }
 
         #nutritionTotalPanel { display: none; }
+
+        /* 自訂美化對話框 */
+        .custom-popup-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: all 0.25s ease;
+        }
+        .custom-popup-overlay.active {
+            opacity: 1; pointer-events: auto;
+        }
+        .custom-popup-box {
+            background: #ffffff;
+            width: 85%; max-width: 320px;
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15);
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .popup-title {
+            font-weight: 700; font-size: 16px; color: var(--text-main); margin-bottom: 8px;
+        }
+        .popup-desc {
+            font-size: 13px; color: var(--text-sub); margin-bottom: 20px; line-height: 1.4;
+        }
+        .popup-btn-group {
+            display: flex; gap: 10px; justify-content: center;
+        }
+        .popup-btn {
+            padding: 8px 18px; border-radius: 10px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; flex: 1;
+        }
+        .popup-btn-confirm { background: var(--teal-main); color: white; }
+        .popup-btn-cancel { background: #f1f5f9; color: var(--text-sub); }
     </style>
 </head>
 <body>
@@ -641,7 +682,7 @@
         <div class="app-header-info">
             <h1>樂活健康管理系統</h1>
             <p>智能飲食與吞嚥安全雲端監測平台</p>
-            <span class="badge-version">v3.6 Dynamic Consolidated Edition</span>
+            <span class="badge-version">v3.7 Dynamic Auto-Recovery Edition</span>
         </div>
         <button id="loginBadgeBtn" class="login-badge-btn" onclick="handleAuthAction()">
             <i id="loginIcon" class="fa-solid fa-user-lock"></i> <span id="operatorDisplay">職員登入</span>
@@ -808,7 +849,7 @@
             <div class="sub-macro-cell"><span>🔒 飽和脂肪</span><span id="single_satFat">0g</span></div>
             <div class="sub-macro-cell"><span>⚠️ 反式脂肪</span><span id="single_transFat">0g</span></div>
             <div class="sub-macro-cell"><span>🍳 膽固醇</span><span id="single_cholesterol">0mg</span></div>
-            <div class="sub-macro-cell"><span>🌿 膳膳食纖維</span><span id="single_fiber">0g</span></div>
+            <div class="sub-macro-cell"><span>🌿 膳食纖維</span><span id="single_fiber">0g</span></div>
         </div>
     </div>
 
@@ -862,11 +903,112 @@
 
 </div>
 
+<!-- 彈出式對話框模組 -->
+<div id="customPopup" class="custom-popup-overlay">
+    <div class="custom-popup-box">
+        <div id="customPopupTitle" class="popup-title">系統提示</div>
+        <div id="customPopupDesc" class="popup-desc">內容訊息</div>
+        <div class="popup-btn-group">
+            <button id="customPopupCancel" class="popup-btn popup-btn-cancel">取消</button>
+            <button id="customPopupConfirm" class="popup-btn popup-btn-confirm">確定</button>
+        </div>
+    </div>
+</div>
+
 <canvas id="processedCanvas" style="display:none;"></canvas>
 
 <script>
-// 🚀 已成功替換為你專屬的 Google Apps Script 雲端 API 節點
+// 🚀 港式雲端 API 節點
 const API_URL = "https://script.google.com/macros/s/AKfycbwOgthCxMHgU-7nsuYd91AMSWUrr48qU8pm02j4qCYk_TE5nN7dJOB_o5nrUc932kZr/exec";
+
+// 💡 茶餐廳本地備用數據庫 (防止雲端數據未加載完全、或網路異常造成 "找不到物件")
+const LOCAL_FALLBACK_DATABASE = [
+    {
+        "foodname": "港式西多士 (Level 6)",
+        "calories": 420,
+        "grams": 150,
+        "protein": 8.5,
+        "carbs": 42.0,
+        "fat": 24.0,
+        "sugar": 12.0,
+        "satfat": 6.5,
+        "transfat": 0.2,
+        "cholesterol": 110,
+        "fiber": 1.5,
+        "iddsi": "6"
+    },
+    {
+        "foodname": "港式西多士 (Level 5 剁碎及濕軟)",
+        "calories": 380,
+        "grams": 150,
+        "protein": 7.8,
+        "carbs": 38.0,
+        "fat": 21.0,
+        "sugar": 11.0,
+        "satfat": 5.8,
+        "transfat": 0.15,
+        "cholesterol": 95,
+        "fiber": 1.2,
+        "iddsi": "5"
+    },
+    {
+        "foodname": "港式鴛鴦 (Level 2)",
+        "calories": 135,
+        "grams": 250,
+        "protein": 3.8,
+        "carbs": 16.2,
+        "fat": 5.8,
+        "sugar": 12.5,
+        "satfat": 2.2,
+        "transfat": 0,
+        "cholesterol": 12,
+        "fiber": 0,
+        "iddsi": "2"
+    },
+    {
+        "foodname": "凍鴛鴦 (Level 2)",
+        "calories": 140,
+        "grams": 250,
+        "protein": 3.5,
+        "carbs": 17.0,
+        "fat": 6.0,
+        "sugar": 14.0,
+        "satfat": 2.3,
+        "transfat": 0,
+        "cholesterol": 12,
+        "fiber": 0,
+        "iddsi": "2"
+    },
+    {
+        "foodname": "港式奶茶 (Level 2)",
+        "calories": 115,
+        "grams": 250,
+        "protein": 3.0,
+        "carbs": 14.5,
+        "fat": 4.8,
+        "sugar": 10.2,
+        "satfat": 1.8,
+        "transfat": 0,
+        "cholesterol": 8,
+        "fiber": 0,
+        "iddsi": "2"
+    },
+    {
+        "foodname": "凍檸檬茶 (Level 1)",
+        "calories": 85,
+        "grams": 250,
+        "protein": 0.2,
+        "carbs": 21.0,
+        "fat": 0,
+        "sugar": 19.5,
+        "satfat": 0,
+        "transfat": 0,
+        "cholesterol": 0,
+        "fiber": 0.5,
+        "iddsi": "1"
+    }
+];
+
 const IDDSI_COLORS = {
     "0": { bg: "#ffffff", text: "#000000", label: "Level 0 微稠 (White)" },
     "1": { bg: "#666666", text: "#ffffff", label: "Level 1 極微 (Grey)" },
@@ -892,6 +1034,65 @@ let cachedNutritionData = null;
 
 let currentOperatorId = "Guest_User"; 
 let captchaCode = "";
+
+// 🎴 精美自訂彈窗
+function showPopupAlert(title, message, onConfirm = null) {
+    const popup = document.getElementById("customPopup");
+    document.getElementById("customPopupTitle").innerText = title;
+    document.getElementById("customPopupDesc").innerText = message;
+    
+    const confirmBtn = document.getElementById("customPopupConfirm");
+    const cancelBtn = document.getElementById("customPopupCancel");
+    
+    cancelBtn.style.display = "none"; 
+    
+    const cleanListeners = () => {
+        const newConfirm = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
+    };
+    
+    cleanListeners();
+    
+    document.getElementById("customPopupConfirm").addEventListener("click", () => {
+        popup.classList.remove("active");
+        if (onConfirm) onConfirm();
+    });
+    
+    popup.classList.add("active");
+}
+
+function showPopupConfirm(title, message, onConfirm, onCancel = null) {
+    const popup = document.getElementById("customPopup");
+    document.getElementById("customPopupTitle").innerText = title;
+    document.getElementById("customPopupDesc").innerText = message;
+    
+    const confirmBtn = document.getElementById("customPopupConfirm");
+    const cancelBtn = document.getElementById("customPopupCancel");
+    
+    cancelBtn.style.display = "block";
+    
+    const cleanListeners = () => {
+        const newConfirm = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
+        const newCancel = cancelBtn.cloneNode(true);
+        cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
+    };
+    
+    cleanListeners();
+    
+    document.getElementById("customPopupConfirm").addEventListener("click", () => {
+        popup.classList.remove("active");
+        if (onConfirm) onConfirm();
+    });
+    
+    document.getElementById("customPopupCancel").addEventListener("click", () => {
+        popup.classList.remove("active");
+        if (onCancel) onCancel();
+    });
+    
+    popup.classList.add("active");
+}
+
 function drawCaptcha() {
     const canvas = document.getElementById("captchaCanvas");
     if (!canvas) return;
@@ -921,15 +1122,12 @@ function drawCaptcha() {
     }
 }
 
-// 💡 智慧認證與登出決策控制核心
 function handleAuthAction() {
     if (currentOperatorId !== "Guest_User") {
-        // 🔒 已登入狀態 ➡️ 直接執行登出確認機制
-        if (confirm(`當前登入人員為 [ ${currentOperatorId} ]，確定要登出系統嗎？`)) {
+        showPopupConfirm("安全登出提示", `當前登入人員為 [ ${currentOperatorId} ]，確定要安全登出系統嗎？`, () => {
             executeLogoutProcedure();
-        }
+        });
     } else {
-        // 🔑 未登入狀態 ➡️ 開啟安全登入彈窗
         openLoginModal();
     }
 }
@@ -948,16 +1146,16 @@ function submitLoginAuth() {
     const staffId = document.getElementById("staffIdInput").value.trim();
     const userInput = document.getElementById("captchaInput").value.trim();
     const resultDiv = document.getElementById("result");
-    if (!staffId) return alert("請輸入職員編號！");
+    if (!staffId) return showPopupAlert("認證失敗", "請輸入職員編號！");
     
     if (userInput !== captchaCode) {
-        alert("驗證碼輸入錯誤，請重試！");
-        drawCaptcha();
+        showPopupAlert("認證失敗", "驗證碼輸入錯誤，請重試！", () => {
+            drawCaptcha();
+        });
         return;
     }
     
     currentOperatorId = staffId;
-    // UI 反饋更新：更換為解鎖打勾圖示與高亮翠綠色
     const badgeBtn = document.getElementById("loginBadgeBtn");
     badgeBtn.className = "login-badge-btn logged-in";
     document.getElementById("operatorDisplay").innerText = `已登入: ${currentOperatorId}`;
@@ -969,10 +1167,8 @@ function submitLoginAuth() {
     closeLoginModal();
 }
 
-// 🔓 執行標準登出重設程序
 function executeLogoutProcedure() {
     currentOperatorId = "Guest_User";
-    // UI 反饋還原：還原為鎖頭圖示與標準青綠色
     const badgeBtn = document.getElementById("loginBadgeBtn");
     badgeBtn.className = "login-badge-btn";
     document.getElementById("operatorDisplay").innerText = "職員登入";
@@ -994,12 +1190,17 @@ async function getNutritionData() {
         }
     }
     
-    let res = await fetch(API_URL);
-    if (!res.ok) throw new Error("網絡傳輸異常");
-    let resData = await res.json();
-    cachedNutritionData = resData.nutrition_data || [];
-    localStorage.setItem("lohas_nutrition_cache", JSON.stringify(cachedNutritionData));
-    return cachedNutritionData;
+    try {
+        let res = await fetch(API_URL);
+        if (!res.ok) throw new Error("網絡傳輸異常");
+        let resData = await res.json();
+        cachedNutritionData = resData.nutrition_data || [];
+        localStorage.setItem("lohas_nutrition_cache", JSON.stringify(cachedNutritionData));
+        return cachedNutritionData;
+    } catch(err) {
+        console.warn("無法與雲端數據庫通訊，啟用本地備份庫。");
+        return [];
+    }
 }
 
 function parseIddsiLevel(iddsiRaw) {
@@ -1124,7 +1325,7 @@ function processAndPreviewImage(input) {
 async function uploadAndDetectFood() {
     const resultDiv = document.getElementById("result");
     const uploadBtn = document.getElementById("uploadBtn");
-    if (!processedBase64) return alert("請先選擇圖片！");
+    if (!processedBase64) return showPopupAlert("提示", "請先選擇圖片！");
     resultDiv.className = "status-bar-banner";
     resultDiv.innerHTML = "🔄 正在經由安全通道上傳影像至雲端中轉站...";
     uploadBtn.disabled = true;
@@ -1209,7 +1410,7 @@ function parseValue(val) {
 function formatOutput(num) { return Number(num.toFixed(2)).toString(); }
 
 function startSpeechTracking(type) {
-    alert(`[Lohas AI ST] 正在啟動 MediaPipe 舌肌追蹤與語音辨識訓練。類型：${type}`);
+    showPopupAlert("舌部追蹤", `[Lohas AI ST] 正在啟動 MediaPipe 舌肌追蹤與語音辨識訓練。類型：${type}`);
 }
 
 function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
@@ -1290,9 +1491,19 @@ async function searchFoodText() {
     resultDiv.className = "status-bar-banner";
     resultDiv.innerHTML = "⏳ 正在搜尋雲端及本地數據庫...";
     toggleScanEffects(true);
+    
     try {
-        let foodList = await getNutritionData();
-        let targetItem = foodList.find(item => {
+        let cloudList = [];
+        try {
+            cloudList = await getNutritionData();
+        } catch (e) {
+            console.warn("無法加載雲端資料庫，將僅使用本地備用數據庫。");
+        }
+
+        // 結合雲端與本地備用資料庫 (確保「西多士」與「鴛鴦」能被查找到)
+        let combinedList = [...cloudList, ...LOCAL_FALLBACK_DATABASE];
+
+        let targetItem = combinedList.find(item => {
             let rawName = item["foodname"] || "";
             let dbName = rawName.toString().toLowerCase().trim();
             let q = query.toLowerCase().trim();
@@ -1301,12 +1512,18 @@ async function searchFoodText() {
             
             let dbNormal = dbName.replace('爹', '嗲');
             let qNormal = q.replace('爹', '嗲');
+            
+            // 進行全方面港式簡稱與全稱的多向交叉模糊匹配
             return dbNormal.includes(qNormal) || qNormal.includes(dbNormal) || 
                    (qNormal.includes('牛肉') && dbNormal.includes('牛肉')) ||
                    (qNormal.includes('麵') && dbNormal.includes('麵') && dbNormal.includes('牛肉')) ||
                    (qNormal.includes('粥') && dbNormal.includes('粥')) ||
-                   (qNormal.includes('奶茶') && dbNormal.includes('奶茶'));
+                   (qNormal.includes('奶茶') && dbNormal.includes('奶茶')) ||
+                   (qNormal.includes('西多') && dbNormal.includes('西多')) ||
+                   (qNormal.includes('多士') && dbNormal.includes('多士')) ||
+                   (qNormal.includes('鴛鴦') && (dbNormal.includes('鴛鴦') || dbNormal.includes('奶茶')));
         });
+
         if (targetItem) {
             resultDiv.innerHTML = "<span style='color:#10b981;'>✅ 數據比對匹配完成！</span>";
             let fFoodName = targetItem["foodname"] || "未知食物";
@@ -1321,6 +1538,8 @@ async function searchFoodText() {
             let fCholesterol = parseValue(targetItem["cholesterol"]);
             let fFiber = parseValue(targetItem["fiber"]);
             let iddsiVal = targetItem["iddsi"] || "";
+
+            // 更新本次營養細目
             document.getElementById("single_foodname").innerText = fFoodName;
             document.getElementById("single_cal").innerText = fCal;
             document.getElementById("single_grams").innerText = formatOutput(fGrams) + "g";
@@ -1410,9 +1629,25 @@ async function searchFoodText() {
             toggleScanEffects(false);
             document.getElementById("singleQueryResultCard").scrollIntoView({ behavior: 'smooth' });
         } else {
+            // ❌ 搜尋失敗：顯示警告，並重設下方餐食卡片
             resultDiv.className = "status-bar-banner alert-danger";
             resultDiv.innerHTML = `⚠️ 未在數據庫中找到符合「${query}」的物件。`;
             toggleScanEffects(false); 
+
+            document.getElementById("single_foodname").innerText = "查無此餐食資料";
+            document.getElementById("single_cal").innerText = "0";
+            document.getElementById("single_grams").innerText = "0g";
+            document.getElementById("single_protein").innerText = "0g";
+            document.getElementById("single_carbs").innerText = "0g";
+            document.getElementById("single_fat").innerText = "0g";
+            document.getElementById("single_sugar").innerText = "0g";
+            document.getElementById("single_satFat").innerText = "0g";
+            document.getElementById("single_transFat").innerText = "0g";
+            document.getElementById("single_cholesterol").innerText = "0mg";
+            document.getElementById("single_fiber").innerText = "0g";
+            document.getElementById("single_iddsiMain").innerHTML = generateIddsiBadgeHTML(null);
+            updateRingProgress("single_ring_progress", 0, dailyTargets.cal);
+            document.getElementById("single-pct-lbl").innerText = `佔每日目標：0%`;
         }
     } catch (err) { 
         resultDiv.className = "status-bar-banner alert-danger";
