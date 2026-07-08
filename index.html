@@ -864,8 +864,7 @@ async function getNutritionData() {
     if (cachedNutritionData) return cachedNutritionData;
     const localCached = localStorage.getItem("lohas_nutrition_cache");
     if (localCached) {
-        try { cachedNutritionData = JSON.parse(localCached);
-        return cachedNutritionData; } catch(e) { localStorage.removeItem("lohas_nutrition_cache"); }
+        try { cachedNutritionData = JSON.parse(localCached); return cachedNutritionData; } catch(e) { localStorage.removeItem("lohas_nutrition_cache"); }
     }
     let res = await fetch(API_URL);
     let resData = await res.json();
@@ -1081,68 +1080,22 @@ async function reportDataToGoogleSheetAnalysis(payload) {
     }
 }
 
-// 💡 核心優化：整合並自動適應 Level 1-7 機制
 function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
     const cleanLevel = parseIddsiLevel(iddsiVal);
     
-    // 定義 Level 1 至 7 的完整對應配置（包含動態島、廣東話語音、復康訓練卡片標題及訓練內容）
+    // 定義 Level 1 至 7 的對應配置與提示語
     const iddsiConfigs = {
-        1: { 
-            island: "為微稠流質，慢慢飲用。", 
-            speech: "屬於微稠流質，請長者慢慢飲。",
-            title: "言語治療復康訓練 (Level 1 流質控制)",
-            content: `飲用 <b>${foodName}</b> 前，建議先進行 2 分鐘<b>「點頭吞嚥法」</b>姿勢調整，降低誤吸風險。`,
-            param: "level1_posture",
-            color: "var(--apple-gray)"
-        },
-        2: { 
-            island: "為輕度稠流質，慢慢飲用。", 
-            speech: "屬於輕度稠流質，好似花奶咁，請長者慢慢飲。",
-            title: "言語治療復康訓練 (Level 2 慢吞練習)",
-            content: `飲用 <b>${foodName}</b> 前，建議引導長者配合<b>「用力吞嚥法」</b>，確保流質順暢通過。`,
-            param: "level2_swallow",
-            color: "#ea4e96"
-        },
-        3: { 
-            island: "為中度稠/化蜜狀食物。", 
-            speech: "屬於中度稠或者化蜜狀食物，可以用匙羹食，請長者慢慢吞。",
-            title: "言語治療復康訓練 (Level 3 匙羹進食)",
-            content: `進食 <b>${foodName}</b> 時，請注意每口份量，建議進行 2 分鐘<b>「下巴下壓吞嚥練習」</b>。`,
-            param: "level3_chin_tuck",
-            color: "#FFCC00"
-        },
-        4: { 
-            island: "為高度稠/均質糊狀食物，無粒粒。", 
-            speech: "屬於均質糊狀食物，質地幼滑無粒粒，請長者用匙羹慢慢食。",
-            title: "言語治療復康訓練 (Level 4 糊狀進食指導)",
-            content: `進食 <b>${foodName}</b> 前，建議進行 3 分鐘<b>「聲門上吞嚥法練習」</b>以安全保護氣道。`,
-            param: "level4_supraglottic",
-            color: "var(--apple-green)"
-        },
+        1: { island: "為微稠流質，慢慢飲用。", speech: "屬於微稠流質，請長者慢慢飲。" },
+        2: { island: "為輕度稠流質，慢慢飲用。", speech: "屬於輕度稠流質，好似花奶咁，請長者慢慢飲。" },
+        3: { island: "為中度稠/化蜜狀食物。", speech: "屬於中度稠或者化蜜狀食物，可以用匙羹食，請長者慢慢吞。" },
+        4: { island: "為高度稠/均質糊狀食物，無粒粒。", speech: "屬於均質糊狀食物，質地幼滑無粒粒，請長者用匙羹慢慢食。" },
         5: { 
             island: "為細碎濕軟食物，慢慢吞嚥。", 
             speech: "屬於細碎濕軟食物，請長者每口食一茶匙，慢慢吞。",
-            title: "言語治療復康訓練 (Level 5 專屬)",
-            content: `進食 <b>${foodName}</b> 前，建議先進行 3 分鐘<b>「舌肌力量練習」</b>以活化吞嚥反射。`,
-            param: "level5_tongue",
-            color: "var(--apple-orange)"
+            hasTrainingCard: true 
         },
-        6: { 
-            island: "為軟質及細塊食物，注意咀嚼。", 
-            speech: "屬於軟質細塊食物，食物已經切細，請長者慢慢咬碎再吞。",
-            title: "言語治療復康訓練 (Level 6 咀嚼協調強化)",
-            content: `進食 <b>${foodName}</b> 時，引導長者雙側交替咀嚼，並進行 3 分鐘<b>「頰肌與咀嚼肌按壓放鬆」</b>。`,
-            param: "level6_chew",
-            color: "#0067b2"
-        },
-        7: { 
-            island: "為普通/容易咀嚼食物。", 
-            speech: "屬於普通或者容易咀嚼食物，請長者保持專心，慢慢食。",
-            title: "言語治療復康訓練 (Level 7 全面進食監控)",
-            content: `進食 <b>${foodName}</b> 時，請注意長者坐姿保持直立 90 度，進食後 30 分鐘內切勿立即臥床。`,
-            param: "level7_posture",
-            color: "var(--text-main)"
-        }
+        6: { island: "為軟質及細塊食物，注意咀嚼。", speech: "屬於軟質細塊食物，食物已經切細，請長者慢慢咬碎再吞。" },
+        7: { island: "為普通/容易咀嚼食物。", speech: "屬於普通或者容易咀嚼食物，請長者保持專心，慢慢食。" }
     };
 
     // 如果輸入的 Level 不在 1-7 範圍內，清除舊卡片並結束
@@ -1154,34 +1107,38 @@ function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
 
     const currentConfig = iddsiConfigs[cleanLevel];
 
-    // 1. 觸發動態島提示
+    // 1. 觸發頂部動態島
     triggerDynamicIsland(`💡 進食指導 (Level ${cleanLevel})：${foodName}${currentConfig.island}`);
     
-    // 2. 本地語音朗讀 (粵語/香港)
+    // 2. 廣東話語音朗讀提示
     if ('speechSynthesis' in window) {
         const msg = new SpeechSynthesisUtterance(`${foodName}${currentConfig.speech}`);
         msg.lang = 'zh-HK';
         window.speechSynthesis.speak(msg);
     }
 
-    // 3. 創建或動態重構言語治療復康訓練擴展卡片
+    // 3. 處理專屬的言語治療復康訓練卡片 (原本 Level 5 的邏輯)
     const trainingCardId = "st-adaptive-training-card";
-    let trainingCard = document.getElementById(trainingCardId);
-    if (!trainingCard) {
-        trainingCard = document.createElement("div");
-        trainingCard.id = trainingCardId;
-        trainingCard.className = "ui-card";
-        document.getElementById("singleQueryResultCard").insertAdjacentElement('afterend', trainingCard);
+    if (currentConfig.hasTrainingCard) {
+        let trainingCard = document.getElementById(trainingCardId);
+        if (!trainingCard) {
+            trainingCard = document.createElement("div");
+            trainingCard.id = trainingCardId;
+            trainingCard.className = "ui-card";
+            trainingCard.style.border = "1px solid var(--apple-orange)";
+            document.getElementById("singleQueryResultCard").insertAdjacentElement('afterend', trainingCard);
+        }
+        trainingCard.innerHTML = `
+            <h3 style="color: var(--apple-orange);"><i class="fa-solid fa-brain"></i> 言語治療復康訓練 (Level ${cleanLevel} 專屬)</h3>
+            <p style="font-size: 13px;">進食 <b>${foodName}</b> 前，建議先進行 3 分鐘<b>「舌肌力量練習」</b>以活化吞嚥反射。</p>
+            <button class="apple-btn-primary" style="background: var(--apple-orange);"
+                onclick="startSpeechTracking('level${cleanLevel}_tongue')">🎯 開啟 AI 表情追蹤練習</button>
+        `;
+    } else {
+        // 如果不是 Level 5，則將先前產生的訓練卡片移除
+        const oldCard = document.getElementById(trainingCardId);
+        if (oldCard) oldCard.remove();
     }
-    
-    // 依據 IDDSI 顏色系統與對應參數動態渲染
-    trainingCard.style.border = `1px solid ${currentConfig.color}`;
-    trainingCard.innerHTML = `
-        <h3 style="color: ${currentConfig.color};"><i class="fa-solid fa-brain"></i> ${currentConfig.title}</h3>
-        <p style="font-size: 13px;">${currentConfig.content}</p>
-        <button class="apple-btn-primary" style="background: ${currentConfig.color}; color: ${cleanLevel === 3 ? '#000000' : '#ffffff'};"
-            onclick="startSpeechTracking('${currentConfig.param}')">🎯 開啟 AI 吞嚥與復康追蹤</button>
-    `;
 }
 
 // 🔍 搜尋與比對庫匹配引擎 (權重計分制精準度優化版，完全支援西多士、鴛鴦模糊搜尋與特殊括號過濾)
