@@ -59,7 +59,7 @@
             color: var(--text-main);
             display: flex;
             justify-content: center;
-            padding-bottom: 95px; 
+            padding-bottom: 95px;
         }
 
         .app-container {
@@ -72,7 +72,7 @@
             position: relative;
         }
 
-        /* Apple Health 頂部導航列 */
+        /* Apple Health 頂部歡迎與醫護簽到區塊 */
         .app-header-block {
             display: flex;
             justify-content: space-between;
@@ -119,7 +119,7 @@
             border-color: rgba(52, 199, 89, 0.2);
         }
 
-        /* Apple Glassmorphism 卡片 */
+        /* Apple Glassmorphism 卡片基底 */
         .ui-card {
             background: var(--bg-card);
             backdrop-filter: var(--blur-strength);
@@ -151,36 +151,37 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 今日概覽雙欄佈局 */
-        .health-grid-two-col {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+        /* 今日概覽大數字垂直卡片堆疊 (防範專業長標籤截斷) */
+        .health-summary-stack {
+            display: flex;
+            flex-direction: column;
             gap: 12px;
             margin-bottom: 16px;
         }
 
-        .summary-mini-card {
+        .summary-large-card {
             background: var(--bg-card);
             backdrop-filter: var(--blur-strength);
+            -webkit-backdrop-filter: var(--blur-strength);
             border-radius: var(--border-radius-large);
-            padding: 16px;
+            padding: 18px 20px;
             box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .summary-label {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--text-sub);
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
         }
 
         .summary-value {
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 700;
-            margin: 8px 0 2px 0;
+            margin: 10px 0 2px 0;
             letter-spacing: -0.5px;
         }
 
@@ -445,7 +446,7 @@
         }
         .apple-btn-primary:active { opacity: 0.8; }
 
-        /* 醫護安全通道驗證彈窗 */
+        /* 護理認證彈窗 */
         .login-modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -511,15 +512,16 @@
     </div>
 
     <div id="tab-home" class="tab-content active">
-        <div class="health-grid-two-col">
-            <div class="summary-mini-card">
+        <div class="health-summary-stack">
+            <div class="summary-large-card">
                 <div class="summary-label" style="color: var(--apple-orange);"><i class="fa-solid fa-flame"></i> 今日熱量</div>
                 <div class="summary-value" id="meta-cal-total" style="color: var(--apple-orange);">0</div>
                 <div class="summary-unit">KCAL / <span id="target-cal-lbl-mini">1600</span></div>
             </div>
-            <div class="summary-mini-card">
-                <div class="summary-label" style="color: var(--apple-blue);"><i class="fa-solid fa-bowl-food"></i> 吞嚥最高</div>
-                <div class="summary-value" id="meta-iddsi-highest" style="font-size: 18px; margin-top: 14px; margin-bottom: 6px;">-</div>
+            
+            <div class="summary-large-card">
+                <div class="summary-label" style="color: var(--apple-red);"><i class="fa-solid fa-triangle-exclamation"></i> ⚠️ 長者指定安全吞嚥限度 (IDDSI)</div>
+                <div class="summary-value" id="meta-iddsi-highest" style="font-size: 20px; margin-top: 14px; margin-bottom: 6px; color: var(--text-main);">-</div>
                 <div class="summary-unit">今日已登錄最高級別</div>
             </div>
         </div>
@@ -703,7 +705,9 @@
                         <option value="7EC">Level 7 易嚼 (Black)</option>
                     </select>
                 </div>
+                
                 <button class="apple-btn-primary" style="margin-top: 10px;" onclick="calculatePersonalTargets()">🔄 更新並動態重新計算每日目標</button>
+                <button class="apple-btn-primary" style="margin-top: 2px; background: var(--apple-green);" onclick="saveProfileSettings()">💾 儲存配置設定 (Save Settings)</button>
             </div>
         </div>
     </div>
@@ -771,7 +775,6 @@ let sugar = 0, satFat = 0, transFat = 0, cholesterol = 0, fiber = 0;
 let recordCount = 0;
 let maxIddsiText = "-";
 let weeklyData = [1400, 1500, 1350, 1600, 0];
-
 let recognition = null, isRecording = false, processedBase64 = "", cachedNutritionData = null;
 let currentOperatorId = "Guest_User", captchaCode = "";
 
@@ -784,7 +787,7 @@ function switchAppleTab(tabId, element) {
     element.classList.add('active');
 }
 
-/* Dynamic Island 即時通知核心 */
+/* Dynamic Island 即時通知 */
 function triggerDynamicIsland(text, isDanger = false) {
     const island = document.getElementById("dynamicIsland");
     const islandText = document.getElementById("islandText");
@@ -801,7 +804,7 @@ function triggerDynamicIsland(text, isDanger = false) {
     setTimeout(() => { island.classList.remove("active"); }, 4500);
 }
 
-// 🔒 醫護認證安全防線
+// 🔒 醫護認證防線
 function handleAuthAction() {
     if (currentOperatorId !== "Guest_User") {
         if (confirm(`當前登入人員為 [ ${currentOperatorId} ]，確定要登出系統嗎？`)) {
@@ -856,7 +859,7 @@ function executeLogoutProcedure() {
     triggerDynamicIsland("🔓 您已順利安全登出");
 }
 
-// 數據讀取與快取監管
+// 數據讀取與快取
 async function getNutritionData() {
     if (cachedNutritionData) return cachedNutritionData;
     const localCached = localStorage.getItem("lohas_nutrition_cache");
@@ -924,7 +927,40 @@ function calculatePersonalTargets() {
     checkCurrentIddsiRisk();
 }
 
-/* 更新 Apple 三環進度條與圓環細節 */
+// 💾 儲存配置設定至本地存儲
+function saveProfileSettings() {
+    const settings = {
+        gender: document.getElementById("user-gender").value,
+        age: document.getElementById("user-age").value,
+        height: document.getElementById("user-height").value,
+        weight: document.getElementById("user-weight").value,
+        activity: document.getElementById("user-activity").value,
+        iddsiTarget: document.getElementById("user-iddsi-target").value
+    };
+    localStorage.setItem("lohas_user_settings", JSON.stringify(settings));
+    calculatePersonalTargets(); 
+    triggerDynamicIsland("💾 院友身體數據與吞嚥目標已成功儲存！");
+}
+
+// 💾 載入已儲存的本地設定
+function loadProfileSettings() {
+    const savedData = localStorage.getItem("lohas_user_settings");
+    if (savedData) {
+        try {
+            const settings = JSON.parse(savedData);
+            if(settings.gender) document.getElementById("user-gender").value = settings.gender;
+            if(settings.age) document.getElementById("user-age").value = settings.age;
+            if(settings.height) document.getElementById("user-height").value = settings.height;
+            if(settings.weight) document.getElementById("user-weight").value = settings.weight;
+            if(settings.activity) document.getElementById("user-activity").value = settings.activity;
+            if(settings.iddsiTarget) document.getElementById("user-iddsi-target").value = settings.iddsiTarget;
+        } catch(e) {
+            console.error("載入本地設定時出錯:", e);
+        }
+    }
+}
+
+/* 更新 Apple 三環進度條 */
 function updateFitnessBars() {
     const totalPct = Math.min(Math.round((cal / dailyTargets.cal) * 100), 100);
     document.getElementById("total-pct-lbl").innerText = `全天達標率：${totalPct}%`;
@@ -970,7 +1006,6 @@ function processAndPreviewImage(input) {
 }
 
 async function uploadAndDetectFood() {
-    // 💡 前端嚴格防禦：全面攔截空圖片數據發送，防止後端觸發 match 報錯
     if (!processedBase64 || processedBase64.trim() === "") {
         alert("⚠️ 圖片數據尚未轉換完成或未選擇圖片！請重新選取相片，並確認藍色大按鈕出現後再行點擊。");
         return;
@@ -1022,15 +1057,13 @@ function initSpeechAPI() {
 
 function toggleVoiceRecognition() {
     if (!recognition) return alert("當前設備不支援 Web Speech API");
-    if (isRecording) { recognition.stop();
-    } else { recognition.start(); }
+    if (isRecording) { recognition.stop(); } else { recognition.start(); }
 }
 
 function startSpeechTracking(type) {
     alert(`[Lohas AI ST] 正在啟動 MediaPipe 舌肌追蹤。類型：${type}`);
 }
 
-// 💡 核心聯動：自動背景上報數據至 Google Sheet
 async function reportDataToGoogleSheetAnalysis(payload) {
     try {
         await fetch(API_URL, {
@@ -1078,32 +1111,75 @@ function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
     `;
 }
 
-// 🔍 搜尋本地快取與遠端比對庫，計算完整微量元素
+// 🔍 搜尋與比對庫匹配引擎 (權重計分制精準度優化版，完全支援西多士、鴛鴦模糊搜尋與特殊括號過濾)
 async function searchFoodText() {
     const rawQuery = document.getElementById("foodSearchInput").value.trim();
     if (!rawQuery) return;
-    let query = rawQuery.replace(/(食咗|飲咗|食left|飲left|幾口|一碗|半碗|大大半碗|大半碗|細碗|碟|個|餐|咗|左)/g, '').trim();
-    if(!query) query = rawQuery;
+    
+    // 1. 全面的廣東話/常規量詞與動詞過濾（避免數量與修飾詞干擾對比）
+    let query = rawQuery.replace(/(食咗|飲咗|食left|飲left|幾口|一碗|半碗|大大半碗|大半碗|細碗|一盃|一杯|一碟|一隻|一件|一包|一條|一樽|一罐|幾粒|幾片|碟|個|餐|咗|左|杯|隻|件|包|條|粒|片)/g, '').trim();
+    if (!query) query = rawQuery;
+
     try {
         let foodList = await getNutritionData();
+        const qNormal = normalizeText(query);
         
-        // 🎯 深度模糊比對機制：移除填補字，支援包含英文/括弧的複合字眼 (如 "鴛鴦")
-        let targetItem = foodList.find(item => {
-            let dbName = (item["foodname"] || "").toString().toLowerCase().trim();
-            let q = query.toLowerCase().trim();
-            if (!dbName) return false;
+        // 2. 遍歷所有食物並計算「匹配分數」
+        let scoredList = foodList.map(item => {
+            let dbName = (item["foodname"] || "").toString();
+            let dbNormal = normalizeText(dbName);
             
-            let dbNormal = dbName.replace('爹', '嗲');
-            let qNormal = q.replace('爹', '嗲');
-            
-            return dbNormal.includes(qNormal) || qNormal.includes(dbNormal) || 
-                   (qNormal.includes('牛肉') && dbNormal.includes('牛肉')) ||
-                   (qNormal.includes('麵') && dbNormal.includes('麵') && dbNormal.includes('牛肉')) ||
-                   (qNormal.includes('粥') && dbNormal.includes('粥')) ||
-                   (qNormal.includes('奶茶') && dbNormal.includes('奶茶')) ||
-                   (qNormal.includes('鴛鴦') && dbNormal.includes('鴛鴦'));
+            if (!dbNormal) return { item, score: 0 };
+
+            let score = 0;
+
+            // 基準 A：完全一樣 (最高分)
+            if (dbNormal === qNormal) {
+                score = 100;
+            } 
+            // 基準 B：資料庫名稱包含用戶輸入 (例如：輸入 "牛肉"，數據庫有 "牛肉麵")
+            else if (dbNormal.includes(qNormal)) {
+                score = 80 + (qNormal.length / dbNormal.length * 10);
+            } 
+            // 基準 C：用戶輸入包含資料庫名稱 (例如：輸入 "港式奶茶"，數據庫有 "奶茶")
+            else if (qNormal.includes(dbNormal)) {
+                score = 70 + (dbNormal.length / qNormal.length * 10);
+            } 
+            // 基準 D：模糊字詞交集 (例如：輸入 "牛肉湯麵"，數據庫是 "川味牛肉麵"，兩者互不包含，但字眼高度重疊)
+            else {
+                let matchCount = 0;
+                let uniqueQChars = [...new Set(qNormal)]; // 去除重複字
+                uniqueQChars.forEach(char => {
+                    if (dbNormal.includes(char)) matchCount++;
+                });
+
+                if (matchCount > 0) {
+                    const overlapRatio = matchCount / Math.max(qNormal.length, dbNormal.length);
+                    score = overlapRatio * 50; // 基礎模糊分，最高 50 分
+                    
+                    // 核心關鍵字防錯加權 (解決牛肉乾 vs 牛肉麵的歷史性衝突)
+                    const coreKeywords = ['麵', '麪', '飯', '粥', '湯', '茶', '肉', '魚', '雞', '鷄', '蛋', '西多', '鴛鴦', '奶茶', '牛肉'];
+                    coreKeywords.forEach(kw => {
+                        if (qNormal.includes(kw) && dbNormal.includes(kw)) {
+                            score += 10; // 雙方都有核心詞（如都有「麵」），大幅加分避免錯配成飯
+                        }
+                    });
+                }
+            }
+
+            return { item, score };
         });
+
+        // 3. 過濾掉完全不匹配的結果 (分數為 0)，並依分數從高到低排序
+        let validMatches = scoredList.filter(x => x.score > 0);
+        let targetItem = null;
         
+        if (validMatches.length > 0) {
+            validMatches.sort((a, b) => b.score - a.score);
+            targetItem = validMatches[0].item;
+            console.log(`🔍 搜尋: "${rawQuery}" -> 最匹配: "${targetItem.foodname}" (分數: ${validMatches[0].score.toFixed(1)})`);
+        }
+
         if (targetItem) {
             triggerDynamicIsland("✅ 數據庫匹配比對成功！");
             let fFoodName = targetItem["foodname"] || "未知食物";
@@ -1119,7 +1195,6 @@ async function searchFoodText() {
             let fFiber = parseValue(targetItem["fiber"]);
             let iddsiVal = targetItem["iddsi"] || "";
 
-            // 1. 填充本次餐食 UI 視圖明細
             document.getElementById("single_foodname").innerText = fFoodName;
             document.getElementById("single_cal").innerText = fCal;
             document.getElementById("single_grams").innerText = formatOutput(fGrams) + "g";
@@ -1132,24 +1207,24 @@ async function searchFoodText() {
             document.getElementById("single_cholesterol").innerText = formatOutput(fCholesterol) + "mg";
             document.getElementById("single_fiber").innerText = formatOutput(fFiber) + "g";
             document.getElementById("single_iddsiMain").innerHTML = generateIddsiBadgeHTML(iddsiVal);
-            
+
             let singlePct = Math.min(Math.round((fCal / dailyTargets.cal) * 100), 100);
             document.getElementById("single_ring_progress").style.background = `conic-gradient(var(--apple-blue) 0% ${singlePct}%, rgba(0,0,0,0.05) ${singlePct}% 100%)`;
             document.getElementById("single-pct-lbl").innerText = `佔每日目標：${singlePct}%`;
 
-            // 2. 全域全天營養素累加
+            // 全域總量指標累加
             cal += fCal;
             grams += fGrams;
             protein += fProtein; 
             carbs += fCarbs; 
             fat += fFat;
-            sugar += fSugar; 
+            sugar += fSugar;
             satFat += fSatFat;
             transFat += fTransFat;
             cholesterol += fCholesterol; 
             fiber += fFiber;
             recordCount += 1;
-            
+
             if (iddsiVal) {
                 if (maxIddsiText === "-") { 
                     maxIddsiText = iddsiVal;
@@ -1158,7 +1233,6 @@ async function searchFoodText() {
                 }
             }
 
-            // 3. 更新全域核心面版元件
             document.getElementById("meta-cal-total").innerText = cal;
             document.getElementById("meta-iddsi-highest").innerText = maxIddsiText;
             document.getElementById("meta-count-total").innerText = recordCount;
@@ -1177,7 +1251,6 @@ async function searchFoodText() {
             
             updateFitnessBars();
 
-            // 4. 流水歷史誌加入
             let histBox = document.getElementById("history");
             if (histBox.innerText === "尚無餐食記錄數據") histBox.innerHTML = "";
             histBox.insertAdjacentHTML('afterbegin', `
@@ -1185,13 +1258,14 @@ async function searchFoodText() {
                     <div><strong>${fFoodName} (${formatOutput(fGrams)}g)</strong><br>${generateIddsiBadgeHTML(iddsiVal)}</div>
                     <span style="color:var(--apple-orange); font-weight:700;">+${fCal} KCAL</span>
                 </div>`);
+
             weeklyData[weeklyData.length - 1] = cal;
             drawChart();
             
             let isRiskTriggered = checkCurrentIddsiRisk();
             triggerIddsiAdaptiveMechanism(iddsiVal, fFoodName);
 
-            // 5. 自動執行背景上報試算表
+            // 數據背景同步上報
             await reportDataToGoogleSheetAnalysis({
                 operator_id: currentOperatorId,
                 food_name: fFoodName,
@@ -1204,7 +1278,7 @@ async function searchFoodText() {
                 risk_alert: isRiskTriggered
             });
 
-            // 重置輸入區
+            // 清空介面輸入控制
             document.getElementById("foodSearchInput").value = "";
             document.getElementById("previewWrapper").style.display = "none";
             document.getElementById("uploadBtn").style.display = "none";
@@ -1213,8 +1287,21 @@ async function searchFoodText() {
             triggerDynamicIsland(`⚠️ 未找到符合「${query}」的物件`, true);
         }
     } catch (e) { 
+        console.error("數據處理發生異常:", e);
         triggerDynamicIsland("❌ 數據處理發生異常", true);
     }
+}
+
+// 🛠️ 輔助函式：統一文字格式（去空格、轉小寫、修正香港常用異體字與速記習慣）
+function normalizeText(text) {
+    return text
+        .toLowerCase()
+        .trim()
+        .replace(/爹/g, '嗲')
+        .replace(/鷄/g, '雞')
+        .replace(/麪/g, '麵')
+        .replace(/浄/g, '淨')
+        .replace(/𡃁/g, '靚');
 }
 
 /* 繪製 Apple Health 週趨勢圖表 */
@@ -1246,9 +1333,13 @@ function drawChart() {
 }
 
 window.onload = () => {
-    // 🎯 核心快取清除機制：每次重新整理網頁時，強制清除舊快取，確保 100% 同步 Google Sheet 最新分離欄位與數據
+    // 1. 強制清空食物資料庫快取，確保重新整理即時同步 Google Sheet 最新分離欄位
     localStorage.removeItem("lohas_nutrition_cache");
     
+    // 2. 自動讀取配置記憶機制，載入已儲存的院友身體配置與 IDDSI 目標
+    loadProfileSettings();
+    
+    // 3. 重新建立今日達標線並渲染趨勢圖
     calculatePersonalTargets();
     drawChart();
     initSpeechAPI();
