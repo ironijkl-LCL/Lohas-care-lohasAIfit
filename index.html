@@ -864,7 +864,8 @@ async function getNutritionData() {
     if (cachedNutritionData) return cachedNutritionData;
     const localCached = localStorage.getItem("lohas_nutrition_cache");
     if (localCached) {
-        try { cachedNutritionData = JSON.parse(localCached); return cachedNutritionData; } catch(e) { localStorage.removeItem("lohas_nutrition_cache"); }
+        try { cachedNutritionData = JSON.parse(localCached);
+        return cachedNutritionData; } catch(e) { localStorage.removeItem("lohas_nutrition_cache"); }
     }
     let res = await fetch(API_URL);
     let resData = await res.json();
@@ -1057,7 +1058,8 @@ function initSpeechAPI() {
 
 function toggleVoiceRecognition() {
     if (!recognition) return alert("當前設備不支援 Web Speech API");
-    if (isRecording) { recognition.stop(); } else { recognition.start(); }
+    if (isRecording) { recognition.stop();
+    } else { recognition.start(); }
 }
 
 function startSpeechTracking(type) {
@@ -1079,35 +1081,106 @@ async function reportDataToGoogleSheetAnalysis(payload) {
     }
 }
 
+// 💡 核心優化：整合並自動適應 Level 1-7 機制
 function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
     const cleanLevel = parseIddsiLevel(iddsiVal);
-    if (cleanLevel !== 5) {
+    
+    // 定義 Level 1 至 7 的完整對應配置（包含動態島、廣東話語音、復康訓練卡片標題及訓練內容）
+    const iddsiConfigs = {
+        1: { 
+            island: "為微稠流質，慢慢飲用。", 
+            speech: "屬於微稠流質，請長者慢慢飲。",
+            title: "言語治療復康訓練 (Level 1 流質控制)",
+            content: `飲用 <b>${foodName}</b> 前，建議先進行 2 分鐘<b>「點頭吞嚥法」</b>姿勢調整，降低誤吸風險。`,
+            param: "level1_posture",
+            color: "var(--apple-gray)"
+        },
+        2: { 
+            island: "為輕度稠流質，慢慢飲用。", 
+            speech: "屬於輕度稠流質，好似花奶咁，請長者慢慢飲。",
+            title: "言語治療復康訓練 (Level 2 慢吞練習)",
+            content: `飲用 <b>${foodName}</b> 前，建議引導長者配合<b>「用力吞嚥法」</b>，確保流質順暢通過。`,
+            param: "level2_swallow",
+            color: "#ea4e96"
+        },
+        3: { 
+            island: "為中度稠/化蜜狀食物。", 
+            speech: "屬於中度稠或者化蜜狀食物，可以用匙羹食，請長者慢慢吞。",
+            title: "言語治療復康訓練 (Level 3 匙羹進食)",
+            content: `進食 <b>${foodName}</b> 時，請注意每口份量，建議進行 2 分鐘<b>「下巴下壓吞嚥練習」</b>。`,
+            param: "level3_chin_tuck",
+            color: "#FFCC00"
+        },
+        4: { 
+            island: "為高度稠/均質糊狀食物，無粒粒。", 
+            speech: "屬於均質糊狀食物，質地幼滑無粒粒，請長者用匙羹慢慢食。",
+            title: "言語治療復康訓練 (Level 4 糊狀進食指導)",
+            content: `進食 <b>${foodName}</b> 前，建議進行 3 分鐘<b>「聲門上吞嚥法練習」</b>以安全保護氣道。`,
+            param: "level4_supraglottic",
+            color: "var(--apple-green)"
+        },
+        5: { 
+            island: "為細碎濕軟食物，慢慢吞嚥。", 
+            speech: "屬於細碎濕軟食物，請長者每口食一茶匙，慢慢吞。",
+            title: "言語治療復康訓練 (Level 5 專屬)",
+            content: `進食 <b>${foodName}</b> 前，建議先進行 3 分鐘<b>「舌肌力量練習」</b>以活化吞嚥反射。`,
+            param: "level5_tongue",
+            color: "var(--apple-orange)"
+        },
+        6: { 
+            island: "為軟質及細塊食物，注意咀嚼。", 
+            speech: "屬於軟質細塊食物，食物已經切細，請長者慢慢咬碎再吞。",
+            title: "言語治療復康訓練 (Level 6 咀嚼協調強化)",
+            content: `進食 <b>${foodName}</b> 時，引導長者雙側交替咀嚼，並進行 3 分鐘<b>「頰肌與咀嚼肌按壓放鬆」</b>。`,
+            param: "level6_chew",
+            color: "#0067b2"
+        },
+        7: { 
+            island: "為普通/容易咀嚼食物。", 
+            speech: "屬於普通或者容易咀嚼食物，請長者保持專心，慢慢食。",
+            title: "言語治療復康訓練 (Level 7 全面進食監控)",
+            content: `進食 <b>${foodName}</b> 時，請注意長者坐姿保持直立 90 度，進食後 30 分鐘內切勿立即臥床。`,
+            param: "level7_posture",
+            color: "var(--text-main)"
+        }
+    };
+
+    // 如果輸入的 Level 不在 1-7 範圍內，清除舊卡片並結束
+    if (!iddsiConfigs[cleanLevel]) {
         const oldCard = document.getElementById("st-adaptive-training-card");
         if (oldCard) oldCard.remove();
         return;
     }
 
-    triggerDynamicIsland(`💡 進食指導 (Level 5)：${foodName}為細碎濕軟食物，慢慢吞嚥。`);
+    const currentConfig = iddsiConfigs[cleanLevel];
+
+    // 1. 觸發動態島提示
+    triggerDynamicIsland(`💡 進食指導 (Level ${cleanLevel})：${foodName}${currentConfig.island}`);
     
+    // 2. 本地語音朗讀 (粵語/香港)
     if ('speechSynthesis' in window) {
-        const msg = new SpeechSynthesisUtterance(`${foodName}屬於細碎濕軟食物，請長者每口食一茶匙，慢慢吞。`);
+        const msg = new SpeechSynthesisUtterance(`${foodName}${currentConfig.speech}`);
         msg.lang = 'zh-HK';
         window.speechSynthesis.speak(msg);
     }
 
+    // 3. 創建或動態重構言語治療復康訓練擴展卡片
     const trainingCardId = "st-adaptive-training-card";
     let trainingCard = document.getElementById(trainingCardId);
     if (!trainingCard) {
         trainingCard = document.createElement("div");
         trainingCard.id = trainingCardId;
         trainingCard.className = "ui-card";
-        trainingCard.style.border = "1px solid var(--apple-orange)";
         document.getElementById("singleQueryResultCard").insertAdjacentElement('afterend', trainingCard);
     }
+    
+    // 依據 IDDSI 顏色系統與對應參數動態渲染
+    trainingCard.style.border = `1px solid ${currentConfig.color}`;
     trainingCard.innerHTML = `
-        <h3 style="color: var(--apple-orange);"><i class="fa-solid fa-brain"></i> 言語治療復康訓練 (Level 5 專屬)</h3>
-        <p style="font-size: 13px;">進食 <b>${foodName}</b> 前，建議先進行 3 分鐘<b>「舌肌力量練習」</b>以活化吞嚥反射。</p>
-        <button class="apple-btn-primary" style="background: var(--apple-orange);" onclick="startSpeechTracking('level5_tongue')">🎯 開啟 AI 表情追蹤練習</button>
+        <h3 style="color: ${currentConfig.color};"><i class="fa-solid fa-brain"></i> ${currentConfig.title}</h3>
+        <p style="font-size: 13px;">${currentConfig.content}</p>
+        <button class="apple-btn-primary" style="background: ${currentConfig.color}; color: ${cleanLevel === 3 ? '#000000' : '#ffffff'};"
+            onclick="startSpeechTracking('${currentConfig.param}')">🎯 開啟 AI 吞嚥與復康追蹤</button>
     `;
 }
 
@@ -1119,11 +1192,9 @@ async function searchFoodText() {
     // 1. 全面的廣東話/常規量詞與動詞過濾（避免數量與修飾詞干擾對比）
     let query = rawQuery.replace(/(食咗|飲咗|食left|飲left|幾口|一碗|半碗|大大半碗|大半碗|細碗|一盃|一杯|一碟|一隻|一件|一包|一條|一樽|一罐|幾粒|幾片|碟|個|餐|咗|左|杯|隻|件|包|條|粒|片)/g, '').trim();
     if (!query) query = rawQuery;
-
     try {
         let foodList = await getNutritionData();
         const qNormal = normalizeText(query);
-        
         // 2. 遍歷所有食物並計算「匹配分數」
         let scoredList = foodList.map(item => {
             let dbName = (item["foodname"] || "").toString();
@@ -1194,7 +1265,6 @@ async function searchFoodText() {
             let fCholesterol = parseValue(targetItem["cholesterol"]);
             let fFiber = parseValue(targetItem["fiber"]);
             let iddsiVal = targetItem["iddsi"] || "";
-
             document.getElementById("single_foodname").innerText = fFoodName;
             document.getElementById("single_cal").innerText = fCal;
             document.getElementById("single_grams").innerText = formatOutput(fGrams) + "g";
@@ -1207,11 +1277,9 @@ async function searchFoodText() {
             document.getElementById("single_cholesterol").innerText = formatOutput(fCholesterol) + "mg";
             document.getElementById("single_fiber").innerText = formatOutput(fFiber) + "g";
             document.getElementById("single_iddsiMain").innerHTML = generateIddsiBadgeHTML(iddsiVal);
-
             let singlePct = Math.min(Math.round((fCal / dailyTargets.cal) * 100), 100);
             document.getElementById("single_ring_progress").style.background = `conic-gradient(var(--apple-blue) 0% ${singlePct}%, rgba(0,0,0,0.05) ${singlePct}% 100%)`;
             document.getElementById("single-pct-lbl").innerText = `佔每日目標：${singlePct}%`;
-
             // 全域總量指標累加
             cal += fCal;
             grams += fGrams;
@@ -1258,13 +1326,11 @@ async function searchFoodText() {
                     <div><strong>${fFoodName} (${formatOutput(fGrams)}g)</strong><br>${generateIddsiBadgeHTML(iddsiVal)}</div>
                     <span style="color:var(--apple-orange); font-weight:700;">+${fCal} KCAL</span>
                 </div>`);
-
             weeklyData[weeklyData.length - 1] = cal;
             drawChart();
             
             let isRiskTriggered = checkCurrentIddsiRisk();
             triggerIddsiAdaptiveMechanism(iddsiVal, fFoodName);
-
             // 數據背景同步上報
             await reportDataToGoogleSheetAnalysis({
                 operator_id: currentOperatorId,
@@ -1277,7 +1343,6 @@ async function searchFoodText() {
                 iddsi_level: parseIddsiLevel(iddsiVal),
                 risk_alert: isRiskTriggered
             });
-
             // 清空介面輸入控制
             document.getElementById("foodSearchInput").value = "";
             document.getElementById("previewWrapper").style.display = "none";
@@ -1335,7 +1400,6 @@ function drawChart() {
 window.onload = () => {
     // 1. 強制清空食物資料庫快取，確保重新整理即時同步 Google Sheet 最新分離欄位
     localStorage.removeItem("lohas_nutrition_cache");
-    
     // 2. 自動讀取配置記憶機制，載入已儲存的院友身體配置與 IDDSI 目標
     loadProfileSettings();
     
