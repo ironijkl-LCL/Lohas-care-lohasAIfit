@@ -635,7 +635,7 @@
                 <div class="sub-macro-cell"><span>🍬 糖分</span><span id="single_sugar">0g</span></div>
                 <div class="sub-macro-cell"><span>🔒 飽和脂肪</span><span id="single_satFat">0g</span></div>
                 <div class="sub-macro-cell"><span>⚠️ 反式脂肪</span><span id="single_transFat">0g</span></div>
-                <div class="sub-macro-cell"><span>🍳 膽固醇</span><span id="single_cholesterol">0mg</span></div>
+                <div class="sub-macro-cell"><span>🍳 膽古醇</span><span id="single_cholesterol">0mg</span></div>
                 <div class="sub-macro-cell" style="grid-column: span 2;"><span>🌿 膳食纖維</span><span id="single_fiber">0g</span></div>
             </div>
         </div>
@@ -749,7 +749,6 @@
 <canvas id="processedCanvas" style="display:none;"></canvas>
 
 <script>
-// 🚀 保持與你專屬的 Google Apps Script 雲端 API 節點完全一致
 const API_URL = "https://script.google.com/macros/s/AKfycbwOgthCxMHgU-7nsuYd91AMSWUrr48qU8pm02j4qCYk_TE5nN7dJOB_o5nrUc932kZr/exec";
 
 const IDDSI_COLORS = {
@@ -764,7 +763,6 @@ const IDDSI_COLORS = {
     "7EC": { bg: "#000000", text: "#ffffff", label: "Level 7 易嚼 (Black)" }
 };
 
-// 全域數據架構同步
 let dailyTargets = { cal: 1600, protein: 60, carbs: 220, fat: 50 };
 let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0;
 let sugar = 0, satFat = 0, transFat = 0, cholesterol = 0, fiber = 0;
@@ -775,7 +773,6 @@ let weeklyData = [1400, 1500, 1350, 1600, 0];
 let recognition = null, isRecording = false, processedBase64 = "", cachedNutritionData = null;
 let currentOperatorId = "Guest_User", captchaCode = "";
 
-/* Apple 骨架 Tab 切換引擎 */
 function switchAppleTab(tabId, element) {
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
@@ -784,7 +781,6 @@ function switchAppleTab(tabId, element) {
     element.classList.add('active');
 }
 
-/* Dynamic Island 即時通知 */
 function triggerDynamicIsland(text, isDanger = false) {
     const island = document.getElementById("dynamicIsland");
     const islandText = document.getElementById("islandText");
@@ -801,7 +797,6 @@ function triggerDynamicIsland(text, isDanger = false) {
     setTimeout(() => { island.classList.remove("active"); }, 4500);
 }
 
-// 🔒 醫護認證防線
 function handleAuthAction() {
     if (currentOperatorId !== "Guest_User") {
         if (confirm(`當前登入人員為 [ ${currentOperatorId} ]，確定要登出系統嗎？`)) {
@@ -856,7 +851,6 @@ function executeLogoutProcedure() {
     triggerDynamicIsland("🔓 您已順利安全登出");
 }
 
-// 數據讀取與快取
 async function getNutritionData() {
     if (cachedNutritionData) return cachedNutritionData;
     const localCached = localStorage.getItem("lohas_nutrition_cache");
@@ -878,15 +872,15 @@ function parseIddsiLevel(iddsiRaw) {
     return match ? parseInt(match[0]) : 1;
 }
 
+// ⚠️ 比對風險機制
 function checkCurrentIddsiRisk() {
     if (maxIddsiText === "-") return 0;
     const allowedRaw = document.getElementById("user-iddsi-target").value;
     let allowedLevel = allowedRaw === "7EC" ? 7 : parseInt(allowedRaw);
     let currentLevel = parseIddsiLevel(maxIddsiText);
-    
     if (currentLevel > allowedLevel) {
         triggerDynamicIsland(`⚠️ 吞嚥風險警告：今日最高級別已超出該長者指定之安全界限！`, true);
-        return 1; 
+        return 1;
     }
     return 0;
 }
@@ -907,7 +901,6 @@ function calculatePersonalTargets() {
     const height = parseFloat(document.getElementById("user-height").value) || 155;
     const weight = parseFloat(document.getElementById("user-weight").value) || 55;
     const activity = parseFloat(document.getElementById("user-activity").value) || 1.375;
-    
     let bmr = (10 * weight) + (6.25 * height) - (5 * age);
     bmr = (gender === "male") ? bmr + 5 : bmr - 161;
     let tdee = Math.max(Math.round(bmr * activity), 1200);
@@ -926,7 +919,6 @@ function calculatePersonalTargets() {
     checkCurrentIddsiRisk();
 }
 
-/* 更新 Apple 三環進度條與圓環細節 */
 function updateFitnessBars() {
     const totalPct = Math.min(Math.round((cal / dailyTargets.cal) * 100), 100);
     document.getElementById("total-pct-lbl").innerText = `全天達標率：${totalPct}%`;
@@ -964,7 +956,7 @@ function processAndPreviewImage(input) {
             const ctx = canvas.getContext("2d");
             canvas.width = Math.min(img.width, 640);
             canvas.height = Math.round((canvas.width / img.width) * img.height);
-            ctx.filter = "brightness(1.05) contrast(1.10)"; 
+            ctx.filter = "brightness(1.05) contrast(1.10)";
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             processedBase64 = canvas.toDataURL("image/jpeg", 0.85);
         }
@@ -972,7 +964,12 @@ function processAndPreviewImage(input) {
 }
 
 async function uploadAndDetectFood() {
-    if (!processedBase64) return alert("請先選擇圖片！");
+    // 💡 前端嚴格攔截：防止空圖發送
+    if (!processedBase64 || processedBase64.trim() === "") {
+        alert("⚠️ 圖片數據尚未轉換完成或未選擇圖片！請重新選取相片，並確認藍色大按鈕出現後再行點擊。");
+        return;
+    }
+
     const uploadBtnText = document.getElementById("uploadBtnText");
     triggerDynamicIsland("零部件中轉：正在上傳影像至雲端...");
     uploadBtnText.innerText = "⏳ AI 識別中...";
@@ -986,9 +983,14 @@ async function uploadAndDetectFood() {
             document.getElementById("foodSearchInput").value = resData.foodName.trim();
             triggerDynamicIsland(`🧠 AI 辨識成功：${resData.foodName}`);
             await searchFoodText();
+        } else {
+            triggerDynamicIsland(`❌ 辨識異常: ${resData.error || "未知錯誤"}`, true);
         }
-    } catch (err) { triggerDynamicIsland("❌ 雲端辨識通訊超時", true); }
-    finally { uploadBtnText.innerText = "啟動 AI 影像深度辨識"; }
+    } catch (err) { 
+        triggerDynamicIsland("❌ 雲端辨識通訊超時", true);
+    } finaly { 
+        uploadBtnText.innerText = "啟動 AI 影像深度辨識";
+    }
 }
 
 function initSpeechAPI() {
@@ -1014,22 +1016,19 @@ function initSpeechAPI() {
 
 function toggleVoiceRecognition() {
     if (!recognition) return alert("當前設備不支援 Web Speech API");
-    if (isRecording) { recognition.stop(); } else { recognition.start(); }
+    if (isRecording) { recognition.stop();
+    } else { recognition.start(); }
 }
 
 function startSpeechTracking(type) {
     alert(`[Lohas AI ST] 正在啟動 MediaPipe 舌肌追蹤。類型：${type}`);
 }
 
-// 💡 核心聯動：自動背景上報數據至 Google Sheet
 async function reportDataToGoogleSheetAnalysis(payload) {
     try {
         await fetch(API_URL, {
             method: 'POST',
-            body: JSON.stringify({
-                action: "logRecord",
-                data: payload
-            })
+            body: JSON.stringify({ action: "logRecord", data: payload })
         });
         console.log("雲端試算表同步成功");
     } catch(e) {
@@ -1069,13 +1068,12 @@ function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
     `;
 }
 
-// 🔍 搜尋本地快取與遠端比對庫，計算完整微量元素
+// 🔍 智能模糊比對搜尋核心
 async function searchFoodText() {
     const rawQuery = document.getElementById("foodSearchInput").value.trim();
     if (!rawQuery) return;
     let query = rawQuery.replace(/(食咗|飲咗|食left|飲left|幾口|一碗|半碗|大大半碗|大半碗|細碗|碟|個|餐|咗|左)/g, '').trim();
     if(!query) query = rawQuery;
-
     try {
         let foodList = await getNutritionData();
         let targetItem = foodList.find(item => {
@@ -1090,10 +1088,8 @@ async function searchFoodText() {
                    (qNormal.includes('粥') && dbNormal.includes('粥')) ||
                    (qNormal.includes('奶茶') && dbNormal.includes('奶茶'));
         });
-
         if (targetItem) {
             triggerDynamicIsland("✅ 數據庫匹配比對成功！");
-            
             let fFoodName = targetItem["foodname"] || "未知食物";
             let fCal = Math.round(parseValue(targetItem["calories"]));
             let fGrams = parseValue(targetItem["grams"]);
@@ -1106,8 +1102,7 @@ async function searchFoodText() {
             let fCholesterol = parseValue(targetItem["cholesterol"]);
             let fFiber = parseValue(targetItem["fiber"]);
             let iddsiVal = targetItem["iddsi"] || "";
-            
-            // 1. 填充本次餐食 UI 視圖明細
+
             document.getElementById("single_foodname").innerText = fFoodName;
             document.getElementById("single_cal").innerText = fCal;
             document.getElementById("single_grams").innerText = formatOutput(fGrams) + "g";
@@ -1125,25 +1120,23 @@ async function searchFoodText() {
             document.getElementById("single_ring_progress").style.background = `conic-gradient(var(--apple-blue) 0% ${singlePct}%, rgba(0,0,0,0.05) ${singlePct}% 100%)`;
             document.getElementById("single-pct-lbl").innerText = `佔每日目標：${singlePct}%`;
 
-            // 2. 全域全天營養素累加 (100% 精準移植)
-            cal += fCal; 
+            cal += fCal;
             grams += fGrams;
             protein += fProtein; 
             carbs += fCarbs; 
             fat += fFat;
             sugar += fSugar; 
-            satFat += fSatFat; 
+            satFat += fSatFat;
             transFat += fTransFat;
             cholesterol += fCholesterol; 
             fiber += fFiber;
             recordCount += 1;
-
             if (iddsiVal) {
-                if (maxIddsiText === "-") { maxIddsiText = iddsiVal; } 
-                else if (parseIddsiLevel(iddsiVal) > parseIddsiLevel(maxIddsiText)) { maxIddsiText = iddsiVal; }
+                if (maxIddsiText === "-") { maxIddsiText = iddsiVal;
+                } else if (parseIddsiLevel(iddsiVal) > parseIddsiLevel(maxIddsiText)) { maxIddsiText = iddsiVal;
+                }
             }
 
-            // 3. 更新全域核心面版元件
             document.getElementById("meta-cal-total").innerText = cal;
             document.getElementById("meta-iddsi-highest").innerText = maxIddsiText;
             document.getElementById("meta-count-total").innerText = recordCount;
@@ -1162,7 +1155,6 @@ async function searchFoodText() {
             
             updateFitnessBars();
 
-            // 4. 流水歷史誌加入
             let histBox = document.getElementById("history");
             if (histBox.innerText === "尚無餐食記錄數據") histBox.innerHTML = "";
             histBox.insertAdjacentHTML('afterbegin', `
@@ -1170,14 +1162,12 @@ async function searchFoodText() {
                     <div><strong>${fFoodName} (${formatOutput(fGrams)}g)</strong><br>${generateIddsiBadgeHTML(iddsiVal)}</div>
                     <span style="color:var(--apple-orange); font-weight:700;">+${fCal} KCAL</span>
                 </div>`);
-
             weeklyData[weeklyData.length - 1] = cal;
             drawChart();
             
             let isRiskTriggered = checkCurrentIddsiRisk();
             triggerIddsiAdaptiveMechanism(iddsiVal, fFoodName);
 
-            // 5. 🛠️ 自動執行背景上報試算表邏輯
             await reportDataToGoogleSheetAnalysis({
                 operator_id: currentOperatorId,
                 food_name: fFoodName,
@@ -1189,8 +1179,7 @@ async function searchFoodText() {
                 iddsi_level: parseIddsiLevel(iddsiVal),
                 risk_alert: isRiskTriggered
             });
-            
-            // 重置輸入區
+
             document.getElementById("foodSearchInput").value = "";
             document.getElementById("previewWrapper").style.display = "none";
             document.getElementById("uploadBtn").style.display = "none";
@@ -1198,10 +1187,11 @@ async function searchFoodText() {
         } else {
             triggerDynamicIsland(`⚠️ 未找到符合「${query}」的物件`, true);
         }
-    } catch (e) { triggerDynamicIsland("❌ 數據處理發生異常", true); }
+    } catch (e) { 
+        triggerDynamicIsland("❌ 數據處理發生異常", true);
+    }
 }
 
-/* 繪製 Apple Health 週趨勢圖表 */
 function drawChart() {
     let gridX = document.getElementById("chartGridX");
     if (!gridX) return;
@@ -1209,7 +1199,6 @@ function drawChart() {
     let stepX = 260 / (weeklyData.length - 1);
     let pts = [];
     const dayLabels = ["一", "二", "三", "四", "五", "六", "日"];
-
     weeklyData.forEach((val, idx) => {
         let x = 20 + idx * stepX;
         let y = 60 - (val / 2500 * 40); 
@@ -1227,11 +1216,13 @@ function drawChart() {
         textDay.textContent = dayLabels[idx];
         gridX.appendChild(textDay);
     });
-
     document.getElementById("chartPathLine").setAttribute("d", "M " + pts.join(" L "));
 }
 
 window.onload = () => {
+    // 🎯 刷新核心修復：強制在加載時踢走 LocalStorage 的舊結構，徹底避免「舊欄位快取鎖死」！
+    localStorage.removeItem("lohas_nutrition_cache");
+    
     calculatePersonalTargets();
     drawChart();
     initSpeechAPI();
