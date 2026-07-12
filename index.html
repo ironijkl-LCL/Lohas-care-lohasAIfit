@@ -2,128 +2,220 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebVR 射籃修正優化版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>野生 AR 小食獵人 - 數碼捕捉器升級版</title>
     
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-physics-system@v4.2.2/dist/aframe-physics-system.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-super-hands-component@master/dist/aframe-super-hands.min.js"></script>
-    
-    <script>
-        // 【自定義投籃補償組件】
-        AFRAME.registerComponent('throw-compensate', {
-            init: function () {
-                let el = this.el; // 呢個係籃球
-                
-                // 監聽放手事件 (當玩家放開手勢或手把掣)
-                el.addEventListener('grab-end', (evt) => {
-                    console.log("偵測到放手，觸發射波推力補償！");
-                    
-                    // 獲取玩家頭顯(相機)面向嘅方向，作為射波方向
-                    let camera = document.querySelector('[camera]');
-                    let direction = new THREE.Vector3();
-                    camera.object3D.getWorldDirection(direction);
-                    
-                    // THREE.js 的方向向量相反，需要取反面
-                    direction.multiplyScalar(-1); 
-                    
-                    // 設定射波力道 (向前推 75%, 向上提升 25%)
-                    let throwForce = 8.5; // 你可以調整呢個數值去改變射程
-                    let impulse = new THREE.Vector3(
-                        direction.x * throwForce,
-                        (direction.y + 0.4) * throwForce * 1.2, // 微調向上帝視角弧度
-                        direction.z * throwForce
-                    );
-                    
-                    // 等待一個 frame 讓 super-hands 解除剛體綁定，然後施加衝量
-                    setTimeout(() => {
-                        if (el.body) {
-                            // 清空球體本來的靜止速度
-                            el.body.velocity.set(0, 0, 0);
-                            el.body.angularVelocity.set(0, 0, 0);
-                            // 施加推力
-                            el.body.applyImpulse(
-                                new CANNON.Vec3(impulse.x, impulse.y, impulse.z),
-                                el.body.position
-                            );
-                            console.log("推力已施加:", impulse);
-                        }
-                    }, 50);
-                });
-            }
-        });
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 
-        // 語音生成球體腳本（同樣會自動掛載射波補償）
-        AFRAME.registerComponent('voice-spawner', {
-            init: function () {
-                const sceneEl = this.el;
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!SpeechRecognition) return;
+    <style>
+        body { margin: 0; overflow: hidden; font-family: -apple-system, sans-serif; -webkit-user-select: none; }
+        .a-enter-vr, .a-enter-ar { display: none !important; }
 
-                const recognition = new SpeechRecognition();
-                recognition.continuous = true;
-                recognition.lang = 'zh-HK';
-                
-                recognition.onresult = (event) => {
-                    const text = event.results[event.resultIndex][0].transcript.trim().toLowerCase();
-                    if (text.includes('波') || text.includes('ball')) {
-                        let ball = document.createElement('a-sphere');
-                        ball.setAttribute('color', '#FF6600');
-                        ball.setAttribute('radius', '0.24');
-                        ball.setAttribute('position', '0 1.5 -0.6'); // 生成在伸手可及的近距離
-                        ball.setAttribute('dynamic-body', 'mass: 1; restitution: 0.85; friction: 0.2');
-                        ball.setAttribute('grabbable', 'physicsBodyActivation: listen');
-                        ball.setAttribute('throw-compensate', ''); // 注入補償
-                        sceneEl.appendChild(ball);
-                    }
-                };
-                recognition.onend = () => recognition.start();
-                window.addEventListener('click', () => { recognition.start(); }, { once: true });
-            }
-        });
-    </script>
+        /* 頂層遊戲 HUD */
+        #game-hud {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 999;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .header {
+            background: linear-gradient(to bottom, rgba(15, 32, 67, 0.9), rgba(0,0,0,0)); 
+            color: #00FFFF; padding: 20px 15px; text-align: center;
+        }
+        .header h1 { margin: 0; font-size: 22px; tracking: 2px; text-shadow: 0 0 10px #00FFFF; }
+        .header p { margin: 6px 0 0 0; color: #FFF; font-size: 13px; }
+        
+        .footer {
+            background: linear-gradient(to top, rgba(15, 32, 67, 0.9), rgba(0,0,0,0)); 
+            padding: 30px 25px; text-align: center; color: white;
+        }
+        #score { font-size: 16px; font-weight: bold; color: #00FF66; text-shadow: 0 0 5px #00FF66; }
+        
+        /* 🔥 型格科幻 3D 風格捕捉按鈕 */
+        #catch-btn {
+            background: linear-gradient(135deg, #FF0055 0%, #9900AA 100%);
+            color: white; border: 2px solid #00FFFF; padding: 15px 40px;
+            font-size: 18px; font-weight: bold; border-radius: 35px; cursor: pointer;
+            pointer-events: auto; display: inline-block; margin-top: 15px;
+            box-shadow: 0 0 15px #FF0055, inset 0 0 10px rgba(255,255,255,0.5);
+            letter-spacing: 1px; transition: all 0.2s ease;
+        }
+        #catch-btn:active { transform: scale(0.92); box-shadow: 0 0 5px #FF0055; }
+    </style>
 </head>
 <body>
 
-    <a-scene physics="debug: false; gravity: -9.8" voice-spawner>
-        <a-sky color="#B0E0E6"></a-sky>
-        <a-plane position="0 0 0" rotation="-90 0 0" width="30" height="30" color="#D2691E" static-body></a-plane>
-
-        <a-cylinder position="0 2 -4" radius="0.1" height="4" color="#7F8C8D" static-body></a-cylinder>
-        <a-box position="0 4 -3.4" width="2.4" height="1.6" depth="0.08" color="#FFFFFF" static-body></a-box>
-        <a-torus position="0 3.25 -2.7" rotation="90 0 0" radius="0.38" tube="0.04" color="#FF4500" static-body></a-torus>
-
-        <a-sphere id="basketball" position="0 1.2 -0.6" radius="0.24" color="#FF6600"
-                  grabbable="physicsBodyActivation: listen"
-                  throw-compensate
-                  dynamic-body="mass: 1; restitution: 0.85; friction: 0.2">
-        </a-sphere>
-
-        <a-entity id="rig">
-            <a-camera position="0 1.6 0"></a-camera>
-            
-            <a-entity hand-controls="hand: left" hand-tracking-controls="hand: left"
-                      sphere-collider="objects: [grabbable]"  
-                      super-hands="colliderEvent: hitstart; colliderEventProperty: el;
-                                   colliderEndEvent: hitend; colliderEndEventProperty: el">
-            </a-entity>
-
-            <a-entity hand-controls="hand: right" hand-tracking-controls="hand: right"
-                      sphere-collider="objects: [grabbable]" 
-                      super-hands="colliderEvent: hitstart; colliderEventProperty: el;
-                                   colliderEndEvent: hitend; colliderEndEventProperty: el">
-            </a-entity>
-        </a-entity>
-    </scene>
-
-    <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
-                background: rgba(0,0,0,0.85); color: white; padding: 15px 25px; border-radius: 25px; 
-                font-family: sans-serif; text-align: center; font-size: 14px;">
-        🏀 <b>射籃新玩法：</b><br>
-        1. 伸出手捏合（Pinch）或撳掣攞起個波。<br>
-        2. <b>望住個籃框</b>，做出投籃動作並<b>鬆開手勢/按鍵</b>！<br>
-        3. 系統會自動捕捉你放手嗰刻你雙眼望住嘅方向，將個波完美射向籃框！
+    <div id="game-hud">
+        <div class="header">
+            <h1>🛸 SNACK HUNTER: CYBER AR</h1>
+            <p id="radar-text">📡 數碼雷達運作中... 轉動手機鎖定野生小食！</p>
+        </div>
+        
+        <div class="footer">
+            <div id="score">🎒 數碼背包：魚肉燒賣 [ <span id="num-siumai">0</span> ] | 雞蛋仔 [ <span id="num-egg">0</span> ]</div>
+            <button id="catch-btn">⚡ 啟動數碼捕捉 ⚡</button>
+        </div>
     </div>
 
+    <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false;' cursor="rayOrigin: mouse" raycaster="objects: .wild-snack">
+        
+        <a-entity id="camera-rig">
+            <a-camera id="my-camera" look-controls="pointerLockEnabled: false">
+                
+                <a-entity id="cyber-catcher" position="0 0 -1" raycaster="objects: .wild-snack">
+                    
+                    <a-ring id="ring-outer" radius-inner="0.04" radius-outer="0.05" color="#00FFFF" segments-txt="32"
+                            animation="property: rotation; to: 0 0 360; dur: 3000; loop: true; easing: linear">
+                    </a-ring>
+                    
+                    <a-ring id="ring-inner" radius-inner="0.002" radius-outer="0.015" color="#00FFFF"
+                            animation="property: scale; to: 1.2 1.2 1.2; dur: 800; dir: alternate; loop: true; easing: easeInOutSine">
+                        <a-box width="0.03" height="0.002" depth="0.001" color="#00FFFF"></a-box>
+                        <a-box width="0.002" height="0.03" depth="0.001" color="#00FFFF"></a-box>
+                    </a-ring>
+                    
+                    <a-cursor id="hidden-cursor" visible="false"></a-cursor>
+
+                </a-entity>
+                
+            </a-camera>
+        </a-entity>
+
+        <a-entity id="snack-container"></a-entity>
+
+    </scene>
+
+    <script>
+        let siumaiCount = 0;
+        let eggCount = 0;
+        let currentTarget = null;
+
+        const container = document.getElementById('snack-container');
+        const radarText = document.getElementById('radar-text');
+        const catchBtn = document.getElementById('catch-btn');
+        
+        // 獲取捕捉器 3D 組件用於更換外觀
+        const ringOuter = document.getElementById('ring-outer');
+        const ringInner = document.getElementById('ring-inner');
+
+        // 【隨機修補生成野生小食】
+        function spawnRandomSnack() {
+            const type = Math.random() > 0.5 ? 'siumai' : 'egg';
+            const id = 'snack-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+            
+            // 360度隨機方位
+            const angle = Math.random() * Math.PI * 2;
+            const radius = 2.2 + Math.random() * 2; // 距離 2.2 - 4.2 米
+            const x = Math.sin(angle) * radius;
+            const z = Math.cos(angle) * radius;
+            const y = 0.3 + Math.random() * 1.3;     // 高低落差
+
+            let snackEntity = document.createElement('a-entity');
+            snackEntity.setAttribute('id', id);
+            snackEntity.setAttribute('class', 'wild-snack');
+            snackEntity.setAttribute('position', `${x} ${y} ${z}`);
+            snackEntity.setAttribute('data-type', type);
+            
+            // 特效：等小食自帶微弱自轉旋轉，增加浮空「野生精靈感」
+            snackEntity.setAttribute('animation', 'property: rotation; to: 0 360 0; dur: 5000; loop: true; easing: linear');
+
+            if (type === 'siumai') {
+                snackEntity.innerHTML = `
+                    <a-cylinder radius="0.006" height="0.4" color="#DEB887" rotation="10 0 15"></a-cylinder>
+                    <a-cylinder radius="0.05" height="0.07" position="-0.02 0.1 0" color="#FFD700"></a-cylinder>
+                    <a-cylinder radius="0.05" height="0.07" position="0 0 0" color="#FFD700"></a-cylinder>
+                    <a-cylinder radius="0.05" height="0.07" position="0.02 -0.1 0" color="#FFD700"></a-cylinder>
+                `;
+            } else {
+                snackEntity.innerHTML = `
+                    <a-box width="0.35" height="0.42" depth="0.06" color="#E59866"></a-box>
+                    <a-sphere radius="0.035" position="-0.06 0.16 0.04" color="#F39C12"></a-sphere>
+                    <a-sphere radius="0.035" position="0.06 0.16 0.04" color="#F39C12"></a-sphere>
+                    <a-sphere radius="0.035" position="0 0.20 0.04" color="#D35400"></a-sphere>
+                `;
+            }
+
+            // 🔥 【動態反饋】：當高科技捕捉器對準呢個小食
+            snackEntity.addEventListener('mouseenter', function () {
+                currentTarget = this;
+                radarText.innerText = `⚠️ TARGET LOCKED: 野生【${type === 'siumai' ? '魚肉燒賣' : '炭燒雞蛋仔'}】!!`;
+                radarText.style.color = "#FF0055";
+                
+                // 變色：捕捉器變成危險警告紅色，並急速收縮
+                ringOuter.setAttribute('color', '#FF0055');
+                ringInner.setAttribute('color', '#FF0055');
+                ringInner.setAttribute('scale', '0.6 0.6 0.6');
+            });
+            
+            // 當捕捉器移開
+            snackEntity.addEventListener('mouseleave', function () {
+                if (currentTarget === this) currentTarget = null;
+                radarText.innerText = "📡 雷達：四圍旋轉搜尋，小食正隱藏於虛擬經緯度中...";
+                radarText.style.color = "#FFF";
+                
+                // 恢復：變回溫和的科幻螢光藍，恢復呼吸放大狀態
+                ringOuter.setAttribute('color', '#00FFFF');
+                ringInner.setAttribute('color', '#00FFFF');
+                ringInner.setAttribute('scale', '1 1 1');
+            });
+
+            // 觸控點擊同樣可捕捉
+            snackEntity.addEventListener('click', function() {
+                doCapture(this);
+            });
+
+            container.appendChild(snackEntity);
+        }
+
+        // 【執行數碼捕捉】
+        function doCapture(el) {
+            if (!el) return;
+            const type = el.getAttribute('data-type');
+            
+            // 炫酷捕捉動畫：先旋轉再瞬間縮小吸走
+            el.setAttribute('animation', 'property: rotation; to: 0 1080 0; dur: 300; easing: easeOutQuad');
+            el.setAttribute('animation__scale', 'property: scale; to: 0 0 0; dur: 300; easing: easeInBack');
+            
+            setTimeout(() => {
+                if (type === 'siumai') {
+                    siumaiCount++;
+                    document.getElementById('num-siumai').innerText = siumaiCount;
+                } else {
+                    eggCount++;
+                    document.getElementById('num-egg').innerText = eggCount;
+                }
+                
+                if(el.parentNode) el.parentNode.removeChild(el);
+                currentTarget = null;
+                
+                // 重置捕捉器外觀
+                ringOuter.setAttribute('color', '#00FFFF');
+                ringInner.setAttribute('color', '#00FFFF');
+                ringInner.setAttribute('scale', '1 1 1');
+                radarText.innerText = "⚡ SYSTEM: 成功將分子解構並收入背包！補貨中...";
+                radarText.style.color = "#00FF66";
+
+                // 在其他隨機未知方位重新修補生成新小食
+                setTimeout(spawnRandomSnack, 800);
+
+            }, 300);
+        }
+
+        // 點擊大按鈕
+        catchBtn.addEventListener('click', () => {
+            if (currentTarget) {
+                doCapture(currentTarget);
+            } else {
+                alert("未鎖定目標！請揸緊手機轉身，用畫面中間嘅【旋轉科技鎖定儀】對準小食！");
+            }
+        });
+
+        // 開局自動修補生成 5 個隨機方位小食
+        window.addEventListener('load', () => {
+            for(let i = 0; i < 5; i++) {
+                spawnRandomSnack();
+            }
+        });
+    </script>
 </body>
 </html>
