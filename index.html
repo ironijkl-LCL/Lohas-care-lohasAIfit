@@ -11,6 +11,228 @@
     <style>
         body { margin: 0; overflow: hidden; font-family: -apple-system, sans-serif; -webkit-user-select: none; }
         .a-enter-vr, .a-enter-ar { display: none !important; }
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>賽博小食妖獸 - 鏡頭體感大復修</title>
+    
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
+    <style>
+        body { margin: 0; overflow: hidden; font-family: -apple-system, sans-serif; -webkit-user-select: none; }
+        
+        /* 頂層遊戲 HUD 介面 */
+        #game-hud {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 999;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .header {
+            background: rgba(10, 25, 47, 0.85); border-bottom: 3px solid #00FFFF;
+            color: #00FFFF; padding: 20px 15px; text-align: center;
+            box-shadow: 0 0 15px #00FFFF;
+        }
+        .header h1 { margin: 0; font-size: 20px; text-shadow: 0 0 10px #00FFFF; letter-spacing: 1px; }
+        
+        /* 置頂 2D 科技鎖定儀 */
+        #central-crosshair {
+            position: fixed; top: 50%; left: 50%; width: 65px; height: 65px;
+            transform: translate(-50%, -50%); border: 3px dashed #FF0055; border-radius: 50%;
+            pointer-events: none; z-index: 1000; box-shadow: 0 0 10px #FF0055;
+            transition: all 0.1s ease;
+        }
+        #central-crosshair::before {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 8px; height: 8px; background: #00FFFF; border-radius: 50%;
+            transform: translate(-50%, -50%); box-shadow: 0 0 10px #00FFFF;
+        }
+        /* 鎖定目標時變色反饋 */
+        .locked-target {
+            border-color: #00FF66 !important;
+            box-shadow: 0 0 20px #00FF66, inset 0 0 15px #00FF66 !important;
+            transform: translate(-50%, -50%) scale(0.8) !important;
+        }
+
+        .footer {
+            background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0)); padding: 25px; text-align: center; color: white;
+        }
+        #score-panel { font-size: 16px; color: #00FF66; font-weight: bold; text-shadow: 0 0 5px #00FF66; }
+        
+        #catch-btn {
+            background: linear-gradient(135deg, #FF0055 0%, #7700AA 100%);
+            color: white; border: 2px solid #00FFFF; padding: 14px 45px;
+            font-size: 16px; font-weight: bold; border-radius: 30px; cursor: pointer;
+            pointer-events: auto; display: inline-block; margin-top: 12px;
+            box-shadow: 0 0 15px #FF0055;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="central-crosshair"></div>
+
+    <div id="game-hud">
+        <div class="header">
+            <h1>👾 SnackerMon GO: REAL AR</h1>
+            <p id="radar-text" style="margin:4px 0 0 0; color:#FFF; font-size:12px;">📱 點擊右下角【Start AR】開啟真實鏡頭！轉動手機追捕暴走妖獸！</p>
+        </div>
+        
+        <div class="footer">
+            <div id="score-panel">🎒 獵人圖鑑：燒賣暴君 x <span id="num-siumai">0</span> | 蜂巢雞蛋仔 x <span id="num-egg">0</span></div>
+            <button id="catch-btn">⚡ 💥 釋放數碼光束 💥 ⚡</button>
+        </div>
+    </div>
+
+    <a-scene xrweb="mode: ar; optionalFeatures: hit-test, light-estimation;">
+        
+        <a-entity id="camera-rig">
+            <a-camera id="my-camera" look-controls="pointerLockEnabled: false">
+                <a-entity id="ray-caster" raycaster="objects: .monster-snack; near: 0.1; far: 10;"></a-entity>
+            </a-camera>
+        </a-entity>
+
+        <a-entity id="snack-container"></a-entity>
+
+    </scene>
+
+    <script>
+        let siumaiCount = 0;
+        let eggCount = 0;
+        let currentTarget = null;
+
+        const container = document.getElementById('snack-container');
+        const radarText = document.getElementById('radar-text');
+        const catchBtn = document.getElementById('catch-btn');
+        const crosshair = document.getElementById('central-crosshair');
+        const rayCasterEntity = document.getElementById('ray-caster');
+
+        // 【隨機修補生成：狂暴動態野生小食妖獸】
+        function spawnMonsterSnack() {
+            const type = Math.random() > 0.5 ? 'siumai' : 'egg';
+            const id = 'monster-' + Date.now();
+            
+            // 360度隨機經緯度方位
+            const angle = Math.random() * Math.PI * 2;
+            const radius = 2.0 + Math.random() * 1.5; // 距離 2-3.5 米
+            const x = Math.sin(angle) * radius;
+            const z = Math.cos(angle) * radius;
+            const y = 0.5 + Math.random() * 1.2;
+
+            let monsterEntity = document.createElement('a-entity');
+            monsterEntity.setAttribute('id', id);
+            monsterEntity.setAttribute('class', 'monster-snack');
+            monsterEntity.setAttribute('position', `${x} ${y} ${z}`);
+            monsterEntity.setAttribute('data-type', type);
+
+            // 🔥 【更強動態修補 1】：為不同怪獸注入完全截然不同嘅狂暴運動路徑
+            if (type === 'siumai') {
+                // 👑 【金牌燒賣暴君】：Z字型上下急速瞬移跳動 + 瘋狂拍翼
+                monsterEntity.setAttribute('animation__crazy-bob', `property: position; from: ${x} ${y} ${z}; to: ${x} ${y+0.4} ${z-0.3}; dur: 600; dir: alternate; loop: true; easing: easeInOutSine`);
+                monsterEntity.setAttribute('animation__rot', 'property: rotation; to: 0 360 0; dur: 4000; loop: true; easing: linear');
+
+                monsterEntity.innerHTML = `
+                    <a-cone radius-bottom="0.06" radius-top="0.01" height="0.07" position="0 0.22 0" color="#FFD700" rotation="180 0 0"></a-cone>
+                    <a-cylinder radius="0.06" height="0.08" position="0 0.12 0" color="#FF0055"></a-cylinder>
+                    <a-cylinder radius="0.06" height="0.08" position="0 0 0" color="#F1C40F"></a-cylinder>
+                    <a-cylinder radius="0.06" height="0.08" position="0 -0.1 0" color="#00FF66"></a-cylinder>
+                    <a-sphere radius="0.016" position="-0.03 0.03 0.05" color="#FFF"></a-sphere>
+                    <a-sphere radius="0.008" position="-0.03 0.03 0.062" color="#FF0000" animation="property: scale; to: 1.3 1.3 1.3; dur: 200; dir: alternate; loop: true"></a-sphere>
+                    <a-sphere radius="0.016" position="0.03 0.03 0.05" color="#FFF"></a-sphere>
+                    <a-sphere radius="0.008" position="0.03 0.03 0.062" color="#FF0000" animation="property: scale; to: 1.3 1.3 1.3; dur: 200; dir: alternate; loop: true"></a-sphere>
+                    <a-box width="0.25" height="0.05" depth="0.01" position="-0.14 0 0" color="#00FFFF" rotation="0 0 30"
+                           animation="property: rotation; to: 0 0 -30; dur: 120; dir: alternate; loop: true; easing: linear"></a-box>
+                    <a-box width="0.25" height="0.05" depth="0.01" position="0.14 0 0" color="#00FFFF" rotation="0 0 -30"
+                           animation="property: rotation; to: 0 0 30; dur: 150; dir: alternate; loop: true; easing: linear"></a-box>
+                `;
+            } else {
+                // 🐝 【狂暴蜂巢雞蛋仔】：圍繞玩家進行「半徑縮小放大」的螺旋形繞圈飛行！
+                // 利用 A-Frame 嵌套動畫實現真正嘅大範圍位移軌跡
+                monsterEntity.setAttribute('animation__orbit', `property: rotation; to: 0 360 0; dur: 3500; loop: true; easing: linear`);
+                
+                // 內層實體偏離中心，創造公轉效果
+                monsterEntity.innerHTML = `
+                    <a-entity position="0 0 -2.5" animation__wobble="property: position; to: 0 0.5 -2.0; dur: 900; dir: alternate; loop: true; easing: easeInOutQuad">
+                        <a-box width="0.32" height="0.38" depth="0.1" color="#1c2541"></a-box>
+                        <a-sphere radius="0.04" position="0 0.08 0.06" color="#FF0055"></a-sphere>
+                        <a-sphere radius="0.03" position="-0.06 0 0.06" color="#F39C12"></a-sphere>
+                        <a-sphere radius="0.03" position="0.06 0 0.06" color="#F39C12"></a-sphere>
+                        <a-sphere radius="0.03" position="-0.06 -0.1 0.06" color="#F39C12"></a-sphere>
+                        <a-sphere radius="0.03" position="0.06 -0.1 0.06" color="#F39C12"></a-sphere>
+                        <a-cone radius-bottom="0.03" height="0.08" position="0 -0.23 0" color="#00FF66" rotation="180 0 0"></a-cone>
+                    </a-entity>
+                `;
+            }
+
+            container.appendChild(monsterEntity);
+        }
+
+        // 核心射線鎖定事件
+        rayCasterEntity.addEventListener('raycaster-intersection', function (evt) {
+            currentTarget = evt.detail.els[0];
+            radarText.innerText = `🎯 TARGET LOCKED!! 獵物進入射程，即刻擊殺！`;
+            radarText.style.color = "#00FF66";
+            crosshair.classList.add('locked-target');
+        });
+
+        rayCasterEntity.addEventListener('raycaster-intersection-cleared', function () {
+            currentTarget = null;
+            radarText.innerText = "📡 雷達：四圍旋轉搜尋，小食妖獸正在暴走移動中...";
+            radarText.style.color = "#FFF";
+            crosshair.classList.remove('locked-target');
+        });
+
+        // 數碼收服
+        function doCapture() {
+            if (!currentTarget) return;
+            const el = currentTarget;
+            const type = el.getAttribute('data-type');
+            
+            // 被光束吸入特效：高旋轉、縮小
+            el.removeAttribute('animation__crazy-bob');
+            el.setAttribute('animation', 'property: rotation; to: 0 1080 0; dur: 250; easing: easeOutQuad');
+            el.setAttribute('animation__scale', 'property: scale; to: 0 0 0; dur: 250; easing: easeInBack');
+            
+            setTimeout(() => {
+                if (type === 'siumai') {
+                    siumaiCount++;
+                    document.getElementById('num-siumai').innerText = siumaiCount;
+                } else {
+                    eggCount++;
+                    document.getElementById('num-egg').innerText = eggCount;
+                }
+                
+                if(el.parentNode) el.parentNode.removeChild(el);
+                currentTarget = null;
+                crosshair.classList.remove('locked-target');
+                radarText.innerText = "⚡ SUCCESS: 成功收服！雷達已隨機修補生出下一隻！";
+                radarText.style.color = "#00FF66";
+
+                // 在其他隨機未知方位重新修補生成
+                setTimeout(spawnMonsterSnack, 600);
+            }, 250);
+        }
+
+        catchBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentTarget) doCapture();
+            else alert("未鎖定妖獸！請拿著手機轉身，用【中間光環】對準瘋狂移動嘅目標！");
+        });
+
+        window.addEventListener('click', () => {
+            if (currentTarget) doCapture();
+        });
+
+        // 開局修補生成 5 隻野生暴走小食妖獸
+        window.addEventListener('load', () => {
+            for(let i = 0; i < 5; i++) {
+                spawnMonsterSnack();
+            }
+        });
+    </script>
+</body>
+</html>
 
         /* 頂層遊戲 HUD */
         #game-hud {
