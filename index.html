@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="樂活健康">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2642/2642731.png">
+    <link class="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2642/2642731.png">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -151,7 +151,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 今日概覽大數字垂直卡片堆疊 (防範專業長標籤截斷) */
+        /* 今日概覽大數字垂直卡片堆疊 */
         .health-summary-stack {
             display: flex;
             flex-direction: column;
@@ -372,14 +372,21 @@
         }
         .apple-input:focus { outline: none; border-color: var(--apple-blue); }
 
-        /* IDDSI 標章樣式 */
+        /* IDDSI 標章基礎樣式 */
         .iddsi-badge {
-            padding: 4px 12px;
+            padding: 6px 14px;
             border-radius: 12px;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: bold;
             color: #FFFFFF;
             display: inline-block;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        .meta-badge-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
         }
 
         /* Apple Health 趨勢圖表 */
@@ -467,8 +474,8 @@
             width: 88%; max-width: 340px;
             border-radius: var(--border-radius-large);
             padding: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .history-item-row {
@@ -520,9 +527,9 @@
             </div>
             
             <div class="summary-large-card">
-                <div class="summary-label" style="color: var(--apple-red);"><i class="fa-solid fa-triangle-exclamation"></i> ⚠️ 長者指定安全吞嚥限度 (IDDSI)</div>
-                <div class="summary-value" id="meta-iddsi-highest" style="font-size: 20px; margin-top: 14px; margin-bottom: 6px; color: var(--text-main);">-</div>
-                <div class="summary-unit">今日已登錄最高級別</div>
+                <div class="summary-label" style="color: var(--apple-red);"><i class="fa-solid fa-triangle-exclamation"></i> 長者指定安全吞嚥限度 (IDDSI)</div>
+                <div id="meta-iddsi-highest" class="meta-badge-flex">-</div>
+                <div class="summary-unit" style="display: none;">今日已登錄最高級別</div>
             </div>
         </div>
 
@@ -692,17 +699,24 @@
                     </select>
                 </div>
                 <div>
-                    <label style="font-size: 13px; font-weight:600; color: var(--apple-red);">⚠️ 長者指定安全吞嚥限度 (IDDSI)</label>
-                    <select id="user-iddsi-target" class="apple-input" onchange="checkCurrentIddsiRisk()" style="border-color: rgba(255,59,48,0.3);">
-                        <option value="0">Level 0 微稠 (White)</option>
-                        <option value="1">Level 1 極微 (Grey)</option>
-                        <option value="2">Level 2 低度 (Pink)</option>
-                        <option value="3">Level 3 中度 (Yellow)</option>
-                        <option value="4" selected>Level 4 糊狀 (Green)</option>
-                        <option value="5">Level 5 剁碎 (Orange)</option>
-                        <option value="6">Level 6 軟質 (Blue)</option>
-                        <option value="7">Level 7 常規 (Black)</option>
-                        <option value="7EC">Level 7 易嚼 (Black)</option>
+                    <label style="font-size: 13px; font-weight:600; color: var(--apple-red);">長者指定安全吞嚥限度 (IDDSI) 食物</label>
+                    <select id="user-iddsi-target" class="apple-input" onchange="syncDropdownColor()" style="font-weight: bold; transition: all 0.2s ease;">
+                        <option value="3" style="background-color: #ffff00; color: #000000;">Level 3 中度 (Yellow)</option>
+                        <option value="4" style="background-color: #33cc33; color: #ffffff;" selected>Level 4 糊狀 (Green)</option>
+                        <option value="5" style="background-color: #ff6600; color: #ffffff;">Level 5 剁碎 (Orange)</option>
+                        <option value="6" style="background-color: #0067b2; color: #ffffff;">Level 6 軟質 (Blue)</option>
+                        <option value="7" style="background-color: #000000; color: #ffffff;">Level 7 常規 (Black)</option>
+                        <option value="7EC" style="background-color: #000000; color: #ffffff;">Level 7 易嚼 (Black)</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 13px; font-weight:600; color: var(--apple-blue); margin-top: 4px; display: block;">長者指定安全吞嚥限度 (IDDSI) 飲品</label>
+                    <select id="user-iddsi-drink-target" class="apple-input" onchange="syncDropdownColor()" style="font-weight: bold; transition: all 0.2s ease;">
+                        <option value="0" style="background-color: #ffffff; color: #000000;">Level 0 微稠 (White)</option>
+                        <option value="1" style="background-color: #666666; color: #ffffff;" selected>Level 1 極微 (Grey)</option>
+                        <option value="2" style="background-color: #ea4e96; color: #ffffff;">Level 2 低度 (Pink)</option>
+                        <option value="3" style="background-color: #ffff00; color: #000000;">Level 3 中度 (Yellow)</option>
+                        <option value="4" style="background-color: #33cc33; color: #ffffff;">Level 4 糊狀 (Green)</option>
                     </select>
                 </div>
                 
@@ -753,22 +767,20 @@
 <canvas id="processedCanvas" style="display:none;"></canvas>
 
 <script>
-// 🚀 與你專屬的 Google Apps Script 雲端 API 節點保持 100% 同步
 const API_URL = "https://script.google.com/macros/s/AKfycbwOgthCxMHgU-7nsuYd91AMSWUrr48qU8pm02j4qCYk_TE5nN7dJOB_o5nrUc932kZr/exec";
 
 const IDDSI_COLORS = {
-    "0": { bg: "#ffffff", text: "#000000", label: "Level 0 微稠 (White)" },
-    "1": { bg: "#666666", text: "#ffffff", label: "Level 1 極微 (Grey)" },
-    "2": { bg: "#ea4e96", text: "#ffffff", label: "Level 2 低度 (Pink)" },
-    "3": { bg: "#ffff00", text: "#000000", label: "Level 3 中度 (Yellow)" },
-    "4": { bg: "#33cc33", text: "#ffffff", label: "Level 4 糊狀 (Green)" },
-    "5": { bg: "#ff6600", text: "#ffffff", label: "Level 5 剁碎 (Orange)" },
-    "6": { bg: "#0067b2", text: "#ffffff", label: "Level 6 軟質 (Blue)" },
-    "7": { bg: "#000000", text: "#ffffff", label: "Level 7 常規 (Black)" },
-    "7EC": { bg: "#000000", text: "#ffffff", label: "Level 7 易嚼 (Black)" }
+    "0": { bg: "#ffffff", text: "#000000", label: "Level 0 微稠" },
+    "1": { bg: "#666666", text: "#ffffff", label: "Level 1 極微" },
+    "2": { bg: "#ea4e96", text: "#ffffff", label: "Level 2 低度" },
+    "3": { bg: "#ffff00", text: "#000000", label: "Level 3 中度" },
+    "4": { bg: "#33cc33", text: "#ffffff", label: "Level 4 糊狀" },
+    "5": { bg: "#ff6600", text: "#ffffff", label: "Level 5 剁碎" },
+    "6": { bg: "#0067b2", text: "#ffffff", label: "Level 6 軟質" },
+    "7": { bg: "#000000", text: "#ffffff", label: "Level 7 常規" },
+    "7EC": { bg: "#000000", text: "#ffffff", label: "Level 7 易嚼" }
 };
 
-// 全域數據架構同步
 let dailyTargets = { cal: 1600, protein: 60, carbs: 220, fat: 50 };
 let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0;
 let sugar = 0, satFat = 0, transFat = 0, cholesterol = 0, fiber = 0;
@@ -778,21 +790,17 @@ let weeklyData = [1400, 1500, 1350, 1600, 0];
 let recognition = null, isRecording = false, processedBase64 = "", cachedNutritionData = null;
 let currentOperatorId = "Guest_User", captchaCode = "";
 
-/* Apple 骨架 Tab 切換引擎 */
 function switchAppleTab(tabId, element) {
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
-    
     document.getElementById(`tab-${tabId}`).classList.add('active');
     element.classList.add('active');
 }
 
-/* Dynamic Island 即時通知 */
 function triggerDynamicIsland(text, isDanger = false) {
     const island = document.getElementById("dynamicIsland");
     const islandText = document.getElementById("islandText");
     const islandIcon = document.getElementById("islandIcon");
-    
     islandText.innerHTML = text;
     if(isDanger) {
         island.className = "dynamic-island-banner active alert-danger";
@@ -804,7 +812,6 @@ function triggerDynamicIsland(text, isDanger = false) {
     setTimeout(() => { island.classList.remove("active"); }, 4500);
 }
 
-// 🔒 醫護認證防線
 function handleAuthAction() {
     if (currentOperatorId !== "Guest_User") {
         if (confirm(`當前登入人員為 [ ${currentOperatorId} ]，確定要登出系統嗎？`)) {
@@ -845,7 +852,6 @@ function submitLoginAuth() {
     badgeBtn.className = "login-badge-btn logged-in";
     document.getElementById("operatorDisplay").innerText = `已登入: ${currentOperatorId}`;
     document.getElementById("loginIcon").className = "fa-solid fa-user-check";
-    
     triggerDynamicIsland(`🔒 醫護防線驗證完成！人員：${currentOperatorId}`);
     closeLoginModal();
 }
@@ -859,7 +865,6 @@ function executeLogoutProcedure() {
     triggerDynamicIsland("🔓 您已順利安全登出");
 }
 
-// 數據讀取與快取
 async function getNutritionData() {
     if (cachedNutritionData) return cachedNutritionData;
     const localCached = localStorage.getItem("lohas_nutrition_cache");
@@ -883,10 +888,16 @@ function parseIddsiLevel(iddsiRaw) {
 
 function checkCurrentIddsiRisk() {
     if (maxIddsiText === "-") return 0;
-    const allowedRaw = document.getElementById("user-iddsi-target").value;
-    let allowedLevel = allowedRaw === "7EC" ? 7 : parseInt(allowedRaw);
+    const allowedFoodRaw = document.getElementById("user-iddsi-target").value;
+    const allowedDrinkRaw = document.getElementById("user-iddsi-drink-target").value;
+    
+    let allowedFoodLevel = allowedFoodRaw === "7EC" ? 7 : parseInt(allowedFoodRaw);
+    let allowedDrinkLevel = allowedDrinkRaw === "7EC" ? 7 : parseInt(allowedDrinkRaw);
+    
+    let allowedMaxLevel = Math.max(allowedFoodLevel, allowedDrinkLevel);
     let currentLevel = parseIddsiLevel(maxIddsiText);
-    if (currentLevel > allowedLevel) {
+    
+    if (currentLevel > allowedMaxLevel) {
         triggerDynamicIsland(`⚠️ 吞嚥風險警告：今日最高級別已超出該長者指定之安全界限！`, true);
         return 1;
     }
@@ -901,6 +912,36 @@ function parseValue(val) {
 
 function formatOutput(num) { 
     return Number(num.toFixed(2)).toString();
+}
+
+function syncDropdownColor() {
+    const foodSelect = document.getElementById("user-iddsi-target");
+    const drinkSelect = document.getElementById("user-iddsi-drink-target");
+    
+    if (foodSelect) {
+        const valFood = foodSelect.value;
+        const cfgFood = IDDSI_COLORS[valFood] || { bg: "rgba(0,0,0,0.02)", text: "var(--text-main)" };
+        foodSelect.style.backgroundColor = cfgFood.bg;
+        foodSelect.style.color = cfgFood.text;
+        foodSelect.style.borderColor = cfgFood.bg;
+    }
+    
+    if (drinkSelect) {
+        const valDrink = drinkSelect.value;
+        const cfgDrink = IDDSI_COLORS[valDrink] || { bg: "rgba(0,0,0,0.02)", text: "var(--text-main)" };
+        drinkSelect.style.backgroundColor = cfgDrink.bg;
+        drinkSelect.style.color = cfgDrink.text;
+        drinkSelect.style.borderColor = cfgDrink.bg;
+    }
+    
+    const metaContainer = document.getElementById("meta-iddsi-highest");
+    if (metaContainer && foodSelect && drinkSelect) {
+        const foodBadge = generateIddsiBadgeHTML_custom(foodSelect.value, "食物");
+        const drinkBadge = generateIddsiBadgeHTML_custom(drinkSelect.value, "飲品");
+        metaContainer.innerHTML = foodBadge + drinkBadge;
+    }
+    
+    checkCurrentIddsiRisk();
 }
 
 function calculatePersonalTargets() {
@@ -923,11 +964,10 @@ function calculatePersonalTargets() {
     document.getElementById("target-carbs-lbl").innerText = dailyTargets.carbs;
     document.getElementById("target-fat-lbl").innerText = dailyTargets.fat;
     
+    syncDropdownColor();
     updateFitnessBars();
-    checkCurrentIddsiRisk();
 }
 
-// 💾 儲存配置設定至本地存儲
 function saveProfileSettings() {
     const settings = {
         gender: document.getElementById("user-gender").value,
@@ -935,14 +975,14 @@ function saveProfileSettings() {
         height: document.getElementById("user-height").value,
         weight: document.getElementById("user-weight").value,
         activity: document.getElementById("user-activity").value,
-        iddsiTarget: document.getElementById("user-iddsi-target").value
+        iddsiTarget: document.getElementById("user-iddsi-target").value,
+        iddsiDrinkTarget: document.getElementById("user-iddsi-drink-target").value
     };
     localStorage.setItem("lohas_user_settings", JSON.stringify(settings));
     calculatePersonalTargets(); 
     triggerDynamicIsland("💾 院友身體數據與吞嚥目標已成功儲存！");
 }
 
-// 💾 載入已儲存的本地設定
 function loadProfileSettings() {
     const savedData = localStorage.getItem("lohas_user_settings");
     if (savedData) {
@@ -954,13 +994,13 @@ function loadProfileSettings() {
             if(settings.weight) document.getElementById("user-weight").value = settings.weight;
             if(settings.activity) document.getElementById("user-activity").value = settings.activity;
             if(settings.iddsiTarget) document.getElementById("user-iddsi-target").value = settings.iddsiTarget;
+            if(settings.iddsiDrinkTarget) document.getElementById("user-iddsi-drink-target").value = settings.iddsiDrinkTarget;
         } catch(e) {
             console.error("載入本地設定時出錯:", e);
         }
     }
 }
 
-/* 更新 Apple 三環進度條 */
 function updateFitnessBars() {
     const totalPct = Math.min(Math.round((cal / dailyTargets.cal) * 100), 100);
     document.getElementById("total-pct-lbl").innerText = `全天達標率：${totalPct}%`;
@@ -972,13 +1012,24 @@ function updateFitnessBars() {
 }
 
 function generateIddsiBadgeHTML(iddsiRaw) {
-    if (!iddsiRaw) return `<span class="iddsi-badge" style="background-color: var(--apple-gray);">未指定</span>`;
+    if (!iddsiRaw && iddsiRaw !== 0) return `<span class="iddsi-badge" style="background-color: var(--apple-gray);">未指定</span>`;
     let cleanKey = iddsiRaw.toString().trim();
     let match = cleanKey.match(/\d+/);
     let lookupKey = match ? match[0] : "1";
     if (cleanKey.toUpperCase().includes("7EC")) lookupKey = "7EC";
     const config = IDDSI_COLORS[lookupKey] || { bg: "#666666", text: "#ffffff", label: `Level ${iddsiRaw}` };
     return `<span class="iddsi-badge" style="background-color: ${config.bg}; color: ${config.text};">${config.label}</span>`;
+}
+
+function generateIddsiBadgeHTML_custom(iddsiRaw, prefix) {
+    if (!iddsiRaw && iddsiRaw !== 0) return `<span class="iddsi-badge" style="background-color: var(--apple-gray);">${prefix}: 未指定</span>`;
+    let cleanKey = iddsiRaw.toString().trim();
+    let match = cleanKey.match(/\d+/);
+    let lookupKey = match ? match[0] : "1";
+    if (cleanKey.toUpperCase().includes("7EC")) lookupKey = "7EC";
+    const config = IDDSI_COLORS[lookupKey] || { bg: "#666666", text: "#ffffff", label: `Level ${iddsiRaw}` };
+    
+    return `<span class="iddsi-badge" style="background-color: ${config.bg}; color: ${config.text};">${prefix}: ${config.label}</span>`;
 }
 
 function processAndPreviewImage(input) {
@@ -1010,7 +1061,6 @@ async function uploadAndDetectFood() {
         alert("⚠️ 圖片數據尚未轉換完成或未選擇圖片！請重新選取相片，並確認藍色大按鈕出現後再行點擊。");
         return;
     }
-
     const uploadBtnText = document.getElementById("uploadBtnText");
     triggerDynamicIsland("零部件中轉：正在上傳影像至雲端...");
     uploadBtnText.innerText = "⏳ AI 識別中...";
@@ -1069,10 +1119,7 @@ async function reportDataToGoogleSheetAnalysis(payload) {
     try {
         await fetch(API_URL, {
             method: 'POST',
-            body: JSON.stringify({
-                action: "logRecord",
-                data: payload
-            })
+            body: JSON.stringify({ action: "logRecord", data: payload })
         });
         console.log("雲端試算表同步成功");
     } catch(e) {
@@ -1080,45 +1127,45 @@ async function reportDataToGoogleSheetAnalysis(payload) {
     }
 }
 
+// 🌟 已重構：全等級動態適配語音與復康卡片引擎
 function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
     const cleanLevel = parseIddsiLevel(iddsiVal);
     
-    // 定義 Level 1 至 7 的對應配置與提示語
+    // 定義 Level 0 至 7 的廣東話語音指導與卡片配置
     const iddsiConfigs = {
-        1: { island: "為微稠流質，慢慢飲用。", speech: "屬於微稠流質，請長者慢慢飲。" },
+        0: { island: "為微稠流質，慢慢飲用。", speech: "屬於微稠流質，請長者慢慢飲。" },
+        1: { island: "為極微流質，慢慢飲用。", speech: "屬於極微流質，請長者慢慢飲。" },
         2: { island: "為輕度稠流質，慢慢飲用。", speech: "屬於輕度稠流質，好似花奶咁，請長者慢慢飲。" },
         3: { island: "為中度稠/化蜜狀食物。", speech: "屬於中度稠或者化蜜狀食物，可以用匙羹食，請長者慢慢吞。" },
         4: { island: "為高度稠/均質糊狀食物，無粒粒。", speech: "屬於均質糊狀食物，質地幼滑無粒粒，請長者用匙羹慢慢食。" },
-        5: { 
-            island: "為細碎濕軟食物，慢慢吞嚥。", 
-            speech: "屬於細碎濕軟食物，請長者每口食一茶匙，慢慢吞。",
-            hasTrainingCard: true 
-        },
+        5: { island: "為細碎濕軟食物，慢慢吞嚥。", speech: "屬於細碎濕軟食物，請長者每口食一茶匙，慢慢吞。", hasTrainingCard: true },
         6: { island: "為軟質及細塊食物，注意咀嚼。", speech: "屬於軟質細塊食物，食物已經切細，請長者慢慢咬碎再吞。" },
         7: { island: "為普通/容易咀嚼食物。", speech: "屬於普通或者容易咀嚼食物，請長者保持專心，慢慢食。" }
     };
 
-    // 如果輸入的 Level 不在 1-7 範圍內，清除舊卡片並結束
-    if (!iddsiConfigs[cleanLevel]) {
-        const oldCard = document.getElementById("st-adaptive-training-card");
+    const trainingCardId = "st-adaptive-training-card";
+
+    // 1. 如果輸入的級別無效，移除可能存在的卡片並終止
+    if (cleanLevel === -1 || !iddsiConfigs[cleanLevel]) {
+        const oldCard = document.getElementById(trainingCardId);
         if (oldCard) oldCard.remove();
         return;
     }
 
     const currentConfig = iddsiConfigs[cleanLevel];
 
-    // 1. 觸發頂部動態島
+    // 2. 觸發頂部動態島文字提示
     triggerDynamicIsland(`💡 進食指導 (Level ${cleanLevel})：${foodName}${currentConfig.island}`);
     
-    // 2. 廣東話語音朗讀提示
+    // 3. 執行廣東話語音朗讀提示
     if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // 清除排隊中的語音，避免延遲
         const msg = new SpeechSynthesisUtterance(`${foodName}${currentConfig.speech}`);
         msg.lang = 'zh-HK';
         window.speechSynthesis.speak(msg);
     }
 
-    // 3. 處理專屬的言語治療復康訓練卡片 (原本 Level 5 的邏輯)
-    const trainingCardId = "st-adaptive-training-card";
+    // 4. 生成言語治療復康訓練卡片
     if (currentConfig.hasTrainingCard) {
         let trainingCard = document.getElementById(trainingCardId);
         if (!trainingCard) {
@@ -1131,81 +1178,50 @@ function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
         trainingCard.innerHTML = `
             <h3 style="color: var(--apple-orange);"><i class="fa-solid fa-brain"></i> 言語治療復康訓練 (Level ${cleanLevel} 專屬)</h3>
             <p style="font-size: 13px;">進食 <b>${foodName}</b> 前，建議先進行 3 分鐘<b>「舌肌力量練習」</b>以活化吞嚥反射。</p>
-            <button class="apple-btn-primary" style="background: var(--apple-orange);"
-                onclick="startSpeechTracking('level${cleanLevel}_tongue')">🎯 開啟 AI 表情追蹤練習</button>
+            <button class="apple-btn-primary" style="background: var(--apple-orange);" onclick="startSpeechTracking('level${cleanLevel}_tongue')">🎯 開啟 AI 表情追蹤練習</button>
         `;
     } else {
-        // 如果不是 Level 5，則將先前產生的訓練卡片移除
         const oldCard = document.getElementById(trainingCardId);
         if (oldCard) oldCard.remove();
     }
 }
 
-// 🔍 搜尋與比對庫匹配引擎 (權重計分制精準度優化版，完全支援西多士、鴛鴦模糊搜尋與特殊括號過濾)
 async function searchFoodText() {
     const rawQuery = document.getElementById("foodSearchInput").value.trim();
     if (!rawQuery) return;
     
-    // 1. 全面的廣東話/常規量詞與動詞過濾（避免數量與修飾詞干擾對比）
     let query = rawQuery.replace(/(食咗|飲咗|食left|飲left|幾口|一碗|半碗|大大半碗|大半碗|細碗|一盃|一杯|一碟|一隻|一件|一包|一條|一樽|一罐|幾粒|幾片|碟|個|餐|咗|左|杯|隻|件|包|條|粒|片)/g, '').trim();
     if (!query) query = rawQuery;
     try {
         let foodList = await getNutritionData();
         const qNormal = normalizeText(query);
-        // 2. 遍歷所有食物並計算「匹配分數」
         let scoredList = foodList.map(item => {
             let dbName = (item["foodname"] || "").toString();
             let dbNormal = normalizeText(dbName);
-            
             if (!dbNormal) return { item, score: 0 };
-
             let score = 0;
-
-            // 基準 A：完全一樣 (最高分)
-            if (dbNormal === qNormal) {
-                score = 100;
-            } 
-            // 基準 B：資料庫名稱包含用戶輸入 (例如：輸入 "牛肉"，數據庫有 "牛肉麵")
-            else if (dbNormal.includes(qNormal)) {
-                score = 80 + (qNormal.length / dbNormal.length * 10);
-            } 
-            // 基準 C：用戶輸入包含資料庫名稱 (例如：輸入 "港式奶茶"，數據庫有 "奶茶")
-            else if (qNormal.includes(dbNormal)) {
-                score = 70 + (dbNormal.length / qNormal.length * 10);
-            } 
-            // 基準 D：模糊字詞交集 (例如：輸入 "牛肉湯麵"，數據庫是 "川味牛肉麵"，兩者互不包含，但字眼高度重疊)
+            if (dbNormal === qNormal) { score = 100; } 
+            else if (dbNormal.includes(qNormal)) { score = 80 + (qNormal.length / dbNormal.length * 10); } 
+            else if (qNormal.includes(dbNormal)) { score = 70 + (dbNormal.length / qNormal.length * 10); } 
             else {
                 let matchCount = 0;
-                let uniqueQChars = [...new Set(qNormal)]; // 去除重複字
-                uniqueQChars.forEach(char => {
-                    if (dbNormal.includes(char)) matchCount++;
-                });
-
+                let uniqueQChars = [...new Set(qNormal)];
+                uniqueQChars.forEach(char => { if (dbNormal.includes(char)) matchCount++; });
                 if (matchCount > 0) {
                     const overlapRatio = matchCount / Math.max(qNormal.length, dbNormal.length);
-                    score = overlapRatio * 50; // 基礎模糊分，最高 50 分
-                    
-                    // 核心關鍵字防錯加權 (解決牛肉乾 vs 牛肉麵的歷史性衝突)
+                    score = overlapRatio * 50; 
                     const coreKeywords = ['麵', '麪', '飯', '粥', '湯', '茶', '肉', '魚', '雞', '鷄', '蛋', '西多', '鴛鴦', '奶茶', '牛肉'];
-                    coreKeywords.forEach(kw => {
-                        if (qNormal.includes(kw) && dbNormal.includes(kw)) {
-                            score += 10; // 雙方都有核心詞（如都有「麵」），大幅加分避免錯配成飯
-                        }
-                    });
+                    coreKeywords.forEach(kw => { if (qNormal.includes(kw) && dbNormal.includes(kw)) { score += 10; } });
                 }
             }
-
             return { item, score };
         });
 
-        // 3. 過濾掉完全不匹配的結果 (分數為 0)，並依分數從高到低排序
         let validMatches = scoredList.filter(x => x.score > 0);
         let targetItem = null;
-        
         if (validMatches.length > 0) {
             validMatches.sort((a, b) => b.score - a.score);
             targetItem = validMatches[0].item;
-            console.log(`🔍 搜尋: "${rawQuery}" -> 最匹配: "${targetItem.foodname}" (分數: ${validMatches[0].score.toFixed(1)})`);
         }
 
         if (targetItem) {
@@ -1222,6 +1238,7 @@ async function searchFoodText() {
             let fCholesterol = parseValue(targetItem["cholesterol"]);
             let fFiber = parseValue(targetItem["fiber"]);
             let iddsiVal = targetItem["iddsi"] || "";
+            
             document.getElementById("single_foodname").innerText = fFoodName;
             document.getElementById("single_cal").innerText = fCal;
             document.getElementById("single_grams").innerText = formatOutput(fGrams) + "g";
@@ -1234,34 +1251,22 @@ async function searchFoodText() {
             document.getElementById("single_cholesterol").innerText = formatOutput(fCholesterol) + "mg";
             document.getElementById("single_fiber").innerText = formatOutput(fFiber) + "g";
             document.getElementById("single_iddsiMain").innerHTML = generateIddsiBadgeHTML(iddsiVal);
+            
             let singlePct = Math.min(Math.round((fCal / dailyTargets.cal) * 100), 100);
             document.getElementById("single_ring_progress").style.background = `conic-gradient(var(--apple-blue) 0% ${singlePct}%, rgba(0,0,0,0.05) ${singlePct}% 100%)`;
             document.getElementById("single-pct-lbl").innerText = `佔每日目標：${singlePct}%`;
-            // 全域總量指標累加
-            cal += fCal;
-            grams += fGrams;
-            protein += fProtein; 
-            carbs += fCarbs; 
-            fat += fFat;
-            sugar += fSugar;
-            satFat += fSatFat;
-            transFat += fTransFat;
-            cholesterol += fCholesterol; 
-            fiber += fFiber;
+
+            cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
+            sugar += fSugar; satFat += fSatFat; transFat += fTransFat; cholesterol += fCholesterol; fiber += fFiber;
             recordCount += 1;
 
             if (iddsiVal) {
-                if (maxIddsiText === "-") { 
-                    maxIddsiText = iddsiVal;
-                } else if (parseIddsiLevel(iddsiVal) > parseIddsiLevel(maxIddsiText)) { 
-                    maxIddsiText = iddsiVal;
-                }
+                if (maxIddsiText === "-") { maxIddsiText = iddsiVal; } 
+                else if (parseIddsiLevel(iddsiVal) > parseIddsiLevel(maxIddsiText)) { maxIddsiText = iddsiVal; }
             }
 
             document.getElementById("meta-cal-total").innerText = cal;
-            document.getElementById("meta-iddsi-highest").innerText = maxIddsiText;
             document.getElementById("meta-count-total").innerText = recordCount;
-            
             document.getElementById("cal").innerText = cal;
             document.getElementById("grams").innerText = formatOutput(grams) + "g";
             document.getElementById("protein").innerText = formatOutput(protein);
@@ -1287,8 +1292,10 @@ async function searchFoodText() {
             drawChart();
             
             let isRiskTriggered = checkCurrentIddsiRisk();
+            
+            // 🌟 核心修正：觸發最新無縫支援全級別語音提示與動態卡片引擎
             triggerIddsiAdaptiveMechanism(iddsiVal, fFoodName);
-            // 數據背景同步上報
+
             await reportDataToGoogleSheetAnalysis({
                 operator_id: currentOperatorId,
                 food_name: fFoodName,
@@ -1300,7 +1307,7 @@ async function searchFoodText() {
                 iddsi_level: parseIddsiLevel(iddsiVal),
                 risk_alert: isRiskTriggered
             });
-            // 清空介面輸入控制
+
             document.getElementById("foodSearchInput").value = "";
             document.getElementById("previewWrapper").style.display = "none";
             document.getElementById("uploadBtn").style.display = "none";
@@ -1314,19 +1321,10 @@ async function searchFoodText() {
     }
 }
 
-// 🛠️ 輔助函式：統一文字格式（去空格、轉小寫、修正香港常用異體字與速記習慣）
 function normalizeText(text) {
-    return text
-        .toLowerCase()
-        .trim()
-        .replace(/爹/g, '嗲')
-        .replace(/鷄/g, '雞')
-        .replace(/麪/g, '麵')
-        .replace(/浄/g, '淨')
-        .replace(/𡃁/g, '靚');
+    return text.toLowerCase().trim().replace(/爹/g, '嗲').replace(/鷄/g, '雞').replace(/麪/g, '麵').replace(/浄/g, '淨').replace(/𡃁/g, '靚');
 }
 
-/* 繪製 Apple Health 週趨勢圖表 */
 function drawChart() {
     let gridX = document.getElementById("chartGridX");
     if (!gridX) return;
@@ -1355,12 +1353,8 @@ function drawChart() {
 }
 
 window.onload = () => {
-    // 1. 強制清空食物資料庫快取，確保重新整理即時同步 Google Sheet 最新分離欄位
     localStorage.removeItem("lohas_nutrition_cache");
-    // 2. 自動讀取配置記憶機制，載入已儲存的院友身體配置與 IDDSI 目標
     loadProfileSettings();
-    
-    // 3. 重新建立今日達標線並渲染趨勢圖
     calculatePersonalTargets();
     drawChart();
     initSpeechAPI();
