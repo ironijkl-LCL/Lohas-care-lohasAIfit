@@ -873,13 +873,14 @@ async function getNutritionData() {
     }
     let res = await fetch(API_URL);
     let resData = await res.json();
-    cachedNutritionData = resData.nutrition_data || [];
+    // 💡 修正對齊：讀取新 Web App 回傳的 `data` 物件
+    cachedNutritionData = resData.data || [];
     localStorage.setItem("lohas_nutrition_cache", JSON.stringify(cachedNutritionData));
     return cachedNutritionData;
 }
 
 function parseIddsiLevel(iddsiRaw) {
-    if (!iddsiRaw) return -1;
+    if (!iddsiRaw && iddsiRaw !== 0) return -1;
     let cleanKey = iddsiRaw.toString().trim().toUpperCase();
     if (cleanKey.includes("7EC")) return 7;
     let match = cleanKey.match(/\d+/);
@@ -905,7 +906,7 @@ function checkCurrentIddsiRisk() {
 }
 
 function parseValue(val) {
-    if (!val) return 0;
+    if (val === undefined || val === null || val === "") return 0;
     let num = parseFloat(val.toString().replace(/[^\d.-]/g, ''));
     return isNaN(num) ? 0 : num;
 }
@@ -1127,7 +1128,7 @@ async function reportDataToGoogleSheetAnalysis(payload) {
     }
 }
 
-// 🌟 已重構：全等級動態適配語音與復康卡片引擎
+// 🌟 核心整合：全等級動態適配語音與復康卡片引擎
 function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
     const cleanLevel = parseIddsiLevel(iddsiVal);
     
@@ -1196,7 +1197,8 @@ async function searchFoodText() {
         let foodList = await getNutritionData();
         const qNormal = normalizeText(query);
         let scoredList = foodList.map(item => {
-            let dbName = (item["foodname"] || "").toString();
+            // 💡 修正對齊：完全對接中英混合的 "FoodName" 欄位
+            let dbName = (item["FoodName"] || "").toString();
             let dbNormal = normalizeText(dbName);
             if (!dbNormal) return { item, score: 0 };
             let score = 0;
@@ -1226,18 +1228,19 @@ async function searchFoodText() {
 
         if (targetItem) {
             triggerDynamicIsland("✅ 數據庫匹配比對成功！");
-            let fFoodName = targetItem["foodname"] || "未知食物";
-            let fCal = Math.round(parseValue(targetItem["calories"]));
-            let fGrams = parseValue(targetItem["grams"]);
-            let fProtein = parseValue(targetItem["protein"]);
-            let fCarbs = parseValue(targetItem["carbs"]);
-            let fFat = parseValue(targetItem["fat"]);
-            let fSugar = parseValue(targetItem["sugar"]);
-            let fSatFat = parseValue(targetItem["satfat"] || targetItem["saturatedfat"]);
-            let fTransFat = parseValue(targetItem["transfat"]);
-            let fCholesterol = parseValue(targetItem["cholesterol"]);
-            let fFiber = parseValue(targetItem["fiber"]);
-            let iddsiVal = targetItem["iddsi"] || "";
+            // 💡 修正對齊：百分之百跟足後端回傳的 19 個指定中英欄位鍵名
+            let fFoodName = targetItem["FoodName"] || "未知食物";
+            let fCal = Math.round(parseValue(targetItem["熱量 Calories"]));
+            let fGrams = parseValue(targetItem["克 Grams"]);
+            let fProtein = parseValue(targetItem["蛋白質 Protein (g)"]);
+            let fCarbs = parseValue(targetItem["碳水化合物 Carbs (g)"]);
+            let fFat = parseValue(targetItem["脂肪 Fat (g)"]);
+            let fSugar = parseValue(targetItem["糖 Sugar (g)"]);
+            let fSatFat = parseValue(targetItem["飽和脂肪 Saturated Fat (g)"]);
+            let fTransFat = parseValue(targetItem["反式脂肪 Trans Fat (g)"]);
+            let fCholesterol = parseValue(targetItem["膽固醇 Cholesterol (mg)"]);
+            let fFiber = parseValue(targetItem["膳食纖維 Fiber (g)"]);
+            let iddsiVal = targetItem["吞嚥安全 (IDDSI)"] || "";
             
             document.getElementById("single_foodname").innerText = fFoodName;
             document.getElementById("single_cal").innerText = fCal;
@@ -1293,7 +1296,7 @@ async function searchFoodText() {
             
             let isRiskTriggered = checkCurrentIddsiRisk();
             
-            // 🌟 核心修正：觸發最新無縫支援全級別語音提示與動態卡片引擎
+            // 觸發最新無縫支援全級別語音提示與動態卡片引擎
             triggerIddsiAdaptiveMechanism(iddsiVal, fFoodName);
 
             await reportDataToGoogleSheetAnalysis({
