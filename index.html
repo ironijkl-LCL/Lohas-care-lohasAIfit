@@ -873,7 +873,6 @@ async function getNutritionData() {
     }
     let res = await fetch(API_URL);
     let resData = await res.json();
-    // 💡 修正對齊：讀取新 Web App 回傳的 `data` 物件
     cachedNutritionData = resData.data || [];
     localStorage.setItem("lohas_nutrition_cache", JSON.stringify(cachedNutritionData));
     return cachedNutritionData;
@@ -1197,28 +1196,38 @@ async function searchFoodText() {
         let foodList = await getNutritionData();
         const qNormal = normalizeText(query);
         let scoredList = foodList.map(item => {
-            // 💡 修正對齊：完全對接中英混合的 "FoodName" 欄位
             let dbName = (item["FoodName"] || "").toString();
             let dbNormal = normalizeText(dbName);
             if (!dbNormal) return { item, score: 0 };
+            
             let score = 0;
-            if (dbNormal === qNormal) { score = 100; } 
-            else if (dbNormal.includes(qNormal)) { score = 80 + (qNormal.length / dbNormal.length * 10); } 
-            else if (qNormal.includes(dbNormal)) { score = 70 + (dbNormal.length / qNormal.length * 10); } 
-            else {
+            
+            // 🌟 核心升級：雙向子字串包含即直接獲取「高保真 100 分」機制
+            // 這能完美解決：用戶輸入 "凍檸檬茶" 比對資料庫 "凍檸檬茶 (Iced Lemon Tea)" 的問題！
+            if (dbNormal === qNormal) {
+                score = 100;
+            } else if (dbNormal.includes(qNormal)) {
+                // 如果資料庫全名包含了查詢字（例如 "凍檸檬茶 (iced lemon tea)" 包含了 "凍檸檬茶"）
+                score = 95 + (qNormal.length / dbNormal.length * 4); // 權重微調，依然保持極高優先級
+            } else if (qNormal.includes(dbNormal)) {
+                // 如果查詢字包含了資料庫名字
+                score = 90 + (dbNormal.length / qNormal.length * 4);
+            } else {
+                // 字元重合度模糊評分
                 let matchCount = 0;
                 let uniqueQChars = [...new Set(qNormal)];
                 uniqueQChars.forEach(char => { if (dbNormal.includes(char)) matchCount++; });
                 if (matchCount > 0) {
                     const overlapRatio = matchCount / Math.max(qNormal.length, dbNormal.length);
-                    score = overlapRatio * 50; 
+                    score = overlapRatio * 50;
                     const coreKeywords = ['麵', '麪', '飯', '粥', '湯', '茶', '肉', '魚', '雞', '鷄', '蛋', '西多', '鴛鴦', '奶茶', '牛肉'];
-                    coreKeywords.forEach(kw => { if (qNormal.includes(kw) && dbNormal.includes(kw)) { score += 10; } });
+                    coreKeywords.forEach(kw => { if (qNormal.includes(kw) && dbNormal.includes(kw)) { score += 15; } });
                 }
             }
             return { item, score };
         });
 
+        // 僅篩選大於 0 分的有效匹配
         let validMatches = scoredList.filter(x => x.score > 0);
         let targetItem = null;
         if (validMatches.length > 0) {
@@ -1228,7 +1237,7 @@ async function searchFoodText() {
 
         if (targetItem) {
             triggerDynamicIsland("✅ 數據庫匹配比對成功！");
-            // 💡 修正對齊：百分之百跟足後端回傳的 19 個指定中英欄位鍵名
+            
             let fFoodName = targetItem["FoodName"] || "未知食物";
             let fCal = Math.round(parseValue(targetItem["熱量 Calories"]));
             let fGrams = parseValue(targetItem["克 Grams"]);
@@ -1240,7 +1249,7 @@ async function searchFoodText() {
             let fTransFat = parseValue(targetItem["反式脂肪 Trans Fat (g)"]);
             let fCholesterol = parseValue(targetItem["膽固醇 Cholesterol (mg)"]);
             let fFiber = parseValue(targetItem["膳食纖維 Fiber (g)"]);
-            let iddsiVal = targetItem["吞嚥安全 (IDDSI)"] || "";
+            let iddsiVal = targetItem["吞嚥安全 (IDDSI)"] || targetItem["iddsi"] || "";
             
             document.getElementById("single_foodname").innerText = fFoodName;
             document.getElementById("single_cal").innerText = fCal;
@@ -1296,7 +1305,7 @@ async function searchFoodText() {
             
             let isRiskTriggered = checkCurrentIddsiRisk();
             
-            // 觸發最新無縫支援全級別語音提示與動態卡片引擎
+            // 語音播報與復康面板觸發
             triggerIddsiAdaptiveMechanism(iddsiVal, fFoodName);
 
             await reportDataToGoogleSheetAnalysis({
@@ -1318,7 +1327,7 @@ async function searchFoodText() {
         } else {
             triggerDynamicIsland(`⚠️ 未找到符合「${query}」的物件`, true);
         }
-    } catch (e) { 
+    } catch (e) {
         console.error("數據處理發生異常:", e);
         triggerDynamicIsland("❌ 數據處理發生異常", true);
     }
