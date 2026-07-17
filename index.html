@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>樂活健康管理系統 - Apple HIG 雲端對接版</title>
 
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- 符合最新標準的 PWA 設定，移除了被 iOS 棄用的舊版標籤 -->
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="樂活健康">
     <link class="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2642/2642731.png">
@@ -865,16 +866,46 @@ function executeLogoutProcedure() {
     triggerDynamicIsland("🔓 您已順利安全登出");
 }
 
+/* 優化合併：防禦 localStorage 爆量與異常崩潰 (QuotaExceededError) */
 async function getNutritionData() {
     if (cachedNutritionData) return cachedNutritionData;
-    const localCached = localStorage.getItem("lohas_nutrition_cache");
-    if (localCached) {
-        try { cachedNutritionData = JSON.parse(localCached); return cachedNutritionData; } catch(e) { localStorage.removeItem("lohas_nutrition_cache"); }
+    
+    // 試圖讀取本地緩存
+    try {
+        const localCached = localStorage.getItem("lohas_nutrition_cache");
+        if (localCached) {
+            cachedNutritionData = JSON.parse(localCached);
+            return cachedNutritionData;
+        }
+    } catch(e) {
+        console.warn("讀取本地緩存失敗，將嘗試重新清除重建:", e);
+        try {
+            localStorage.removeItem("lohas_nutrition_cache");
+        } catch(err) {}
     }
+
+    // 從 API 抓取新數據
     let res = await fetch(API_URL);
     let resData = await res.json();
     cachedNutritionData = resData.data || [];
-    localStorage.setItem("lohas_nutrition_cache", JSON.stringify(cachedNutritionData));
+    
+    // 嘗試安全寫入本地緩存
+    try {
+        localStorage.setItem("lohas_nutrition_cache", JSON.stringify(cachedNutritionData));
+    } catch(e) {
+        if (e.name === 'QuotaExceededError' || e.code === 22) {
+            console.warn("⚠️ LocalStorage 爆咗空間上限 (5MB)，執行自動清理防護機制。");
+            try {
+                localStorage.removeItem("lohas_nutrition_cache");
+                // 清理後再嘗試寫入一次
+                localStorage.setItem("lohas_nutrition_cache", JSON.stringify(cachedNutritionData));
+            } catch (retryError) {
+                console.error("空間依然不足，將採用內存記憶體運行以保持程序不 crash:", retryError);
+            }
+        } else {
+            console.error("LocalStorage 寫入發生其他未預期錯誤:", e);
+        }
+    }
     return cachedNutritionData;
 }
 
@@ -978,15 +1009,19 @@ function saveProfileSettings() {
         iddsiTarget: document.getElementById("user-iddsi-target").value,
         iddsiDrinkTarget: document.getElementById("user-iddsi-drink-target").value
     };
-    localStorage.setItem("lohas_user_settings", JSON.stringify(settings));
+    try {
+        localStorage.setItem("lohas_user_settings", JSON.stringify(settings));
+    } catch(e) {
+        console.error("儲存本地設定時發生錯誤:", e);
+    }
     calculatePersonalTargets(); 
     triggerDynamicIsland("💾 院友身體數據與吞嚥目標已成功儲存！");
 }
 
 function loadProfileSettings() {
-    const savedData = localStorage.getItem("lohas_user_settings");
-    if (savedData) {
-        try {
+    try {
+        const savedData = localStorage.getItem("lohas_user_settings");
+        if (savedData) {
             const settings = JSON.parse(savedData);
             if(settings.gender) document.getElementById("user-gender").value = settings.gender;
             if(settings.age) document.getElementById("user-age").value = settings.age;
@@ -995,9 +1030,9 @@ function loadProfileSettings() {
             if(settings.activity) document.getElementById("user-activity").value = settings.activity;
             if(settings.iddsiTarget) document.getElementById("user-iddsi-target").value = settings.iddsiTarget;
             if(settings.iddsiDrinkTarget) document.getElementById("user-iddsi-drink-target").value = settings.iddsiDrinkTarget;
-        } catch(e) {
-            console.error("載入本地設定時出錯:", e);
         }
+    } catch(e) {
+        console.error("載入本地設定時出錯:", e);
     }
 }
 
@@ -1127,7 +1162,6 @@ async function reportDataToGoogleSheetAnalysis(payload) {
     }
 }
 
-// 🌟 核心整合：全等級動態適配語音與復康卡片引擎
 function triggerIddsiAdaptiveMechanism(iddsiVal, foodName) {
     const cleanLevel = parseIddsiLevel(iddsiVal);
     
@@ -1202,15 +1236,12 @@ async function searchFoodText() {
             
             let score = 0;
             
-            // 🌟 核心升級：雙向子字串包含即直接獲取「高保真 100 分」機制
-            // 這能完美解決：用戶輸入 "凍檸檬茶" 比對資料庫 "凍檸檬茶 (Iced Lemon Tea)" 的問題！
+            // 雙向包含即獲取高保真優先權
             if (dbNormal === qNormal) {
                 score = 100;
             } else if (dbNormal.includes(qNormal)) {
-                // 如果資料庫全名包含了查詢字（例如 "凍檸檬茶 (iced lemon tea)" 包含了 "凍檸檬茶"）
-                score = 95 + (qNormal.length / dbNormal.length * 4); // 權重微調，依然保持極高優先級
+                score = 95 + (qNormal.length / dbNormal.length * 4); 
             } else if (qNormal.includes(dbNormal)) {
-                // 如果查詢字包含了資料庫名字
                 score = 90 + (dbNormal.length / qNormal.length * 4);
             } else {
                 // 字元重合度模糊評分
@@ -1227,7 +1258,6 @@ async function searchFoodText() {
             return { item, score };
         });
 
-        // 僅篩選大於 0 分的有效匹配
         let validMatches = scoredList.filter(x => x.score > 0);
         let targetItem = null;
         if (validMatches.length > 0) {
@@ -1305,7 +1335,7 @@ async function searchFoodText() {
             
             let isRiskTriggered = checkCurrentIddsiRisk();
             
-            // 語音播報與復康面板觸發
+            // 語音與復康面板觸發
             triggerIddsiAdaptiveMechanism(iddsiVal, fFoodName);
 
             await reportDataToGoogleSheetAnalysis({
@@ -1365,7 +1395,10 @@ function drawChart() {
 }
 
 window.onload = () => {
-    localStorage.removeItem("lohas_nutrition_cache");
+    // 初始化時，先試探性安全清理舊的 cache 以保障最優儲存邊界
+    try {
+        localStorage.removeItem("lohas_nutrition_cache");
+    } catch(e) {}
     loadProfileSettings();
     calculatePersonalTargets();
     drawChart();
