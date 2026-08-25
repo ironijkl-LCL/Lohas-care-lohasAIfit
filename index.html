@@ -574,7 +574,6 @@
 </head>
 <body>
 
-<!-- 強制免責聲明 Modal -->
 <div id="disclaimerModalOverlay" class="login-modal-overlay active" style="z-index: 100001;">
     <div class="login-modal-box" style="max-width: 360px;">
         <h3 style="margin: 0 0 10px 0; color: var(--apple-red); font-size: 18px;">
@@ -608,7 +607,6 @@
         </button>
     </div>
 
-    <!-- 院友快速選擇切換條 -->
     <div class="resident-selector-bar">
         <div style="width: 100%;">
             <div style="font-size: 11px; color: var(--text-sub); font-weight: 600;">當前照護院友 (床號)</div>
@@ -796,7 +794,7 @@
     <!-- TAB 3: 趨勢日誌與跨專業巡房報告匯出 -->
     <div id="tab-trends" class="tab-content">
         <div class="ui-card">
-            <h3><i class="fa-solid fa-chart-line" style="color: var(--apple-orange);"></i> 卡路里週動態趨勢 (7日)</h3>
+            <h3><i class="fa-solid fa-chart-line" style="color: var(--apple-orange);"></i> 卡路里週動態趨勢 (7日歷史回溯)</h3>
             <svg class="chart-svg" viewBox="0 0 300 85">
                 <path id="chartPathLine" d="M 20 60 L 280 60" fill="none" stroke="#007AFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <g id="chartGridX"></g>
@@ -914,7 +912,6 @@
 
 </div>
 
-<!-- 護理防線登入驗證彈窗 -->
 <div id="loginModalOverlay" class="login-modal-overlay">
     <div class="login-modal-box">
         <h3 style="margin: 0 0 14px 0; font-size: 18px;"><i class="fa-solid fa-shield-halved" style="color: var(--apple-blue);"></i> 醫護防線驗證</h3>
@@ -941,7 +938,6 @@
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbwOgthCxMHgU-7nsuYd91AMSWUrr48qU8pm02j4qCYk_TE5nN7dJOB_o5nrUc932kZr/exec";
 
-// 擴充在地食物資料庫 (含 IDDSI、熱量、水份、電解質、過敏原)
 const LOCAL_FALLBACK_DB = [
     { "FoodName": "凍檸茶", "熱量 Calories": 120, "克 Grams": 250, "蛋白質 Protein (g)": 0.2, "碳水化合物 Carbs (g)": 28, "脂肪 Fat (g)": 0, "糖 Sugar (g)": 26, "飽和脂肪 Saturated Fat (g)": 0, "反式脂肪 Trans Fat (g)": 0, "膽固醇 Cholesterol (mg)": 0, "膳食纖維 Fiber (g)": 0.5, "鈉 Sodium (mg)": 15, "吞嚥安全 (IDDSI)": "0", "水分 (ml)": 240, "dual": false, "allergens": [] },
     { "FoodName": "檸檬茶", "熱量 Calories": 120, "克 Grams": 250, "蛋白質 Protein (g)": 0.2, "碳水化合物 Carbs (g)": 28, "脂肪 Fat (g)": 0, "糖 Sugar (g)": 26, "飽和脂肪 Saturated Fat (g)": 0, "反式脂肪 Trans Fat (g)": 0, "膽固醇 Cholesterol (mg)": 0, "膳食纖維 Fiber (g)": 0.5, "鈉 Sodium (mg)": 15, "吞嚥安全 (IDDSI)": "0", "水分 (ml)": 240, "dual": false, "allergens": [] },
@@ -977,7 +973,8 @@ let currentResidentKey = "res_01";
 let dailyTargets = { cal: 1500, protein: 55, carbs: 200, fat: 45, water: 1500, sodium: 2000 };
 let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0, sugar = 0, satFat = 0, transFat = 0, cholesterol = 0, fiber = 0, sodium = 0, waterTotal = 0;
 let recordCount = 0, maxIddsiText = "-";
-let weeklyData = [1350, 1420, 1380, 1510, 1450, 1480, 0];
+let weeklyData = [0, 0, 0, 0, 0, 0, 0];
+let currentWeekLabels = ["一", "二", "三", "四", "五", "六", "今日"];
 let currentOperatorId = "Guest_User", captchaCode = "", recognition = null, isRecording = false;
 let processedBase64 = "", pendingFoodItem = null, currentPortionScale = 1.0;
 
@@ -998,8 +995,8 @@ function getTodayDateString() {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-function getDailyStorageKey(resKey) {
-    return `lohas_daily_${resKey}_${getTodayDateString()}`;
+function getDailyStorageKey(resKey, dateStr = getTodayDateString()) {
+    return `lohas_daily_${resKey}_${dateStr}`;
 }
 
 function getProfileStorageKey(resKey) {
@@ -1046,6 +1043,48 @@ function loadResidentDailyRecord(resKey) {
         resetDailyCounters();
     }
     updateDashboardUI();
+}
+
+/* 2. 過去 7 天真實數據加載器 */
+function loadWeeklyDataFromStorage(resKey) {
+    const dayNames = ["日", "一", "二", "三", "四", "五", "六"];
+    let weekCals = [];
+    let weekLabels = [];
+    const today = new Date();
+
+    for (let i = 6; i >= 0; i--) {
+        let targetDate = new Date();
+        targetDate.setDate(today.getDate() - i);
+        
+        let y = targetDate.getFullYear();
+        let m = String(targetDate.getMonth() + 1).padStart(2, '0');
+        let d = String(targetDate.getDate()).padStart(2, '0');
+        let dateStr = `${y}-${m}-${d}`;
+        
+        let storageKey = getDailyStorageKey(resKey, dateStr);
+        let savedRaw = localStorage.getItem(storageKey);
+        
+        let dayCal = 0;
+        if (savedRaw) {
+            try {
+                let parsed = JSON.parse(savedRaw);
+                dayCal = parsed.cal || 0;
+            } catch (e) {
+                dayCal = 0;
+            }
+        }
+        
+        if (i === 0 && cal > 0) {
+            dayCal = cal;
+        }
+
+        weekCals.push(dayCal);
+        weekLabels.push(i === 0 ? "今日" : dayNames[targetDate.getDay()]);
+    }
+
+    weeklyData = weekCals;
+    currentWeekLabels = weekLabels;
+    drawChart(currentWeekLabels);
 }
 
 function updateResidentPickerOptionText(resKey, profile) {
@@ -1177,6 +1216,7 @@ function handleResidentChange(newResKey) {
     document.getElementById("resident-picker").value = newResKey;
     loadResidentProfileSettings(currentResidentKey);
     loadResidentDailyRecord(currentResidentKey);
+    loadWeeklyDataFromStorage(currentResidentKey);
     calculatePersonalTargets();
     triggerDynamicIsland(`已載入院友：${document.getElementById("user-name").value}`);
 }
@@ -1323,7 +1363,6 @@ async function searchFoodText() {
 
     let target = LOCAL_FALLBACK_DB.find(f => f.FoodName.includes(clean) || clean.includes(f.FoodName));
     if (!target) {
-        // 若為茶/水等飲品關鍵字，自動配置為 Level 0 流質
         const isDrink = ['茶', '水', '汁', '奶', '啡', '湯'].some(k => clean.includes(k));
         target = {
             "FoodName": clean,
@@ -1450,8 +1489,7 @@ function updateDashboardUI() {
     document.getElementById("bar-fat").style.width = `${Math.min((fat/dailyTargets.fat)*100, 100)}%`;
 
     syncDropdownColor();
-    weeklyData[weeklyData.length - 1] = cal;
-    drawChart();
+    loadWeeklyDataFromStorage(currentResidentKey);
 }
 
 function generateClinicalReport() {
@@ -1510,7 +1548,6 @@ function toggleVoiceRecognition() {
     if (isRecording) { recognition.stop(); } else { recognition.start(); }
 }
 
-/* 影像處理並壓縮為 Base64 */
 function processAndPreviewImage(input) {
     const file = input.files[0];
     if (!file) return;
@@ -1537,7 +1574,7 @@ function processAndPreviewImage(input) {
     };
 }
 
-/* 真實呼叫雲端 AI 影像辨識 */
+/* 1. 包含 Confidence 置信度解析的 AI 雲端影像識別 */
 async function uploadAndDetectFood() {
     if (!processedBase64 || processedBase64.trim() === "") {
         alert("⚠️ 圖片數據尚未轉換完成或未選擇圖片！請重新選取相片後再點擊。");
@@ -1558,21 +1595,42 @@ async function uploadAndDetectFood() {
         const resData = await response.json();
         
         let detectedName = "";
+        let confidence = 0.85;
+
         if (resData.success && resData.foodName) {
             detectedName = resData.foodName.trim();
+            if (resData.confidence !== undefined) confidence = parseFloat(resData.confidence);
         } else if (resData.foodName) {
             detectedName = resData.foodName.trim();
+            if (resData.confidence !== undefined) confidence = parseFloat(resData.confidence);
         } else {
             throw new Error(resData.error || "未能辨識食物");
         }
-        
-        triggerDynamicIsland(`🧠 AI 建議：可能係「${detectedName}」`, "warning");
+
+        const confPct = Math.round(confidence * 100);
+        let confColor = "var(--apple-green)";
+        let confLevelText = "高";
+        if (confPct < 50) {
+            confColor = "var(--apple-red)";
+            confLevelText = "低（強烈建議護士手動修改）";
+        } else if (confPct < 80) {
+            confColor = "var(--apple-orange)";
+            confLevelText = "中等";
+        }
+
+        triggerDynamicIsland(`🧠 AI 建議：${detectedName} (信心度 ${confPct}%)`, confPct < 80 ? "warning" : "normal");
         
         const warningBox = document.getElementById("aiWarningBox");
         if (warningBox) {
             warningBox.innerHTML = `
-                <div style="background: rgba(255, 59, 48, 0.12); border: 1.5px solid var(--apple-red); border-radius: 10px; padding: 10px 12px; margin: 10px 0; color: var(--apple-red); font-size: 12px; font-weight: bold; text-align: center; box-shadow: 0 2px 8px rgba(255,59,48,0.15);">
-                    ⚠️ AI 建議僅供參考，請護士核對食物名稱、質地及過敏原後確認！
+                <div style="background: rgba(0,0,0,0.03); border: 1.5px solid ${confColor}; border-radius: 10px; padding: 10px 12px; margin: 10px 0; font-size: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                        <span style="font-weight:bold; color:var(--text-main);"><i class="fa-solid fa-robot"></i> AI 辨識置信度</span>
+                        <span style="font-weight:bold; color:${confColor}; background:${confColor}18; padding:2px 8px; border-radius:6px;">${confPct}% (${confLevelText})</span>
+                    </div>
+                    <div style="color:var(--apple-red); font-size:11px; font-weight:600;">
+                        ⚠️ 臨床指引：AI 建議僅供參考，請護士務必核對食物名稱、IDDSI 質地及過敏原後再行確認！
+                    </div>
                 </div>`;
         }
         
@@ -1636,32 +1694,45 @@ function submitLoginAuth() {
     closeLoginModal();
 }
 
-function drawChart() {
-    let gridX = document.getElementById("chartGridX");
-    if (!gridX) return;
-    gridX.innerHTML = "";
-    let stepX = 260 / 6;
-    let pts = [];
-    const days = ["一", "二", "三", "四", "五", "六", "日"];
+/* 3. 動態 7 日趨勢圖繪製 */
+function drawChart(labels = currentWeekLabels) {
+    const gridX = document.getElementById("chartGridX");
+    const pathLine = document.getElementById("chartPathLine");
+    if (!gridX || !pathLine) return;
     
+    gridX.innerHTML = "";
+    const totalPoints = weeklyData.length;
+    const stepX = 260 / (totalPoints - 1);
+    let pts = [];
+    
+    const maxVal = Math.max(...weeklyData, 2000);
+
     weeklyData.forEach((val, idx) => {
         let x = 20 + idx * stepX;
-        let y = 60 - Math.min(Math.max((val / 2500 * 45), 0), 50);
+        let y = 60 - Math.min(Math.max((val / maxVal * 45), 0), 50);
         pts.push(`${x},${y}`);
 
-        let c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", idx === 6 ? "5" : "3.5");
-        c.setAttribute("fill", idx === 6 ? "var(--apple-orange)" : "var(--apple-blue)");
-        gridX.appendChild(c);
+        const isToday = idx === (totalPoints - 1);
 
-        let t = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        t.setAttribute("x", x); t.setAttribute("y", "78");
-        t.setAttribute("text-anchor", "middle"); t.setAttribute("font-size", "10px");
-        t.setAttribute("fill", idx === 6 ? "var(--apple-orange)" : "var(--text-sub)");
-        t.textContent = days[idx];
-        gridX.appendChild(t);
+        let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", x); 
+        circle.setAttribute("cy", y); 
+        circle.setAttribute("r", isToday ? "5" : "3.5");
+        circle.setAttribute("fill", isToday ? "var(--apple-orange)" : "var(--apple-blue)");
+        gridX.appendChild(circle);
+
+        let textDay = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        textDay.setAttribute("x", x); 
+        textDay.setAttribute("y", "78");
+        textDay.setAttribute("text-anchor", "middle"); 
+        textDay.setAttribute("font-size", isToday ? "11px" : "10px");
+        textDay.setAttribute("font-weight", isToday ? "bold" : "normal");
+        textDay.setAttribute("fill", isToday ? "var(--apple-orange)" : "var(--text-sub)");
+        textDay.textContent = (labels && labels[idx]) ? labels[idx] : `${idx + 1}`;
+        gridX.appendChild(textDay);
     });
-    document.getElementById("chartPathLine").setAttribute("d", "M " + pts.join(" L "));
+
+    pathLine.setAttribute("d", "M " + pts.join(" L "));
 }
 
 function switchAppleTab(tabId, el) {
@@ -1690,11 +1761,13 @@ function triggerDynamicIsland(text, type = "normal") {
     setTimeout(() => { island.classList.remove("active"); }, 4500);
 }
 
+/* 4. 系統初始化生命週期 */
 window.onload = () => {
     document.getElementById("disclaimerModalOverlay").classList.add("active");
     initAllResidentOptions();
     loadResidentProfileSettings(currentResidentKey);
     loadResidentDailyRecord(currentResidentKey);
+    loadWeeklyDataFromStorage(currentResidentKey);
     calculatePersonalTargets();
 };
 </script>
