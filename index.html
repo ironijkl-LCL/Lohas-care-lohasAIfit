@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>樂活健康管理系統 - 醫療臨床旗艦版</title>
 
-    <!-- PWA 與 Apple 介面設定 -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="樂活醫療健康">
@@ -74,7 +73,6 @@
             position: relative;
         }
 
-        /* 頂部 Header 與院友快速選擇 */
         .app-header-block {
             display: flex;
             justify-content: space-between;
@@ -121,7 +119,6 @@
             border-color: rgba(52, 199, 89, 0.25);
         }
 
-        /* 院友快速切換卡片 */
         .resident-selector-bar {
             background: var(--bg-card);
             backdrop-filter: var(--blur-strength);
@@ -138,13 +135,13 @@
         .resident-badge-pills {
             display: flex;
             gap: 6px;
-            margin-top: 4px;
+            margin-top: 6px;
             flex-wrap: wrap;
         }
 
         .clinical-pill {
             font-size: 11px;
-            padding: 2px 7px;
+            padding: 3px 8px;
             border-radius: 6px;
             font-weight: 600;
             background: rgba(0, 122, 255, 0.1);
@@ -159,7 +156,6 @@
             color: var(--apple-orange);
         }
 
-        /* Apple Glassmorphism 卡片基底 */
         .ui-card {
             background: var(--bg-card);
             backdrop-filter: var(--blur-strength);
@@ -190,7 +186,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 儀表板卡片網格 */
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -232,7 +227,6 @@
             font-weight: 500;
         }
 
-        /* 水分快捷按鈕條 */
         .quick-water-bar {
             display: flex;
             gap: 8px;
@@ -260,7 +254,6 @@
             background: rgba(48, 176, 199, 0.2);
         }
 
-        /* 份量選擇器按鈕組 */
         .portion-selector-group {
             display: flex;
             gap: 6px;
@@ -289,7 +282,6 @@
             border-color: var(--apple-blue);
         }
 
-        /* 院舍快捷餐單範本滑動區 */
         .meal-templates-scroll {
             display: flex;
             gap: 8px;
@@ -313,7 +305,6 @@
         .template-card-title { font-size: 13px; font-weight: 600; color: var(--apple-blue); }
         .template-card-desc { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
 
-        /* Dynamic Island 頂部橫幅 */
         .dynamic-island-banner {
             position: fixed;
             top: 16px;
@@ -341,14 +332,9 @@
             pointer-events: auto;
         }
 
-        .dynamic-island-banner.alert-danger {
-            background: var(--apple-red);
-        }
-        .dynamic-island-banner.alert-warning {
-            background: var(--apple-orange);
-        }
+        .dynamic-island-banner.alert-danger { background: var(--apple-red); }
+        .dynamic-island-banner.alert-warning { background: var(--apple-orange); }
 
-        /* 營養進度條與細目網格 */
         .macro-progress-row {
             margin-top: 12px;
             display: flex;
@@ -400,9 +386,7 @@
             .sub-macro-cell { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.05); }
         }
 
-        .sub-macro-cell span:last-child {
-            font-weight: 600;
-        }
+        .sub-macro-cell span:last-child { font-weight: 600; }
 
         .apple-input {
             width: 100%;
@@ -436,7 +420,6 @@
             overflow: visible;
         }
 
-        /* 底部 Tab Bar */
         .apple-tab-bar {
             position: fixed;
             bottom: 0;
@@ -543,9 +526,8 @@
             display: none;
             margin-top: 10px;
         }
-        #preview-img { width: 100%; height: 180px; object-fit: cover; border-radius: var(--border-radius-medium); }
+        #preview-img { width: 100%; height: 200px; object-fit: cover; border-radius: var(--border-radius-medium); }
 
-        /* 模態彈窗 */
         .login-modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -592,7 +574,7 @@
 </head>
 <body>
 
-<!-- 1. 強制免責聲明 Modal (window.onload 強制彈出) -->
+<!-- 強制免責聲明 Modal -->
 <div id="disclaimerModalOverlay" class="login-modal-overlay active" style="z-index: 100001;">
     <div class="login-modal-box" style="max-width: 360px;">
         <h3 style="margin: 0 0 10px 0; color: var(--apple-red); font-size: 18px;">
@@ -616,7 +598,6 @@
 
 <div class="app-container">
     
-    <!-- 頂部醫護登入與主標 -->
     <div class="app-header-block">
         <div class="app-header-info">
             <h2>Lohas GeronTech Clinical</h2>
@@ -627,24 +608,21 @@
         </button>
     </div>
 
-    <!-- 院友快速選擇切換條 (依賴 localStorage 進行多院友持久化) -->
+    <!-- 院友快速選擇切換條 -->
     <div class="resident-selector-bar">
         <div style="width: 100%;">
             <div style="font-size: 11px; color: var(--text-sub); font-weight: 600;">當前照護院友 (床號)</div>
             <select id="resident-picker" class="apple-input" style="padding: 6px 8px; font-weight: bold; margin-top: 2px;" onchange="handleResidentChange(this.value)">
-                <option value="res_01">101號床 - 陳建國 (糊餐 / 糖尿 / 忌海鮮)</option>
-                <option value="res_02">102號床 - 李淑芬 (碎餐 / 高血壓 / 忌花生)</option>
-                <option value="res_03">103號床 - 張伯伯 (軟質 / 腎病限水 / 忌蛋奶)</option>
+                <option value="res_01">載入中...</option>
+                <option value="res_02">載入中...</option>
+                <option value="res_03">載入中...</option>
             </select>
-            <div id="resident-clinical-pills" class="resident-badge-pills">
-                <!-- 動態注入臨床標籤與過敏原 -->
-            </div>
+            <div id="resident-clinical-pills" class="resident-badge-pills"></div>
         </div>
     </div>
 
     <!-- TAB 1: 首頁概覽 -->
     <div id="tab-home" class="tab-content active">
-        <!-- 4 核心指標網格 -->
         <div class="dashboard-grid">
             <div class="summary-mini-card">
                 <div class="summary-label" style="color: var(--apple-orange);"><i class="fa-solid fa-flame"></i> 今日總熱量</div>
@@ -671,7 +649,6 @@
             </div>
         </div>
 
-        <!-- 快速水分登錄條 -->
         <div class="ui-card" style="padding: 14px;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <span style="font-size: 13px; font-weight: 600;"><i class="fa-solid fa-glass-water" style="color: var(--apple-teal);"></i> 快速水分出入登錄</span>
@@ -680,11 +657,10 @@
             <div class="quick-water-bar">
                 <button class="water-btn" onclick="quickAddWater(100, '溫開水')"><i class="fa-solid fa-plus"></i> +100ml<br><span style="font-size: 9px;">溫開水</span></button>
                 <button class="water-btn" onclick="quickAddWater(150, '凝固水 (Level 2)')"><i class="fa-solid fa-plus"></i> +150ml<br><span style="font-size: 9px;">凝固水</span></button>
-                <button class="water-btn" onclick="quickAddWater(250, '營養奶/湯')"><i class="fa-solid fa-plus"></i> +250ml<br><span style="font-size: 9px;">湯水/奶</span></button>
+                <button class="water-btn" onclick="quickAddWater(250, '凍檸茶/水')"><i class="fa-solid fa-plus"></i> +250ml<br><span style="font-size: 9px;">檸水/茶</span></button>
             </div>
         </div>
 
-        <!-- 三大營養素與細目 -->
         <div class="ui-card">
             <h3><i class="fa-solid fa-heart-pulse" style="color: var(--apple-red);"></i> 營養素達成率</h3>
             
@@ -719,17 +695,16 @@
 
     <!-- TAB 2: 餐食與水分輸入 -->
     <div id="tab-meals" class="tab-content">
-        <!-- 院舍常規餐單快捷範本 -->
         <div class="ui-card">
             <h3><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--apple-purple);"></i> 院舍常規餐單快捷範本</h3>
             <div class="meal-templates-scroll">
                 <div class="template-card" onclick="applyMealTemplate('碎餐A')">
                     <div class="template-card-title">🥣 早餐：碎肉燕麥粥 (L4)</div>
-                    <div class="template-card-desc">熱量 280 kcal · 碎軟 · 含有麩質</div>
+                    <div class="template-card-desc">熱量 280 kcal · 含有麩質</div>
                 </div>
                 <div class="template-card" onclick="applyMealTemplate('糊餐B')">
                     <div class="template-card-title">🥣 午餐：南瓜肉碎糊餐 (L4)</div>
-                    <div class="template-card-desc">熱量 350 kcal · 均質糊 · 無過敏原</div>
+                    <div class="template-card-desc">熱量 350 kcal · 均質糊</div>
                 </div>
                 <div class="template-card" onclick="applyMealTemplate('軟餐C')">
                     <div class="template-card-title">🐟 晚餐：清蒸豆腐魚柳 (L5)</div>
@@ -758,12 +733,10 @@
             </label>
             <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="processAndPreviewImage(this)">
 
-            <!-- AI 影像預覽 -->
             <div class="preview-wrapper" id="previewWrapper">
                 <img id="preview-img" alt="食物預覽">
             </div>
 
-            <!-- AI 輔助建議強制警告容器 -->
             <div id="aiWarningBox"></div>
 
             <div id="uploadBtn" class="apple-action-button" style="display: none; background: rgba(52, 199, 89, 0.1); margin-top: 10px;" onclick="uploadAndDetectFood()">
@@ -775,16 +748,14 @@
             </div>
 
             <div style="margin-top: 14px;">
-                <input type="text" class="apple-input" id="foodSearchInput" placeholder="輸入食物名稱 (例: 碎肉粥、蒸魚柳)...">
+                <input type="text" class="apple-input" id="foodSearchInput" placeholder="輸入食物名稱 (例: 碎肉粥、蒸魚柳、凍檸茶)...">
                 <button class="apple-btn-primary" style="margin-top: 8px;" onclick="searchFoodText()">🔍 搜尋食物資料庫</button>
             </div>
         </div>
 
-        <!-- 搜尋待確認卡片 + 過敏原碰撞防線與禁止按鈕 -->
         <div class="ui-card" id="singleQueryResultCard" style="display: none;">
             <h3><i class="fa-solid fa-clipboard-check" style="color: var(--apple-blue);"></i> 待確認餐食：<span id="single_foodname" style="color: var(--apple-blue);">-</span></h3>
             
-            <!-- 過敏原即時碰撞紅字警示區 -->
             <div id="allergenMatchAlertBox" style="display: none; background: rgba(255, 59, 48, 0.12); border: 1px solid var(--apple-red); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px;">
                 <div style="color: var(--apple-red); font-size: 13px; font-weight: bold;">
                     <i class="fa-solid fa-ban"></i> 嚴重過敏原衝突警告！
@@ -816,7 +787,6 @@
                 ⚠️ 臨床警示：此餐食帶有「固液雙重質地」，吞嚥障礙長者易嗆咳，建議使用凝固粉調稠湯汁！
             </div>
 
-            <!-- 確認按鈕 (命中過敏原時將被 disabled) -->
             <button id="commitMealBtn" class="apple-btn-primary" style="margin-top: 14px; background: var(--apple-green);" onclick="commitCurrentMeal()">
                 ✅ 確認登錄此餐食
             </button>
@@ -875,7 +845,6 @@
                     </div>
                 </div>
 
-                <!-- 過敏原欄位 (Allergens 多選防線) -->
                 <div>
                     <label style="font-size: 13px; font-weight:600; color: var(--apple-orange);">
                         <i class="fa-solid fa-shield-virus"></i> 院友過敏原 (Allergens 碰撞防線)
@@ -928,7 +897,6 @@
         </div>
     </div>
 
-    <!-- 底部 Tab Bar -->
     <div class="apple-tab-bar">
         <div class="tab-item active" onclick="switchAppleTab('home', this)">
             <i class="fa-solid fa-heart-pulse"></i><span>首頁概覽</span>
@@ -971,15 +939,20 @@
 <canvas id="processedCanvas" style="display:none;"></canvas>
 
 <script>
-// 內建離線備用臨床食物營養資料庫 (含 IDDSI、鈉、水份、雙重質地與過敏原標記)
+const API_URL = "https://script.google.com/macros/s/AKfycbwOgthCxMHgU-7nsuYd91AMSWUrr48qU8pm02j4qCYk_TE5nN7dJOB_o5nrUc932kZr/exec";
+
+// 擴充在地食物資料庫 (含 IDDSI、熱量、水份、電解質、過敏原)
 const LOCAL_FALLBACK_DB = [
+    { "FoodName": "凍檸茶", "熱量 Calories": 120, "克 Grams": 250, "蛋白質 Protein (g)": 0.2, "碳水化合物 Carbs (g)": 28, "脂肪 Fat (g)": 0, "糖 Sugar (g)": 26, "飽和脂肪 Saturated Fat (g)": 0, "反式脂肪 Trans Fat (g)": 0, "膽固醇 Cholesterol (mg)": 0, "膳食纖維 Fiber (g)": 0.5, "鈉 Sodium (mg)": 15, "吞嚥安全 (IDDSI)": "0", "水分 (ml)": 240, "dual": false, "allergens": [] },
+    { "FoodName": "檸檬茶", "熱量 Calories": 120, "克 Grams": 250, "蛋白質 Protein (g)": 0.2, "碳水化合物 Carbs (g)": 28, "脂肪 Fat (g)": 0, "糖 Sugar (g)": 26, "飽和脂肪 Saturated Fat (g)": 0, "反式脂肪 Trans Fat (g)": 0, "膽固醇 Cholesterol (mg)": 0, "膳食纖維 Fiber (g)": 0.5, "鈉 Sodium (mg)": 15, "吞嚥安全 (IDDSI)": "0", "水分 (ml)": 240, "dual": false, "allergens": [] },
     { "FoodName": "碎肉燕麥粥", "熱量 Calories": 280, "克 Grams": 250, "蛋白質 Protein (g)": 14, "碳水化合物 Carbs (g)": 38, "脂肪 Fat (g)": 6, "糖 Sugar (g)": 2, "飽和脂肪 Saturated Fat (g)": 1.2, "反式脂肪 Trans Fat (g)": 0, "膽固醇 Cholesterol (mg)": 25, "膳食纖維 Fiber (g)": 3.5, "鈉 Sodium (mg)": 320, "吞嚥安全 (IDDSI)": "4", "水分 (ml)": 180, "dual": false, "allergens": ["麩質"] },
     { "FoodName": "南瓜肉碎糊餐", "熱量 Calories": 350, "克 Grams": 300, "蛋白質 Protein (g)": 18, "碳水化合物 Carbs (g)": 45, "脂肪 Fat (g)": 8, "糖 Sugar (g)": 6, "飽和脂肪 Saturated Fat (g)": 1.5, "反式脂肪 Trans Fat (g)": 0, "膽固醇 Cholesterol (mg)": 30, "膳食纖維 Fiber (g)": 4.2, "鈉 Sodium (mg)": 380, "吞嚥安全 (IDDSI)": "4", "水分 (ml)": 200, "dual": false, "allergens": [] },
     { "FoodName": "清蒸豆腐魚柳", "熱量 Calories": 220, "克 Grams": 180, "蛋白質 Protein (g)": 24, "碳水化合物 Carbs (g)": 4, "脂肪 Fat (g)": 9, "糖 Sugar (g)": 0.5, "飽和脂肪 Saturated Fat (g)": 1.0, "反式脂肪 Trans Fat (g)": 0, "膽固醇 Cholesterol (mg)": 45, "膳食纖維 Fiber (g)": 1.0, "鈉 Sodium (mg)": 410, "吞嚥安全 (IDDSI)": "5", "水分 (ml)": 90, "dual": false, "allergens": ["海鮮", "大豆"] },
     { "FoodName": "雜菜肉絲湯飯", "熱量 Calories": 450, "克 Grams": 350, "蛋白質 Protein (g)": 20, "碳水化合物 Carbs (g)": 65, "脂肪 Fat (g)": 10, "糖 Sugar (g)": 3, "飽和脂肪 Saturated Fat (g)": 2.0, "反式脂肪 Trans Fat (g)": 0, "膽固醇 Cholesterol (mg)": 35, "膳食纖維 Fiber (g)": 3.0, "鈉 Sodium (mg)": 850, "吞嚥安全 (IDDSI)": "6", "水分 (ml)": 220, "dual": true, "allergens": ["麩質"] },
     { "FoodName": "溫開水", "熱量 Calories": 0, "克 Grams": 150, "蛋白質 Protein (g)": 0, "碳水化合物 Carbs (g)": 0, "脂肪 Fat (g)": 0, "糖 Sugar (g)": 0, "飽和脂肪 Saturated Fat (g)": 0, "反式脂肪 Trans Fat (g)": 0, "膽固醇 Cholesterol (mg)": 0, "膳食纖維 Fiber (g)": 0, "鈉 Sodium (mg)": 5, "吞嚥安全 (IDDSI)": "0", "水分 (ml)": 150, "dual": false, "allergens": [] },
     { "FoodName": "凝固水 (Level 2)", "熱量 Calories": 15, "克 Grams": 150, "蛋白質 Protein (g)": 0, "碳水化合物 Carbs (g)": 3.5, "脂肪 Fat (g)": 0, "糖 Sugar (g)": 0, "飽和脂肪 Saturated Fat (g)": 0, "反式脂肪 Trans Fat (g)": 0, "膽固醇 Cholesterol (mg)": 0, "膳食纖維 Fiber (g)": 1.0, "鈉 Sodium (mg)": 20, "吞嚥安全 (IDDSI)": "2", "水分 (ml)": 140, "dual": false, "allergens": [] },
-    { "FoodName": "黑芝麻花生糊", "熱量 Calories": 210, "克 Grams": 160, "蛋白質 Protein (g)": 5, "碳水化合物 Carbs (g)": 22, "脂肪 Fat (g)": 9, "糖 Sugar (g)": 12, "飽和脂肪 Saturated Fat (g)": 1.2, "反式脂肪 Trans Fat (g)": 0, "膽固醇 Cholesterol (mg)": 0, "膳食纖維 Fiber (g)": 2.5, "鈉 Sodium (mg)": 40, "吞嚥安全 (IDDSI)": "4", "水分 (ml)": 110, "dual": false, "allergens": ["花生"] }
+    { "FoodName": "黑芝麻花生糊", "熱量 Calories": 210, "克 Grams": 160, "蛋白質 Protein (g)": 5, "碳水化合物 Carbs (g)": 22, "脂肪 Fat (g)": 9, "糖 Sugar (g)": 12, "飽和脂肪 Saturated Fat (g)": 1.2, "反式脂肪 Trans Fat (g)": 0, "膽固醇 Cholesterol (mg)": 0, "膳食纖維 Fiber (g)": 2.5, "鈉 Sodium (mg)": 40, "吞嚥安全 (IDDSI)": "4", "水分 (ml)": 110, "dual": false, "allergens": ["花生"] },
+    { "FoodName": "蒸水蛋", "熱量 Calories": 140, "克 Grams": 150, "蛋白質 Protein (g)": 12, "碳水化合物 Carbs (g)": 2, "脂肪 Fat (g)": 9, "糖 Sugar (g)": 0, "飽和脂肪 Saturated Fat (g)": 2.5, "反式脂肪 Trans Fat (g)": 0, "膽固醇 Cholesterol (mg)": 180, "膳食纖維 Fiber (g)": 0, "鈉 Sodium (mg)": 360, "吞嚥安全 (IDDSI)": "4", "水分 (ml)": 120, "dual": false, "allergens": ["蛋"] }
 ];
 
 const IDDSI_COLORS = {
@@ -993,22 +966,21 @@ const IDDSI_COLORS = {
     "7": { bg: "#000000", text: "#ffffff", label: "Level 7 常規" }
 };
 
-// 預設 3 位院友配置 (含過敏原多選)
 const RESIDENT_PRESETS = {
     "res_01": { name: "陳建國 (101號床)", gender: "male", age: 78, weight: 58, diabetes: true, hypertension: true, kidney: false, gout: false, iddsiFood: "4", iddsiDrink: "2", allergens: ["海鮮"] },
     "res_02": { name: "李淑芬 (102號床)", gender: "female", age: 82, weight: 50, diabetes: false, hypertension: true, kidney: false, gout: false, iddsiFood: "5", iddsiDrink: "1", allergens: ["花生"] },
     "res_03": { name: "張伯伯 (103號床)", gender: "male", age: 85, weight: 62, diabetes: false, hypertension: true, kidney: true, gout: true, iddsiFood: "6", iddsiDrink: "0", allergens: ["蛋", "奶"] }
 };
 
+const RESIDENT_KEYS = ["res_01", "res_02", "res_03"];
 let currentResidentKey = "res_01";
 let dailyTargets = { cal: 1500, protein: 55, carbs: 200, fat: 45, water: 1500, sodium: 2000 };
 let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0, sugar = 0, satFat = 0, transFat = 0, cholesterol = 0, fiber = 0, sodium = 0, waterTotal = 0;
 let recordCount = 0, maxIddsiText = "-";
 let weeklyData = [1350, 1420, 1380, 1510, 1450, 1480, 0];
 let currentOperatorId = "Guest_User", captchaCode = "", recognition = null, isRecording = false;
-let pendingFoodItem = null, currentPortionScale = 1.0;
+let processedBase64 = "", pendingFoodItem = null, currentPortionScale = 1.0;
 
-/* 1. 免責聲明控制邏輯 */
 function toggleDisclaimerBtn() {
     const isChecked = document.getElementById("disclaimerCheck").checked;
     const btn = document.getElementById("disclaimerSubmitBtn");
@@ -1021,7 +993,6 @@ function acceptDisclaimer() {
     triggerDynamicIsland("🔒 已接受臨床醫療免責聲明，系統就緒");
 }
 
-/* 4. 數據持久化輔助函數 (按 residentKey + 日期 儲存與讀取) */
 function getTodayDateString() {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -1077,9 +1048,39 @@ function loadResidentDailyRecord(resKey) {
     updateDashboardUI();
 }
 
+function updateResidentPickerOptionText(resKey, profile) {
+    const picker = document.getElementById("resident-picker");
+    if (!picker) return;
+    const option = picker.querySelector(`option[value="${resKey}"]`);
+    if (option) {
+        let tags = [];
+        tags.push(`L${profile.iddsiFood}餐`);
+        if (profile.diabetes) tags.push("糖尿");
+        if (profile.hypertension) tags.push("高血壓");
+        if (profile.kidney) tags.push("限水");
+        if (profile.gout) tags.push("痛風");
+        if (profile.allergens && profile.allergens.length > 0) {
+            tags.push(`忌${profile.allergens.join('、')}`);
+        }
+        option.textContent = `${profile.name} (${tags.join(' / ')})`;
+    }
+}
+
+function initAllResidentOptions() {
+    RESIDENT_KEYS.forEach(k => {
+        let p = null;
+        const raw = localStorage.getItem(getProfileStorageKey(k));
+        if (raw) {
+            try { p = JSON.parse(raw); } catch(e){}
+        }
+        if (!p) p = RESIDENT_PRESETS[k];
+        if (p) updateResidentPickerOptionText(k, p);
+    });
+}
+
 function saveResidentProfileSettings(resKey) {
     const profile = {
-        name: document.getElementById("user-name").value,
+        name: document.getElementById("user-name").value.trim() || "未命名院友",
         gender: document.getElementById("user-gender").value,
         age: parseFloat(document.getElementById("user-age").value) || 75,
         weight: parseFloat(document.getElementById("user-weight").value) || 55,
@@ -1096,6 +1097,8 @@ function saveResidentProfileSettings(resKey) {
     } catch(e) {
         console.warn("院友配置儲存失敗:", e);
     }
+    updateResidentPickerOptionText(resKey, profile);
+    updateClinicalPills(profile);
 }
 
 function loadResidentProfileSettings(resKey) {
@@ -1121,9 +1124,9 @@ function loadResidentProfileSettings(resKey) {
 
     setAllergenCheckboxes(profile.allergens || []);
     updateClinicalPills(profile);
+    updateResidentPickerOptionText(resKey, profile);
 }
 
-/* 過敏原判定與 UI 同步 */
 function getActiveAllergenList() {
     const list = [];
     if (document.getElementById("allergen-peanut").checked) list.push("花生");
@@ -1147,14 +1150,17 @@ function setAllergenCheckboxes(allergens = []) {
 function syncAllergenUI() {
     const list = getActiveAllergenList();
     const currentProfile = {
+        name: document.getElementById("user-name").value,
         iddsiFood: document.getElementById("user-iddsi-target").value,
         iddsiDrink: document.getElementById("user-iddsi-drink-target").value,
         diabetes: document.getElementById("cond-diabetes").checked,
         hypertension: document.getElementById("cond-hypertension").checked,
         kidney: document.getElementById("cond-kidney").checked,
+        gout: document.getElementById("cond-gout").checked,
         allergens: list
     };
     updateClinicalPills(currentProfile);
+    updateResidentPickerOptionText(currentResidentKey, currentProfile);
     if (pendingFoodItem) {
         renderPendingFoodDetails();
     }
@@ -1162,14 +1168,13 @@ function syncAllergenUI() {
 
 function checkAllergenCollision(foodAllergens = []) {
     const residentAllergens = getActiveAllergenList();
-    const hitList = foodAllergens.filter(a => residentAllergens.includes(a));
-    return hitList;
+    return foodAllergens.filter(a => residentAllergens.includes(a));
 }
 
-/* 切換院友程序 */
 function handleResidentChange(newResKey) {
     saveCurrentResidentDailyRecord();
     currentResidentKey = newResKey;
+    document.getElementById("resident-picker").value = newResKey;
     loadResidentProfileSettings(currentResidentKey);
     loadResidentDailyRecord(currentResidentKey);
     calculatePersonalTargets();
@@ -1180,11 +1185,12 @@ function updateClinicalPills(res) {
     const container = document.getElementById("resident-clinical-pills");
     let html = `<span class="clinical-pill">食物 L${res.iddsiFood}</span><span class="clinical-pill">飲品 L${res.iddsiDrink}</span>`;
     if (res.allergens && res.allergens.length > 0) {
-        html += `<span class="clinical-pill allergen">⚠️ 忌: ${res.allergens.join(', ')}</span>`;
+        html += `<span class="clinical-pill allergen">⚠️ 忌: ${res.allergens.join('、')}</span>`;
     }
     if (res.diabetes) html += `<span class="clinical-pill alert">糖尿控糖</span>`;
     if (res.hypertension) html += `<span class="clinical-pill alert">高血壓限鈉</span>`;
     if (res.kidney) html += `<span class="clinical-pill alert">腎病限水</span>`;
+    if (res.gout) html += `<span class="clinical-pill alert">痛風限嘌呤</span>`;
     container.innerHTML = html;
 }
 
@@ -1262,7 +1268,6 @@ function setPortionScale(scale, el) {
     renderPendingFoodDetails();
 }
 
-/* 待確認餐食細節渲染與過敏原鎖定 */
 function renderPendingFoodDetails() {
     if (!pendingFoodItem) return;
     const item = pendingFoodItem;
@@ -1285,7 +1290,6 @@ function renderPendingFoodDetails() {
     const dualWarning = document.getElementById("dualTextureWarningBox");
     dualWarning.style.display = item.dual ? "block" : "none";
 
-    // 過敏原即時碰撞檢測
     const matchedAllergens = checkAllergenCollision(item.allergens || []);
     const alertBox = document.getElementById("allergenMatchAlertBox");
     const alertDetails = document.getElementById("allergenMatchDetails");
@@ -1293,10 +1297,10 @@ function renderPendingFoodDetails() {
 
     if (matchedAllergens.length > 0) {
         alertBox.style.display = "block";
-        alertDetails.innerText = `此餐食含有院友過敏原 [ ${matchedAllergens.join(', ')} ]，系統已強制鎖定並禁止登錄！`;
+        alertDetails.innerText = `此餐食含有院友過敏原 [ ${matchedAllergens.join('、')} ]，系統已強制鎖定並禁止登錄！`;
         commitBtn.disabled = true;
         commitBtn.innerText = "❌ 存在過敏原相衝 (已禁止登錄)";
-        triggerDynamicIsland(`⚠️ 過敏原警報：此餐含 [${matchedAllergens.join(', ')}]，禁止登錄！`, "danger");
+        triggerDynamicIsland(`⚠️ 過敏原警報：此餐含 [${matchedAllergens.join('、')}]，禁止登錄！`, "danger");
     } else {
         alertBox.style.display = "none";
         commitBtn.disabled = false;
@@ -1319,17 +1323,19 @@ async function searchFoodText() {
 
     let target = LOCAL_FALLBACK_DB.find(f => f.FoodName.includes(clean) || clean.includes(f.FoodName));
     if (!target) {
+        // 若為茶/水等飲品關鍵字，自動配置為 Level 0 流質
+        const isDrink = ['茶', '水', '汁', '奶', '啡', '湯'].some(k => clean.includes(k));
         target = {
             "FoodName": clean,
-            "熱量 Calories": 250,
+            "熱量 Calories": isDrink ? 100 : 250,
             "克 Grams": 200,
-            "蛋白質 Protein (g)": 10,
-            "碳水化合物 Carbs (g)": 35,
-            "脂肪 Fat (g)": 7,
-            "糖 Sugar (g)": 3,
-            "鈉 Sodium (mg)": 350,
-            "吞嚥安全 (IDDSI)": "4",
-            "水分 (ml)": 120,
+            "蛋白質 Protein (g)": isDrink ? 0.5 : 10,
+            "碳水化合物 Carbs (g)": isDrink ? 20 : 35,
+            "脂肪 Fat (g)": isDrink ? 0 : 7,
+            "糖 Sugar (g)": isDrink ? 15 : 3,
+            "鈉 Sodium (mg)": isDrink ? 20 : 350,
+            "吞嚥安全 (IDDSI)": isDrink ? "0" : "4",
+            "水分 (ml)": isDrink ? 220 : 120,
             "dual": false,
             "allergens": []
         };
@@ -1349,11 +1355,11 @@ async function searchFoodText() {
 
 function applyMealTemplate(type) {
     if (type === '碎餐A') {
-        pendingFoodItem = LOCAL_FALLBACK_DB[0];
-    } else if (type === '糊餐B') {
-        pendingFoodItem = LOCAL_FALLBACK_DB[1];
-    } else {
         pendingFoodItem = LOCAL_FALLBACK_DB[2];
+    } else if (type === '糊餐B') {
+        pendingFoodItem = LOCAL_FALLBACK_DB[3];
+    } else {
+        pendingFoodItem = LOCAL_FALLBACK_DB[4];
     }
     document.getElementById("single_foodname").innerText = pendingFoodItem.FoodName;
     document.getElementById("singleQueryResultCard").style.display = "block";
@@ -1363,10 +1369,9 @@ function applyMealTemplate(type) {
 function commitCurrentMeal() {
     if (!pendingFoodItem) return;
     
-    // 二次過敏原防線檢查
     const matchedAllergens = checkAllergenCollision(pendingFoodItem.allergens || []);
     if (matchedAllergens.length > 0) {
-        triggerDynamicIsland(`⚠️ 嚴重警報：此餐含過敏原 [${matchedAllergens.join(', ')}]，無法登錄！`, "danger");
+        triggerDynamicIsland(`⚠️ 嚴重警報：此餐含過敏原 [${matchedAllergens.join('、')}]，無法登錄！`, "danger");
         return;
     }
 
@@ -1452,7 +1457,7 @@ function updateDashboardUI() {
 function generateClinicalReport() {
     const res = document.getElementById("user-name").value;
     const now = new Date().toLocaleDateString('zh-HK');
-    const allergens = getActiveAllergenList().join(', ') || "無紀錄";
+    const allergens = getActiveAllergenList().join('、') || "無紀錄";
     const r = `【樂活安老院舍 - 跨專業臨床交班報告 (RD/ST)】
 日期：${now}
 院友：${res}
@@ -1477,7 +1482,7 @@ function generateClinicalReport() {
 function saveCurrentProfile() {
     saveResidentProfileSettings(currentResidentKey);
     calculatePersonalTargets();
-    triggerDynamicIsland("💾 院友檔案、過敏原與病歷設定已儲存！");
+    triggerDynamicIsland("💾 院友檔案、選單與病歷設定已同步儲存更新！");
 }
 
 function toggleVoiceRecognition() {
@@ -1505,31 +1510,90 @@ function toggleVoiceRecognition() {
     if (isRecording) { recognition.stop(); } else { recognition.start(); }
 }
 
+/* 影像處理並壓縮為 Base64 */
 function processAndPreviewImage(input) {
     const file = input.files[0];
     if (!file) return;
-    document.getElementById("preview-img").src = URL.createObjectURL(file);
+    
+    const previewImg = document.getElementById("preview-img");
+    previewImg.src = URL.createObjectURL(file);
     document.getElementById("previewWrapper").style.display = "block";
     document.getElementById("uploadBtn").style.display = "flex";
+    
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function(e) {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = function() {
+            const canvas = document.getElementById("processedCanvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = Math.min(img.width, 640);
+            canvas.height = Math.round((canvas.width / img.width) * img.height);
+            ctx.filter = "brightness(1.05) contrast(1.10)";
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            processedBase64 = canvas.toDataURL("image/jpeg", 0.82);
+        };
+    };
 }
 
-/* 3. AI 輔助建議與強制核對邏輯 */
-function uploadAndDetectFood() {
-    // 假設接駁緊真正 API，觸發警告動態島
-    triggerDynamicIsland("🧠 AI 建議：可能係「南瓜肉碎糊餐」", "warning");
-    
-    // 加多個強制警告
-    const warningBox = document.getElementById("aiWarningBox");
-    if (warningBox) {
-        warningBox.innerHTML = `
-            <div style="background: rgba(255, 59, 48, 0.12); border: 1.5px solid var(--apple-red); border-radius: 10px; padding: 10px 12px; margin: 10px 0; color: var(--apple-red); font-size: 12px; font-weight: bold; text-align: center; box-shadow: 0 2px 8px rgba(255,59,48,0.15);">
-                ⚠️ AI 建議僅供參考，請護士核對食物名稱、質地及過敏原後確認！
-            </div>`;
+/* 真實呼叫雲端 AI 影像辨識 */
+async function uploadAndDetectFood() {
+    if (!processedBase64 || processedBase64.trim() === "") {
+        alert("⚠️ 圖片數據尚未轉換完成或未選擇圖片！請重新選取相片後再點擊。");
+        return;
     }
-
-    document.getElementById("foodSearchInput").value = "南瓜肉碎糊餐";
-    searchFoodText();
-    document.getElementById("uploadBtn").style.display = "none";
+    
+    const uploadBtnText = document.getElementById("uploadBtnText");
+    const uploadBtn = document.getElementById("uploadBtn");
+    
+    triggerDynamicIsland("⏳ 正在上傳影像至雲端進行深度辨識...", "warning");
+    if (uploadBtnText) uploadBtnText.innerText = "⏳ AI 深度雲端分析中...";
+    
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: "uploadAndDetect", image: processedBase64 })
+        });
+        const resData = await response.json();
+        
+        let detectedName = "";
+        if (resData.success && resData.foodName) {
+            detectedName = resData.foodName.trim();
+        } else if (resData.foodName) {
+            detectedName = resData.foodName.trim();
+        } else {
+            throw new Error(resData.error || "未能辨識食物");
+        }
+        
+        triggerDynamicIsland(`🧠 AI 建議：可能係「${detectedName}」`, "warning");
+        
+        const warningBox = document.getElementById("aiWarningBox");
+        if (warningBox) {
+            warningBox.innerHTML = `
+                <div style="background: rgba(255, 59, 48, 0.12); border: 1.5px solid var(--apple-red); border-radius: 10px; padding: 10px 12px; margin: 10px 0; color: var(--apple-red); font-size: 12px; font-weight: bold; text-align: center; box-shadow: 0 2px 8px rgba(255,59,48,0.15);">
+                    ⚠️ AI 建議僅供參考，請護士核對食物名稱、質地及過敏原後確認！
+                </div>`;
+        }
+        
+        document.getElementById("foodSearchInput").value = detectedName;
+        await searchFoodText();
+        
+    } catch (err) {
+        console.warn("雲端 AI 通訊異常，切換至備援提示:", err);
+        triggerDynamicIsland("⚠️ 雲端通訊超時，請護士手動輸入核對", "warning");
+        
+        const warningBox = document.getElementById("aiWarningBox");
+        if (warningBox) {
+            warningBox.innerHTML = `
+                <div style="background: rgba(255, 149, 0, 0.12); border: 1.5px solid var(--apple-orange); border-radius: 10px; padding: 10px 12px; margin: 10px 0; color: var(--apple-orange); font-size: 12px; font-weight: bold; text-align: center;">
+                    ⚠️ 雲端 AI 回應超時，請直接在下方搜尋框輸入食物名稱 (例: 凍檸茶) 進行核對。
+                </div>`;
+        }
+    } finally {
+        if (uploadBtnText) uploadBtnText.innerText = "啟動 AI 影像深度辨識";
+        if (uploadBtn) uploadBtn.style.display = "none";
+    }
 }
 
 function handleAuthAction() {
@@ -1627,9 +1691,8 @@ function triggerDynamicIsland(text, type = "normal") {
 }
 
 window.onload = () => {
-    // 強制彈出免責聲明
     document.getElementById("disclaimerModalOverlay").classList.add("active");
-    // 載入當前院友數據與持久化記錄
+    initAllResidentOptions();
     loadResidentProfileSettings(currentResidentKey);
     loadResidentDailyRecord(currentResidentKey);
     calculatePersonalTargets();
