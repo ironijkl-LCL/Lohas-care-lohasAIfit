@@ -541,7 +541,6 @@
                     <span id="single_cal" style="font-size:18px; font-weight:bold; color:var(--apple-orange);">0 kcal</span>
                 </div>
                 
-                <!-- 🌟 允許護士在卡片上直接手動校對 IDDSI 質地 -->
                 <div class="summary-mini-card">
                     <span class="summary-label">IDDSI 質地等級 (可手動校準)</span>
                     <select id="single_iddsi_select" class="apple-input" style="padding:4px 6px; font-size:12px; font-weight:bold; margin-top:2px;" onchange="onManualIddsiChange(this.value)">
@@ -584,7 +583,7 @@
         </div>
 
         <div class="ui-card">
-            <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--apple-green);"></i> 今日餐食流水誌</h3>
+            <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--apple-green);"></i> 今日餐食流水誌 (支援稽核撤銷)</h3>
             <div id="history-container"></div>
         </div>
     </div>
@@ -762,16 +761,16 @@ function syncDropdownColor() {
     }
 }
 
-// 擴充在港常見餐食資料庫
+// 擴充在港常見餐食資料庫 (標記 isDrink 以支援飲品防嗆防線)
 const LOCAL_FALLBACK_DB = [
-    { "FoodName": "沙嗲牛肉麵", "熱量 Calories": 580, "克 Grams": 420, "蛋白質 Protein (g)": 26, "碳水化合物 Carbs (g)": 68, "脂肪 Fat (g)": 22, "鈉 Sodium (mg)": 1380, "吞嚥安全 (IDDSI)": "7", "水分 (ml)": 260, "dual": true, "allergen_tags": ["PEANUT", "GLUTEN", "SOY"] },
-    { "FoodName": "港式奶茶", "熱量 Calories": 140, "克 Grams": 250, "蛋白質 Protein (g)": 3.2, "碳水化合物 Carbs (g)": 18, "脂肪 Fat (g)": 6.5, "鈉 Sodium (mg)": 65, "吞嚥安全 (IDDSI)": "0", "水分 (ml)": 220, "dual": false, "allergen_tags": ["MILK"] },
-    { "FoodName": "凍檸茶", "熱量 Calories": 120, "克 Grams": 250, "蛋白質 Protein (g)": 0.2, "碳水化合物 Carbs (g)": 28, "脂肪 Fat (g)": 0, "鈉 Sodium (mg)": 15, "吞嚥安全 (IDDSI)": "0", "水分 (ml)": 240, "dual": false, "allergen_tags": [] },
-    { "FoodName": "碎肉燕麥粥", "熱量 Calories": 280, "克 Grams": 250, "蛋白質 Protein (g)": 14, "碳水化合物 Carbs (g)": 38, "脂肪 Fat (g)": 6, "鈉 Sodium (mg)": 320, "吞嚥安全 (IDDSI)": "4", "水分 (ml)": 180, "dual": false, "allergen_tags": ["GLUTEN"] },
-    { "FoodName": "南瓜肉碎糊餐", "熱量 Calories": 350, "克 Grams": 300, "蛋白質 Protein (g)": 18, "碳水化合物 Carbs (g)": 45, "脂肪 Fat (g)": 8, "鈉 Sodium (mg)": 380, "吞嚥安全 (IDDSI)": "4", "水分 (ml)": 200, "dual": false, "allergen_tags": [] },
-    { "FoodName": "清蒸豆腐魚柳", "熱量 Calories": 220, "克 Grams": 180, "蛋白質 Protein (g)": 24, "碳水化合物 Carbs (g)": 4, "脂肪 Fat (g)": 9, "鈉 Sodium (mg)": 410, "吞嚥安全 (IDDSI)": "5", "水分 (ml)": 90, "dual": false, "allergen_tags": ["SEAFOOD", "SOY"] },
-    { "FoodName": "香煎雞扒飯", "熱量 Calories": 620, "克 Grams": 400, "蛋白質 Protein (g)": 32, "碳水化合物 Carbs (g)": 85, "脂肪 Fat (g)": 16, "鈉 Sodium (mg)": 780, "吞嚥安全 (IDDSI)": "7", "水分 (ml)": 120, "dual": false, "allergen_tags": ["GLUTEN", "SOY"] },
-    { "FoodName": "花生黑芝麻糊", "熱量 Calories": 230, "克 Grams": 180, "蛋白質 Protein (g)": 6, "碳水化合物 Carbs (g)": 26, "脂肪 Fat (g)": 11, "鈉 Sodium (mg)": 40, "吞嚥安全 (IDDSI)": "4", "水分 (ml)": 120, "dual": false, "allergen_tags": ["PEANUT"] }
+    { "FoodName": "沙嗲牛肉麵", "熱量 Calories": 580, "克 Grams": 420, "蛋白質 Protein (g)": 26, "碳水化合物 Carbs (g)": 68, "脂肪 Fat (g)": 22, "鈉 Sodium (mg)": 1380, "吞嚥安全 (IDDSI)": "7", "水分 (ml)": 260, "dual": true, "isDrink": false, "allergen_tags": ["PEANUT", "GLUTEN", "SOY"] },
+    { "FoodName": "港式奶茶", "熱量 Calories": 140, "克 Grams": 250, "蛋白質 Protein (g)": 3.2, "碳水化合物 Carbs (g)": 18, "脂肪 Fat (g)": 6.5, "鈉 Sodium (mg)": 65, "吞嚥安全 (IDDSI)": "0", "水分 (ml)": 220, "dual": false, "isDrink": true, "allergen_tags": ["MILK"] },
+    { "FoodName": "凍檸茶", "熱量 Calories": 120, "克 Grams": 250, "蛋白質 Protein (g)": 0.2, "碳水化合物 Carbs (g)": 28, "脂肪 Fat (g)": 0, "鈉 Sodium (mg)": 15, "吞嚥安全 (IDDSI)": "0", "水分 (ml)": 240, "dual": false, "isDrink": true, "allergen_tags": [] },
+    { "FoodName": "碎肉燕麥粥", "熱量 Calories": 280, "克 Grams": 250, "蛋白質 Protein (g)": 14, "碳水化合物 Carbs (g)": 38, "脂肪 Fat (g)": 6, "鈉 Sodium (mg)": 320, "吞嚥安全 (IDDSI)": "4", "水分 (ml)": 180, "dual": false, "isDrink": false, "allergen_tags": ["GLUTEN"] },
+    { "FoodName": "南瓜肉碎糊餐", "熱量 Calories": 350, "克 Grams": 300, "蛋白質 Protein (g)": 18, "碳水化合物 Carbs (g)": 45, "脂肪 Fat (g)": 8, "鈉 Sodium (mg)": 380, "吞嚥安全 (IDDSI)": "4", "水分 (ml)": 200, "dual": false, "isDrink": false, "allergen_tags": [] },
+    { "FoodName": "清蒸豆腐魚柳", "熱量 Calories": 220, "克 Grams": 180, "蛋白質 Protein (g)": 24, "碳水化合物 Carbs (g)": 4, "脂肪 Fat (g)": 9, "鈉 Sodium (mg)": 410, "吞嚥安全 (IDDSI)": "5", "水分 (ml)": 90, "dual": false, "isDrink": false, "allergen_tags": ["SEAFOOD", "SOY"] },
+    { "FoodName": "香煎雞扒飯", "熱量 Calories": 620, "克 Grams": 400, "蛋白質 Protein (g)": 32, "碳水化合物 Carbs (g)": 85, "脂肪 Fat (g)": 16, "鈉 Sodium (mg)": 780, "吞嚥安全 (IDDSI)": "7", "水分 (ml)": 120, "dual": false, "isDrink": false, "allergen_tags": ["GLUTEN", "SOY"] },
+    { "FoodName": "花生黑芝麻糊", "熱量 Calories": 230, "克 Grams": 180, "蛋白質 Protein (g)": 6, "碳水化合物 Carbs (g)": 26, "脂肪 Fat (g)": 11, "鈉 Sodium (mg)": 40, "吞嚥安全 (IDDSI)": "4", "水分 (ml)": 120, "dual": false, "isDrink": false, "allergen_tags": ["PEANUT"] }
 ];
 
 let residentDatabase = {
@@ -796,6 +795,66 @@ let pendingFoodItem = null;
 let currentPortionScale = 1.0;
 let isAiDetectionPendingReview = false;
 let html5QrScanner = null;
+
+let recognition = null;
+let isRecording = false;
+let isQrScannerRunning = false;
+
+// 🌟 AI 動態分析有趣進程狀態機
+let aiProgressTimer = null;
+let aiElapsedSeconds = 0;
+let islandDismissTimer = null;
+
+const AI_ANALYSIS_PHASES = [
+    { sec: 0, icon: "fa-camera", text: "📸 正在解析餐盤像素與色彩分佈..." },
+    { sec: 2, icon: "fa-brain", text: "🧠 啟動多模態視覺神經網絡..." },
+    { sec: 4, icon: "fa-utensils", text: "🍲 正在比對港式食材與烹調資料庫..." },
+    { sec: 7, icon: "fa-shield-halved", text: "🛡️ 進行 IDDSI 質地與過敏原初篩..." },
+    { sec: 10, icon: "fa-chart-pie", text: "🔬 精算熱量、三大營養素與鈉含量..." },
+    { sec: 14, icon: "fa-triangle-exclamation", text: "⚠️ 檢測固液雙重質地 (Dual Consistency)..." },
+    { sec: 18, icon: "fa-hourglass-half", text: "⏳ 臨床精準度覆核中，即將出爐..." }
+];
+
+function startAiDynamicProgress() {
+    stopAiDynamicProgress();
+    aiElapsedSeconds = 0;
+
+    const island = document.getElementById("dynamicIsland");
+    const dismissBtn = document.getElementById("islandDismissBtn");
+    const islandIcon = document.getElementById("islandIcon");
+    const islandText = document.getElementById("islandText");
+
+    if (islandDismissTimer) {
+        clearTimeout(islandDismissTimer);
+        islandDismissTimer = null;
+    }
+
+    island.className = "dynamic-island-banner active alert-warning";
+    dismissBtn.style.display = "none";
+
+    function updateTick() {
+        let currentPhase = AI_ANALYSIS_PHASES[0];
+        for (let i = AI_ANALYSIS_PHASES.length - 1; i >= 0; i--) {
+            if (aiElapsedSeconds >= AI_ANALYSIS_PHASES[i].sec) {
+                currentPhase = AI_ANALYSIS_PHASES[i];
+                break;
+            }
+        }
+        islandIcon.className = `fa-solid ${currentPhase.icon} fa-spin`;
+        islandText.textContent = `${currentPhase.text} (${aiElapsedSeconds}s)`;
+        aiElapsedSeconds++;
+    }
+
+    updateTick();
+    aiProgressTimer = setInterval(updateTick, 1000);
+}
+
+function stopAiDynamicProgress() {
+    if (aiProgressTimer) {
+        clearInterval(aiProgressTimer);
+        aiProgressTimer = null;
+    }
+}
 
 function triggerHardBlockModal(title, message) {
     document.getElementById("hardBlockTitle").textContent = `【${title}】`;
@@ -863,10 +922,16 @@ function processAndPreviewImage(input) {
     };
 }
 
+// 🌟 啟動 AI 影像分析：持續動態倒數直到 API 成功辨識或出錯才結束
 async function uploadAndDetectFood() {
     if (!processedBase64) return alert("相片未完成加載，請重新選取。");
     
-    triggerDynamicIsland("⏳ 正在上傳至雲端進行深度辨識...", "warning");
+    const uploadBtn = document.getElementById("uploadBtn");
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = "⏳ AI 正在深度辨識中...";
+
+    startAiDynamicProgress();
+    
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
@@ -874,6 +939,8 @@ async function uploadAndDetectFood() {
         });
         const resData = await response.json();
         
+        stopAiDynamicProgress();
+
         if (!resData.success || !resData.foodName) {
             throw new Error(resData.error || "未能成功辨識食物名稱");
         }
@@ -887,15 +954,21 @@ async function uploadAndDetectFood() {
         await searchFoodText();
         document.getElementById("commitMealBtn").disabled = true;
 
+        triggerDynamicIsland(`🎉 辨識成功：${detectedName} (${Math.round(conf * 100)}%)`, "normal");
+
     } catch (err) {
+        stopAiDynamicProgress();
         document.getElementById("aiWarningBox").innerHTML = `
             <div style="background:rgba(255,59,48,0.1); border:1px solid var(--apple-red); border-radius:8px; padding:8px; font-size:12px; color:var(--apple-red);">
-                ⚠️ 雲端 AI 分析失敗（${escapeHTML(err.message)}）。請護士直接手動輸入食物名稱檢索。
+                ⚠️ 雲端 AI 分析未完成（${escapeHTML(err.message)}）。請護士直接手動檢索食物庫。
             </div>`;
         triggerDynamicIsland("⚠️ 影像分析未成功，請手動搜尋", "warning");
     } finally {
+        stopAiDynamicProgress();
         if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
         processedBase64 = null;
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = "啟動 AI 影像分析";
     }
 }
 
@@ -936,7 +1009,6 @@ function setPortionScale(s, el) {
     renderPendingFoodDetails();
 }
 
-// 護士手動在卡片調整 IDDSI 等級
 function onManualIddsiChange(newIddsi) {
     if (pendingFoodItem) {
         pendingFoodItem["吞嚥安全 (IDDSI)"] = newIddsi;
@@ -944,6 +1016,7 @@ function onManualIddsiChange(newIddsi) {
     }
 }
 
+// 整合「過敏原」、「食物過硬」及「飲品過稀（嗆咳）」雙向安全檢驗
 function renderPendingFoodDetails() {
     if (!pendingFoodItem) return;
     const s = currentPortionScale;
@@ -952,7 +1025,6 @@ function renderPendingFoodDetails() {
 
     document.getElementById("single_cal").textContent = `${scaledCal} kcal`;
     
-    // 同步更新 IDDSI 下拉選單值與背景顏色
     const iddsiSelect = document.getElementById("single_iddsi_select");
     if (iddsiSelect) {
         iddsiSelect.value = iddsiVal.toString();
@@ -961,30 +1033,47 @@ function renderPendingFoodDetails() {
         iddsiSelect.style.color = cfg.text;
     }
 
-    // 雙重質地警報提示
     const dualWarning = document.getElementById("dualTextureWarningBox");
     if (dualWarning) {
         dualWarning.style.display = pendingFoodItem.dual ? "block" : "none";
     }
 
-    // 碰撞檢查
     const res = residentDatabase[currentResidentKey];
     const collisions = (pendingFoodItem.allergen_tags || []).filter(t => (res.allergens || []).includes(t));
-    const foodIddsi = parseIddsi(iddsiVal);
+    const currentItemLevel = parseIddsi(iddsiVal);
     const allowedFoodIddsi = parseIddsi(res.iddsiFood);
+    const requiredDrinkIddsi = parseIddsi(res.iddsiDrink);
 
     const alertBox = document.getElementById("allergenMatchAlertBox");
+    const alertDetails = document.getElementById("allergenMatchDetails");
     const commitBtn = document.getElementById("commitMealBtn");
 
+    // 1. 過敏原硬阻斷
     if (collisions.length > 0) {
         alertBox.style.display = "block";
-        document.getElementById("allergenMatchDetails").textContent = `⚠️ 禁忌碰撞：食物含 [${collisions.join(', ')}]，已鎖死登錄！`;
+        alertDetails.textContent = `⚠️ 禁忌碰撞：食物含 [${collisions.join(', ')}]，已鎖死登錄！`;
         commitBtn.disabled = true;
-    } else if (foodIddsi > allowedFoodIddsi) {
+        return;
+    }
+
+    // 2. 飲品過稀誤吸安全檢查 (飲品稠度 < 處方稠度要求)
+    if (pendingFoodItem.isDrink && currentItemLevel < requiredDrinkIddsi) {
         alertBox.style.display = "block";
-        document.getElementById("allergenMatchDetails").textContent = `⚠️ 質地超標：食物質地 (L${foodIddsi}) 超出長者安全上限 (L${allowedFoodIddsi})，已鎖死登錄！`;
+        alertDetails.textContent = `⚠️ 飲品過稀誤吸風險：當前稠度 (Level ${currentItemLevel}) 低於醫囑要求 (Level ${requiredDrinkIddsi})，請加入凝固粉調配後手動校準質地！`;
         commitBtn.disabled = true;
-    } else if (!isAiDetectionPendingReview) {
+        return;
+    }
+
+    // 3. 固體食物過硬超標檢查 (食物硬度 > 處方上限)
+    if (!pendingFoodItem.isDrink && currentItemLevel > allowedFoodIddsi) {
+        alertBox.style.display = "block";
+        alertDetails.textContent = `⚠️ 質地超標：食物質地 (Level ${currentItemLevel}) 超出長者安全上限 (Level ${allowedFoodIddsi})，已鎖死登錄！`;
+        commitBtn.disabled = true;
+        return;
+    }
+
+    // 通過臨床安全核可
+    if (!isAiDetectionPendingReview) {
         alertBox.style.display = "none";
         commitBtn.disabled = false;
         commitBtn.textContent = "✅ 確認登錄此餐食";
@@ -994,38 +1083,21 @@ function renderPendingFoodDetails() {
 // 🧠 臨床質地推斷引擎 (Clinical Texture Engine)
 function deduceFoodProfileFromText(queryText) {
     const q = queryText.toLowerCase();
-    
-    let isDual = false;
-    let iddsi = "7"; // 預設為 Level 7 常規質地（安全防線預設最高）
-    let allergens = [];
-    let calEst = 350;
-    let waterEst = 120;
+    let isDual = false, iddsi = "7", allergens = [], calEst = 350, waterEst = 120;
+    const isLiquid = q.includes("水") || q.includes("茶") || q.includes("汁") || q.includes("啡") || q.includes("奶") || q.includes("湯") || q.includes("飲");
 
-    // 1. 雙重質地判定 (湯麵、湯飯、拉麵、米粉等)
     if ((q.includes("麵") || q.includes("麪") || q.includes("飯") || q.includes("粉")) && (q.includes("湯") || q.includes("沙嗲") || q.includes("拉麵") || q.includes("米線"))) {
-        isDual = true;
-        iddsi = "7";
-        waterEst = 250;
-        calEst = 550;
-    }
-    // 2. 質地等級關鍵字推斷
-    else if (q.includes("糊") || q.includes("粥") || q.includes("蓉") || q.includes("泥")) {
-        iddsi = "4";
-        calEst = 250;
-        waterEst = 180;
+        isDual = true; iddsi = "7"; waterEst = 250; calEst = 550;
+    } else if (q.includes("糊") || q.includes("粥") || q.includes("蓉") || q.includes("泥")) {
+        iddsi = "4"; calEst = 250; waterEst = 180;
     } else if (q.includes("碎") || q.includes("免治") || q.includes("肉末")) {
-        iddsi = "5";
-        calEst = 280;
+        iddsi = "5"; calEst = 280;
     } else if (q.includes("軟") || q.includes("魚柳") || q.includes("蒸蛋") || q.includes("豆腐")) {
-        iddsi = "6";
-        calEst = 220;
-    } else if (q.includes("水") || q.includes("茶") || q.includes("汁") || q.includes("啡") || q.includes("奶")) {
-        iddsi = "0";
-        calEst = 100;
-        waterEst = 240;
+        iddsi = "6"; calEst = 220;
+    } else if (isLiquid) {
+        iddsi = "0"; calEst = 100; waterEst = 240;
     }
 
-    // 3. 過敏原 Taxonomy 關聯推斷
     if (q.includes("沙嗲") || q.includes("花生")) allergens.push("PEANUT");
     if (q.includes("海鮮") || q.includes("蝦") || q.includes("蟹") || q.includes("魚") || q.includes("蜆")) allergens.push("SEAFOOD");
     if (q.includes("蛋")) allergens.push("EGG");
@@ -1044,6 +1116,7 @@ function deduceFoodProfileFromText(queryText) {
         "吞嚥安全 (IDDSI)": iddsi,
         "水分 (ml)": waterEst,
         "dual": isDual,
+        "isDrink": isLiquid,
         "allergen_tags": [...new Set(allergens)]
     };
 }
@@ -1052,12 +1125,9 @@ async function searchFoodText() {
     const raw = document.getElementById("foodSearchInput").value.trim();
     if (!raw) return;
 
-    // 清洗括號內的輔助英文字串
     const cleanQuery = raw.replace(/\(.*?\)/g, '').trim();
-
     let target = LOCAL_FALLBACK_DB.find(f => f.FoodName.includes(cleanQuery) || cleanQuery.includes(f.FoodName));
     if (!target) {
-        // 使用臨床質地推斷引擎自動分析
         target = deduceFoodProfileFromText(raw);
     }
 
@@ -1075,15 +1145,23 @@ async function commitCurrentMeal() {
 
     const res = residentDatabase[currentResidentKey];
 
+    // 1. 致命過敏原攔截
     const collisions = (pendingFoodItem.allergen_tags || []).filter(t => (res.allergens || []).includes(t));
     if (collisions.length > 0) {
         return triggerHardBlockModal("致命過敏原硬阻斷", `院友對 [${collisions.join(', ')}] 嚴重過敏，系統已拒絕入庫。`);
     }
 
-    const foodIddsi = parseIddsi(pendingFoodItem["吞嚥安全 (IDDSI)"]);
-    const maxIddsi = parseIddsi(res.iddsiFood);
-    if (foodIddsi > maxIddsi) {
-        return triggerHardBlockModal("IDDSI 質地超標", `食物質地 (Level ${foodIddsi}) 超出長者安全上限 (Level ${maxIddsi})，嚴禁登錄！`);
+    // 2. IDDSI 雙向臨床質地攔截
+    const currentItemLevel = parseIddsi(pendingFoodItem["吞嚥安全 (IDDSI)"]);
+    const maxFoodIddsi = parseIddsi(res.iddsiFood);
+    const reqDrinkIddsi = parseIddsi(res.iddsiDrink);
+
+    if (pendingFoodItem.isDrink && currentItemLevel < reqDrinkIddsi) {
+        return triggerHardBlockModal("飲品過稀誤吸警告", `此飲品質地 (Level ${currentItemLevel}) 未達長者處方稠度 (Level ${reqDrinkIddsi})，易引致嗆咳窒息！請加入凝固粉並修正質地後再錄入。`);
+    }
+
+    if (!pendingFoodItem.isDrink && currentItemLevel > maxFoodIddsi) {
+        return triggerHardBlockModal("IDDSI 質地超標", `食物質地 (Level ${currentItemLevel}) 超出長者安全上限 (Level ${maxFoodIddsi})，嚴禁登錄！`);
     }
 
     const s = currentPortionScale;
@@ -1113,7 +1191,7 @@ async function commitCurrentMeal() {
                 fat: fFat,
                 sodium: fSodium,
                 water: fWater,
-                iddsi_level: foodIddsi,
+                iddsi_level: currentItemLevel,
                 allergen_tags: pendingFoodItem.allergen_tags || []
             }
         };
@@ -1129,9 +1207,9 @@ async function commitCurrentMeal() {
 
     cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
     sodium += fSodium; waterTotal += fWater;
-    if (maxIddsiText === "-" || foodIddsi > parseIddsi(maxIddsiText)) maxIddsiText = foodIddsi.toString();
+    if (maxIddsiText === "-" || currentItemLevel > parseIddsi(maxIddsiText)) maxIddsiText = currentItemLevel.toString();
 
-    const logEntry = { logId, title: pendingFoodItem.FoodName, calories: fCal, water: fWater, sodium: fSodium, protein: fProtein, carbs: fCarbs, fat: fFat, grams: fGrams, subText: `${fGrams}g · IDDSI L${foodIddsi}` };
+    const logEntry = { logId, title: pendingFoodItem.FoodName, calories: fCal, water: fWater, sodium: fSodium, protein: fProtein, carbs: fCarbs, fat: fFat, grams: fGrams, subText: `${fGrams}g · IDDSI L${currentItemLevel}` };
     todayAuditLogs.unshift(logEntry);
     
     renderAuditHistory();
@@ -1143,6 +1221,35 @@ async function commitCurrentMeal() {
     document.getElementById("aiWarningBox").innerHTML = "";
     pendingFoodItem = null;
     triggerDynamicIsland(`✅ 餐食已成功通過安全核准入庫 (+${fCal} kcal)`);
+}
+
+async function revokeMealLog(logId) {
+    if (!confirm("確定要撤銷此筆飲食紀錄嗎？（此操作將在伺服器審計日誌中留痕）")) return;
+    
+    const idx = todayAuditLogs.findIndex(l => l.logId === logId);
+    if (idx === -1) return;
+    const item = todayAuditLogs[idx];
+
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: "revokeRecord", log_id: logId, resident_id: currentResidentKey, operator_id: currentOperatorId, authToken: currentAuthToken || "NURSE_SEC_GUEST" })
+        });
+    } catch(e) {}
+
+    cal = Math.max(0, cal - item.calories);
+    grams = Math.max(0, grams - item.grams);
+    protein = Math.max(0, protein - item.protein);
+    carbs = Math.max(0, carbs - item.carbs);
+    fat = Math.max(0, fat - item.fat);
+    sodium = Math.max(0, sodium - item.sodium);
+    waterTotal = Math.max(0, waterTotal - item.water);
+
+    todayAuditLogs.splice(idx, 1);
+    renderAuditHistory();
+    saveDailyState();
+    updateDashboardUI();
+    triggerDynamicIsland("↩️ 已成功撤銷該筆紀錄並留痕備查");
 }
 
 function renderAuditHistory() {
@@ -1163,6 +1270,7 @@ function renderAuditHistory() {
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
                 <span style="color:var(--apple-orange); font-weight:700;">+${l.calories} KCAL</span>
+                <button onclick="revokeMealLog('${l.logId}')" style="border:none; background:rgba(255,59,48,0.1); color:var(--apple-red); font-size:11px; padding:3px 6px; border-radius:4px; cursor:pointer;">撤銷</button>
             </div>`;
         container.appendChild(row);
     });
@@ -1182,10 +1290,15 @@ function quickAddWater(ml, typeName) {
 }
 
 function customWaterPrompt() {
-    const input = prompt("請輸入自訂攝取水量 (ml):", "100");
-    if (input) {
+    const remaining = Math.max(0, dailyTargets.water - waterTotal);
+    const input = prompt(`請輸入自訂攝取水量 (ml):\n(當前今日已攝取: ${waterTotal}ml / 剩餘限額: ${remaining}ml)`, "100");
+    if (input !== null) {
         const ml = parseInt(input, 10);
-        if (!isNaN(ml) && ml > 0) quickAddWater(ml, "自訂液體");
+        if (!isNaN(ml) && ml > 0) {
+            quickAddWater(ml, "自訂飲品/水分");
+        } else {
+            alert("請輸入有效的正整數數值！");
+        }
     }
 }
 
@@ -1233,6 +1346,10 @@ function updateDashboardUI() {
 }
 
 function triggerDynamicIsland(text, type = "normal") {
+    if (islandDismissTimer) {
+        clearTimeout(islandDismissTimer);
+        islandDismissTimer = null;
+    }
     const island = document.getElementById("dynamicIsland");
     const dismissBtn = document.getElementById("islandDismissBtn");
     document.getElementById("islandText").textContent = text;
@@ -1246,11 +1363,17 @@ function triggerDynamicIsland(text, type = "normal") {
         if (type === "warning") island.classList.add("alert-warning");
         document.getElementById("islandIcon").className = "fa-solid fa-circle-check";
         dismissBtn.style.display = "none";
-        setTimeout(() => { dismissDynamicIsland(); }, 4000);
+        islandDismissTimer = setTimeout(() => { dismissDynamicIsland(); }, 4000);
     }
 }
 
-function dismissDynamicIsland() { document.getElementById("dynamicIsland").classList.remove("active"); }
+function dismissDynamicIsland() { 
+    if (islandDismissTimer) {
+        clearTimeout(islandDismissTimer);
+        islandDismissTimer = null;
+    }
+    document.getElementById("dynamicIsland").classList.remove("active"); 
+}
 
 function handleResidentChange(key) {
     saveDailyState();
@@ -1320,6 +1443,27 @@ function updateClinicalPills(res) {
     }
     html += `<span class="clinical-pill alert">限水 ${res.waterLimit}ml</span>`;
     container.innerHTML = html;
+}
+
+function openNewResidentModal() {
+    const name = prompt("請輸入新院友姓名與床號 (例: 王小明 (105號床)):");
+    if (!name) return;
+    const newKey = "res_" + Date.now();
+    residentDatabase[newKey] = {
+        id: newKey,
+        name: name,
+        gender: "male",
+        age: 75,
+        height: 160,
+        weight: 60,
+        waterLimit: 1500,
+        iddsiFood: "4",
+        iddsiDrink: "2",
+        allergens: []
+    };
+    localStorage.setItem("lohas_res_db_v3", JSON.stringify(residentDatabase));
+    renderResidentPicker();
+    handleResidentChange(newKey);
 }
 
 function renderResidentPicker() {
@@ -1433,21 +1577,46 @@ function loadWeeklyDataFromStorage(resKey) {
     drawChart();
 }
 
+// 語音識別 API 容錯與狀態修復
 function toggleVoiceRecognition() {
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRec) return alert("當前裝置未支援語音識別 API");
+    if (!SpeechRec) return alert("當前裝置或瀏覽器未支援 Web Speech API 語音識別功能");
+
     if (!recognition) {
         recognition = new SpeechRec();
         recognition.lang = 'zh-HK';
-        recognition.onstart = () => { isRecording = true; document.getElementById("micStatus").textContent = "聆聽中..."; };
-        recognition.onend = () => { isRecording = false; document.getElementById("micStatus").textContent = "語音輸入"; };
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        recognition.onstart = () => { 
+            isRecording = true; 
+            document.getElementById("micStatus").textContent = "聆聽中..."; 
+        };
+        recognition.onend = () => { 
+            isRecording = false; 
+            document.getElementById("micStatus").textContent = "語音輸入"; 
+        };
+        recognition.onerror = (event) => {
+            console.warn("語音辨識錯誤:", event.error);
+            isRecording = false;
+            document.getElementById("micStatus").textContent = "語音輸入";
+        };
         recognition.onresult = (e) => {
             let t = e.results[0][0].transcript.replace(/。/g, '');
             document.getElementById("foodSearchInput").value = t;
             searchFoodText();
         };
     }
-    if (isRecording) { recognition.stop(); } else { recognition.start(); }
+
+    if (isRecording) { 
+        recognition.stop(); 
+    } else { 
+        try {
+            recognition.start();
+        } catch(e) {
+            console.error(e);
+        }
+    }
 }
 
 function generateClinicalReport() {
@@ -1468,22 +1637,45 @@ function openQrCodeModal() {
 
 function closeQrCodeModal() { document.getElementById("qrCodeModalOverlay").classList.remove("active"); }
 
-function openQrScannerModal() {
+async function openQrScannerModal() {
     document.getElementById("qrScannerModalOverlay").classList.add("active");
-    html5QrScanner = new Html5Qrcode("qr-reader");
-    html5QrScanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 200 }, (text) => {
-        closeQrScannerModal();
-        try {
-            const p = JSON.parse(text);
-            if (p.id && residentDatabase[p.id]) handleResidentChange(p.id);
-        } catch(e) {
-            if (residentDatabase[text.trim()]) handleResidentChange(text.trim());
-        }
-    }, () => {});
+    try {
+        html5QrScanner = new Html5Qrcode("qr-reader");
+        isQrScannerRunning = true;
+        await html5QrScanner.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: 200 },
+            (text) => {
+                closeQrScannerModal();
+                try {
+                    const p = JSON.parse(text);
+                    if (p.id && residentDatabase[p.id]) handleResidentChange(p.id);
+                } catch(e) {
+                    if (residentDatabase[text.trim()]) handleResidentChange(text.trim());
+                }
+            },
+            () => {}
+        );
+    } catch (err) {
+        console.warn("相機啟動異常:", err);
+        isQrScannerRunning = false;
+    }
 }
 
-function closeQrScannerModal() {
-    if (html5QrScanner) { html5QrScanner.stop().then(() => { html5QrScanner.clear(); html5QrScanner = null; }); }
+async function closeQrScannerModal() {
+    if (html5QrScanner) {
+        try {
+            if (isQrScannerRunning) {
+                await html5QrScanner.stop();
+            }
+            html5QrScanner.clear();
+        } catch (e) {
+            console.warn("相機關閉時異常:", e);
+        } finally {
+            html5QrScanner = null;
+            isQrScannerRunning = false;
+        }
+    }
     document.getElementById("qrScannerModalOverlay").classList.remove("active");
 }
 
