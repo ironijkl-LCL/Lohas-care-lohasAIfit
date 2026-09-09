@@ -1,0 +1,21 @@
+{
+  "appId": "hk.lohas.clinical",
+  "appName": "樂活醫療健康",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https",
+    "cleartext": false
+  },
+  "ios": {
+    "contentInset": "always",
+    "allowsLinkPreview": false,
+    "scrollEnabled": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "backgroundColor": "#F2F2F7"
+    }
+  }
+}
