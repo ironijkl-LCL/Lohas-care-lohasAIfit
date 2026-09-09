@@ -1,0 +1,21 @@
+{
+  "short_name": "樂活醫療",
+  "name": "樂活健康管理系統 - 醫療臨床安全版",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2642/2642731.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2642/2642731.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#F2F2F7",
+  "theme_color": "#007AFF",
+  "display": "standalone",
+  "orientation": "portrait"
+}
