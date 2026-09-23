@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>私隱政策 - 樂活健康飲食日誌 (Lohas Diet Tracker)</title>
+    <style>
+        :root {
+            --system-bg: #F2F2F7;
+            --card-bg: #FFFFFF;
+            --text-main: #1C1C1E;
+            --text-sub: #6C6C70;
+            --apple-blue: #007AFF;
+            --apple-green: #34C759;
+            --border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --system-bg: #000000;
+                --card-bg: #1C1C1E;
+                --text-main: #FFFFFF;
+                --text-sub: #8E8E93;
+                --border-color: rgba(255, 255, 255, 0.12);
+            }
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 24px 16px 60px 16px;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang HK", "Noto Sans TC", sans-serif;
+            background-color: var(--system-bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 32px 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header .meta {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-top: 6px;
+        }
+
+        h2 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 24px;
+            margin-bottom: 8px;
+            color: var(--apple-blue);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        p, ul {
+            font-size: 14px;
+            color: var(--text-main);
+            margin: 0 0 12px 0;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        .highlight-box {
+            background: rgba(0, 122, 255, 0.06);
+            border-left: 3px solid var(--apple-blue);
+            padding: 12px 14px;
+            border-radius: 0 10px 10px 0;
+            margin: 14px 0;
+            font-size: 13px;
+        }
+
+        .contact-box {
+            background: var(--system-bg);
+            border-radius: 12px;
+            padding: 14px;
+            margin-top: 20px;
+            font-size: 13px;
+        }
+
+        a {
+            color: var(--apple-blue);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>私隱政策 (Privacy Policy)</h1>
+        <div class="meta">樂活健康飲食日誌 (Lohas Diet Tracker) · 最後生效日期：2026 年 9 月 23 日</div>
+    </div>
+
+    <div class="highlight-box">
+        <b>我們的隱私承諾：</b><br>
+        本應用程式致力維護用戶的個人資料私隱。我們採用<b>「本地儲存優先」</b>原則，你的個人身體數據與飲食記錄預設只留存於你的裝置上，絕不向第三方廣告商販售任何個人資訊。
+    </div>
+
+    <h2>1. 我們收集的資料</h2>
+    <p>當你使用樂活健康飲食日誌時，我們僅收集提供服務所必需的資料：</p>
+    <ul>
+        <li><b>身體基本數據（自願填寫）：</b>身高、體重、年齡、性別，用於為你推算基礎代謝率 (BMR) 及每日營養建議目標。</li>
+        <li><b>飲食與水分記錄：</b>餐食名稱、進食份量、估算熱量、19 項微量營養素數值及質地等級 (IDDSI)。</li>
+        <li><b>健康偏好：</b>你主動勾選之忌食或過敏食材標籤（如海鮮、花生、奶類等）。</li>
+    </ul>
+
+    <h2>2. 裝置權限使用說明</h2>
+    <p>本 App 僅在獲得你明確授權的情況下調用以下裝置功能：</p>
+    <ul>
+        <li><b>相機 (Camera)：</b>用於拍照辨識食物熱量及掃描包裝食品之條碼。相片僅在觸發分析時即時傳輸至多模態 AI 引擎提取菜式名稱與質地，分析完成後伺服器端不保留相片檔案。</li>
+        <li><b>語音識別 (Microphone / Speech Recognition)：</b>用於支援語音輸入食物名稱。語音由你裝置之語音識別系統（Web Speech API）即時轉換為文字，本 App 不會錄音或存檔語音內容。</li>
+    </ul>
+
+    <h2>3. 資料如何儲存與第三方服務</h2>
+    <ul>
+        <li><b>本機儲存 (Local Storage)：</b>你的飲食日記、體重追蹤與個人設定均儲存於你裝置的本地資料庫（Local Storage）。</li>
+        <li><b>Open Food Facts API：</b>當你掃描食品條碼時，App 會向公開之 Open Food Facts 數據庫查詢營養標籤，傳輸過程不涉及任何個人身分資料。</li>
+        <li><b>雲端運算防線：</b>影像識別與雲端備份經由 Google Apps Script 及安全 API 端點進行資料傳輸，全程採用 HTTPS 加密。</li>
+    </ul>
+
+    <h2>4. 用戶權利與資料徹底刪除 (Data Deletion)</h2>
+    <p>依照歐盟通用數據保障條例 (GDPR) 及相關私隱法規，你對你的個人資料擁有完整控制權：</p>
+    <ul>
+        <li><b>隨時匯出資料：</b>你可於 App 內隨時將飲食紀錄匯出為 CSV 試算表或 JSON 備份檔。</li>
+        <li><b>徹底清除資料 (Right to Erasure)：</b>你可隨時於 App 的「目標設定」分頁點擊<b>「⚠️ 清除所有本機資料」</b>按鈕。一旦確認，所有儲存在你裝置上的身體數據、日誌及體重歷史將被即時永久銷毀。</li>
+    </ul>
+
+    <h2>5. 兒童私隱</h2>
+    <p>本應用程式並非專門針對 13 歲以下兒童設計，我們不會刻意收集任何兒童的個人可識別資料。</p>
+
+    <h2>6. 私隱政策修訂</h2>
+    <p>我們可能適時修訂本政策。如有任何重大變更，將於本網頁更新修訂日期，並透過 App 發出通知。</p>
+
+    <div class="contact-box">
+        <h3 style="margin:0 0 6px 0; font-size:14px; color:var(--text-main);">聯絡我們 (Contact Us)</h3>
+        <p style="margin:0; color:var(--text-sub);">如對本私隱政策或資料保護有任何查詢，歡迎聯絡開發團隊：<br>
+        電郵：<a href="mailto:support@lohas-care.org">support@lohas-care.org</a><br>
+        官方網站：<a href="https://lohas-care.org" target="_blank">https://lohas-care.org</a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
