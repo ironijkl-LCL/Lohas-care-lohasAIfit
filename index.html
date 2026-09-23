@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="referrer" content="no-referrer">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>樂活健康管理系統 - 醫療臨床安全旗艦版</title>
+    <title>樂活安老 - 院友飲食與臨床吞嚥管理</title>
 
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="樂活醫療健康">
+    <meta name="apple-mobile-web-app-title" content="樂活吞嚥照護">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2642/2642731.png">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -19,8 +19,8 @@
         :root {
             --system-bg-light: #F2F2F7;
             --system-bg-dark: #000000;
-            --card-bg-light: rgba(255, 255, 255, 0.92);
-            --card-bg-dark: rgba(28, 28, 30, 0.92);
+            --card-bg-light: rgba(255, 255, 255, 0.94);
+            --card-bg-dark: rgba(28, 28, 30, 0.94);
             
             --apple-blue: #007AFF;
             --apple-green: #34C759;
@@ -64,7 +64,7 @@
 
         .app-container {
             width: 100%;
-            max-width: 420px;
+            max-width: 430px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -82,7 +82,7 @@
 
         .app-header-info h2 {
             margin: 0;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: var(--apple-blue);
             text-transform: uppercase;
@@ -183,7 +183,7 @@
             background: var(--bg-card);
             backdrop-filter: var(--blur-strength);
             border-radius: var(--border-radius-medium);
-            padding: 12px;
+            padding: 10px 12px;
             border: 1px solid rgba(0, 0, 0, 0.04);
             display: flex;
             flex-direction: column;
@@ -200,13 +200,13 @@
         }
 
         .summary-value {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             margin: 4px 0 2px 0;
             letter-spacing: -0.5px;
         }
 
-        .summary-unit { font-size: 11px; color: var(--text-sub); }
+        .summary-unit { font-size: 10px; color: var(--text-sub); }
 
         .dynamic-island-banner {
             position: fixed;
@@ -255,12 +255,60 @@
             border-radius: 6px;
             font-size: 11px;
             font-weight: bold;
-            color: #FFFFFF;
             display: inline-flex;
             align-items: center;
             gap: 4px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
+
+        /* 國際標準 IDDSI 官方色票樣式 */
+        .iddsi-c0 { background-color: #FFFFFF !important; color: #000000 !important; border: 1.5px solid #D1D1D6 !important; }
+        .iddsi-c1 { background-color: #7D8893 !important; color: #FFFFFF !important; }
+        .iddsi-c2 { background-color: #E94E96 !important; color: #FFFFFF !important; }
+        .iddsi-c3 { background-color: #F8E71C !important; color: #000000 !important; }
+        .iddsi-c4 { background-color: #00A651 !important; color: #FFFFFF !important; }
+        .iddsi-c5 { background-color: #F37021 !important; color: #FFFFFF !important; }
+        .iddsi-c6 { background-color: #0072CE !important; color: #FFFFFF !important; }
+        .iddsi-c7 { background-color: #1A1A1A !important; color: #FFFFFF !important; }
+
+        .iddsi-trigger-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: transform 0.15s ease;
+        }
+        .iddsi-trigger-btn:active { transform: scale(0.98); }
+
+        .iddsi-option-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .iddsi-option-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+        .iddsi-option-card:active { transform: scale(0.98); opacity: 0.9; }
 
         .chart-svg { width: 100%; height: 120px; overflow: visible; }
 
@@ -270,9 +318,9 @@
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
-            max-width: 420px;
+            max-width: 430px;
             height: 64px;
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.94);
             backdrop-filter: var(--blur-strength);
             border-top: 0.5px solid rgba(0,0,0,0.1);
             display: grid;
@@ -334,7 +382,7 @@
         .login-modal-box {
             background: var(--bg-card);
             backdrop-filter: var(--blur-strength);
-            width: 90%; max-width: 350px;
+            width: 90%; max-width: 360px;
             border-radius: var(--border-radius-large);
             padding: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -350,12 +398,41 @@
             border: 1px solid rgba(0,0,0,0.1);
             background: rgba(0,0,0,0.03);
             color: var(--text-main);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             text-align: center;
             cursor: pointer;
         }
         .portion-chip.active { background: var(--apple-blue); color: #FFFFFF; border-color: var(--apple-blue); }
+
+        .nutrient-grid-19 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-top: 8px;
+            font-size: 11px;
+        }
+        .nutrient-pill-card {
+            background: rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 8px;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+        }
+        .nutrient-pill-card .n-label { color: var(--text-sub); font-size: 10px; }
+        .nutrient-pill-card .n-val { font-weight: 700; color: var(--text-main); margin-top: 2px; }
+
+        .human-note-box {
+            background: rgba(0, 122, 255, 0.06);
+            border-left: 3px solid var(--apple-blue);
+            padding: 8px 10px;
+            border-radius: 0 8px 8px 0;
+            font-size: 12px;
+            color: var(--text-main);
+            margin: 6px 0;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
@@ -363,15 +440,15 @@
 <!-- 免責確認 Modal -->
 <div id="disclaimerModalOverlay" class="login-modal-overlay active" style="z-index: 100001;" role="dialog">
     <div class="login-modal-box" style="max-width: 360px;">
-        <h3 style="margin: 0 0 8px 0; color: var(--apple-red); font-size: 17px;">
-            <i class="fa-solid fa-triangle-exclamation"></i> 醫療輔助系統操作聲明
+        <h3 style="margin: 0 0 8px 0; color: var(--apple-blue); font-size: 17px;">
+            <i class="fa-solid fa-notes-medical"></i> 臨床輔助工具使用須知
         </h3>
         <p style="font-size: 12px; line-height: 1.5; color: var(--text-main); margin-bottom: 12px;">
-            本平台定位為<b>臨床輔助決策工具</b>。飲食質地 IDDSI 比對與過敏原防線僅供照護參考，不能取代專業醫療診斷。
+            本系統旨在協助院舍護理人員快速估算營養及核對 IDDSI 質地。所有 AI 推算僅作<b>床邊決策輔助參考</b>，長者實際飲食應以現場醫護及言語治療師指引為準。
         </p>
         <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 12px; font-weight: 600; cursor: pointer; background: rgba(0,0,0,0.03); padding: 8px; border-radius: 8px;">
             <input type="checkbox" id="disclaimerCheck" onchange="toggleDisclaimerBtn()" style="margin-top: 2px;">
-            <span>本人已理解本系統之輔助定位，確認依循醫護指引。</span>
+            <span>我已明白本工具為臨床輔助性質，會以現場專業判斷為準。</span>
         </label>
         <button id="disclaimerSubmitBtn" class="apple-btn-primary" style="margin-top: 14px;" disabled onclick="acceptDisclaimer()">進入系統</button>
     </div>
@@ -381,17 +458,17 @@
 <div id="hardBlockModalOverlay" class="login-modal-overlay" style="z-index: 100002;">
     <div class="login-modal-box" style="max-width: 350px; text-align: center; border: 2px solid var(--apple-red);">
         <div style="font-size: 36px; color: var(--apple-red); margin-bottom: 8px;"><i class="fa-solid fa-hand"></i></div>
-        <h3 id="hardBlockTitle" style="margin: 0 0 8px 0; color: var(--apple-red); font-size: 17px;">臨床硬性阻斷</h3>
+        <h3 id="hardBlockTitle" style="margin: 0 0 8px 0; color: var(--apple-red); font-size: 17px;">安全防線截停</h3>
         <div id="hardBlockMessage" style="font-size: 12px; line-height: 1.5; text-align: left; background: rgba(255, 59, 48, 0.08); padding: 10px; border-radius: 8px; margin-bottom: 14px; color: var(--text-main);"></div>
-        <button class="apple-btn-primary" style="background: var(--apple-red);" onclick="closeHardBlockModal()">我知道了並中止登錄</button>
+        <button class="apple-btn-primary" style="background: var(--apple-red);" onclick="closeHardBlockModal()">明白，取消輸入</button>
     </div>
 </div>
 
-<!-- Dynamic Island -->
+<!-- Dynamic Island 通知 -->
 <div id="dynamicIsland" class="dynamic-island-banner">
     <div style="display:flex; align-items:center; gap:8px;">
         <i id="islandIcon" class="fa-solid fa-bell"></i>
-        <div id="islandText" style="font-size: 12px; font-weight: 500;">通知載入中...</div>
+        <div id="islandText" style="font-size: 12px; font-weight: 500;">處理中...</div>
     </div>
     <button id="islandDismissBtn" style="display:none; background:rgba(255,255,255,0.25); border:none; color:#fff; padding:3px 8px; border-radius:12px; font-size:11px; cursor:pointer;" onclick="dismissDynamicIsland()">關閉</button>
 </div>
@@ -400,11 +477,11 @@
     
     <div class="app-header-block">
         <div class="app-header-info">
-            <h2>Lohas GeronTech Clinical</h2>
-            <h1>樂活健康管理</h1>
+            <h2>Lohas Clinical Gerontech</h2>
+            <h1>院友飲食與吞嚥管理</h1>
         </div>
         <button id="loginBadgeBtn" class="login-badge-btn" onclick="handleAuthAction()">
-            <i id="loginIcon" class="fa-solid fa-user-lock"></i> <span id="operatorDisplay">職員登入</span>
+            <i id="loginIcon" class="fa-solid fa-user-nurse"></i> <span id="operatorDisplay">職員簽到</span>
         </button>
     </div>
 
@@ -412,10 +489,10 @@
     <div class="resident-selector-bar">
         <div style="width: 100%;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size: 11px; color: var(--text-sub); font-weight: 600;">當前照護院友 (床號)</span>
+                <span style="font-size: 11px; color: var(--text-sub); font-weight: 600;">現正照護院友 (床號)</span>
                 <div style="display:flex; gap:8px;">
-                    <button onclick="openQrScannerModal()" style="border:none; background:none; color:var(--apple-blue); font-size:12px; font-weight:600; cursor:pointer;"><i class="fa-solid fa-qrcode"></i> 掃碼</button>
-                    <button onclick="openNewResidentModal()" style="border:none; background:none; color:var(--apple-blue); font-size:12px; font-weight:600; cursor:pointer;">＋新增</button>
+                    <button onclick="openQrScannerModal()" style="border:none; background:none; color:var(--apple-blue); font-size:12px; font-weight:600; cursor:pointer;"><i class="fa-solid fa-qrcode"></i> 掃床頭碼</button>
+                    <button onclick="openNewResidentModal()" style="border:none; background:none; color:var(--apple-blue); font-size:12px; font-weight:600; cursor:pointer;">＋新入院</button>
                 </div>
             </div>
             <select id="resident-picker" class="apple-input" style="padding: 6px 8px; font-weight: bold; margin-top: 2px;" onchange="handleResidentChange(this.value)">
@@ -428,21 +505,21 @@
     <div id="tab-home" class="tab-content active">
         <div class="dashboard-grid">
             <div class="summary-mini-card">
-                <div class="summary-label" style="color: var(--apple-orange);"><i class="fa-solid fa-flame"></i> 今日熱量</div>
+                <div class="summary-label" style="color: var(--apple-orange);"><i class="fa-solid fa-flame"></i> 今日吸收熱量</div>
                 <div class="summary-value" id="meta-cal-total" style="color: var(--apple-orange);">0</div>
                 <div class="summary-unit">KCAL / 目標 <span id="target-cal-lbl-mini">1500</span></div>
             </div>
             
             <div class="summary-mini-card">
-                <div class="summary-label" style="color: var(--apple-teal);"><i class="fa-solid fa-droplet"></i> 水分攝取</div>
+                <div class="summary-label" style="color: var(--apple-teal);"><i class="fa-solid fa-droplet"></i> 水分攝取量</div>
                 <div class="summary-value" id="meta-water-total" style="color: var(--apple-teal);">0</div>
-                <div class="summary-unit">ML / 上限 <span id="target-water-lbl">1500</span></div>
+                <div class="summary-unit">ML / 限額 <span id="target-water-lbl">1500</span></div>
             </div>
 
             <div class="summary-mini-card">
-                <div class="summary-label" style="color: var(--apple-red);"><i class="fa-solid fa-triangle-exclamation"></i> 處方安全限度 (IDDSI)</div>
+                <div class="summary-label" style="color: var(--apple-red);"><i class="fa-solid fa-triangle-exclamation"></i> 吞嚥處方限度 (IDDSI)</div>
                 <div id="meta-iddsi-prescribed" style="display:flex; flex-direction:column; gap:4px; margin: 6px 0 4px 0;">-</div>
-                <div class="summary-unit" id="meta-iddsi-intake-status" style="font-size:10px; color:var(--text-sub);">今日進食：尚未有紀錄</div>
+                <div class="summary-unit" id="meta-iddsi-intake-status" style="font-size:10px; color:var(--text-sub);">今日仲未有進食紀錄</div>
             </div>
 
             <div class="summary-mini-card">
@@ -454,18 +531,18 @@
 
         <div class="ui-card">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size: 13px; font-weight: 600;"><i class="fa-solid fa-glass-water" style="color: var(--apple-teal);"></i> 臨床水分出入登錄</span>
+                <span style="font-size: 13px; font-weight: 600;"><i class="fa-solid fa-glass-water" style="color: var(--apple-teal);"></i> 水分快速入帳</span>
                 <span style="font-size: 11px; color: var(--text-sub);" id="water-progress-pct">進度：0%</span>
             </div>
             <div style="display:flex; gap:6px; margin-top:8px;">
                 <button class="apple-btn-primary" style="flex:1; padding:8px 4px; font-size:12px; background:rgba(48,176,199,0.12); color:var(--apple-teal);" onclick="quickAddWater(100, '溫開水')">+100ml 溫水</button>
-                <button class="apple-btn-primary" style="flex:1; padding:8px 4px; font-size:12px; background:rgba(48,176,199,0.12); color:var(--apple-teal);" onclick="quickAddWater(150, '凝固水(L2)')">+150ml 凝固水</button>
-                <button class="apple-btn-primary" style="flex:1; padding:8px 4px; font-size:12px; background:rgba(48,176,199,0.12); color:var(--apple-teal);" onclick="customWaterPrompt()">自訂水量</button>
+                <button class="apple-btn-primary" style="flex:1; padding:8px 4px; font-size:12px; background:rgba(48,176,199,0.12); color:var(--apple-teal);" onclick="quickAddWater(150, '凝固粉水 (L2)')">+150ml 凝固水</button>
+                <button class="apple-btn-primary" style="flex:1; padding:8px 4px; font-size:12px; background:rgba(48,176,199,0.12); color:var(--apple-teal);" onclick="customWaterPrompt()">自訂飲水量</button>
             </div>
         </div>
 
         <div class="ui-card">
-            <h3><i class="fa-solid fa-heart-pulse" style="color: var(--apple-red);"></i> 三大營養素監控</h3>
+            <h3><i class="fa-solid fa-heart-pulse" style="color: var(--apple-red);"></i> 三大熱量營養素</h3>
             <div class="macro-progress-row">
                 <div class="macro-bar-container">
                     <span>🥩 蛋白質</span>
@@ -489,75 +566,79 @@
     <!-- TAB 2: 餐食輸入 -->
     <div id="tab-meals" class="tab-content">
         <div class="ui-card">
-            <h3><i class="fa-solid fa-camera" style="color: var(--apple-green);"></i> 視覺與語音輸入</h3>
+            <h3><i class="fa-solid fa-camera" style="color: var(--apple-green);"></i> 餐盤拍照與智能分析</h3>
             
             <div style="display:flex; gap:8px;">
                 <label for="imageInput" class="apple-btn-primary" style="flex:1; text-align:center; padding:10px; background:var(--bg-card); color:var(--text-main); border:1px solid rgba(0,0,0,0.1); cursor:pointer;">
-                    <i class="fa-solid fa-camera" style="color:var(--apple-green);"></i> 拍攝相片
+                    <i class="fa-solid fa-camera" style="color:var(--apple-green);"></i> 影長者餐盤 / 飲品
                 </label>
                 <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="processAndPreviewImage(this)">
                 
                 <button class="apple-btn-primary" style="flex:1; padding:10px; background:var(--bg-card); color:var(--text-main); border:1px solid rgba(0,0,0,0.1);" onclick="toggleVoiceRecognition()">
-                    <i class="fa-solid fa-microphone" style="color:var(--apple-blue);"></i> <span id="micStatus">語音輸入</span>
+                    <i class="fa-solid fa-microphone" style="color:var(--apple-blue);"></i> <span id="micStatus">語音講低菜名</span>
                 </button>
             </div>
 
             <div class="preview-wrapper" id="previewWrapper" style="display:none; margin-top:10px;">
                 <img id="preview-img" alt="食物預覽" style="width:100%; height:160px; object-fit:cover; border-radius:10px;">
-                <button id="uploadBtn" class="apple-btn-primary" style="margin-top:8px; background:var(--apple-green);" onclick="uploadAndDetectFood()">啟動 AI 影像分析</button>
+                <button id="uploadBtn" class="apple-btn-primary" style="margin-top:8px; background:var(--apple-green);" onclick="uploadAndDetectFood()">開始辨識餐食質地與營養</button>
             </div>
 
             <div id="aiWarningBox"></div>
 
             <div style="margin-top: 10px;">
-                <input type="text" class="apple-input" id="foodSearchInput" placeholder="輸入食物名稱 (例: 沙嗲牛肉麵、碎肉粥)...">
-                <button class="apple-btn-primary" style="margin-top: 8px;" onclick="searchFoodText()">🔍 檢索食物庫</button>
+                <input type="text" class="apple-input" id="foodSearchInput" placeholder="或直接打菜名 (例: 碎肉燕麥粥、清蒸魚柳、豆腐)...">
+                <button class="apple-btn-primary" style="margin-top: 8px;" onclick="searchFoodText()">🔍 搜尋食物庫</button>
             </div>
         </div>
 
         <div class="ui-card" id="singleQueryResultCard" style="display: none;">
-            <h3><i class="fa-solid fa-clipboard-check" style="color: var(--apple-blue);"></i> 待確認餐食：<span id="single_foodname" style="color: var(--apple-blue);">-</span></h3>
+            <h3><i class="fa-solid fa-clipboard-check" style="color: var(--apple-blue);"></i> 準備登記餐食：<span id="single_foodname" style="color: var(--apple-blue);">-</span></h3>
             
             <div id="allergenMatchAlertBox" style="display: none; background: rgba(255, 59, 48, 0.12); border: 1.5px solid var(--apple-red); border-radius: 10px; padding: 8px 12px; margin-bottom: 10px;">
                 <div id="allergenMatchDetails" style="font-size: 12px; color: var(--apple-red); font-weight: bold;"></div>
             </div>
 
             <!-- 固液雙重質地警示 -->
-            <div id="dualTextureWarningBox" style="display:none; background:rgba(255, 149, 0, 0.15); border:1.5px solid var(--apple-orange); border-radius:10px; padding:8px 12px; margin-bottom:10px; font-size:12px; font-weight:bold; color:var(--apple-orange);">
-                ⚠️ 固液雙重質地警示 (Dual Consistency)：此餐食含「固體主食＋流質湯汁」，極易引起嗆咳與誤吸，請護士確認長者是否已遵醫囑加入凝固粉！
+            <div id="dualTextureWarningBox" style="display:none; background:rgba(255, 149, 0, 0.15); border:1.5px solid var(--apple-orange); border-radius:10px; padding:8px 12px; margin-bottom:10px; font-size:12px; font-weight:bold; color:var(--apple-orange); line-height: 1.4;">
+                ⚠️ 混合質地注意 (Dual Consistency)：呢份餐有「固體＋水狀流質」（例如珍珠奶茶、湯麵），好易濁親嗆喉！請確認已按言語治療師指示調配凝固粉或分開進食。
             </div>
 
-            <div style="font-size: 12px; font-weight: 600; margin-bottom: 4px;">🍽️ 進食份量折算：</div>
+            <div style="font-size: 12px; font-weight: 600; margin-bottom: 4px;">🍽️ 長者實際食咗幾多？</div>
             <div id="portionInputBlock" style="display:flex; gap:4px; margin-bottom:10px;">
-                <button class="portion-chip" onclick="setPortionScale(0.25, this)">25%</button>
-                <button class="portion-chip" onclick="setPortionScale(0.5, this)">50%</button>
-                <button class="portion-chip" onclick="setPortionScale(0.75, this)">75%</button>
-                <button class="portion-chip active" onclick="setPortionScale(1.0, this)">100%</button>
+                <button class="portion-chip" onclick="setPortionScale(0.25, this)">食咗 1/4 (25%)</button>
+                <button class="portion-chip" onclick="setPortionScale(0.5, this)">食咗一半 (50%)</button>
+                <button class="portion-chip" onclick="setPortionScale(0.75, this)">食咗 3/4 (75%)</button>
+                <button class="portion-chip active" onclick="setPortionScale(1.0, this)">全部食晒 (100%)</button>
             </div>
 
             <div class="dashboard-grid" style="margin-top:8px;">
                 <div class="summary-mini-card">
-                    <span class="summary-label">折算熱量</span>
+                    <span class="summary-label">實際吸收熱量</span>
                     <span id="single_cal" style="font-size:18px; font-weight:bold; color:var(--apple-orange);">0 kcal</span>
                 </div>
                 
+                <!-- IDDSI 色票按鈕 (優先顯示 AI 辨識 / 標明來源) -->
                 <div class="summary-mini-card">
-                    <span class="summary-label">IDDSI 質地等級 (可手動校準)</span>
-                    <select id="single_iddsi_select" class="apple-input" style="padding:4px 6px; font-size:12px; font-weight:bold; margin-top:2px;" onchange="onManualIddsiChange(this.value)">
-                        <option value="0" style="background-color: #ffffff; color: #000000;">Level 0 微稠 (White)</option>
-                        <option value="1" style="background-color: #666666; color: #ffffff;">Level 1 極微 (Grey)</option>
-                        <option value="2" style="background-color: #ea4e96; color: #ffffff;">Level 2 低度 (Pink)</option>
-                        <option value="3" style="background-color: #ffff00; color: #000000;">Level 3 中度 (Yellow)</option>
-                        <option value="4" style="background-color: #33cc33; color: #ffffff;">Level 4 糊狀 (Green)</option>
-                        <option value="5" style="background-color: #ff6600; color: #ffffff;">Level 5 剁碎 (Orange)</option>
-                        <option value="6" style="background-color: #0067b2; color: #ffffff;">Level 6 軟質 (Blue)</option>
-                        <option value="7" style="background-color: #000000; color: #ffffff;" selected>Level 7 常規 (Black)</option>
-                    </select>
+                    <span class="summary-label">餐食質地 (點擊調校)</span>
+                    <div id="iddsiCustomTrigger" class="iddsi-trigger-btn iddsi-c0" style="margin-top:4px;" onclick="openIddsiPickerModal()">
+                        <span id="iddsiTriggerText">Level 0 微稠 (AI辨識)</span>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 11px;"></i>
+                    </div>
                 </div>
             </div>
 
-            <button id="commitMealBtn" class="apple-btn-primary" style="margin-top: 10px; background: var(--apple-green);" onclick="commitCurrentMeal()">
-                ✅ 確認登錄此餐食
+            <!-- 19項微量全營養素動態即時清單 -->
+            <div style="margin-top: 10px;">
+                <div style="font-size: 12px; font-weight: 600; color: var(--apple-blue); display:flex; justify-content:space-between;">
+                    <span><i class="fa-solid fa-dna"></i> 19項臨床營養與微量元素</span>
+                    <span id="single_grams_lbl" style="color:var(--text-sub);">約 250g</span>
+                </div>
+                <div class="nutrient-grid-19" id="nutrientGrid19"></div>
+            </div>
+
+            <button id="commitMealBtn" class="apple-btn-primary" style="margin-top: 14px; background: var(--apple-green);" onclick="commitCurrentMeal()">
+                ✅ 確認無誤，存入院友紀錄
             </button>
         </div>
     </div>
@@ -565,7 +646,7 @@
     <!-- TAB 3: 趨勢巡房 -->
     <div id="tab-trends" class="tab-content">
         <div class="ui-card">
-            <h3><i class="fa-solid fa-chart-line" style="color: var(--apple-orange);"></i> 卡路里週動態趨勢 (7日歷史回溯)</h3>
+            <h3><i class="fa-solid fa-chart-line" style="color: var(--apple-orange);"></i> 過去7日熱量動態</h3>
             <svg class="chart-svg" viewBox="0 0 320 100" id="chartSvg">
                 <g id="chartGridY"></g>
                 <path id="chartPathLine" d="" fill="none" stroke="#007AFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -574,16 +655,16 @@
         </div>
 
         <div class="ui-card">
-            <h3 style="margin-bottom:8px;"><i class="fa-solid fa-file-medical" style="color: var(--apple-blue);"></i> 跨專業巡房報告 (RD / ST)</h3>
+            <h3 style="margin-bottom:8px;"><i class="fa-solid fa-file-medical" style="color: var(--apple-blue);"></i> 巡房交班摘要 (營養師 / 言語治療師)</h3>
             <div style="display:flex; gap:6px; margin-bottom:8px;">
-                <button class="apple-btn-primary" style="padding:6px; font-size:11px;" onclick="generateClinicalReport()">產生文字</button>
-                <button class="apple-btn-primary" style="padding:6px; font-size:11px; background:var(--apple-teal);" onclick="openQrCodeModal()">生成 QR Code</button>
+                <button class="apple-btn-primary" style="padding:6px; font-size:11px;" onclick="generateClinicalReport()">產生交班摘要</button>
+                <button class="apple-btn-primary" style="padding:6px; font-size:11px; background:var(--apple-teal);" onclick="openQrCodeModal()">生成 QR Code 給專業人員</button>
             </div>
-            <textarea id="clinicalReportOutput" class="apple-input" rows="4" style="font-size: 11px; font-family: monospace;" readonly placeholder="點擊上方按鈕產生巡房摘要..."></textarea>
+            <textarea id="clinicalReportOutput" class="apple-input" rows="4" style="font-size: 11px; font-family: monospace;" readonly placeholder="點擊上方按鈕產生交班摘要..."></textarea>
         </div>
 
         <div class="ui-card">
-            <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--apple-green);"></i> 今日餐食流水誌 (支援稽核撤銷)</h3>
+            <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--apple-green);"></i> 今日飲食紀錄 (如入錯可撤銷)</h3>
             <div id="history-container"></div>
         </div>
     </div>
@@ -591,10 +672,10 @@
     <!-- TAB 4: 個人配置 -->
     <div id="tab-profile" class="tab-content">
         <div class="ui-card">
-            <h3><i class="fa-solid fa-user-gear" style="color: var(--apple-blue);"></i> 院友病歷與生理配置</h3>
+            <h3><i class="fa-solid fa-user-gear" style="color: var(--apple-blue);"></i> 院友病歷與飲食處方</h3>
             <div style="display: flex; flex-direction: column; gap: 8px;">
                 <div>
-                    <label style="font-size: 12px; font-weight:600;">院友姓名 / 床位編號</label>
+                    <label style="font-size: 12px; font-weight:600;">院友姓名 / 床位號碼</label>
                     <input type="text" id="user-name" class="apple-input">
                 </div>
                 
@@ -621,46 +702,46 @@
                 </div>
 
                 <div>
-                    <label style="font-size: 12px; font-weight:600; color: var(--apple-teal);">醫囑水分限制 (ml/天)</label>
+                    <label style="font-size: 12px; font-weight:600; color: var(--apple-teal);">醫囑飲水限額 (ml/日)</label>
                     <input type="number" id="user-water-limit" class="apple-input" value="1500">
                 </div>
 
                 <div>
-                    <label style="font-size: 12px; font-weight:600; color: var(--apple-orange);">院友過敏原代碼 (Taxonomy)</label>
+                    <label style="font-size: 12px; font-weight:600; color: var(--apple-orange);">院友過敏與禁忌食材</label>
                     <div class="checkbox-label-grid">
                         <label class="checkbox-card"><input type="checkbox" id="allergen-PEANUT" onchange="syncAllergenUI()"> 🥜 花生</label>
                         <label class="checkbox-card"><input type="checkbox" id="allergen-SEAFOOD" onchange="syncAllergenUI()"> 🦐 海鮮</label>
                         <label class="checkbox-card"><input type="checkbox" id="allergen-EGG" onchange="syncAllergenUI()"> 🥚 蛋類</label>
-                        <label class="checkbox-card"><input type="checkbox" id="allergen-MILK" onchange="syncAllergenUI()"> 🥛 奶類</label>
-                        <label class="checkbox-card"><input type="checkbox" id="allergen-GLUTEN" onchange="syncAllergenUI()"> 🌾 麩質</label>
-                        <label class="checkbox-card"><input type="checkbox" id="allergen-SOY" onchange="syncAllergenUI()"> 🫘 大豆</label>
+                        <label class="checkbox-card"><input type="checkbox" id="allergen-MILK" onchange="syncAllergenUI()"> 🥛 牛奶/乳製品</label>
+                        <label class="checkbox-card"><input type="checkbox" id="allergen-GLUTEN" onchange="syncAllergenUI()"> 🌾 麩質 (麵粉)</label>
+                        <label class="checkbox-card"><input type="checkbox" id="allergen-SOY" onchange="syncAllergenUI()"> 🫘 黃豆/豆製品</label>
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px;">
                     <div>
-                        <label style="font-size: 11px; font-weight:600; color: var(--apple-red);">IDDSI 食物上限</label>
+                        <label style="font-size: 11px; font-weight:600; color: var(--apple-red);">食物質地上限 (ST處方)</label>
                         <select id="user-iddsi-target" class="apple-input" onchange="syncDropdownColor()" style="font-weight: bold;">
-                            <option value="3" style="background-color: #ffff00; color: #000000;">Level 3 中度 (Yellow)</option>
-                            <option value="4" style="background-color: #33cc33; color: #ffffff;">Level 4 糊狀 (Green)</option>
-                            <option value="5" style="background-color: #ff6600; color: #ffffff;">Level 5 剁碎 (Orange)</option>
-                            <option value="6" style="background-color: #0067b2; color: #ffffff;">Level 6 軟質 (Blue)</option>
-                            <option value="7" style="background-color: #000000; color: #ffffff;" selected>Level 7 常規 (Black)</option>
+                            <option value="3">Level 3 中度 (Yellow)</option>
+                            <option value="4">Level 4 糊狀 (Green)</option>
+                            <option value="5" selected>Level 5 剁碎 (Orange)</option>
+                            <option value="6">Level 6 軟質 (Blue)</option>
+                            <option value="7">Level 7 常規 (Black)</option>
                         </select>
                     </div>
                     <div>
-                        <label style="font-size: 11px; font-weight:600; color: var(--apple-blue);">IDDSI 飲品上限</label>
+                        <label style="font-size: 11px; font-weight:600; color: var(--apple-blue);">飲品稠度要求 (防嗆咳)</label>
                         <select id="user-iddsi-drink-target" class="apple-input" onchange="syncDropdownColor()" style="font-weight: bold;">
-                            <option value="0" style="background-color: #ffffff; color: #000000;">Level 0 微稠 (White)</option>
-                            <option value="1" style="background-color: #666666; color: #ffffff;">Level 1 極微 (Grey)</option>
-                            <option value="2" style="background-color: #ea4e96; color: #ffffff;" selected>Level 2 低度 (Pink)</option>
-                            <option value="3" style="background-color: #ffff00; color: #000000;">Level 3 中度 (Yellow)</option>
-                            <option value="4" style="background-color: #33cc33; color: #ffffff;">Level 4 糊狀 (Green)</option>
+                            <option value="0">Level 0 水狀微稠 (White)</option>
+                            <option value="1" selected>Level 1 極微稠 (Grey)</option>
+                            <option value="2">Level 2 低度稠 (Pink)</option>
+                            <option value="3">Level 3 中度稠 (Yellow)</option>
+                            <option value="4">Level 4 糊狀稠 (Green)</option>
                         </select>
                     </div>
                 </div>
 
-                <button class="apple-btn-primary" style="margin-top: 8px;" onclick="saveCurrentProfile()">💾 儲存並套用設定</button>
+                <button class="apple-btn-primary" style="margin-top: 8px;" onclick="saveCurrentProfile()">💾 儲存並套用處方</button>
             </div>
         </div>
     </div>
@@ -668,11 +749,24 @@
     <!-- 底部 Tab Bar -->
     <div class="apple-tab-bar">
         <div class="tab-item active" onclick="switchAppleTab('home', this)"><i class="fa-solid fa-heart-pulse"></i><span>概覽</span></div>
-        <div class="tab-item" onclick="switchAppleTab('meals', this)"><i class="fa-solid fa-circle-plus"></i><span>輸入</span></div>
-        <div class="tab-item" onclick="switchAppleTab('trends', this)"><i class="fa-solid fa-chart-line"></i><span>巡房</span></div>
-        <div class="tab-item" onclick="switchAppleTab('profile', this)"><i class="fa-solid fa-user-gear"></i><span>配置</span></div>
+        <div class="tab-item" onclick="switchAppleTab('meals', this)"><i class="fa-solid fa-circle-plus"></i><span>登記餐食</span></div>
+        <div class="tab-item" onclick="switchAppleTab('trends', this)"><i class="fa-solid fa-chart-line"></i><span>交班巡房</span></div>
+        <div class="tab-item" onclick="switchAppleTab('profile', this)"><i class="fa-solid fa-user-gear"></i><span>院友配置</span></div>
     </div>
 
+</div>
+
+<!-- IDDSI 國際標準色票抽屜 Modal -->
+<div id="iddsiPickerModalOverlay" class="login-modal-overlay" style="z-index: 100003;">
+    <div class="login-modal-box" style="max-width: 360px; padding: 18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+            <h3 style="margin:0; font-size:16px;"><i class="fa-solid fa-layer-group" style="color:var(--apple-blue);"></i> IDDSI 國際標準質地等級</h3>
+            <button onclick="closeIddsiPickerModal()" style="border:none; background:none; color:var(--apple-gray); font-size:18px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <p style="font-size: 11px; color: var(--text-sub); margin: 0 0 10px 0;">請根據現場實際質地校準等級：</p>
+        
+        <div class="iddsi-option-list" id="iddsiOptionListContainer"></div>
+    </div>
 </div>
 
 <!-- QR Code 展示與相機 Modal -->
@@ -695,18 +789,18 @@
 <!-- 護理驗證彈窗 -->
 <div id="loginModalOverlay" class="login-modal-overlay">
     <div class="login-modal-box">
-        <h3 style="margin: 0 0 12px 0; font-size: 16px;"><i class="fa-solid fa-shield-halved" style="color: var(--apple-blue);"></i> 醫護簽到認證</h3>
+        <h3 style="margin: 0 0 12px 0; font-size: 16px;"><i class="fa-solid fa-shield-halved" style="color: var(--apple-blue);"></i> 醫護／護理員簽到</h3>
         <div>
             <label style="font-size: 11px; font-weight: 600;">職員編號 (Staff ID)</label>
-            <input type="text" id="staffIdInput" class="apple-input" placeholder="例: RN_9082">
+            <input type="text" id="staffIdInput" class="apple-input" placeholder="例如: RN01 或 CW88">
         </div>
         <div style="margin-top: 8px;">
-            <label style="font-size: 11px; font-weight: 600;">授權密碼 (PIN)</label>
-            <input type="password" id="staffPinInput" class="apple-input" placeholder="輸入 PIN">
+            <label style="font-size: 11px; font-weight: 600;">登入密碼 (PIN)</label>
+            <input type="password" id="staffPinInput" class="apple-input" placeholder="輸入 PIN 碼">
         </div>
         <div style="display: flex; gap: 8px; margin-top: 14px;">
             <button class="apple-btn-primary" style="background: var(--apple-gray); flex: 1;" onclick="closeLoginModal()">取消</button>
-            <button class="apple-btn-primary" style="flex: 2;" onclick="submitLoginAuth()">簽入</button>
+            <button class="apple-btn-primary" style="flex: 2;" onclick="submitLoginAuth()">確認簽到</button>
         </div>
     </div>
 </div>
@@ -714,6 +808,7 @@
 <canvas id="processedCanvas" style="display:none;"></canvas>
 
 <script>
+// Google Apps Script 後端部署 URL
 const API_URL = "https://script.google.com/macros/s/AKfycbwOgthCxMHgU-7nsuYd91AMSWUrr48qU8pm02j4qCYk_TE5nN7dJOB_o5nrUc932kZr/exec";
 
 function escapeHTML(str) {
@@ -721,15 +816,16 @@ function escapeHTML(str) {
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
+// 國際標準 IDDSI 官方規範色值表
 const IDDSI_COLORS = {
-    "0": { bg: "#ffffff", text: "#000000", label: "Level 0 微稠" },
-    "1": { bg: "#666666", text: "#ffffff", label: "Level 1 極微" },
-    "2": { bg: "#ea4e96", text: "#ffffff", label: "Level 2 低度" },
-    "3": { bg: "#ffff00", text: "#000000", label: "Level 3 中度" },
-    "4": { bg: "#33cc33", text: "#ffffff", label: "Level 4 糊狀" },
-    "5": { bg: "#ff6600", text: "#ffffff", label: "Level 5 剁碎" },
-    "6": { bg: "#0067b2", text: "#ffffff", label: "Level 6 軟質" },
-    "7": { bg: "#000000", text: "#ffffff", label: "Level 7 常規" }
+    "0": { bg: "#FFFFFF", text: "#000000", border: "1.5px solid #D1D1D6", label: "Level 0 微稠 (Thin / White)", short: "Level 0 微稠", cssClass: "iddsi-c0" },
+    "1": { bg: "#7D8893", text: "#FFFFFF", border: "none", label: "Level 1 極微 (Slightly Thick / Grey)", short: "Level 1 極微", cssClass: "iddsi-c1" },
+    "2": { bg: "#E94E96", text: "#FFFFFF", border: "none", label: "Level 2 低度 (Mildly Thick / Pink)", short: "Level 2 低度", cssClass: "iddsi-c2" },
+    "3": { bg: "#F8E71C", text: "#000000", border: "none", label: "Level 3 中度 (Moderately Thick / Yellow)", short: "Level 3 中度", cssClass: "iddsi-c3" },
+    "4": { bg: "#00A651", text: "#FFFFFF", border: "none", label: "Level 4 糊狀 (Pureed / Green)", short: "Level 4 糊狀", cssClass: "iddsi-c4" },
+    "5": { bg: "#F37021", text: "#FFFFFF", border: "none", label: "Level 5 剁碎 (Minced & Moist / Orange)", short: "Level 5 剁碎", cssClass: "iddsi-c5" },
+    "6": { bg: "#0072CE", text: "#FFFFFF", border: "none", label: "Level 6 軟質 (Soft & Bite-Sized / Blue)", short: "Level 6 軟質", cssClass: "iddsi-c6" },
+    "7": { bg: "#1A1A1A", text: "#FFFFFF", border: "none", label: "Level 7 常規 (Regular / Black)", short: "Level 7 常規", cssClass: "iddsi-c7" }
 };
 
 function parseIddsi(raw) {
@@ -740,46 +836,195 @@ function parseIddsi(raw) {
 
 function generateIddsiBadgeHTML(val, prefix = "") {
     let clean = parseIddsi(val);
-    if (clean === -1) return `<span class="iddsi-badge" style="background:var(--apple-gray);">${prefix ? prefix + ': ' : ''}未指定</span>`;
-    const cfg = IDDSI_COLORS[clean] || { bg: "#666666", text: "#ffffff", label: `Level ${clean}` };
-    const labelText = prefix ? `${prefix}: ${cfg.label}` : cfg.label;
-    return `<span class="iddsi-badge" style="background:${cfg.bg}; color:${cfg.text}; border:1px solid rgba(0,0,0,0.1);">${labelText}</span>`;
+    if (clean === -1) return `<span class="iddsi-badge" style="background:var(--apple-gray); color:#fff;">${prefix ? prefix + ': ' : ''}未指定</span>`;
+    const cfg = IDDSI_COLORS[clean] || IDDSI_COLORS["7"];
+    const labelText = prefix ? `${prefix}: ${cfg.short}` : cfg.short;
+    return `<span class="iddsi-badge ${cfg.cssClass}">${labelText}</span>`;
 }
 
 function syncDropdownColor() {
     const foodSelect = document.getElementById("user-iddsi-target");
     const drinkSelect = document.getElementById("user-iddsi-drink-target");
     if (foodSelect) {
-        const cfg = IDDSI_COLORS[foodSelect.value] || { bg: "#fff", text: "#000" };
+        const cfg = IDDSI_COLORS[foodSelect.value] || IDDSI_COLORS["7"];
         foodSelect.style.backgroundColor = cfg.bg;
         foodSelect.style.color = cfg.text;
     }
     if (drinkSelect) {
-        const cfg = IDDSI_COLORS[drinkSelect.value] || { bg: "#fff", text: "#000" };
+        const cfg = IDDSI_COLORS[drinkSelect.value] || IDDSI_COLORS["1"];
         drinkSelect.style.backgroundColor = cfg.bg;
         drinkSelect.style.color = cfg.text;
     }
 }
 
-// 擴充在港常見餐食資料庫 (標記 isDrink 以支援飲品防嗆防線)
+function openIddsiPickerModal() {
+    const currentVal = pendingFoodItem ? String(pendingFoodItem["吞嚥安全 (IDDSI)"] || "0") : "0";
+    const container = document.getElementById("iddsiOptionListContainer");
+    container.innerHTML = "";
+
+    Object.keys(IDDSI_COLORS).forEach(lvl => {
+        const item = IDDSI_COLORS[lvl];
+        const isSelected = lvl === currentVal;
+        const card = document.createElement("div");
+        card.className = `iddsi-option-card ${item.cssClass}`;
+        card.innerHTML = `
+            <span>${item.label}</span>
+            <span>${isSelected ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-regular fa-circle"></i>'}</span>
+        `;
+        card.onclick = () => selectIddsiLevel(lvl);
+        container.appendChild(card);
+    });
+
+    document.getElementById("iddsiPickerModalOverlay").classList.add("active");
+}
+
+function closeIddsiPickerModal() {
+    document.getElementById("iddsiPickerModalOverlay").classList.remove("active");
+}
+
+function selectIddsiLevel(lvl) {
+    if (pendingFoodItem) {
+        pendingFoodItem["吞嚥安全 (IDDSI)"] = lvl;
+        pendingFoodItem.isUserModified = true; // 記錄用家手動調校
+        renderPendingFoodDetails();
+    }
+    updateIddsiTriggerBtnUI(lvl, true);
+    closeIddsiPickerModal();
+}
+
+function updateIddsiTriggerBtnUI(lvl, isModified = false) {
+    const cleanLvl = String(parseIddsi(lvl));
+    const cfg = IDDSI_COLORS[cleanLvl] || IDDSI_COLORS["0"];
+    const trigger = document.getElementById("iddsiCustomTrigger");
+    const text = document.getElementById("iddsiTriggerText");
+    if (trigger && text) {
+        trigger.className = `iddsi-trigger-btn ${cfg.cssClass}`;
+        const tag = isModified ? "(已調校)" : "(AI辨識)";
+        text.innerHTML = `${cfg.short} <span style="font-size:10px; opacity:0.85; margin-left:4px;">${tag}</span>`;
+    }
+}
+
+// 徹底去機械化：自動解構抽取有效食物數據，剔除任何 raw JSON
+function extractHumanFoodData(rawName, fallbackIddsi = null) {
+    let cleanName = "未命名餐食";
+    let detectedIddsi = null;
+    let clinicalReason = "";
+    let estGrams = 250;
+    let isDual = false;
+    let isDrink = false;
+
+    if (!rawName) return { name: cleanName, iddsi: "0", reason: "", grams: estGrams, isDual: false, isDrink: false };
+
+    if (typeof rawName === "object" && rawName !== null) {
+        cleanName = rawName.food || rawName.food_name || rawName.FoodName || cleanName;
+        if (rawName.iddsi !== undefined) detectedIddsi = String(rawName.iddsi);
+        else if (rawName.iddsi_level !== undefined) detectedIddsi = String(rawName.iddsi_level);
+        
+        clinicalReason = rawName.reason || rawName.texture_clinical_notes || "";
+        if (rawName.estimated_weight) estGrams = parseInt(rawName.estimated_weight, 10) || estGrams;
+        if (rawName.grams) estGrams = Number(rawName.grams) || estGrams;
+    } else if (typeof rawName === "string") {
+        let str = rawName.trim();
+        if (str.startsWith("{") && str.endsWith("}")) {
+            try {
+                const parsed = JSON.parse(str);
+                return extractHumanFoodData(parsed, fallbackIddsi);
+            } catch (e) {
+                const mFood = str.match(/"(?:food|food_name|FoodName)"\s*:\s*"([^"]+)"/);
+                if (mFood) cleanName = mFood[1];
+                const mIddsi = str.match(/"(?:iddsi|iddsi_level)"\s*:\s*([0-9]+)/);
+                if (mIddsi) detectedIddsi = mIddsi[1];
+                const mReason = str.match(/"(?:reason|texture_clinical_notes)"\s*:\s*"([^"]+)"/);
+                if (mReason) clinicalReason = mReason[1];
+                const mWeight = str.match(/"(?:estimated_weight|grams)"\s*:\s*"*([0-9]+)/);
+                if (mWeight) estGrams = parseInt(mWeight[1], 10) || estGrams;
+            }
+        } else {
+            cleanName = str.replace(/[`"'{}]/g, '').trim();
+        }
+    }
+
+    const lower = cleanName.toLowerCase();
+    if (lower.includes("茶") || lower.includes("水") || lower.includes("汁") || lower.includes("啡") || lower.includes("奶") || lower.includes("湯")) {
+        isDrink = true;
+    }
+
+    if (lower.includes("珍珠") || (lower.includes("湯") && (lower.includes("麵") || lower.includes("粉") || lower.includes("飯")))) {
+        isDual = true;
+    }
+
+    // 優先順序校正
+    if (detectedIddsi === null || detectedIddsi === undefined || detectedIddsi === "") {
+        if (fallbackIddsi !== null && fallbackIddsi !== undefined && fallbackIddsi !== "") {
+            detectedIddsi = String(fallbackIddsi);
+        } else if (isDrink && !isDual) {
+            detectedIddsi = "0"; // 凍檸茶、溫水預設 Level 0
+        } else if (lower.includes("糊") || lower.includes("粥") || lower.includes("泥") || lower.includes("蓉")) {
+            detectedIddsi = "4";
+        } else if (lower.includes("碎") || lower.includes("免治")) {
+            detectedIddsi = "5";
+        } else if (lower.includes("軟") || lower.includes("豆腐") || lower.includes("蒸蛋")) {
+            detectedIddsi = "6";
+        } else {
+            detectedIddsi = "7";
+        }
+    }
+
+    // 特殊防呆：純凍檸茶若無珍珠，誤判為 7 則自動拉回 0
+    if (isDrink && !isDual && detectedIddsi === "7") {
+        detectedIddsi = "0";
+    }
+
+    return {
+        name: cleanName,
+        iddsi: detectedIddsi,
+        reason: clinicalReason,
+        grams: estGrams,
+        isDual: isDual,
+        isDrink: isDrink
+    };
+}
+
 const LOCAL_FALLBACK_DB = [
-    { "FoodName": "沙嗲牛肉麵", "熱量 Calories": 580, "克 Grams": 420, "蛋白質 Protein (g)": 26, "碳水化合物 Carbs (g)": 68, "脂肪 Fat (g)": 22, "鈉 Sodium (mg)": 1380, "吞嚥安全 (IDDSI)": "7", "水分 (ml)": 260, "dual": true, "isDrink": false, "allergen_tags": ["PEANUT", "GLUTEN", "SOY"] },
-    { "FoodName": "港式奶茶", "熱量 Calories": 140, "克 Grams": 250, "蛋白質 Protein (g)": 3.2, "碳水化合物 Carbs (g)": 18, "脂肪 Fat (g)": 6.5, "鈉 Sodium (mg)": 65, "吞嚥安全 (IDDSI)": "0", "水分 (ml)": 220, "dual": false, "isDrink": true, "allergen_tags": ["MILK"] },
-    { "FoodName": "凍檸茶", "熱量 Calories": 120, "克 Grams": 250, "蛋白質 Protein (g)": 0.2, "碳水化合物 Carbs (g)": 28, "脂肪 Fat (g)": 0, "鈉 Sodium (mg)": 15, "吞嚥安全 (IDDSI)": "0", "水分 (ml)": 240, "dual": false, "isDrink": true, "allergen_tags": [] },
-    { "FoodName": "碎肉燕麥粥", "熱量 Calories": 280, "克 Grams": 250, "蛋白質 Protein (g)": 14, "碳水化合物 Carbs (g)": 38, "脂肪 Fat (g)": 6, "鈉 Sodium (mg)": 320, "吞嚥安全 (IDDSI)": "4", "水分 (ml)": 180, "dual": false, "isDrink": false, "allergen_tags": ["GLUTEN"] },
-    { "FoodName": "南瓜肉碎糊餐", "熱量 Calories": 350, "克 Grams": 300, "蛋白質 Protein (g)": 18, "碳水化合物 Carbs (g)": 45, "脂肪 Fat (g)": 8, "鈉 Sodium (mg)": 380, "吞嚥安全 (IDDSI)": "4", "水分 (ml)": 200, "dual": false, "isDrink": false, "allergen_tags": [] },
-    { "FoodName": "清蒸豆腐魚柳", "熱量 Calories": 220, "克 Grams": 180, "蛋白質 Protein (g)": 24, "碳水化合物 Carbs (g)": 4, "脂肪 Fat (g)": 9, "鈉 Sodium (mg)": 410, "吞嚥安全 (IDDSI)": "5", "水分 (ml)": 90, "dual": false, "isDrink": false, "allergen_tags": ["SEAFOOD", "SOY"] },
-    { "FoodName": "香煎雞扒飯", "熱量 Calories": 620, "克 Grams": 400, "蛋白質 Protein (g)": 32, "碳水化合物 Carbs (g)": 85, "脂肪 Fat (g)": 16, "鈉 Sodium (mg)": 780, "吞嚥安全 (IDDSI)": "7", "水分 (ml)": 120, "dual": false, "isDrink": false, "allergen_tags": ["GLUTEN", "SOY"] },
-    { "FoodName": "花生黑芝麻糊", "熱量 Calories": 230, "克 Grams": 180, "蛋白質 Protein (g)": 6, "碳水化合物 Carbs (g)": 26, "脂肪 Fat (g)": 11, "鈉 Sodium (mg)": 40, "吞嚥安全 (IDDSI)": "4", "水分 (ml)": 120, "dual": false, "isDrink": false, "allergen_tags": ["PEANUT"] }
+    { 
+        "FoodName": "凍檸檬茶", 
+        "吞嚥安全 (IDDSI)": "0", "dual": false, "isDrink": true, "allergen_tags": [],
+        rawNutrients: { grams: 250, calories: 120, protein_g: 0.2, carbs_g: 28.0, fat_g: 0.0, fiber_g: 0.0, sugar_g: 25.0, saturated_fat_g: 0.0, trans_fat_g: 0.0, cholesterol_mg: 0, calcium_mg: 15, iron_mg: 0.3, magnesium_mg: 8, sodium_mg: 15, potassium_mg: 60, zinc_mg: 0.1, vitamin_c_mg: 12.0, water_ml: 240 }
+    },
+    { 
+        "FoodName": "碎肉燕麥粥", 
+        "吞嚥安全 (IDDSI)": "4", "dual": false, "isDrink": false, "allergen_tags": ["GLUTEN"],
+        rawNutrients: { grams: 300, calories: 250, protein_g: 15.0, carbs_g: 35.0, fat_g: 7.0, fiber_g: 4.0, sugar_g: 1.5, saturated_fat_g: 1.5, trans_fat_g: 0.0, cholesterol_mg: 30, calcium_mg: 60, iron_mg: 2.0, magnesium_mg: 50, sodium_mg: 350, potassium_mg: 400, zinc_mg: 2.0, vitamin_c_mg: 5.0, water_ml: 200 }
+    },
+    { 
+        "FoodName": "南瓜肉碎糊餐", 
+        "吞嚥安全 (IDDSI)": "4", "dual": false, "isDrink": false, "allergen_tags": [],
+        rawNutrients: { grams: 300, calories: 350, protein_g: 18.0, carbs_g: 45.0, fat_g: 8.0, fiber_g: 4.5, sugar_g: 3.0, saturated_fat_g: 2.0, trans_fat_g: 0.0, cholesterol_mg: 35, calcium_mg: 70, iron_mg: 2.2, magnesium_mg: 45, sodium_mg: 380, potassium_mg: 420, zinc_mg: 2.3, vitamin_c_mg: 8.0, water_ml: 200 }
+    },
+    { 
+        "FoodName": "清蒸豆腐魚柳", 
+        "吞嚥安全 (IDDSI)": "5", "dual": false, "isDrink": false, "allergen_tags": ["SEAFOOD", "SOY"],
+        rawNutrients: { grams: 180, calories: 220, protein_g: 24.0, carbs_g: 4.0, fat_g: 9.0, fiber_g: 1.2, sugar_g: 0.5, saturated_fat_g: 1.5, trans_fat_g: 0.0, cholesterol_mg: 45, calcium_mg: 120, iron_mg: 1.8, magnesium_mg: 40, sodium_mg: 410, potassium_mg: 350, zinc_mg: 1.5, vitamin_c_mg: 1.0, water_ml: 90 }
+    },
+    { 
+        "FoodName": "珍珠奶茶", 
+        "吞嚥安全 (IDDSI)": "7", "dual": true, "isDrink": true, "allergen_tags": ["MILK"],
+        rawNutrients: { grams: 550, calories: 420, protein_g: 4.5, carbs_g: 78.0, fat_g: 11.0, fiber_g: 0.5, sugar_g: 45.0, saturated_fat_g: 6.0, trans_fat_g: 0.2, cholesterol_mg: 20, calcium_mg: 130, iron_mg: 0.5, magnesium_mg: 25, sodium_mg: 110, potassium_mg: 240, zinc_mg: 0.6, vitamin_c_mg: 0.0, water_ml: 450 }
+    },
+    { 
+        "FoodName": "沙嗲牛肉麵", 
+        "吞嚥安全 (IDDSI)": "7", "dual": true, "isDrink": false, "allergen_tags": ["PEANUT", "GLUTEN", "SOY"],
+        rawNutrients: { grams: 420, calories: 580, protein_g: 26.0, carbs_g: 68.0, fat_g: 22.0, fiber_g: 3.5, sugar_g: 5.0, saturated_fat_g: 7.0, trans_fat_g: 0.3, cholesterol_mg: 60, calcium_mg: 40, iron_mg: 3.5, magnesium_mg: 35, sodium_mg: 1380, potassium_mg: 380, zinc_mg: 3.2, vitamin_c_mg: 0.0, water_ml: 260 }
+    }
 ];
 
 let residentDatabase = {
-    "res_01": { id: "res_01", name: "陳建國 (101號床)", gender: "male", age: 78, height: 165, weight: 58, waterLimit: 1500, iddsiFood: "7", iddsiDrink: "2", allergens: ["SEAFOOD"] },
-    "res_02": { id: "res_02", name: "李淑芬 (102號床)", gender: "female", age: 82, height: 152, weight: 50, waterLimit: 1400, iddsiFood: "5", iddsiDrink: "1", allergens: ["PEANUT"] },
+    "1234": { id: "1234", name: "陳建國 (101號床)", gender: "male", age: 78, height: 165, weight: 58, waterLimit: 1500, iddsiFood: "5", iddsiDrink: "1", allergens: ["SEAFOOD"] },
+    "res_02": { id: "res_02", name: "李淑芬 (102號床)", gender: "female", age: 82, height: 152, weight: 50, waterLimit: 1400, iddsiFood: "4", iddsiDrink: "2", allergens: ["PEANUT"] },
     "res_03": { id: "res_03", name: "張伯伯 (103號床)", gender: "male", age: 85, height: 160, weight: 62, waterLimit: 1000, iddsiFood: "6", iddsiDrink: "0", allergens: ["EGG", "MILK"] }
 };
 
-let currentResidentKey = "res_01";
+let currentResidentKey = "1234";
 let dailyTargets = { cal: 1500, protein: 55, carbs: 200, fat: 45, water: 1500, sodium: 2000 };
 let cal = 0, grams = 0, protein = 0, carbs = 0, fat = 0, sodium = 0, waterTotal = 0;
 let maxIddsiText = "-";
@@ -800,19 +1045,17 @@ let recognition = null;
 let isRecording = false;
 let isQrScannerRunning = false;
 
-// 🌟 AI 動態分析有趣進程狀態機
 let aiProgressTimer = null;
 let aiElapsedSeconds = 0;
 let islandDismissTimer = null;
 
 const AI_ANALYSIS_PHASES = [
-    { sec: 0, icon: "fa-camera", text: "📸 正在解析餐盤像素與色彩分佈..." },
-    { sec: 2, icon: "fa-brain", text: "🧠 啟動多模態視覺神經網絡..." },
-    { sec: 4, icon: "fa-utensils", text: "🍲 正在比對港式食材與烹調資料庫..." },
-    { sec: 7, icon: "fa-shield-halved", text: "🛡️ 進行 IDDSI 質地與過敏原初篩..." },
-    { sec: 10, icon: "fa-chart-pie", text: "🔬 精算熱量、三大營養素與鈉含量..." },
-    { sec: 14, icon: "fa-triangle-exclamation", text: "⚠️ 檢測固液雙重質地 (Dual Consistency)..." },
-    { sec: 18, icon: "fa-hourglass-half", text: "⏳ 臨床精準度覆核中，即將出爐..." }
+    { sec: 0, icon: "fa-camera", text: "📸 正在掃描餐盤影像..." },
+    { sec: 2, icon: "fa-shield-halved", text: "🛡️ 核實是否真實餐食（剔除雜物及螢幕截圖）..." },
+    { sec: 5, icon: "fa-bowl-rice", text: "🍲 對比港式常見餐單及質地..." },
+    { sec: 8, icon: "fa-hand-dots", text: "⚠️ 交叉比對院友過敏原 (海鮮/花生/奶類)..." },
+    { sec: 11, icon: "fa-chart-pie", text: "🔬 精算蛋白質、熱量及19項微量元素..." },
+    { sec: 14, icon: "fa-user-nurse", text: "⏳ 護理審核準備就緒..." }
 ];
 
 function startAiDynamicProgress() {
@@ -841,7 +1084,7 @@ function startAiDynamicProgress() {
             }
         }
         islandIcon.className = `fa-solid ${currentPhase.icon} fa-spin`;
-        islandText.textContent = `${currentPhase.text} (${aiElapsedSeconds}s)`;
+        islandText.textContent = `${currentPhase.text} (${aiElapsedSeconds}秒)`;
         aiElapsedSeconds++;
     }
 
@@ -857,7 +1100,7 @@ function stopAiDynamicProgress() {
 }
 
 function triggerHardBlockModal(title, message) {
-    document.getElementById("hardBlockTitle").textContent = `【${title}】`;
+    document.getElementById("hardBlockTitle").textContent = `🛑 ${title}`;
     document.getElementById("hardBlockMessage").innerHTML = message.replace(/\n/g, "<br>");
     document.getElementById("hardBlockModalOverlay").classList.add("active");
     triggerDynamicIsland(`❌ ${title}`, "danger");
@@ -867,12 +1110,12 @@ function closeHardBlockModal() { document.getElementById("hardBlockModalOverlay"
 
 function handleAuthAction() {
     if (currentAuthToken) {
-        if (confirm(`當前登入為 [ ${escapeHTML(currentOperatorId)} ]，確定簽退？`)) {
+        if (confirm(`現時登入職員：[ ${escapeHTML(currentOperatorId)} ]，確定要簽退？`)) {
             currentOperatorId = "GUEST_UNVERIFIED";
             currentAuthToken = null;
-            document.getElementById("operatorDisplay").textContent = "職員登入";
+            document.getElementById("operatorDisplay").textContent = "職員簽到";
             document.getElementById("loginBadgeBtn").className = "login-badge-btn";
-            triggerDynamicIsland("🔓 醫護已安全簽退");
+            triggerDynamicIsland("🔓 職員已安全簽退");
         }
     } else {
         document.getElementById("loginModalOverlay").classList.add("active");
@@ -885,14 +1128,14 @@ function submitLoginAuth() {
     const staffId = document.getElementById("staffIdInput").value.trim();
     const pin = document.getElementById("staffPinInput").value.trim();
     if (!staffId || pin.length < 4) {
-        alert("請輸入有效的職員編號及至少 4 位數密碼！");
+        alert("請輸入職員編號及至少4位數字密碼！");
         return;
     }
     currentOperatorId = staffId;
     currentAuthToken = "NURSE_SEC_" + btoa(staffId + ":" + Date.now());
     document.getElementById("operatorDisplay").textContent = currentOperatorId;
     document.getElementById("loginBadgeBtn").className = "login-badge-btn logged-in";
-    triggerDynamicIsland(`🔒 醫護身份核實成功: ${escapeHTML(currentOperatorId)}`);
+    triggerDynamicIsland(`🔒 職員已簽到：${escapeHTML(currentOperatorId)}`);
     closeLoginModal();
 }
 
@@ -922,65 +1165,132 @@ function processAndPreviewImage(input) {
     };
 }
 
-// 🌟 啟動 AI 影像分析：持續動態倒數直到 API 成功辨識或出錯才結束
+// 啟動多模態 Vision AI 辨識 (加入 90 秒超時 AbortController)
 async function uploadAndDetectFood() {
-    if (!processedBase64) return alert("相片未完成加載，請重新選取。");
+    if (!processedBase64) return alert("相片未載入完成，請重新影一張。");
     
     const uploadBtn = document.getElementById("uploadBtn");
     uploadBtn.disabled = true;
-    uploadBtn.textContent = "⏳ AI 正在深度辨識中...";
+    uploadBtn.textContent = "⏳ 正在分析餐食與質地...";
 
     startAiDynamicProgress();
+    const res = residentDatabase[currentResidentKey] || {};
+
+    // 🌟 90 秒自動中斷控制器
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 90000);
     
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
-            body: JSON.stringify({ action: "uploadAndDetect", image: processedBase64, authToken: currentAuthToken || "NURSE_SEC_GUEST" })
+            body: JSON.stringify({ 
+                action: "uploadAndDetect", 
+                image: processedBase64, 
+                authToken: currentAuthToken || "NURSE_SEC_GUEST",
+                residentConfig: {
+                    id: currentResidentKey,
+                    iddsiFood: res.iddsiFood || "5",
+                    iddsiDrink: res.iddsiDrink || "1",
+                    allergens: res.allergens || []
+                }
+            }),
+            signal: controller.signal
         });
-        const resData = await response.json();
         
+        clearTimeout(timeoutId);
+        const resData = await response.json();
         stopAiDynamicProgress();
 
-        if (!resData.success || !resData.foodName) {
-            throw new Error(resData.error || "未能成功辨識食物名稱");
+        if (resData.hard_blocked || resData.success === false) {
+            triggerHardBlockModal("無法確認為餐食", resData.error || "相片似非真實長者餐食（例如影到手機螢幕或雜物）。為免入錯病歷，系統已拒絕推算！");
+            return;
         }
 
-        const detectedName = resData.foodName.trim();
-        const conf = resData.confidence || 0.85;
+        // 徹底去機械化提取
+        const extracted = extractHumanFoodData(resData.foodName || resData.food || "", resData.iddsi_level);
+        const conf = resData.confidence || 0.95;
+        const rawN = resData.nutrients || {};
+
+        pendingFoodItem = {
+            FoodName: extracted.name,
+            "吞嚥安全 (IDDSI)": extracted.iddsi,
+            dual: extracted.isDual || !!resData.is_dual_texture,
+            isDrink: extracted.isDrink || !!resData.is_drink,
+            allergen_tags: resData.allergen_tags || [],
+            clinicalReason: extracted.reason,
+            isUserModified: false, // 標記尚未手動修改
+            rawNutrients: {
+                grams: extracted.grams || Number(rawN.grams) || 250,
+                calories: Number(rawN.calories) || 180,
+                protein_g: Number(rawN.protein_g) || 8.0,
+                carbs_g: Number(rawN.carbs_g) || 25.0,
+                fat_g: Number(rawN.fat_g) || 4.0,
+                fiber_g: Number(rawN.fiber_g) || 2.0,
+                sugar_g: Number(rawN.sugar_g) || 2.0,
+                saturated_fat_g: Number(rawN.saturated_fat_g) || 1.0,
+                trans_fat_g: Number(rawN.trans_fat_g) || 0.0,
+                cholesterol_mg: Number(rawN.cholesterol_mg) || 20,
+                calcium_mg: Number(rawN.calcium_mg) || 40,
+                iron_mg: Number(rawN.iron_mg) || 1.5,
+                magnesium_mg: Number(rawN.magnesium_mg) || 30,
+                sodium_mg: Number(rawN.sodium_mg) || 250,
+                potassium_mg: Number(rawN.potassium_mg) || 280,
+                zinc_mg: Number(rawN.zinc_mg) || 1.2,
+                vitamin_c_mg: Number(rawN.vitamin_c_mg) || 3.0,
+                water_ml: Number(rawN.water_ml) || 180
+            }
+        };
 
         isAiDetectionPendingReview = true;
-        renderAiReviewBox(detectedName, conf);
-        document.getElementById("foodSearchInput").value = detectedName;
-        await searchFoodText();
+        renderAiReviewBox(extracted.name, conf, extracted.reason, extracted.grams);
+        document.getElementById("single_foodname").textContent = extracted.name;
+        document.getElementById("singleQueryResultCard").style.display = "block";
+        setPortionScale(1.0, document.querySelectorAll('.portion-chip')[3]);
         document.getElementById("commitMealBtn").disabled = true;
 
-        triggerDynamicIsland(`🎉 辨識成功：${detectedName} (${Math.round(conf * 100)}%)`, "normal");
+        triggerDynamicIsland(`🎉 辨識出：${extracted.name} (${Math.round(conf * 100)}%)`, "normal");
 
     } catch (err) {
+        clearTimeout(timeoutId);
         stopAiDynamicProgress();
+        
+        let errMsg = err.message;
+        if (err.name === 'AbortError') {
+            errMsg = "後端分析超過 90 秒未有回應，系統已自動中斷，請重試或手動輸入。";
+        }
+
         document.getElementById("aiWarningBox").innerHTML = `
             <div style="background:rgba(255,59,48,0.1); border:1px solid var(--apple-red); border-radius:8px; padding:8px; font-size:12px; color:var(--apple-red);">
-                ⚠️ 雲端 AI 分析未完成（${escapeHTML(err.message)}）。請護士直接手動檢索食物庫。
+                ⚠️ ${escapeHTML(errMsg)}。請護理員直接手動搜尋或輸入菜名。
             </div>`;
-        triggerDynamicIsland("⚠️ 影像分析未成功，請手動搜尋", "warning");
+        triggerDynamicIsland("⚠️ 分析未成功，請手動輸入", "warning");
     } finally {
         stopAiDynamicProgress();
         if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
         processedBase64 = null;
         uploadBtn.disabled = false;
-        uploadBtn.textContent = "啟動 AI 影像分析";
+        uploadBtn.textContent = "開始辨識餐食質地與營養";
     }
 }
 
-function renderAiReviewBox(name, conf) {
+function renderAiReviewBox(name, conf, reason, grams) {
+    let reasonHTML = "";
+    if (reason) {
+        reasonHTML = `<div class="human-note-box"><b>質地特徵觀察：</b>${escapeHTML(reason)}</div>`;
+    }
+
     document.getElementById("aiWarningBox").innerHTML = `
-        <div style="background:rgba(255,59,48,0.08); border:1.5px solid var(--apple-red); border-radius:10px; padding:10px; margin:8px 0; font-size:12px;">
-            <div style="color:var(--apple-red); font-weight:bold;"><i class="fa-solid fa-user-nurse"></i> AI 臨床強制雙重覆核</div>
-            <div style="margin:4px 0;">建議菜名：<b>${escapeHTML(name)}</b> (置信度 ${Math.round(conf * 100)}%)</div>
-            <label style="display:flex; gap:6px; margin-top:4px;"><input type="checkbox" id="aiC1" onchange="checkAiReviewUnlock()"> 護士確認實物與菜名一致</label>
-            <label style="display:flex; gap:6px;"><input type="checkbox" id="aiC2" onchange="checkAiReviewUnlock()"> 確認 IDDSI 質地符合長者上限</label>
-            <label style="display:flex; gap:6px;"><input type="checkbox" id="aiC3" onchange="checkAiReviewUnlock()"> 確認排除院友禁忌過敏原</label>
-            <input type="text" id="aiNurseSign" class="apple-input" placeholder="覆核護士簽名代號 (PIN/ID)" style="padding:4px 8px; margin-top:6px;" oninput="checkAiReviewUnlock()">
+        <div style="background:rgba(0,122,255,0.05); border:1.5px solid var(--apple-blue); border-radius:12px; padding:12px; margin:10px 0; font-size:12px;">
+            <div style="color:var(--apple-blue); font-weight:bold; font-size:13px;"><i class="fa-solid fa-user-nurse"></i> 護理員即時確認</div>
+            <div style="margin:6px 0; font-size:13px;">
+                辨識結果：<b style="color:var(--apple-blue);">${escapeHTML(name)}</b> 
+                <span style="color:var(--text-sub); font-size:11px;">(信心度: ${Math.round(conf * 100)}% · 約 ${grams}g)</span>
+            </div>
+            ${reasonHTML}
+            <label style="display:flex; gap:6px; margin-top:8px; cursor:pointer;"><input type="checkbox" id="aiC1" onchange="checkAiReviewUnlock()"> 實物與菜式相符</label>
+            <label style="display:flex; gap:6px; margin-top:4px; cursor:pointer;"><input type="checkbox" id="aiC2" onchange="checkAiReviewUnlock()"> 質地（IDDSI）符合院友吞嚥處方</label>
+            <label style="display:flex; gap:6px; margin-top:4px; cursor:pointer;"><input type="checkbox" id="aiC3" onchange="checkAiReviewUnlock()"> 確認無院友敏感／禁忌食材</label>
+            <input type="text" id="aiNurseSign" class="apple-input" placeholder="簽署 / 職員編號 (例: RN01 / CW88)" style="padding:6px 8px; margin-top:8px;" oninput="checkAiReviewUnlock()">
         </div>`;
 }
 
@@ -994,11 +1304,11 @@ function checkAiReviewUnlock() {
     if (c1 && c2 && c3 && sign && sign.length >= 2) {
         isAiDetectionPendingReview = false;
         btn.disabled = false;
-        btn.textContent = "✅ 通過雙重覆核，確認登錄";
+        btn.textContent = "✅ 確認無誤，存入院友紀錄";
     } else {
         isAiDetectionPendingReview = true;
         btn.disabled = true;
-        btn.textContent = "🔒 需完成上方 AI 覆核簽名";
+        btn.textContent = "🔒 請先完成上方確認與簽署";
     }
 }
 
@@ -1009,116 +1319,88 @@ function setPortionScale(s, el) {
     renderPendingFoodDetails();
 }
 
-function onManualIddsiChange(newIddsi) {
-    if (pendingFoodItem) {
-        pendingFoodItem["吞嚥安全 (IDDSI)"] = newIddsi;
-        renderPendingFoodDetails();
-    }
-}
-
-// 整合「過敏原」、「食物過硬」及「飲品過稀（嗆咳）」雙向安全檢驗
 function renderPendingFoodDetails() {
     if (!pendingFoodItem) return;
     const s = currentPortionScale;
-    const scaledCal = Math.round((pendingFoodItem["熱量 Calories"] || 200) * s);
-    const iddsiVal = pendingFoodItem["吞嚥安全 (IDDSI)"] !== undefined ? pendingFoodItem["吞嚥安全 (IDDSI)"] : "7";
+    const n = pendingFoodItem.rawNutrients || {};
+
+    const scaledCal = Math.round((n.calories || 180) * s);
+    const scaledGrams = Math.round((n.grams || 250) * s);
+    
+    // 優先使用當前質地（初始為 AI 辨識，修改後為手動值）
+    const iddsiVal = pendingFoodItem["吞嚥安全 (IDDSI)"] !== undefined ? String(pendingFoodItem["吞嚥安全 (IDDSI)"]) : "0";
 
     document.getElementById("single_cal").textContent = `${scaledCal} kcal`;
-    
-    const iddsiSelect = document.getElementById("single_iddsi_select");
-    if (iddsiSelect) {
-        iddsiSelect.value = iddsiVal.toString();
-        const cfg = IDDSI_COLORS[iddsiVal] || { bg: "#000", text: "#fff" };
-        iddsiSelect.style.backgroundColor = cfg.bg;
-        iddsiSelect.style.color = cfg.text;
-    }
+    document.getElementById("single_grams_lbl").textContent = `約 ${scaledGrams}g`;
+
+    // 更新色票按鈕，標註來源狀態
+    updateIddsiTriggerBtnUI(iddsiVal, pendingFoodItem.isUserModified);
 
     const dualWarning = document.getElementById("dualTextureWarningBox");
     if (dualWarning) {
         dualWarning.style.display = pendingFoodItem.dual ? "block" : "none";
     }
 
-    const res = residentDatabase[currentResidentKey];
+    const grid19 = document.getElementById("nutrientGrid19");
+    if (grid19) {
+        grid19.innerHTML = `
+            <div class="nutrient-pill-card"><span class="n-label">🥩 蛋白質</span><span class="n-val">${(n.protein_g * s).toFixed(1)} g</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🍞 碳水化合物</span><span class="n-val">${(n.carbs_g * s).toFixed(1)} g</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🧈 脂肪</span><span class="n-val">${(n.fat_g * s).toFixed(1)} g</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🥬 膳食纖維</span><span class="n-val">${(n.fiber_g * s).toFixed(1)} g</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🍬 糖分</span><span class="n-val">${(n.sugar_g * s).toFixed(1)} g</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🥓 飽和脂肪</span><span class="n-val">${(n.saturated_fat_g * s).toFixed(1)} g</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🍳 膽固醇</span><span class="n-val">${Math.round(n.cholesterol_mg * s)} mg</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🧂 鈉質</span><span class="n-val">${Math.round(n.sodium_mg * s)} mg</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🍌 鉀質</span><span class="n-val">${Math.round(n.potassium_mg * s)} mg</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🦴 鈣質</span><span class="n-val">${Math.round(n.calcium_mg * s)} mg</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🩸 鐵質</span><span class="n-val">${(n.iron_mg * s).toFixed(1)} mg</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">✨ 鋅質 (傷口)</span><span class="n-val">${(n.zinc_mg * s).toFixed(1)} mg</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🍊 維他命 C</span><span class="n-val">${(n.vitamin_c_mg * s).toFixed(1)} mg</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">💧 水分含量</span><span class="n-val">${Math.round(n.water_ml * s)} ml</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🥜 反式脂肪</span><span class="n-val">${(n.trans_fat_g * s).toFixed(1)} g</span></div>
+        `;
+    }
+
+    const res = residentDatabase[currentResidentKey] || {};
     const collisions = (pendingFoodItem.allergen_tags || []).filter(t => (res.allergens || []).includes(t));
     const currentItemLevel = parseIddsi(iddsiVal);
-    const allowedFoodIddsi = parseIddsi(res.iddsiFood);
-    const requiredDrinkIddsi = parseIddsi(res.iddsiDrink);
+    const allowedFoodIddsi = parseIddsi(res.iddsiFood || "7");
+    const requiredDrinkIddsi = parseIddsi(res.iddsiDrink || "0");
 
     const alertBox = document.getElementById("allergenMatchAlertBox");
     const alertDetails = document.getElementById("allergenMatchDetails");
     const commitBtn = document.getElementById("commitMealBtn");
 
-    // 1. 過敏原硬阻斷
+    // 1. 敏感食材攔截
     if (collisions.length > 0) {
         alertBox.style.display = "block";
-        alertDetails.textContent = `⚠️ 禁忌碰撞：食物含 [${collisions.join(', ')}]，已鎖死登錄！`;
+        alertDetails.textContent = `⚠️ 敏感食材截停：食物含有院友禁忌【${collisions.join('、')}】，系統已鎖定，唔可以輸入！`;
         commitBtn.disabled = true;
         return;
     }
 
-    // 2. 飲品過稀誤吸安全檢查 (飲品稠度 < 處方稠度要求)
+    // 2. 飲品太稀（嗆咳防線）
     if (pendingFoodItem.isDrink && currentItemLevel < requiredDrinkIddsi) {
         alertBox.style.display = "block";
-        alertDetails.textContent = `⚠️ 飲品過稀誤吸風險：當前稠度 (Level ${currentItemLevel}) 低於醫囑要求 (Level ${requiredDrinkIddsi})，請加入凝固粉調配後手動校準質地！`;
+        alertDetails.textContent = `⚠️ 飲品太稀：當前質地 (Level ${currentItemLevel}) 稀過醫囑處方 (Level ${requiredDrinkIddsi})，有濁親嗆喉風險！若長者已加入凝固粉，請點擊上方質地按鈕校準。`;
         commitBtn.disabled = true;
         return;
     }
 
-    // 3. 固體食物過硬超標檢查 (食物硬度 > 處方上限)
+    // 3. 食物過硬超標
     if (!pendingFoodItem.isDrink && currentItemLevel > allowedFoodIddsi) {
         alertBox.style.display = "block";
-        alertDetails.textContent = `⚠️ 質地超標：食物質地 (Level ${currentItemLevel}) 超出長者安全上限 (Level ${allowedFoodIddsi})，已鎖死登錄！`;
+        alertDetails.textContent = `⚠️ 質地太硬：食物質地 (Level ${currentItemLevel}) 超出長者安全上限 (Level ${allowedFoodIddsi})，長者咀嚼吞嚥有困難，嚴禁餵食！`;
         commitBtn.disabled = true;
         return;
     }
 
-    // 通過臨床安全核可
     if (!isAiDetectionPendingReview) {
         alertBox.style.display = "none";
         commitBtn.disabled = false;
-        commitBtn.textContent = "✅ 確認登錄此餐食";
+        commitBtn.textContent = "✅ 確認無誤，存入院友紀錄";
     }
-}
-
-// 🧠 臨床質地推斷引擎 (Clinical Texture Engine)
-function deduceFoodProfileFromText(queryText) {
-    const q = queryText.toLowerCase();
-    let isDual = false, iddsi = "7", allergens = [], calEst = 350, waterEst = 120;
-    const isLiquid = q.includes("水") || q.includes("茶") || q.includes("汁") || q.includes("啡") || q.includes("奶") || q.includes("湯") || q.includes("飲");
-
-    if ((q.includes("麵") || q.includes("麪") || q.includes("飯") || q.includes("粉")) && (q.includes("湯") || q.includes("沙嗲") || q.includes("拉麵") || q.includes("米線"))) {
-        isDual = true; iddsi = "7"; waterEst = 250; calEst = 550;
-    } else if (q.includes("糊") || q.includes("粥") || q.includes("蓉") || q.includes("泥")) {
-        iddsi = "4"; calEst = 250; waterEst = 180;
-    } else if (q.includes("碎") || q.includes("免治") || q.includes("肉末")) {
-        iddsi = "5"; calEst = 280;
-    } else if (q.includes("軟") || q.includes("魚柳") || q.includes("蒸蛋") || q.includes("豆腐")) {
-        iddsi = "6"; calEst = 220;
-    } else if (isLiquid) {
-        iddsi = "0"; calEst = 100; waterEst = 240;
-    }
-
-    if (q.includes("沙嗲") || q.includes("花生")) allergens.push("PEANUT");
-    if (q.includes("海鮮") || q.includes("蝦") || q.includes("蟹") || q.includes("魚") || q.includes("蜆")) allergens.push("SEAFOOD");
-    if (q.includes("蛋")) allergens.push("EGG");
-    if (q.includes("奶") || q.includes("拿鐵") || q.includes("芝士")) allergens.push("MILK");
-    if (q.includes("麵") || q.includes("麪") || q.includes("麥") || q.includes("多士") || q.includes("包")) allergens.push("GLUTEN");
-    if (q.includes("豆") || q.includes("豉油") || q.includes("豆腐")) allergens.push("SOY");
-
-    return {
-        "FoodName": queryText,
-        "熱量 Calories": calEst,
-        "克 Grams": 250,
-        "蛋白質 Protein (g)": 15,
-        "碳水化合物 Carbs (g)": 45,
-        "脂肪 Fat (g)": 10,
-        "鈉 Sodium (mg)": 600,
-        "吞嚥安全 (IDDSI)": iddsi,
-        "水分 (ml)": waterEst,
-        "dual": isDual,
-        "isDrink": isLiquid,
-        "allergen_tags": [...new Set(allergens)]
-    };
 }
 
 async function searchFoodText() {
@@ -1128,10 +1410,20 @@ async function searchFoodText() {
     const cleanQuery = raw.replace(/\(.*?\)/g, '').trim();
     let target = LOCAL_FALLBACK_DB.find(f => f.FoodName.includes(cleanQuery) || cleanQuery.includes(f.FoodName));
     if (!target) {
-        target = deduceFoodProfileFromText(raw);
+        const extracted = extractHumanFoodData(raw, "4");
+        target = {
+            FoodName: extracted.name,
+            "吞嚥安全 (IDDSI)": extracted.iddsi,
+            dual: extracted.isDual, 
+            isDrink: extracted.isDrink, 
+            allergen_tags: [], 
+            clinicalReason: "手動輸入菜式",
+            rawNutrients: { grams: 250, calories: 300, protein_g: 12, carbs_g: 40, fat_g: 8, fiber_g: 3, sugar_g: 2, saturated_fat_g: 2, trans_fat_g: 0, cholesterol_mg: 25, calcium_mg: 45, iron_mg: 1.8, magnesium_mg: 30, sodium_mg: 400, potassium_mg: 300, zinc_mg: 1.5, vitamin_c_mg: 2, water_ml: 150 }
+        };
     }
 
     pendingFoodItem = target;
+    pendingFoodItem.isUserModified = false;
     document.getElementById("single_foodname").textContent = target.FoodName;
     document.getElementById("singleQueryResultCard").style.display = "block";
     setPortionScale(1.0, document.querySelectorAll('.portion-chip')[3]);
@@ -1140,76 +1432,106 @@ async function searchFoodText() {
 async function commitCurrentMeal() {
     if (!pendingFoodItem) return;
     if (isAiDetectionPendingReview) {
-        return triggerHardBlockModal("未完成覆核", "AI 影像分析必須由護士簽名覆核後方可登錄。");
+        return triggerHardBlockModal("請先簽名確認", "請由現場職員核對實物並簽署後，方可存入紀錄。");
     }
 
-    const res = residentDatabase[currentResidentKey];
-
-    // 1. 致命過敏原攔截
-    const collisions = (pendingFoodItem.allergen_tags || []).filter(t => (res.allergens || []).includes(t));
-    if (collisions.length > 0) {
-        return triggerHardBlockModal("致命過敏原硬阻斷", `院友對 [${collisions.join(', ')}] 嚴重過敏，系統已拒絕入庫。`);
-    }
-
-    // 2. IDDSI 雙向臨床質地攔截
-    const currentItemLevel = parseIddsi(pendingFoodItem["吞嚥安全 (IDDSI)"]);
-    const maxFoodIddsi = parseIddsi(res.iddsiFood);
-    const reqDrinkIddsi = parseIddsi(res.iddsiDrink);
-
-    if (pendingFoodItem.isDrink && currentItemLevel < reqDrinkIddsi) {
-        return triggerHardBlockModal("飲品過稀誤吸警告", `此飲品質地 (Level ${currentItemLevel}) 未達長者處方稠度 (Level ${reqDrinkIddsi})，易引致嗆咳窒息！請加入凝固粉並修正質地後再錄入。`);
-    }
-
-    if (!pendingFoodItem.isDrink && currentItemLevel > maxFoodIddsi) {
-        return triggerHardBlockModal("IDDSI 質地超標", `食物質地 (Level ${currentItemLevel}) 超出長者安全上限 (Level ${maxFoodIddsi})，嚴禁登錄！`);
-    }
-
+    const res = residentDatabase[currentResidentKey] || {};
     const s = currentPortionScale;
-    const fCal = Math.round((pendingFoodItem["熱量 Calories"] || 0) * s);
-    const fGrams = Math.round((pendingFoodItem["克 Grams"] || 0) * s);
-    const fProtein = (pendingFoodItem["蛋白質 Protein (g)"] || 0) * s;
-    const fCarbs = (pendingFoodItem["碳水化合物 Carbs (g)"] || 0) * s;
-    const fFat = (pendingFoodItem["脂肪 Fat (g)"] || 0) * s;
-    const fSodium = (pendingFoodItem["鈉 Sodium (mg)"] || 0) * s;
-    const fWater = (pendingFoodItem["水分 (ml)"] || 0) * s;
+    const n = pendingFoodItem.rawNutrients || {};
+
+    const currentItemLevel = parseIddsi(pendingFoodItem["吞嚥安全 (IDDSI)"]);
     const logId = "LOG_" + Date.now();
 
-    try {
-        const payload = {
-            action: "logRecord",
-            authToken: currentAuthToken || "NURSE_SEC_GUEST",
-            residentConfig: { allergens: res.allergens, iddsiFood: res.iddsiFood, waterLimit: dailyTargets.water, currentWater: waterTotal },
-            data: {
-                log_id: logId,
-                resident_id: currentResidentKey,
-                operator_id: currentOperatorId,
-                food_name: pendingFoodItem.FoodName,
-                grams: fGrams,
-                calories: fCal,
-                protein: fProtein,
-                carbs: fCarbs,
-                fat: fFat,
-                sodium: fSodium,
-                water: fWater,
-                iddsi_level: currentItemLevel,
-                allergen_tags: pendingFoodItem.allergen_tags || []
-            }
-        };
+    const fGrams = Math.round((n.grams || 250) * s);
+    const fCal = Math.round((n.calories || 180) * s);
+    const fProtein = Number(((n.protein_g || 10) * s).toFixed(1));
+    const fCarbs = Number(((n.carbs_g || 30) * s).toFixed(1));
+    const fFat = Number(((n.fat_g || 5) * s).toFixed(1));
+    const fFiber = Number(((n.fiber_g || 2) * s).toFixed(1));
+    const fSugar = Number(((n.sugar_g || 2) * s).toFixed(1));
+    const fSatFat = Number(((n.saturated_fat_g || 1) * s).toFixed(1));
+    const fTransFat = Number(((n.trans_fat_g || 0) * s).toFixed(1));
+    const fChol = Math.round((n.cholesterol_mg || 20) * s);
+    const fCalcium = Math.round((n.calcium_mg || 40) * s);
+    const fIron = Number(((n.iron_mg || 1.5) * s).toFixed(1));
+    const fMagnesium = Math.round((n.magnesium_mg || 25) * s);
+    const fSodium = Math.round((n.sodium_mg || 250) * s);
+    const fPotassium = Math.round((n.potassium_mg || 250) * s);
+    const fZinc = Number(((n.zinc_mg || 1.2) * s).toFixed(1));
+    const fVitC = Number(((n.vitamin_c_mg || 3) * s).toFixed(1));
+    const fWater = Math.round((n.water_ml || 150) * s);
 
-        const resServer = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const now = new Date();
+    const formattedDate = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+
+    const payload = {
+        action: "logRecord",
+        authToken: currentAuthToken || "NURSE_SEC_GUEST",
+        residentConfig: { 
+            id: currentResidentKey,
+            allergens: res.allergens || [], 
+            iddsiFood: res.iddsiFood || "7", 
+            waterLimit: dailyTargets.water, 
+            currentWater: waterTotal 
+        },
+        data: {
+            log_id: logId,
+            resident_id: currentResidentKey,
+            operator_id: currentOperatorId,
+            timestamp: formattedDate,
+            food_name: pendingFoodItem.FoodName,
+            "克 Grams": fGrams,
+            "熱量 Calories": fCal,
+            "蛋白質 Protein (g)": fProtein,
+            "碳水化合物 Carbs (g)": fCarbs,
+            "脂肪 Fat (g)": fFat,
+            "膳食纖維 Fiber (g)": fFiber,
+            "糖 Sugar (g)": fSugar,
+            "飽和脂肪 Saturated Fat (g)": fSatFat,
+            "反式脂肪 Trans Fat (g)": fTransFat,
+            "膽固醇 Cholesterol (mg)": fChol,
+            "鈣 Calcium (mg)": fCalcium,
+            "鐵 Iron (mg)": fIron,
+            "鎂 Magnesium (mg)": fMagnesium,
+            "鈉 Sodium (mg)": fSodium,
+            "鉀 Potassium (mg)": fPotassium,
+            "鋅 Zinc (mg)": fZinc,
+            "維他命C Vitamin C (mg)": fVitC,
+            "吞嚥安全 (IDDSI)": currentItemLevel.toString(),
+            water: fWater,
+            allergen_tags: pendingFoodItem.allergen_tags || []
+        }
+    };
+
+    try {
+        const resServer = await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify(payload) 
+        });
         const resJSON = await resServer.json();
         if (!resJSON.success) {
-            return triggerHardBlockModal("伺服器端醫療防線攔截", resJSON.error);
+            return triggerHardBlockModal("後端防線截停", resJSON.error);
         }
     } catch (e) {
-        console.warn("網絡離線：本地留痕儲存");
+        console.warn("離線運作中：已先留底於本機");
     }
 
     cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
     sodium += fSodium; waterTotal += fWater;
     if (maxIddsiText === "-" || currentItemLevel > parseIddsi(maxIddsiText)) maxIddsiText = currentItemLevel.toString();
 
-    const logEntry = { logId, title: pendingFoodItem.FoodName, calories: fCal, water: fWater, sodium: fSodium, protein: fProtein, carbs: fCarbs, fat: fFat, grams: fGrams, subText: `${fGrams}g · IDDSI L${currentItemLevel}` };
+    const logEntry = { 
+        logId, 
+        title: pendingFoodItem.FoodName, 
+        calories: fCal, 
+        water: fWater, 
+        sodium: fSodium, 
+        protein: fProtein, 
+        carbs: fCarbs, 
+        fat: fFat, 
+        grams: fGrams, 
+        subText: `${fGrams}g · IDDSI L${currentItemLevel}` 
+    };
     todayAuditLogs.unshift(logEntry);
     
     renderAuditHistory();
@@ -1220,20 +1542,26 @@ async function commitCurrentMeal() {
     document.getElementById("foodSearchInput").value = "";
     document.getElementById("aiWarningBox").innerHTML = "";
     pendingFoodItem = null;
-    triggerDynamicIsland(`✅ 餐食已成功通過安全核准入庫 (+${fCal} kcal)`);
+    triggerDynamicIsland(`✅ 已存入紀錄：${payload.data.food_name} (+${fCal} kcal)`);
 }
 
 async function revokeMealLog(logId) {
-    if (!confirm("確定要撤銷此筆飲食紀錄嗎？（此操作將在伺服器審計日誌中留痕）")) return;
+    if (!confirm("確定要撤銷呢筆飲食紀錄？（系統會保留撤銷留痕作審計）")) return;
     
     const idx = todayAuditLogs.findIndex(l => l.logId === logId);
     if (idx === -1) return;
     const item = todayAuditLogs[idx];
 
     try {
-        await fetch(API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: "revokeRecord", log_id: logId, resident_id: currentResidentKey, operator_id: currentOperatorId, authToken: currentAuthToken || "NURSE_SEC_GUEST" })
+        await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ 
+                action: "revokeRecord", 
+                log_id: logId, 
+                resident_id: currentResidentKey, 
+                operator_id: currentOperatorId, 
+                authToken: currentAuthToken || "NURSE_SEC_GUEST" 
+            })
         });
     } catch(e) {}
 
@@ -1249,14 +1577,14 @@ async function revokeMealLog(logId) {
     renderAuditHistory();
     saveDailyState();
     updateDashboardUI();
-    triggerDynamicIsland("↩️ 已成功撤銷該筆紀錄並留痕備查");
+    triggerDynamicIsland("↩️ 已成功撤銷該筆紀錄");
 }
 
 function renderAuditHistory() {
     const container = document.getElementById("history-container");
     container.innerHTML = "";
     if (todayAuditLogs.length === 0) {
-        container.innerHTML = "<div style='color:var(--text-sub); font-size:12px;'>尚無今日餐食流水紀錄</div>";
+        container.innerHTML = "<div style='color:var(--text-sub); font-size:12px;'>今日仲未有餐食紀錄</div>";
         return;
     }
 
@@ -1278,7 +1606,7 @@ function renderAuditHistory() {
 
 function quickAddWater(ml, typeName) {
     if (waterTotal + ml > dailyTargets.water) {
-        return triggerHardBlockModal("醫囑水分限制攔截", `今日水分攝取已達 ${waterTotal}ml。增加 ${ml}ml 將超出醫囑上限 (${dailyTargets.water}ml)！`);
+        return triggerHardBlockModal("超出醫囑飲水量", `院友今日已飲咗 ${waterTotal}ml 水。如果再飲 ${ml}ml，就會超過每日限額 (${dailyTargets.water}ml)！`);
     }
     waterTotal += ml;
     const logId = "WATER_" + Date.now();
@@ -1286,18 +1614,18 @@ function quickAddWater(ml, typeName) {
     renderAuditHistory();
     saveDailyState();
     updateDashboardUI();
-    triggerDynamicIsland(`💧 已登錄水分 +${ml}ml`);
+    triggerDynamicIsland(`💧 已登記飲水 +${ml}ml`);
 }
 
 function customWaterPrompt() {
     const remaining = Math.max(0, dailyTargets.water - waterTotal);
-    const input = prompt(`請輸入自訂攝取水量 (ml):\n(當前今日已攝取: ${waterTotal}ml / 剩餘限額: ${remaining}ml)`, "100");
+    const input = prompt(`請輸入飲水量 (ml):\n(今日已飲: ${waterTotal}ml / 剩餘額度: ${remaining}ml)`, "100");
     if (input !== null) {
         const ml = parseInt(input, 10);
         if (!isNaN(ml) && ml > 0) {
-            quickAddWater(ml, "自訂飲品/水分");
+            quickAddWater(ml, "自訂飲品/水");
         } else {
-            alert("請輸入有效的正整數數值！");
+            alert("請輸入正確嘅數字！");
         }
     }
 }
@@ -1311,7 +1639,7 @@ function updateDashboardUI() {
     document.getElementById("fat").textContent = fat.toFixed(1);
 
     const waterPct = Math.min(Math.round((waterTotal / dailyTargets.water) * 100), 100);
-    document.getElementById("water-progress-pct").textContent = `進度：${waterPct}%`;
+    document.getElementById("water-progress-pct").textContent = `達成率：${waterPct}%`;
     document.getElementById("bar-protein").style.width = `${Math.min((protein/dailyTargets.protein)*100, 100)}%`;
     document.getElementById("bar-carbs").style.width = `${Math.min((carbs/dailyTargets.carbs)*100, 100)}%`;
     document.getElementById("bar-fat").style.width = `${Math.min((fat/dailyTargets.fat)*100, 100)}%`;
@@ -1328,15 +1656,15 @@ function updateDashboardUI() {
     const intakeStatus = document.getElementById("meta-iddsi-intake-status");
     if (intakeStatus) {
         if (maxIddsiText === "-") {
-            intakeStatus.innerHTML = `今日進食：尚未有紀錄`;
+            intakeStatus.innerHTML = `今日仲未有進食紀錄`;
             intakeStatus.style.color = "var(--text-sub)";
         } else {
             const currentMax = parseIddsi(maxIddsiText);
             const foodAllowed = parseIddsi(res.iddsiFood);
             if (currentMax > foodAllowed) {
-                intakeStatus.innerHTML = `<b style="color:var(--apple-red);"><i class="fa-solid fa-triangle-exclamation"></i> 今日最高: Level ${currentMax} (越級警戒)</b>`;
+                intakeStatus.innerHTML = `<b style="color:var(--apple-red);"><i class="fa-solid fa-triangle-exclamation"></i> 今日最高達 Level ${currentMax} (質地超標注意！)</b>`;
             } else {
-                intakeStatus.innerHTML = `今日最高質地：<b>Level ${currentMax} (符合處方)</b>`;
+                intakeStatus.innerHTML = `今日最高質地：<b>Level ${currentMax} (符合處方要求)</b>`;
                 intakeStatus.style.color = "var(--text-sub)";
             }
         }
@@ -1382,7 +1710,7 @@ function handleResidentChange(key) {
     loadResidentProfileToForm(key);
     loadDailyState(key);
     calculatePersonalTargets();
-    triggerDynamicIsland(`已切換至院友：${escapeHTML(residentDatabase[key].name)}`);
+    triggerDynamicIsland(`已切換院友：${escapeHTML(residentDatabase[key].name)}`);
 }
 
 function loadResidentProfileToForm(key) {
@@ -1429,7 +1757,7 @@ function saveCurrentProfile() {
     calculatePersonalTargets();
     updateClinicalPills(p);
     syncDropdownColor();
-    triggerDynamicIsland("💾 院友病歷與處方已儲存");
+    triggerDynamicIsland("💾 院友吞嚥與飲水處方已儲存");
 }
 
 function updateClinicalPills(res) {
@@ -1439,14 +1767,14 @@ function updateClinicalPills(res) {
         ${generateIddsiBadgeHTML(res.iddsiDrink, "飲品")}
     `;
     if (res.allergens && res.allergens.length > 0) {
-        html += `<span class="clinical-pill allergen">⚠️ 忌: ${res.allergens.join(',')}</span>`;
+        html += `<span class="clinical-pill allergen">⚠️ 忌食: ${res.allergens.join('、')}</span>`;
     }
     html += `<span class="clinical-pill alert">限水 ${res.waterLimit}ml</span>`;
     container.innerHTML = html;
 }
 
 function openNewResidentModal() {
-    const name = prompt("請輸入新院友姓名與床號 (例: 王小明 (105號床)):");
+    const name = prompt("請輸入新入院友姓名與床號 (例如: 陳大文 (105號床)):");
     if (!name) return;
     const newKey = "res_" + Date.now();
     residentDatabase[newKey] = {
@@ -1458,7 +1786,7 @@ function openNewResidentModal() {
         weight: 60,
         waterLimit: 1500,
         iddsiFood: "4",
-        iddsiDrink: "2",
+        iddsiDrink: "1",
         allergens: []
     };
     localStorage.setItem("lohas_res_db_v3", JSON.stringify(residentDatabase));
@@ -1577,10 +1905,9 @@ function loadWeeklyDataFromStorage(resKey) {
     drawChart();
 }
 
-// 語音識別 API 容錯與狀態修復
 function toggleVoiceRecognition() {
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRec) return alert("當前裝置或瀏覽器未支援 Web Speech API 語音識別功能");
+    if (!SpeechRec) return alert("當前裝置未支援語音識別功能");
 
     if (!recognition) {
         recognition = new SpeechRec();
@@ -1594,12 +1921,12 @@ function toggleVoiceRecognition() {
         };
         recognition.onend = () => { 
             isRecording = false; 
-            document.getElementById("micStatus").textContent = "語音輸入"; 
+            document.getElementById("micStatus").textContent = "語音講低菜名"; 
         };
         recognition.onerror = (event) => {
-            console.warn("語音辨識錯誤:", event.error);
+            console.warn("語音識別錯誤:", event.error);
             isRecording = false;
-            document.getElementById("micStatus").textContent = "語音輸入";
+            document.getElementById("micStatus").textContent = "語音講低菜名";
         };
         recognition.onresult = (e) => {
             let t = e.results[0][0].transcript.replace(/。/g, '');
@@ -1611,24 +1938,20 @@ function toggleVoiceRecognition() {
     if (isRecording) { 
         recognition.stop(); 
     } else { 
-        try {
-            recognition.start();
-        } catch(e) {
-            console.error(e);
-        }
+        try { recognition.start(); } catch(e) {} 
     }
 }
 
 function generateClinicalReport() {
-    const res = residentDatabase[currentResidentKey];
-    const r = `【樂活安老院舍 - 跨專業臨床交班報告 (RD/ST)】\n日期：${new Date().toLocaleDateString('zh-HK')}\n院友：${res.name} (身高:${res.height}cm / 體重:${res.weight}kg)\n----------------------------------------\n1. 能量與營養攝取：\n   - 熱量：${cal} / ${dailyTargets.cal} kcal (${Math.round((cal/dailyTargets.cal)*100)}%)\n   - 蛋白質：${protein.toFixed(1)}g | 碳水：${carbs.toFixed(1)}g | 脂肪：${fat.toFixed(1)}g\n2. 水分與電解質：\n   - 水分出入總量：${Math.round(waterTotal)} ml / 醫囑上限 ${dailyTargets.water} ml\n   - 鈉質累積：${Math.round(sodium)} mg\n3. 吞嚥安全處方 (IDDSI)：\n   - 處方上限：食物 L${res.iddsiFood} / 飲品 L${res.iddsiDrink}\n   - 當日最高進食質地：${maxIddsiText === '-' ? '尚未進食' : 'Level ' + maxIddsiText}\n----------------------------------------\n核實簽章操作員：${currentOperatorId}`;
+    const res = residentDatabase[currentResidentKey] || {};
+    const r = `【樂活安老院舍 - 跨專業臨床交班報告 (RD/ST)】\n日期：${new Date().toLocaleDateString('zh-HK')}\n院友：${res.name} (ID: ${currentResidentKey})\n----------------------------------------\n1. 能量與營養攝取：\n   - 熱量：${cal} / ${dailyTargets.cal} kcal (${Math.round((cal/dailyTargets.cal)*100)}%)\n   - 蛋白質：${protein.toFixed(1)}g | 碳水：${carbs.toFixed(1)}g | 脂肪：${fat.toFixed(1)}g\n2. 水分與電解質：\n   - 水分出入總量：${Math.round(waterTotal)} ml / 醫囑上限 ${dailyTargets.water} ml\n   - 鈉質累積：${Math.round(sodium)} mg\n3. 吞嚥安全處方 (IDDSI)：\n   - 處方上限：食物 L${res.iddsiFood || 7} / 飲品 L${res.iddsiDrink || 0}\n   - 當日最高進食質地：${maxIddsiText === '-' ? '尚未進食' : 'Level ' + maxIddsiText}\n----------------------------------------\n核實簽章職員：${currentOperatorId}`;
     document.getElementById("clinicalReportOutput").value = r;
-    triggerDynamicIsland("📋 臨床交班報告已產生");
+    triggerDynamicIsland("📋 臨床交班摘要已產生");
 }
 
 function openQrCodeModal() {
-    const res = residentDatabase[currentResidentKey];
-    const reportPayload = { type: "LOHAS_CLINICAL_REPORT", v: "3.5", id: currentResidentKey, name: res.name, cal, water: Math.round(waterTotal), prescribedFoodIddsi: res.iddsiFood, prescribedDrinkIddsi: res.iddsiDrink, maxIntakeIddsi: maxIddsiText, operator: currentOperatorId, ts: new Date().toISOString() };
+    const res = residentDatabase[currentResidentKey] || {};
+    const reportPayload = { type: "LOHAS_CLINICAL_REPORT", v: "4.0", id: currentResidentKey, name: res.name, cal, water: Math.round(waterTotal), prescribedFoodIddsi: res.iddsiFood, prescribedDrinkIddsi: res.iddsiDrink, maxIntakeIddsi: maxIddsiText, operator: currentOperatorId, ts: new Date().toISOString() };
     const container = document.getElementById("qrcode-display");
     container.innerHTML = "";
     new QRCode(container, { text: JSON.stringify(reportPayload), width: 180, height: 180, correctLevel: QRCode.CorrectLevel.M });
@@ -1665,9 +1988,7 @@ async function openQrScannerModal() {
 async function closeQrScannerModal() {
     if (html5QrScanner) {
         try {
-            if (isQrScannerRunning) {
-                await html5QrScanner.stop();
-            }
+            if (isQrScannerRunning) await html5QrScanner.stop();
             html5QrScanner.clear();
         } catch (e) {
             console.warn("相機關閉時異常:", e);
@@ -1692,7 +2013,7 @@ function toggleDisclaimerBtn() {
 
 function acceptDisclaimer() {
     document.getElementById("disclaimerModalOverlay").classList.remove("active");
-    triggerDynamicIsland("🔒 臨床操作聲明已確認");
+    triggerDynamicIsland("🔒 已確認臨床使用須知");
 }
 
 window.onload = () => {
