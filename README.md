@@ -12,11 +12,28 @@
             --card-bg: #FFFFFF;
             --text-main: #1C1C1E;
             --text-sub: #6C6C70;
+            --border-color: rgba(0,0,0,0.05);
+            --highlight-bg: linear-gradient(135deg, rgba(0,122,255,0.08), rgba(52,199,89,0.05));
+            --highlight-border: rgba(0,122,255,0.2);
         }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #000000;
+                --card-bg: #1C1C1E;
+                --text-main: #FFFFFF;
+                --text-sub: #AEAEB2;
+                --border-color: rgba(255,255,255,0.1);
+                --highlight-bg: linear-gradient(135deg, rgba(0,122,255,0.15), rgba(52,199,89,0.1));
+                --highlight-border: rgba(0,122,255,0.3);
+            }
+        }
+
         * {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang HK", "Noto Sans TC", sans-serif;
             background-color: var(--bg-color);
@@ -26,15 +43,18 @@
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
+        
         .container {
             max-width: 680px;
             margin: 0 auto;
         }
+        
         .header {
             text-align: center;
             margin-bottom: 24px;
             padding-top: 20px;
         }
+        
         .header h1 {
             font-size: 26px;
             font-weight: 700;
@@ -42,29 +62,34 @@
             margin: 0 0 6px 0;
             letter-spacing: -0.5px;
         }
+        
         .header .update-date {
             font-size: 13px;
             color: var(--text-sub);
-            background: rgba(0,0,0,0.05);
+            background: var(--border-color);
             padding: 4px 12px;
             border-radius: 20px;
             display: inline-block;
         }
+        
         .card {
             background: var(--card-bg);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 16px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-            border: 1px solid rgba(0,0,0,0.02);
+            border: 1px solid var(--border-color);
         }
+        
         .card.highlight {
-            background: linear-gradient(135deg, rgba(0,122,255,0.08), rgba(52,199,89,0.05));
-            border: 1.5px solid rgba(0,122,255,0.2);
+            background: var(--highlight-bg);
+            border: 1.5px solid var(--highlight-border);
         }
+        
         .card.highlight strong {
             color: var(--apple-blue);
         }
+        
         h2 {
             font-size: 17px;
             font-weight: 600;
@@ -74,23 +99,25 @@
             align-items: center;
             gap: 8px;
         }
-        h2 i {
-            color: var(--apple-blue);
-        }
+        
         p, ul {
             font-size: 14px;
             color: var(--text-main);
             margin: 0 0 12px 0;
         }
+        
         ul {
             padding-left: 20px;
         }
+        
         li {
             margin-bottom: 8px;
         }
+        
         li strong {
             color: var(--text-main);
         }
+        
         .footer {
             text-align: center;
             font-size: 12px;
@@ -98,10 +125,12 @@
             margin-top: 30px;
             padding-bottom: 20px;
         }
+        
         a {
             color: var(--apple-blue);
             text-decoration: none;
         }
+        
         .icon-box {
             font-size: 18px;
             margin-right: 4px;
