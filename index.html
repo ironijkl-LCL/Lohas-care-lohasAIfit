@@ -52,7 +52,7 @@
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        /* 1. 全域背景與安全區適配 */
+        /* 全域背景與安全區適配 */
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang HK", "Noto Sans TC", sans-serif;
@@ -74,7 +74,7 @@
             flex-direction: column;
             padding: 16px;
             position: relative;
-            transition: max-width 0.25s ease;
+            transition: max-width 0.25s ease, padding 0.25s ease;
         }
 
         .app-header-block {
@@ -189,7 +189,7 @@
 
         .summary-unit { font-size: 10px; color: var(--text-sub); }
 
-        /* 2. 動態島通知條安全區避讓 */
+        /* 動態島通知條 */
         .dynamic-island-banner {
             position: fixed;
             top: calc(14px + env(safe-area-inset-top, 0px));
@@ -283,7 +283,7 @@
 
         .chart-svg { width: 100%; height: 120px; overflow: visible; }
 
-        /* 3. 底部導航欄高與安全區對齊 */
+        /* 底部導航欄 */
         .apple-tab-bar {
             position: fixed;
             bottom: 0;
@@ -405,7 +405,7 @@
         }
 
         /* ==========================================
-           4. iPad / 平板電腦響應式適配 (min-width: 768px)
+           iPad / 平板電腦響應式適配 (min-width: 768px)
            ========================================== */
         @media (min-width: 768px) {
             body {
@@ -476,6 +476,10 @@
             .nutrient-grid-19 {
                 grid-template-columns: repeat(6, 1fr);
                 gap: 8px;
+            }
+
+            .checkbox-label-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
             }
         }
     </style>
@@ -664,7 +668,7 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
                 <span style="font-size: 12px; font-weight: 600;">🍽️ 食咗幾多份量？</span>
                 <button class="apple-btn-primary" style="width:auto; padding:4px 8px; font-size:11px; background:rgba(0,122,255,0.12); color:var(--apple-blue); border:1px solid rgba(0,122,255,0.25);" onclick="startARVolumeEstimation()">
-                    📐 AR 實景掃描碗量
+                    📐 AR / LiDAR 實景測量
                 </button>
             </div>
             <div id="portionInputBlock" style="display:flex; gap:4px; margin-bottom:10px;">
@@ -994,6 +998,7 @@ function escapeHTML(str) {
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
+// 精準格式化時間字串，確保年月日與時間之間具備標準空格
 function getFormattedDateTime() {
     const now = new Date();
     const pad = (n) => String(n).padStart(2, '0');
@@ -1513,7 +1518,7 @@ function toggleVoiceRecognitionForNL() {
 }
 
 // ==========================================
-// 10. AR / LiDAR 碗量估算引擎
+// 10. AR / LiDAR 碗量估算引擎（串接原生 raycastQuery）
 // ==========================================
 const FOOD_DENSITY_MAP = {
     "drink": 1.0,
@@ -1549,7 +1554,7 @@ async function startARVolumeEstimation() {
     }
 
     try {
-        triggerDynamicIsland("📐 啟動 ARKit 實景體積測量...");
+        triggerDynamicIsland("📐 啟動 ARKit 光線投射測量...");
         const result = await FoodVolumePlugin.measureVolume();
         
         if (result && result.volume_ml) {
@@ -1562,7 +1567,10 @@ async function startARVolumeEstimation() {
             currentPortionScale = autoGrams / standardPortion;
 
             renderPendingFoodDetails();
-            triggerDynamicIsland(`📐 AR 測量：容量 ${vol}ml → 估算約 ${autoGrams}g`);
+
+            const isLiDAR = !!result.device_has_lidar;
+            const techTag = isLiDAR ? "🎯 LiDAR 深度重構" : "📐 ARKit 光線投射";
+            triggerDynamicIsland(`${techTag}：容量 ${vol}ml → 估算約 ${autoGrams}g`);
         }
     } catch (err) {
         console.warn("AR 測量取消或錯誤:", err);
