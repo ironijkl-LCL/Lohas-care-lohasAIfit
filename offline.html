@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="no-referrer">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0071e3">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Family OS">
+    <title>Family OS - 離線模式</title>
+
+    <style>
+        :root {
+            --bg-canvas: #f5f5f7;
+            --bg-card: #ffffff;
+            --text-main: #1d1d1f;
+            --text-sub: #6e6e73;
+            --text-tertiary: #86868b;
+            --accent-blue: #0071e3;
+            --accent-green: #34c759;
+            --accent-orange: #ff9500;
+            --accent-red: #ff3b30;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-canvas: #000000;
+                --bg-card: #1c1c1e;
+                --text-main: #ffffff;
+                --text-sub: #aeaeb2;
+                --text-tertiary: #8e8e93;
+                --border-color: rgba(255, 255, 255, 0.1);
+                --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+                --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang HK", "Noto Sans TC", sans-serif;
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            padding-left: env(safe-area-inset-left, 0px);
+            padding-right: env(safe-area-inset-right, 0px);
+            padding-left: max(24px, env(safe-area-inset-left, 0px));
+            padding-right: max(24px, env(safe-area-inset-right, 0px));
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .offline-container {
+            width: 100%;
+            max-width: 380px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ==========================================
+           狀態圖示（含 pulse 動畫）
+           ========================================== */
+        .status-icon-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-icon-bg {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0, 113, 227, 0.12), rgba(52, 199, 89, 0.12));
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.08);
+                opacity: 1;
+            }
+        }
+
+        .status-icon-inner {
+            position: relative;
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 44px;
+            line-height: 1;
+        }
+
+        /* ==========================================
+           標題與說明
+           ========================================== */
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin: 0 0 8px 0;
+            color: var(--text-main);
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--text-sub);
+            line-height: 1.5;
+            margin: 0 0 24px 0;
+            max-width: 320px;
+        }
+
+        /* ==========================================
+           狀態卡片
+           ========================================== */
+        .status-card {
+            width: 100%;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .status-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+
+        .status-row:not(:last-child) {
+            border-bottom: 0.5px solid var(--border-color);
+        }
+
+        .status-label {
+            font-size: 13px;
+            color: var(--text-sub);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .status-value.online {
+            color: var(--accent-green);
+        }
+
+        .status-value.offline {
+            color: var(--accent-orange);
+        }
+
+        .status-value.error {
+            color: var(--accent-red);
+        }
+
+        /* ==========================================
+           按鈕
+           ========================================== */
+        .btn-primary {
+            width: 100%;
+            padding: 14px 24px;
+            background: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+            opacity: 0.85;
+        }
+
+        .btn-primary:disabled {
+            background: var(--text-tertiary);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 12px 24px;
+            background: transparent;
+            color: var(--accent-blue);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:active {
+            background: var(--border-color);
+        }
+
+        /* ==========================================
+           連線狀態指示燈
+           ========================================== */
+        .connection-indicator {
+            position: fixed;
+            top: calc(16px + env(safe-area-inset-top, 0px));
+            right: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg-card);
+            border-radius: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-sub);
+            z-index: 100;
+        }
+
+        .connection-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-orange);
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        .connection-dot.online {
+            background: var(--accent-green);
+            animation: none;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ==========================================
+           Spinner
+           ========================================== */
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==========================================
+           版本號
+           ========================================== */
+        .version {
+            position: fixed;
+            bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: var(--text-tertiary);
+            font-family: -apple-system-monospace, monospace;
+        }
+
+        /* ==========================================
+           小螢幕適配（iPhone SE）
+           ========================================== */
+        @media (max-height: 700px) {
+            .status-icon-wrapper {
+                width: 96px;
+                height: 96px;
+                margin-bottom: 16px;
+            }
+            .status-icon-inner {
+                width: 72px;
+                height: 72px;
+                font-size: 36px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            .subtitle {
+                font-size: 14px;
+                margin-bottom: 16px;
+            }
+            .status-card {
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+            .status-row {
+                padding: 6px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 連線狀態指示燈 -->
+    <div class="connection-indicator" id="connectionIndicator">
+        <span class="connection-dot" id="connectionDot"></span>
+        <span id="connectionText">離線</span>
+    </div>
+
+    <div class="offline-container">
+
+        <!-- 狀態圖示 -->
+        <div class="status-icon-wrapper">
+            <div class="status-icon-bg"></div>
+            <div class="status-icon-inner" id="statusIcon">📡</div>
+        </div>
+
+        <!-- 標題 -->
+        <h1 id="statusTitle">暫時離線</h1>
+        <p class="subtitle" id="statusSubtitle">
+            目前無法連接網絡。<br>
+            你嘅資料已安全儲存於本機，重新連線後會自動同步。
+        </p>
+
+        <!-- 狀態卡片 -->
+        <div class="status-card">
+            <div class="status-row">
+                <span class="status-label">
+                    <span>🌐</span> 網絡狀態
+                </span>
+                <span class="status-value offline" id="networkStatus">離線</span>
+            </div>
+            <div class="status-row">
+                <span class="status-label">
+                    <span>🕐</span> 上次同步
+                </span>
+                <span class="status-value" id="lastSync">--</span>
+            </div>
+            <div class="status-row">
+                <span class="status-label">
+                    <span>📦</span> 本機資料
+                </span>
+                <span class="status-value" id="localDataCount">0 項紀錄</span>
+            </div>
+            <div class="status-row">
+                <span class="status-label">
+                    <span>💾</span> 儲存空間
+                </span>
+                <span class="status-value" id="storageUsage">-- KB</span>
+            </div>
+        </div>
+
+        <!-- 按鈕 -->
+        <button class="btn-primary" id="retryBtn" onclick="handleRetry()">
+            <span id="retryText">🔄 重新載入</span>
+        </button>
+        <button class="btn-secondary" onclick="handleGoHome()">
+            🏠 返回首頁
+        </button>
+
+    </div>
+
+    <div class="version" id="versionText">Family OS v1.0.0</div>
+
+    <script>
+        // ==========================================
+        // 1. 狀態偵測
+        // ==========================================
+        const state = {
+            isOnline: navigator.onLine,
+            lastSync: null,
+            localDataCount: 0,
+            storageUsage: 0,
+            isRetrying: false
+        };
+
+        // ==========================================
+        // 2. 讀取本機資料統計
+        // ==========================================
+        function loadLocalStats() {
+            try {
+                // 讀取上次同步時間
+                const lastSyncRaw = localStorage.getItem('family_os_last_sync');
+                if (lastSyncRaw) {
+                    state.lastSync = new Date(lastSyncRaw);
+                }
+
+                // 計算 localStorage 用量
+                let totalBytes = 0;
+                let recordCount = 0;
+                for (let key in localStorage) {
+                    if (localStorage.hasOwnProperty(key)) {
+                        const value = localStorage.getItem(key) || '';
+                        totalBytes += key.length + value.length;
+
+                        // 計算紀錄數（粗略估算）
+                        if (key.startsWith('family_os_') || key.includes('log') || key.includes('record')) {
+                            try {
+                                const parsed = JSON.parse(value);
+                                if (Array.isArray(parsed)) {
+                                    recordCount += parsed.length;
+                                } else if (typeof parsed === 'object' && parsed !== null) {
+                                    recordCount += 1;
+                                }
+                            } catch (e) {
+                                recordCount += 1;
+                            }
+                        }
+                    }
+                }
+
+                state.localDataCount = recordCount;
+                state.storageUsage = Math.round(totalBytes / 1024);  // KB
+
+            } catch (err) {
+                console.warn('[offline.html] Failed to load local stats:', err);
+            }
+        }
+
+        // ==========================================
+        // 3. 更新 UI
+        // ==========================================
+        function updateUI() {
+            const isOnline = state.isOnline;
+
+            // 連線指示燈
+            const dot = document.getElementById('connectionDot');
+            const text = document.getElementById('connectionText');
+            if (isOnline) {
+                dot.classList.add('online');
+                text.textContent = '已連線';
+            } else {
+                dot.classList.remove('online');
+                text.textContent = '離線';
+            }
+
+            // 狀態圖示
+            const icon = document.getElementById('statusIcon');
+            icon.textContent = isOnline ? '✅' : '📡';
+
+            // 標題
+            const title = document.getElementById('statusTitle');
+            const subtitle = document.getElementById('statusSubtitle');
+            if (isOnline) {
+                title.textContent = '已重新連線';
+                subtitle.innerHTML = '網絡已恢復。<br>點擊下方按鈕返回 App 繼續使用。';
+            } else {
+                title.textContent = '暫時離線';
+                subtitle.innerHTML = '目前無法連接網絡。<br>你嘅資料已安全儲存於本機，重新連線後會自動同步。';
+            }
+
+            // 網絡狀態
+            const networkStatus = document.getElementById('networkStatus');
+            networkStatus.textContent = isOnline ? '已連線' : '離線';
+            networkStatus.className = 'status-value ' + (isOnline ? 'online' : 'offline');
+
+            // 上次同步
+            const lastSyncEl = document.getElementById('lastSync');
+            if (state.lastSync) {
+                const diff = Date.now() - state.lastSync.getTime();
+                const mins = Math.floor(diff / 60000);
+                const hours = Math.floor(diff / 3600000);
+                const days = Math.floor(diff / 86400000);
+
+                if (mins < 1) lastSyncEl.textContent = '剛剛';
+                else if (mins < 60) lastSyncEl.textContent = `${mins} 分鐘前`;
+                else if (hours < 24) lastSyncEl.textContent = `${hours} 小時前`;
+                else lastSyncEl.textContent = `${days} 日前`;
+            } else {
+                lastSyncEl.textContent = '未曾同步';
+            }
+
+            // 本機資料
+            document.getElementById('localDataCount').textContent = `${state.localDataCount} 項紀錄`;
+            document.getElementById('storageUsage').textContent = `${state.storageUsage} KB`;
+
+            // 重試按鈕
+            const retryBtn = document.getElementById('retryBtn');
+            const retryText = document.getElementById('retryText');
+            if (state.isRetrying) {
+                retryBtn.disabled = true;
+                retryText.innerHTML = '<span class="spinner"></span> 正在嘗試連線...';
+            } else {
+                retryBtn.disabled = false;
+                retryText.textContent = isOnline ? '✅ 返回 App' : '🔄 重新載入';
+            }
+
+            // 版本號
+            const versionEl = document.getElementById('versionText');
+            versionEl.textContent = `Family OS v1.0.0 · ${new Date().toLocaleDateString('zh-HK')}`;
+        }
+
+        // ==========================================
+        // 4. 重新載入
+        // ==========================================
+        async function handleRetry() {
+            if (state.isRetrying) return;
+
+            state.isRetrying = true;
+            updateUI();
+
+            // 如果已經 online，直接返回首頁
+            if (state.isOnline) {
+                handleGoHome();
+                return;
+            }
+
+            // 嘗試 ping 一個輕量資源
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+                await fetch('/manifest.json?_=' + Date.now(), {
+                    method: 'HEAD',
+                    cache: 'no-store',
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                // 成功 → reload
+                state.isRetrying = false;
+                window.location.reload();
+
+            } catch (err) {
+                clearTimeout(timeoutId);
+                state.isRetrying = false;
+
+                // 失敗 → 顯示錯誤
+                const title = document.getElementById('statusTitle');
+                const subtitle = document.getElementById('statusSubtitle');
+                title.textContent = '仍然無法連線';
+                subtitle.innerHTML = '請檢查你嘅 Wi-Fi 或流動網絡設定，<br>然後再試一次。';
+
+                updateUI();
+            }
+        }
+
+        // ==========================================
+        // 5. 返回首頁
+        // ==========================================
+        function handleGoHome() {
+            // 優先使用 history.back()（保留 app 狀態）
+            if (window.history.length > 1) {
+                window.history.back();
+                // fallback：如果 500ms 後仍未離開，直接跳轉
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 500);
+            } else {
+                window.location.href = '/';
+            }
+        }
+
+        // ==========================================
+        // 6. 監聽網絡狀態變化
+        // ==========================================
+        window.addEventListener('online', () => {
+            state.isOnline = true;
+            updateUI();
+
+            // 自動 reload（延遲 1.5s 讓用戶睇到「已連線」）
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        });
+
+        window.addEventListener('offline', () => {
+            state.isOnline = false;
+            updateUI();
+        });
+
+        // ==========================================
+        // 7. 監聽 SW 更新
+        // ==========================================
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then((registration) => {
+                registration.addEventListener('updatefound', () => {
+                    console.log('[offline.html] New SW version found');
+                });
+            });
+        }
+
+        // ==========================================
+        // 8. 初始化
+        // ==========================================
+        function init() {
+            loadLocalStats();
+            updateUI();
+
+            // 每 5 秒更新一次「上次同步」相對時間
+            setInterval(() => {
+                if (state.lastSync) {
+                    updateUI();
+                }
+            }, 5000);
+
+            console.log('[offline.html] Initialized', state);
+        }
+
+        // DOM ready 後初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        // ==========================================
+        // 9. 防止 iOS 橡皮筋滾動
+        // ==========================================
+        document.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+    </script>
+</body>
+</html>
