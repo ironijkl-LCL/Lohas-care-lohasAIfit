@@ -394,7 +394,7 @@
 </head>
 <body>
 
-<!-- Dynamic Island -->
+<!-- Dynamic Island 通知條 -->
 <div id="dynamicIsland" class="dynamic-island-banner">
     <div style="display:flex; align-items:center; gap:8px;">
         <i id="islandIcon" class="fa-solid fa-bell"></i>
@@ -598,7 +598,7 @@
 
             <div style="margin-top: 10px;">
                 <div style="font-size: 12px; font-weight: 600; color: var(--apple-blue); display:flex; justify-content:space-between;">
-                    <span><i class="fa-solid fa-dna"></i> 19項微量全營養精算</span>
+                    <span><i class="fa-solid fa-dna"></i> 21項微量全營養精算</span>
                     <span id="single_grams_lbl" style="color:var(--text-sub);">約 250g</span>
                 </div>
                 <div class="nutrient-grid-19" id="nutrientGrid19"></div>
@@ -817,10 +817,11 @@ function escapeHTML(str) {
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
+// 🌟 精準格式化時間字串，確保年月日與時間之間具備標準空格
 function getFormattedDateTime() {
     const now = new Date();
     const pad = (n) => String(n).padStart(2, '0');
-    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 }
 
 const IDDSI_COLORS = {
@@ -890,7 +891,7 @@ let aiElapsedSeconds = 0;
 let islandDismissTimer = null;
 
 // ==========================================
-// AI 辨識進度計時與 UI 控制器 (修復遺漏函式)
+// AI 辨識進度計時與 UI 控制器 (防止 ReferenceError)
 // ==========================================
 function startAiDynamicProgress() {
     aiElapsedSeconds = 0;
@@ -915,7 +916,7 @@ function startAiDynamicProgress() {
         if (aiElapsedSeconds === 4) {
             triggerDynamicIsland("🔍 正在比對食材外觀與 IDDSI 質地...");
         } else if (aiElapsedSeconds === 8) {
-            triggerDynamicIsland("📊 正在精算 19 項微量營養素...");
+            triggerDynamicIsland("📊 正在精算 21 項微量全營養素...");
         }
     }, 1000);
 }
@@ -1175,7 +1176,7 @@ async function triggerNaturalLanguageLog() {
     if (items.length === 0) return alert("未能成功解析菜名，請嘗試更簡潔嘅字眼！");
 
     let summaryNames = [];
-    items.forEach(item => {
+    for (const item of items) {
         const logId = "NL_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4);
         const n = item.nutrients;
         
@@ -1199,11 +1200,59 @@ async function triggerNaturalLanguageLog() {
             carbs: n.carbs_g,
             fat: n.fat_g,
             grams: item.grams,
-            subText: `${MEAL_TYPE_MAP[currentMealType]} ·${item.grams}g · IDDSI L${item.iddsi}`
+            subText: `${MEAL_TYPE_MAP[currentMealType]} · ${item.grams}g · IDDSI L${item.iddsi}`
         });
 
+        // 🌟 背景向雲端 Google 試算表寫入完整 21 欄數據
+        fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+                action: "logMeal",
+                timestamp: getFormattedDateTime(),
+                id: userProfile.name || "健康探索者",
+                FoodName: item.food,
+                "克 Grams": item.grams,
+                "熱量 Calories": n.calories,
+                "蛋白質 Protein (g)": n.protein_g,
+                "碳水化合物 Carbs (g)": n.carbs_g,
+                "脂肪 Fat (g)": n.fat_g,
+                "膳食纖維 Fiber (g)": n.fiber_g || 0,
+                "糖 Sugar (g)": n.sugar_g || 0,
+                "飽和脂肪 Saturated Fat (g)": n.saturated_fat_g || 0,
+                "反式脂肪 Trans Fat (g)": n.trans_fat_g || 0,
+                "膽固醇 Cholesterol (mg)": n.cholesterol_mg || 0,
+                "鈣 Calcium (mg)": n.calcium_mg || 0,
+                "鐵 Iron (mg)": n.iron_mg || 0,
+                "鎂 Magnesium (mg)": n.magnesium_mg || 0,
+                "鈉 Sodium (mg)": n.sodium_mg || 0,
+                "鉀 Potassium (mg)": n.potassium_mg || 0,
+                "鋅 Zinc (mg)": n.zinc_mg || 0,
+                "維他命C Vitamin C (mg)": n.vitamin_c_mg || 0,
+                "吞嚥安全 (IDDSI)": String(item.iddsi),
+                // 英文簡寫對應
+                grams: item.grams,
+                calories: n.calories,
+                protein_g: n.protein_g,
+                carbs_g: n.carbs_g,
+                fat_g: n.fat_g,
+                fiber_g: n.fiber_g || 0,
+                sugar_g: n.sugar_g || 0,
+                saturated_fat_g: n.saturated_fat_g || 0,
+                trans_fat_g: n.trans_fat_g || 0,
+                cholesterol_mg: n.cholesterol_mg || 0,
+                calcium_mg: n.calcium_mg || 0,
+                iron_mg: n.iron_mg || 0,
+                magnesium_mg: n.magnesium_mg || 0,
+                sodium_mg: n.sodium_mg || 0,
+                potassium_mg: n.potassium_mg || 0,
+                zinc_mg: n.zinc_mg || 0,
+                vitamin_c_mg: n.vitamin_c_mg || 0
+            })
+        }).catch(e => console.warn("NLP背景同步雲端略過:", e));
+
         summaryNames.push(item.food);
-    });
+    }
 
     input.value = "";
     saveDailyState();
@@ -1230,7 +1279,7 @@ function toggleVoiceRecognitionForNL() {
 // 每日健康狀態總結
 function generateDailySummary() {
     const calPct = Math.round((cal / dailyTargets.cal) * 100);
-    let msg = `今日熱量已達 <b>${calPct}%</b> (${cal} /${dailyTargets.cal} kcal)`;
+    let msg = `今日熱量已達 <b>${calPct}%</b> (${cal} / ${dailyTargets.cal} kcal)`;
     
     if (protein < dailyTargets.protein * 0.8) {
         msg += `，蛋白質仲差 <b>${Math.round(dailyTargets.protein - protein)}g</b> 先夠數`;
@@ -1612,10 +1661,14 @@ async function uploadAndDetectFood() {
                 sugar_g: Number(rawN.sugar_g) || 2.0,
                 saturated_fat_g: Number(rawN.saturated_fat_g) || 1.0,
                 trans_fat_g: 0.0,
-                cholesterol_mg: 20,
-                calcium_mg: 40, iron_mg: 1.5, magnesium_mg: 25,
+                cholesterol_mg: Number(rawN.cholesterol_mg) || 20,
+                calcium_mg: Number(rawN.calcium_mg) || 40,
+                iron_mg: Number(rawN.iron_mg) || 1.5,
+                magnesium_mg: Number(rawN.magnesium_mg) || 25,
                 sodium_mg: Number(rawN.sodium_mg) || 250,
-                potassium_mg: 250, zinc_mg: 1.2, vitamin_c_mg: 3.0,
+                potassium_mg: Number(rawN.potassium_mg) || 250,
+                zinc_mg: Number(rawN.zinc_mg) || 1.2,
+                vitamin_c_mg: Number(rawN.vitamin_c_mg) || 3.0,
                 water_ml: Number(rawN.water_ml) || 180
             }
         };
@@ -1714,9 +1767,12 @@ function renderPendingFoodDetails() {
             <div class="nutrient-pill-card"><span class="n-label">🥩 蛋白質</span><span class="n-val">${(n.protein_g * s).toFixed(1)} g</span></div>
             <div class="nutrient-pill-card"><span class="n-label">🍞 碳水</span><span class="n-val">${(n.carbs_g * s).toFixed(1)} g</span></div>
             <div class="nutrient-pill-card"><span class="n-label">🧈 脂肪</span><span class="n-val">${(n.fat_g * s).toFixed(1)} g</span></div>
-            <div class="nutrient-pill-card"><span class="n-label">🥬 纖維</span><span class="n-val">${(n.fiber_g * s).toFixed(1)} g</span></div>
-            <div class="nutrient-pill-card"><span class="n-label">🍬 糖分</span><span class="n-val">${(n.sugar_g * s).toFixed(1)} g</span></div>
-            <div class="nutrient-pill-card"><span class="n-label">🧂 鈉質</span><span class="n-val">${Math.round(n.sodium_mg * s)} mg</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🥬 纖維</span><span class="n-val">${((n.fiber_g || 0) * s).toFixed(1)} g</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🍬 糖分</span><span class="n-val">${((n.sugar_g || 0) * s).toFixed(1)} g</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🧂 鈉質</span><span class="n-val">${Math.round((n.sodium_mg || 0) * s)} mg</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🥛 鈣質</span><span class="n-val">${Math.round((n.calcium_mg || 0) * s)} mg</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🩸 鐵質</span><span class="n-val">${((n.iron_mg || 0) * s).toFixed(1)} mg</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🍊 維C</span><span class="n-val">${((n.vitamin_c_mg || 0) * s).toFixed(1)} mg</span></div>
         `;
     }
 
@@ -1818,7 +1874,7 @@ async function searchFoodText() {
 }
 
 // ==========================================
-// 登記餐食並同步至 Google 試算表 (修復雲端無入數據)
+// 登記餐食並同步至 Google 試算表 (21 欄全營養雙向對齊)
 // ==========================================
 async function commitCurrentMeal() {
     if (!pendingFoodItem) return;
@@ -1832,45 +1888,74 @@ async function commitCurrentMeal() {
     const currentItemLevel = parseIddsi(pendingFoodItem["吞嚥安全 (IDDSI)"]);
     const logId = "LOG_" + Date.now();
 
-    const fGrams = Math.round((n.grams || 250) * s);
-    const fCal = Math.round((n.calories || 200) * s);
-    const fProtein = Number(((n.protein_g || 10) * s).toFixed(1));
-    const fCarbs = Number(((n.carbs_g || 30) * s).toFixed(1));
-    const fFat = Number(((n.fat_g || 5) * s).toFixed(1));
-    const fFiber = Number(((n.fiber_g || 0) * s).toFixed(1));
-    const fSugar = Number(((n.sugar_g || 0) * s).toFixed(1));
-    const fSatFat = Number(((n.saturated_fat_g || 0) * s).toFixed(1));
-    const fTransFat = Number(((n.trans_fat_g || 0) * s).toFixed(1));
-    const fCholesterol = Math.round((n.cholesterol_mg || 0) * s);
-    const fCalcium = Math.round((n.calcium_mg || 0) * s);
-    const fIron = Number(((n.iron_mg || 0) * s).toFixed(1));
-    const fMagnesium = Math.round((n.magnesium_mg || 0) * s);
-    const fSodium = Math.round((n.sodium_mg || 250) * s);
-    const fWater = Math.round((n.water_ml || 150) * s);
+    const fGrams = Math.round((Number(n.grams) || 250) * s);
+    const fCal = Math.round((Number(n.calories) || 200) * s);
+    const fProtein = Number(((Number(n.protein_g) || 10) * s).toFixed(1));
+    const fCarbs = Number(((Number(n.carbs_g) || 30) * s).toFixed(1));
+    const fFat = Number(((Number(n.fat_g) || 5) * s).toFixed(1));
+    const fFiber = Number(((Number(n.fiber_g) || 0) * s).toFixed(1));
+    const fSugar = Number(((Number(n.sugar_g) || 0) * s).toFixed(1));
+    const fSatFat = Number(((Number(n.saturated_fat_g) || 0) * s).toFixed(1));
+    const fTransFat = Number(((Number(n.trans_fat_g) || 0) * s).toFixed(1));
+    const fCholesterol = Math.round((Number(n.cholesterol_mg) || 0) * s);
+    const fCalcium = Math.round((Number(n.calcium_mg) || 0) * s);
+    const fIron = Number(((Number(n.iron_mg) || 0) * s).toFixed(1));
+    const fMagnesium = Math.round((Number(n.magnesium_mg) || 0) * s);
+    const fSodium = Math.round((Number(n.sodium_mg) || 250) * s);
+    const fPotassium = Math.round((Number(n.potassium_mg) || 250) * s);
+    const fZinc = Number(((Number(n.zinc_mg) || 0) * s).toFixed(1));
+    const fVitaminC = Number(((Number(n.vitamin_c_mg) || 0) * s).toFixed(1));
+    const fWater = Math.round((Number(n.water_ml) || 150) * s);
 
-    // 1. 發送請求至 Google Apps Script 寫入 Google Sheet
+    // 🌟 雙向相容 Payload：同時提供「中文全名」與「英文欄位名」，確保寫入非 0
+    const payloadData = {
+        "timestamp": getFormattedDateTime(),
+        "id": userProfile.name || "健康探索者",
+        "FoodName": pendingFoodItem.FoodName,
+        
+        // 中文試算表欄位名稱
+        "克 Grams": fGrams,
+        "熱量 Calories": fCal,
+        "蛋白質 Protein (g)": fProtein,
+        "碳水化合物 Carbs (g)": fCarbs,
+        "脂肪 Fat (g)": fFat,
+        "膳食纖維 Fiber (g)": fFiber,
+        "糖 Sugar (g)": fSugar,
+        "飽和脂肪 Saturated Fat (g)": fSatFat,
+        "反式脂肪 Trans Fat (g)": fTransFat,
+        "膽固醇 Cholesterol (mg)": fCholesterol,
+        "鈣 Calcium (mg)": fCalcium,
+        "鐵 Iron (mg)": fIron,
+        "鎂 Magnesium (mg)": fMagnesium,
+        "鈉 Sodium (mg)": fSodium,
+        "鉀 Potassium (mg)": fPotassium,
+        "鋅 Zinc (mg)": fZinc,
+        "維他命C Vitamin C (mg)": fVitaminC,
+        "吞嚥安全 (IDDSI)": String(currentItemLevel),
+
+        // 英文簡寫對應備案
+        "grams": fGrams,
+        "calories": fCal,
+        "protein_g": fProtein,
+        "carbs_g": fCarbs,
+        "fat_g": fFat,
+        "fiber_g": fFiber,
+        "sugar_g": fSugar,
+        "saturated_fat_g": fSatFat,
+        "trans_fat_g": fTransFat,
+        "cholesterol_mg": fCholesterol,
+        "calcium_mg": fCalcium,
+        "iron_mg": fIron,
+        "magnesium_mg": fMagnesium,
+        "sodium_mg": fSodium,
+        "potassium_mg": fPotassium,
+        "zinc_mg": fZinc,
+        "vitamin_c_mg": fVitaminC,
+        "iddsi_level": String(currentItemLevel)
+    };
+
     try {
-        const payloadData = {
-            timestamp: getFormattedDateTime(),
-            id: userProfile.name || "健康探索者",
-            FoodName: pendingFoodItem.FoodName,
-            grams: fGrams,
-            calories: fCal,
-            protein: fProtein,
-            carbs: fCarbs,
-            fat: fFat,
-            fiber: fFiber,
-            sugar: fSugar,
-            saturated_fat: fSatFat,
-            trans_fat: fTransFat,
-            cholesterol: fCholesterol,
-            calcium: fCalcium,
-            iron: fIron,
-            magnesium: fMagnesium,
-            sodium: fSodium
-        };
-
-        await fetch(API_URL, {
+        const res = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({
@@ -1879,13 +1964,19 @@ async function commitCurrentMeal() {
                 ...payloadData
             })
         });
-        triggerDynamicIsland("☁️ 已成功同步至雲端試算表！");
+
+        const resJson = await res.json();
+        if (resJson.success) {
+            triggerDynamicIsland(`☁️ 已成功同步至試算表 (第 ${resJson.row_inserted} 行)！`);
+        } else {
+            triggerDynamicIsland("⚠️ 試算表寫入被拒：" + (resJson.error || "未知錯誤"), "warning");
+        }
     } catch (err) {
-        console.warn("雲端同步失敗，已轉存本地：", err);
+        console.error("雲端同步失敗：", err);
         triggerDynamicIsland("⚠️ 雲端同步失敗，已儲存於本機", "warning");
     }
 
-    // 2. 本機紀錄保存
+    // 本地紀錄保存與更新
     cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
     sodium += fSodium; waterTotal += fWater;
     maxIddsiText = currentItemLevel.toString();
