@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2642/2642731.png">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- 使用本地封裝腳本（已安裝於 www/js/vendor） -->
+    <!-- 本地腳本（已安裝於 www/js/vendor） -->
     <script src="js/vendor/html5-qrcode.min.js"></script>
 
     <style>
@@ -404,9 +404,32 @@
             font-weight: bold;
         }
 
-        /* ==========================================
-           iPad / 平板電腦響應式適配 (min-width: 768px)
-           ========================================== */
+        /* 實測展示與合理性警示樣式 */
+        .measurement-breakdown-card {
+            background: rgba(0, 122, 255, 0.05);
+            border: 1px solid rgba(0, 122, 255, 0.18);
+            border-radius: 10px;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            font-size: 11px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sanity-badge-warning {
+            background: rgba(255, 59, 48, 0.08);
+            border: 1.5px solid var(--apple-red);
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: var(--apple-red);
+            line-height: 1.4;
+            display: none;
+        }
+
+        /* iPad / 平板電腦響應式適配 (min-width: 768px) */
         @media (min-width: 768px) {
             body {
                 padding-bottom: calc(85px + env(safe-area-inset-bottom, 0px));
@@ -426,7 +449,6 @@
                 padding: 8px 16px;
             }
 
-            /* 核心概覽 4 格在 iPad 轉為一整排 */
             .dashboard-grid {
                 grid-template-columns: repeat(4, 1fr);
                 gap: 12px;
@@ -440,7 +462,6 @@
                 font-size: 24px;
             }
 
-            /* 底部 Tab Bar 展開為 iPad 專用居中 Dock 樣式 */
             .apple-tab-bar {
                 max-width: 780px;
                 height: calc(62px + env(safe-area-inset-bottom, 0px));
@@ -472,7 +493,6 @@
                 font-size: 15px;
             }
 
-            /* 21項微量營養素網格在平板擴展為 6 欄排列 */
             .nutrient-grid-19 {
                 grid-template-columns: repeat(6, 1fr);
                 gap: 8px;
@@ -649,6 +669,7 @@
             </div>
         </div>
 
+        <!-- 登記前確認卡片（含 UI 實時展示與合理性檢查） -->
         <div class="ui-card" id="singleQueryResultCard" style="display: none;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                 <h3 style="margin:0;"><i class="fa-solid fa-clipboard-check" style="color: var(--apple-blue);"></i> 準備登記：<span id="single_foodname" style="color: var(--apple-blue);">-</span></h3>
@@ -657,12 +678,26 @@
                 </button>
             </div>
             
+            <!-- 合理性檢查警告橫額 (Sanity Alert) -->
+            <div id="sanityCheckBanner" class="sanity-badge-warning">
+                <i class="fa-solid fa-triangle-exclamation"></i> <span id="sanityCheckText">數值異常警示</span>
+            </div>
+
+            <!-- 忌食成分警告 -->
             <div id="allergenMatchAlertBox" style="display: none; background: rgba(255, 149, 0, 0.12); border: 1.5px solid var(--apple-orange); border-radius: 10px; padding: 8px 12px; margin-bottom: 10px;">
                 <div id="allergenMatchDetails" style="font-size: 12px; color: var(--apple-orange); font-weight: bold;"></div>
             </div>
 
+            <!-- 質地混合防嗆提醒 -->
             <div id="textureNoticeBox" style="display:none; background:rgba(0, 122, 255, 0.08); border:1.5px solid var(--apple-blue); border-radius:10px; padding:8px 12px; margin-bottom:10px; font-size:12px; color:var(--text-main); line-height: 1.4;">
                 <span id="textureNoticeText"></span>
+            </div>
+
+            <!-- 實時 AR 測量結果展示細項 -->
+            <div id="measurementBreakdownBox" class="measurement-breakdown-card" style="display:none;">
+                <span><i class="fa-solid fa-cube" style="color:var(--apple-teal);"></i> 實測容積：<b id="arVolVal">--</b></span>
+                <span>密度系數：<b id="arDensityVal">--</b></span>
+                <span id="arTechBadge" class="weight-pill">Raycast 擬合</span>
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
@@ -818,10 +853,14 @@
         </div>
 
         <div class="ui-card">
-            <h3><i class="fa-solid fa-shield-halved" style="color: var(--apple-green);"></i> 關於、私隱與資料安全</h3>
+            <h3><i class="fa-solid fa-shield-halved" style="color: var(--apple-green);"></i> 關於、私隱與免責聲明</h3>
             <p style="font-size:11px; color:var(--text-sub); margin:0 0 10px 0;">Lohas Diet Tracker v4.3 (App Store Edition)<br>所有資料均優先保存於用戶本地端。</p>
             
             <div style="display:flex; flex-direction:column; gap:8px;">
+                <button class="apple-btn-primary" style="background:rgba(0,122,255,0.08); color:var(--apple-blue); border:1px solid rgba(0,122,255,0.2); text-align:left; display:flex; justify-content:space-between; align-items:center; padding:10px 12px;" onclick="openDisclaimerModal()">
+                    <span><i class="fa-solid fa-file-medical"></i> 醫療與吞嚥安全免責聲明 (Disclaimer)</span>
+                    <i class="fa-solid fa-chevron-right" style="font-size:12px;"></i>
+                </button>
                 <a href="https://lohas-care.org/privacy" target="_blank" style="text-decoration:none; font-size:12px; color:var(--apple-blue); display:flex; justify-content:space-between; padding:8px 0; border-bottom:0.5px solid rgba(0,0,0,0.06);">
                     <span><i class="fa-solid fa-lock"></i> 隱私政策 (Privacy Policy)</span>
                     <i class="fa-solid fa-arrow-up-right-from-square"></i>
@@ -847,6 +886,22 @@
 
 </div>
 
+<!-- 免責聲明頁 Modal (App Store Guideline 1.4.1 必備) -->
+<div id="disclaimerModalOverlay" class="modal-overlay" style="z-index: 100015;">
+    <div class="modal-box" style="max-width: 380px; max-height: 85vh; display:flex; flex-direction:column; padding: 20px 18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+            <h3 style="margin:0; font-size:16px; color:var(--apple-red);"><i class="fa-solid fa-shield-heart"></i> 醫療與臨床免責聲明</h3>
+            <button onclick="closeDisclaimerModal()" style="border:none; background:none; color:var(--apple-gray); font-size:18px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div style="overflow-y:auto; font-size:12px; line-height:1.6; color:var(--text-main); padding-right:4px;">
+            <p><b>1. 非醫療診斷用途：</b><br>本應用程式提供之熱量精算、21項微量營養素分析、IDDSI 質地等級辨識及 AR 體積估算，均基於演算法模型與參考數據庫，僅供個人健康日誌記錄與飲食管理參考，<strong>並非</strong>專業醫療診斷、臨床治療方案或醫療器械。</p>
+            <p><b>2. 吞嚥困難 (IDDSI) 照護限制：</b><br>IDDSI 食物及飲品質地等級由 AI 圖像分析預估，烹調方式與食材稠度可能隨時間變化。對於患有吞嚥障礙（Dysphagia）的長者或病患，進食前<strong>必須由註冊言語治療師、臨床營養師或專業醫護人員</strong>進行實物評估與確認，切勿僅依賴本 App 的辨識結果餵食。</p>
+            <p><b>3. 慢性病與特殊飲食：</b><br>若您患有糖尿病、腎病、高血壓或嚴重食物過敏，在依據本應用建議調整飲食結構前，請務必諮詢主治醫師或註冊營養師。</p>
+        </div>
+        <button class="apple-btn-primary" style="margin-top:14px;" onclick="closeDisclaimerModal()">我已詳細閱讀並明白</button>
+    </div>
+</div>
+
 <!-- Onboarding 新手引導 Modal -->
 <div id="onboardingModalOverlay" class="modal-overlay" style="z-index: 100010;">
     <div class="modal-box" style="max-width: 360px; text-align: center;">
@@ -856,8 +911,8 @@
             一齊開啟你的智慧健康日誌！只需 3 秒拍照或一句話，即可自動分析熱量、三大營養素與質地。
         </p>
         <div style="background:rgba(0,0,0,0.02); border-radius:10px; padding:10px; text-align:left; font-size:12px; margin-bottom:14px;">
-            <div style="margin-bottom:6px;"><i class="fa-solid fa-check" style="color:var(--apple-green);"></i> 拍照自動精算 19 項微量營養素</div>
-            <div style="margin-bottom:6px;"><i class="fa-solid fa-check" style="color:var(--apple-green);"></i> 自然語言語音一秒入帳</div>
+            <div style="margin-bottom:6px;"><i class="fa-solid fa-check" style="color:var(--apple-green);"></i> 拍照自動精算 21 項微量營養素</div>
+            <div style="margin-bottom:6px;"><i class="fa-solid fa-check" style="color:var(--apple-green);"></i> AR / LiDAR 實景光線投射測量碗量</div>
             <div><i class="fa-solid fa-check" style="color:var(--apple-green);"></i> 本地隱私保障，數據隨時匯出</div>
         </div>
         <button class="apple-btn-primary" onclick="completeOnboarding()">立即開始健康生活</button>
@@ -991,6 +1046,13 @@ function showAppleDialog({ type = 'alert', title = '', message = '', defaultValu
     });
 }
 
+function openDisclaimerModal() {
+    document.getElementById("disclaimerModalOverlay").classList.add("active");
+}
+function closeDisclaimerModal() {
+    document.getElementById("disclaimerModalOverlay").classList.remove("active");
+}
+
 const API_URL = "https://script.google.com/macros/s/AKfycbwOgthCxMHgU-7nsuYd91AMSWUrr48qU8pm02j4qCYk_TE5nN7dJOB_o5nrUc932kZr/exec";
 
 function escapeHTML(str) {
@@ -998,7 +1060,6 @@ function escapeHTML(str) {
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
-// 精準格式化時間字串，確保年月日與時間之間具備標準空格
 function getFormattedDateTime() {
     const now = new Date();
     const pad = (n) => String(n).padStart(2, '0');
@@ -1138,13 +1199,28 @@ async function clearAllData() {
 }
 
 // ==========================================
-// 5. 體重紀錄引擎
+// 5. 體重紀錄與合理性防呆
 // ==========================================
 async function logCurrentWeight() {
     const input = document.getElementById("weightInput");
     const val = parseFloat(input.value);
     if (!val || val <= 20 || val >= 300) {
         return showAppleDialog({ title: "數值無效", message: "請輸入有效的體重數值 (20-300 kg)！" });
+    }
+
+    // 體重突變檢查 (>3kg)
+    if (weightLogs.length > 0) {
+        const lastWeight = weightLogs[0].weight;
+        const diff = Math.abs(val - lastWeight);
+        if (diff >= 3.0) {
+            const ok = await showAppleDialog({
+                type: 'confirm',
+                title: '體重突變確認',
+                message: `今次記錄（${val}kg）與上次（${lastWeight}kg）相差 ${diff.toFixed(1)}kg，確定輸入無誤？`,
+                okText: '數值正確'
+            });
+            if (!ok) return;
+        }
     }
 
     const todayStr = getTodayDateString();
@@ -1518,7 +1594,7 @@ function toggleVoiceRecognitionForNL() {
 }
 
 // ==========================================
-// 10. AR / LiDAR 碗量估算引擎（串接原生 raycastQuery）
+// 10. AR / LiDAR 碗量估算引擎（含物理合理性檢查）
 // ==========================================
 const FOOD_DENSITY_MAP = {
     "drink": 1.0,
@@ -1559,12 +1635,31 @@ async function startARVolumeEstimation() {
         
         if (result && result.volume_ml) {
             const vol = result.volume_ml;
+
+            // 物理空間合理性檢查
+            if (vol < 30 || vol > 1800) {
+                await showAppleDialog({
+                    title: "測量數值異常",
+                    message: `偵測到碗形容積為 ${vol}ml，超出常規個人餐食範圍（30ml - 1800ml），請保持手機平穩重新標定餐枱。`
+                });
+                return;
+            }
+
             const density = getFoodDensity(pendingFoodItem.FoodName);
             const autoGrams = Math.round(vol * density);
 
             pendingFoodItem.rawNutrients.grams = autoGrams;
             const standardPortion = 250;
             currentPortionScale = autoGrams / standardPortion;
+
+            // UI 展示卡更新
+            const breakdownBox = document.getElementById("measurementBreakdownBox");
+            if (breakdownBox) {
+                breakdownBox.style.display = "flex";
+                document.getElementById("arVolVal").textContent = `${vol} ml`;
+                document.getElementById("arDensityVal").textContent = `${density.toFixed(2)} g/cm³`;
+                document.getElementById("arTechBadge").textContent = result.device_has_lidar ? "LiDAR 網格" : "Raycast 擬合";
+            }
 
             renderPendingFoodDetails();
 
@@ -1680,6 +1775,8 @@ async function fetchOpenFoodFactsData(barcode) {
             }
         };
 
+        // 隱藏先前的 AR 測量展示
+        document.getElementById("measurementBreakdownBox").style.display = "none";
         document.getElementById("single_foodname").textContent = name;
         document.getElementById("singleQueryResultCard").style.display = "block";
         setPortionScale(1.0, document.querySelectorAll('.portion-chip')[3]);
@@ -1978,6 +2075,8 @@ async function uploadAndDetectFood() {
         const isFav = favoriteFoods.some(f => f.name === extracted.name);
         document.getElementById("favoriteToggleBtn").innerHTML = isFav ? `<i class="fa-solid fa-star"></i>` : `<i class="fa-regular fa-star"></i>`;
 
+        // 隱藏先前的 AR 測量展示卡
+        document.getElementById("measurementBreakdownBox").style.display = "none";
         document.getElementById("single_foodname").textContent = extracted.name;
         document.getElementById("singleQueryResultCard").style.display = "block";
         setPortionScale(1.0, document.querySelectorAll('.portion-chip')[3]);
@@ -2048,6 +2147,33 @@ function setPortionScale(s, el) {
     renderPendingFoodDetails();
 }
 
+// 實時合理性檢查 (Sanity Check Engine)
+function evaluateSanity(grams, cal) {
+    const sanityBanner = document.getElementById("sanityCheckBanner");
+    const sanityText = document.getElementById("sanityCheckText");
+    if (!sanityBanner || !sanityText) return;
+
+    if (grams > 1000) {
+        sanityBanner.style.display = "block";
+        sanityText.textContent = `份量提醒：目前估算重量高達 ${grams}g（超過1公斤），若為多人共享菜餚，請手動下調份量百分比。`;
+        return;
+    }
+
+    if (cal > 1500) {
+        sanityBanner.style.display = "block";
+        sanityText.textContent = `熱量警示：此單品熱量高達 ${cal} kcal，已佔每日建議目標大部分，請確認份量是否正確。`;
+        return;
+    }
+
+    if (grams < 20 && !pendingFoodItem?.isDrink) {
+        sanityBanner.style.display = "block";
+        sanityText.textContent = `份量提醒：估算重量僅 ${grams}g，數值偏低，建議手動確認。`;
+        return;
+    }
+
+    sanityBanner.style.display = "none";
+}
+
 function renderPendingFoodDetails() {
     if (!pendingFoodItem) return;
     const s = currentPortionScale;
@@ -2059,6 +2185,9 @@ function renderPendingFoodDetails() {
 
     document.getElementById("single_cal").textContent = `${scaledCal} kcal`;
     document.getElementById("single_grams_lbl").textContent = `約 ${scaledGrams}g`;
+
+    // 觸發合理性檢查
+    evaluateSanity(scaledGrams, scaledCal);
 
     updateIddsiTriggerBtnUI(iddsiVal, pendingFoodItem.isUserModified);
 
@@ -2166,6 +2295,7 @@ async function searchFoodText() {
 
     pendingFoodItem = target;
     pendingFoodItem.isUserModified = false;
+    document.getElementById("measurementBreakdownBox").style.display = "none";
     document.getElementById("single_foodname").textContent = target.FoodName;
     document.getElementById("singleQueryResultCard").style.display = "block";
     setPortionScale(1.0, document.querySelectorAll('.portion-chip')[3]);
