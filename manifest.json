@@ -1,20 +1,82 @@
 {
-  "name": "樂活健康 - 個人飲食與營養管理",
-  "short_name": "樂活健康",
-  "description": "香港首個結合 IDDSI 質地分級、21 項微量營養素與 AR 量碗的個人飲食管理 App。",
   "id": "/",
+  "name": "Family OS - 家庭智慧管理",
+  "short_name": "Family OS",
+  "description": "一站式家庭日曆、任務、相簿與 AI 助手，讓家庭成員同步行程、分工合作、共享回憶。",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
+  "display_override": ["standalone", "minimal-ui", "browser"],
   "orientation": "portrait",
-  "background_color": "#F2F2F7",
-  "theme_color": "#007AFF",
+  "background_color": "#f5f5f7",
+  "theme_color": "#0071e3",
   "lang": "zh-HK",
   "dir": "ltr",
-  "categories": ["health", "medical", "food", "lifestyle"],
+  "categories": ["productivity", "lifestyle", "utilities"],
   "prefer_related_applications": false,
-  "icons": [ ... ],
-  "shortcuts": [ ... ],
-  "screenshots": [ ... ]
+  "icons": [
+    { "src": "/icons/icon-180.png",  "sizes": "180x180",  "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-192.png",  "sizes": "192x192",  "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png",  "sizes": "512x512",  "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-1024.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "新增活動",
+      "short_name": "新增",
+      "description": "快速新增家庭活動",
+      "url": "/?action=add",
+      "icons": [{ "src": "/icons/shortcut-add.png", "sizes": "96x96", "type": "image/png" }]
+    },
+    {
+      "name": "今日行程",
+      "short_name": "今日",
+      "description": "查看今日家庭行程",
+      "url": "/?view=today",
+      "icons": [{ "src": "/icons/shortcut-today.png", "sizes": "96x96", "type": "image/png" }]
+    },
+    {
+      "name": "家庭相簿",
+      "short_name": "相簿",
+      "description": "開啟家庭共享相簿",
+      "url": "/?view=album",
+      "icons": [{ "src": "/icons/shortcut-album.png", "sizes": "96x96", "type": "image/png" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/home.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "首頁 - 今日家庭總覽"
+    },
+    {
+      "src": "/screenshots/calendar.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "日曆 - 家庭成員行程同步"
+    },
+    {
+      "src": "/screenshots/tasks.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "任務 - 家庭分工管理"
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [{ "name": "image", "accept": ["image/*"] }]
+    }
+  }
 }
