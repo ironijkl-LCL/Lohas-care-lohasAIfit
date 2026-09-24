@@ -1,12 +1,20 @@
 {
-  "name": "樂活健康 - 臨床營養管理",
+  "name": "樂活健康 - 個人飲食與營養管理",
   "short_name": "樂活健康",
-  "start_url": "./index.html",
+  "description": "香港首個結合 IDDSI 質地分級、21 項微量營養素與 AR 量碗的個人飲食管理 App。",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
   "background_color": "#F2F2F7",
   "theme_color": "#007AFF",
-  "icons": [
-    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png" }
-  ]
+  "lang": "zh-HK",
+  "dir": "ltr",
+  "categories": ["health", "medical", "food", "lifestyle"],
+  "prefer_related_applications": false,
+  "icons": [ ... ],
+  "shortcuts": [ ... ],
+  "screenshots": [ ... ]
 }
