@@ -241,7 +241,7 @@
         }
         .apple-input:focus { outline: none; border-color: var(--apple-blue); }
 
-        /* IDDSI 質地色票 */
+        /* IDDSI 質地色票規範 */
         .iddsi-c0 { background-color: #FFFFFF !important; color: #000000 !important; border: 1.5px solid #8E8E93 !important; }
         @media (prefers-color-scheme: dark) {
             .iddsi-c0 { background-color: #2C2C2E !important; color: #FFFFFF !important; border: 1.5px solid #FFFFFF !important; }
@@ -497,7 +497,7 @@
         </div>
     </div>
 
-    <!-- 純本地模式安全橫幅 -->
+    <!-- 純本地隱私模式安全橫幅 -->
     <div id="pureLocalModeBanner" class="pure-local-badge-banner">
         <i class="fa-solid fa-shield-halved"></i> <b>純本地隱私模式已開啟</b>：所有資料 100% 儲存於本機，相片與日誌絕不上傳雲端伺服器。
     </div>
@@ -832,7 +832,7 @@
 
         <div class="ui-card">
             <h3><i class="fa-solid fa-shield-halved" style="color: var(--apple-green);"></i> 關於、私隱與免責聲明</h3>
-            <p style="font-size:11px; color:var(--text-sub); margin:0 0 10px 0;">Lohas Diet Tracker v4.6 (App Store Edition)<br>所有健康日誌均優先保存於用戶本地端。</p>
+            <p style="font-size:11px; color:var(--text-sub); margin:0 0 10px 0;">Lohas Diet Tracker v4.7 (App Store Edition)<br>所有健康日誌均優先保存於用戶本地端。</p>
             
             <div style="display:flex; flex-direction:column; gap:8px;">
                 <button class="apple-btn-primary" style="background:rgba(0,122,255,0.08); color:var(--apple-blue); border:1px solid rgba(0,122,255,0.2); text-align:left; display:flex; justify-content:space-between; align-items:center; padding:10px 12px;" onclick="openDisclaimerModal()">
@@ -923,7 +923,7 @@
 
 <script>
 // ==========================================
-// 1. 頂層全域錯誤追蹤（含上報準備）
+// 1. 頂層全域錯誤追蹤
 // ==========================================
 window.onerror = function(msg, url, line, col, error) {
     if (msg === "Script error." || !url) return false;
@@ -966,28 +966,41 @@ window.addEventListener("unhandledrejection", function(event) {
     console.warn("【Lohas Unhandled Promise Rejection】", reason);
 });
 
-// 🔴 致命位 3 修正：錯誤日誌主動上報機制
+// 🔴 致命位 2 修正：加入互斥鎖 (In-Flight Lock) 與只清除已成功上報批次
+let errorUploadInFlight = false;
+
 async function uploadErrorLogs() {
+    if (errorUploadInFlight) return;
     if (!navigator.onLine || userProfile.pureLocalMode) return;
+
+    errorUploadInFlight = true;
     try {
         const errs = JSON.parse(localStorage.getItem("lohas_error_logs") || "[]");
         if (errs.length === 0) return;
 
+        const batchSize = Math.min(errs.length, 5);
         const payload = {
             action: "logErrors",
             device: navigator.userAgent,
-            errors: errs.slice(0, 5) // 一次最多上報最近 5 筆
+            errors: errs.slice(0, batchSize)
         };
 
-        await fetch(API_URL, {
+        const res = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload)
         });
 
-        localStorage.setItem("lohas_error_logs", "[]");
+        if (res.ok) {
+            // 讀取最新狀態並只截斷已確認上傳的批次，避免併發時新產生的日誌被誤清空
+            const currentLogs = JSON.parse(localStorage.getItem("lohas_error_logs") || "[]");
+            const remaining = currentLogs.slice(batchSize);
+            localStorage.setItem("lohas_error_logs", JSON.stringify(remaining));
+        }
     } catch (e) {
         console.warn("錯誤上報略過:", e);
+    } finally {
+        errorUploadInFlight = false;
     }
 }
 
@@ -1145,7 +1158,7 @@ let isSpeechRecognizing = false;
 let speechSilenceTimer = null;
 
 // ==========================================
-// 3. Apple HealthKit 橋接封裝 (🔴 致命位 1 & 2 修正：加入體重同步 logBodyMass)
+// 3. Apple HealthKit 橋接封裝 (含體重雙向同步)
 // ==========================================
 let watchActiveBurn = 0;
 
@@ -1192,7 +1205,6 @@ const HealthKitBridge = {
         }
     },
 
-    // 🔴 致命位 2 修正：體重寫入支援
     async syncBodyMass(kg) {
         if (!this.plugin || kg <= 0) return;
         try {
@@ -1625,7 +1637,6 @@ function quickAddWater(ml, typeName) {
     updateDashboardUI();
 }
 
-// 🔴 致命位 2 修正：體重記錄同步至 HealthKit
 async function logCurrentWeight() {
     const input = document.getElementById("weightInput");
     const val = parseFloat(input.value);
@@ -1789,7 +1800,7 @@ function stopAiDynamicProgress() {
     if (warningBox) warningBox.innerHTML = "";
 }
 
-// 🔴 致命位 5 修正：加入 Apple Health 數據手動刪除告知
+// 🔴 致命位 4 修正：清空本機前主動嘗試上報未傳送的 Crash Logs
 async function clearAllData() {
     const confirm1 = await showAppleDialog({ type: 'confirm', title: '確定清除所有記錄？', message: '此操作會清空個人目標、飲食及體重日誌，不可復原。', okText: '下一步' });
     if (!confirm1) return;
@@ -1803,6 +1814,15 @@ async function clearAllData() {
         okText: '繼續清空'
     });
     if (!warn) return;
+
+    // 清空前嘗試將尚存在本地的崩潰日誌排洪上報
+    try {
+        if (navigator.onLine && !userProfile.pureLocalMode) {
+            await uploadErrorLogs();
+        }
+    } catch (e) {
+        console.warn("清空前錯誤上報略過:", e);
+    }
 
     localStorage.clear();
     location.reload();
@@ -2460,7 +2480,9 @@ function copyReportText() {
     triggerDynamicIsland("📋 已複製文字到剪貼簿！");
 }
 
-// 🔴 致命位 4 修正：更新 URL hash，支援 iOS 原生滑動與返回鍵操作
+// 🔴 致命位 3 導航架構說明：
+// 依據 Apple HIG，iOS 原生 TabBar 切換屬於平面狀態替換，因此使用 replaceState 避免污染歷史堆疊；
+// 後續若增加全螢幕檢視或多層 Modal，才在開啟時使用 pushState。
 function switchAppleTab(tabId, el, updateHash = true) {
     triggerHaptic('light');
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -2485,7 +2507,6 @@ function switchAppleTab(tabId, el, updateHash = true) {
     }
 }
 
-// 監聽 Hash 改變（例如 iOS 瀏覽器返回鍵操作）
 window.addEventListener('hashchange', () => {
     const tabId = location.hash.replace('#', '') || 'home';
     const tabs = ['home', 'meals', 'trends', 'profile'];
@@ -2509,13 +2530,11 @@ window.onload = () => {
     checkOnboarding();
     flushOfflineSyncQueue();
 
-    // 依 URL Hash 還原當前分頁
     const initialTab = location.hash.replace('#', '');
     if (['home', 'meals', 'trends', 'profile'].includes(initialTab)) {
         switchAppleTab(initialTab, null, false);
     }
 
-    // HealthKit 異步背景授權與取值，不阻塞首屏渲染
     HealthKitBridge.init().then(isAvailable => {
         if (isAvailable) {
             return refreshWatchCalories();
@@ -2524,7 +2543,6 @@ window.onload = () => {
         updateDashboardUI();
     }).catch(e => console.warn("HealthKit 啟動略過:", e));
 
-    // 啟動 10 秒後嘗試上報本機已緩存的崩潰日誌
     setTimeout(uploadErrorLogs, 10000);
 };
 </script>
