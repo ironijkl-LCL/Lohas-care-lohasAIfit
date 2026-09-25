@@ -478,7 +478,7 @@
 <body>
 
 <!-- Dynamic Island 通知條 -->
-<div id="dynamicIsland" class="dynamic-island-banner">
+<div id="dynamicIsland" class="dynamic-island-banner" role="status" aria-live="polite">
     <div style="display:flex; align-items:center; gap:8px;">
         <i id="islandIcon" class="fa-solid fa-bell"></i>
         <div id="islandText" style="font-size: 12px; font-weight: 500;">處理中...</div>
@@ -497,7 +497,7 @@
         </div>
     </div>
 
-    <!-- 純本地隱私模式安全橫幅 -->
+    <!-- 純本地模式安全橫幅 -->
     <div id="pureLocalModeBanner" class="pure-local-badge-banner">
         <i class="fa-solid fa-shield-halved"></i> <b>純本地隱私模式已開啟</b>：所有資料 100% 儲存於本機，相片與日誌絕不上傳雲端伺服器。
     </div>
@@ -603,7 +603,6 @@
             </div>
         </div>
 
-        <!-- 語音或文字速記模組 -->
         <div class="ui-card" style="background: linear-gradient(180deg, rgba(0, 122, 255, 0.04), var(--bg-card));">
             <h3><i class="fa-solid fa-comment-dots" style="color: var(--apple-blue);"></i> 語音 / 文字速記</h3>
             <p style="font-size:11px; color:var(--text-sub); margin:0 0 6px 0;">直接講或者打低食咗咩，語音停頓 3 秒自動分析入帳：</p>
@@ -832,7 +831,7 @@
 
         <div class="ui-card">
             <h3><i class="fa-solid fa-shield-halved" style="color: var(--apple-green);"></i> 關於、私隱與免責聲明</h3>
-            <p style="font-size:11px; color:var(--text-sub); margin:0 0 10px 0;">Lohas Diet Tracker v4.7 (App Store Edition)<br>所有健康日誌均優先保存於用戶本地端。</p>
+            <p style="font-size:11px; color:var(--text-sub); margin:0 0 10px 0;">Lohas Diet Tracker v4.8 (App Store Edition)<br>所有健康日誌均優先保存於用戶本地端。</p>
             
             <div style="display:flex; flex-direction:column; gap:8px;">
                 <button class="apple-btn-primary" style="background:rgba(0,122,255,0.08); color:var(--apple-blue); border:1px solid rgba(0,122,255,0.2); text-align:left; display:flex; justify-content:space-between; align-items:center; padding:10px 12px;" onclick="openDisclaimerModal()">
@@ -855,20 +854,20 @@
     </div>
 
     <!-- 底部導航 Bar -->
-    <div class="apple-tab-bar">
-        <div class="tab-item active" onclick="switchAppleTab('home', this)"><i class="fa-solid fa-heart-pulse"></i><span>概覽</span></div>
-        <div class="tab-item" onclick="switchAppleTab('meals', this)"><i class="fa-solid fa-circle-plus"></i><span>記錄飲食</span></div>
-        <div class="tab-item" onclick="switchAppleTab('trends', this)"><i class="fa-solid fa-chart-line"></i><span>趨勢統計</span></div>
-        <div class="tab-item" onclick="switchAppleTab('profile', this)"><i class="fa-solid fa-user-gear"></i><span>目標設定</span></div>
+    <div class="apple-tab-bar" role="tablist">
+        <div class="tab-item active" role="tab" aria-selected="true" onclick="switchAppleTab('home', this)"><i class="fa-solid fa-heart-pulse"></i><span>概覽</span></div>
+        <div class="tab-item" role="tab" aria-selected="false" onclick="switchAppleTab('meals', this)"><i class="fa-solid fa-circle-plus"></i><span>記錄飲食</span></div>
+        <div class="tab-item" role="tab" aria-selected="false" onclick="switchAppleTab('trends', this)"><i class="fa-solid fa-chart-line"></i><span>趨勢統計</span></div>
+        <div class="tab-item" role="tab" aria-selected="false" onclick="switchAppleTab('profile', this)"><i class="fa-solid fa-user-gear"></i><span>目標設定</span></div>
     </div>
 </div>
 
-<!-- Modal 集合 -->
-<div id="disclaimerModalOverlay" class="modal-overlay" style="z-index: 100015;">
+<!-- Modal 集合（全部補齊 role="dialog" 及 aria-modal="true" 支援 Accessibility 5.1.5） -->
+<div id="disclaimerModalOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="disclaimerModalTitle" style="z-index: 100015;">
     <div class="modal-box" style="max-width: 380px; max-height: 85vh; display:flex; flex-direction:column; padding: 20px 18px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-            <h3 style="margin:0; font-size:16px; color:var(--apple-red);"><i class="fa-solid fa-shield-heart"></i> 醫療與飲食安全免責聲明</h3>
-            <button onclick="closeDisclaimerModal()" style="border:none; background:none; color:var(--apple-gray); font-size:18px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="disclaimerModalTitle" style="margin:0; font-size:16px; color:var(--apple-red);"><i class="fa-solid fa-shield-heart"></i> 醫療與飲食安全免責聲明</h3>
+            <button onclick="closeDisclaimerModal()" style="border:none; background:none; color:var(--apple-gray); font-size:18px; cursor:pointer;" aria-label="關閉"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div style="overflow-y:auto; font-size:12px; line-height:1.6; color:var(--text-main); padding-right:4px;">
             <p><b>1. 非臨床診斷用途：</b><br>本應用程式提供之熱量估算、全營養素分析、IDDSI 質地級別參考及 AR 碗量換算，均為演算法與日常數據庫參考，僅供個人飲食管理日誌之用，<strong>並非</strong>專業臨床醫療診斷或治療指引。</p>
@@ -879,7 +878,7 @@
     </div>
 </div>
 
-<div id="onboardingModalOverlay" class="modal-overlay" style="z-index: 100010;">
+<div id="onboardingModalOverlay" class="modal-overlay" role="dialog" aria-modal="true" style="z-index: 100010;">
     <div class="modal-box" style="max-width: 360px; text-align: center;">
         <div style="font-size: 38px; color: var(--apple-blue); margin-bottom: 8px;">🌱</div>
         <h3 style="margin: 0 0 6px 0; font-size: 18px;">歡迎使用樂活飲食管理</h3>
@@ -890,27 +889,28 @@
     </div>
 </div>
 
-<div id="iddsiPickerModalOverlay" class="modal-overlay" style="z-index: 100003;">
+<div id="iddsiPickerModalOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="iddsiPickerTitle" style="z-index: 100003;">
     <div class="modal-box" style="max-width: 360px; padding: 18px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
-            <h3 style="margin:0; font-size:16px;"><i class="fa-solid fa-layer-group" style="color:var(--apple-blue);"></i> 食物及飲品質地等級</h3>
-            <button onclick="closeIddsiPickerModal()" style="border:none; background:none; color:var(--apple-gray); font-size:18px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="iddsiPickerTitle" style="margin:0; font-size:16px;"><i class="fa-solid fa-layer-group" style="color:var(--apple-blue);"></i> 食物及飲品質地等級</h3>
+            <button onclick="closeIddsiPickerModal()" style="border:none; background:none; color:var(--apple-gray); font-size:18px; cursor:pointer;" aria-label="關閉"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <p style="font-size: 11px; color: var(--text-sub); margin: 0 0 10px 0;">可依個人咀嚼喜好或長輩照護需要自由選擇：</p>
         <div class="iddsi-option-list" id="iddsiOptionListContainer"></div>
     </div>
 </div>
 
-<div id="barcodeScannerModalOverlay" class="modal-overlay" style="z-index: 100004;">
+<div id="barcodeScannerModalOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="barcodeScannerTitle" style="z-index: 100004;">
     <div class="modal-box" style="max-width: 340px; text-align: center;">
-        <h3 style="margin:0 0 8px 0; font-size:16px; color:var(--apple-purple);"><i class="fa-solid fa-barcode"></i> 掃描食品包裝條碼</h3>
+        <h3 id="barcodeScannerTitle" style="margin:0 0 8px 0; font-size:16px; color:var(--apple-purple);"><i class="fa-solid fa-barcode"></i> 掃描食品包裝條碼</h3>
         <p style="font-size: 11px; color: var(--text-sub); margin: 0 0 10px 0;">將條碼對準框內，即時搜尋包裝營養資料：</p>
         <div id="barcode-reader" style="width:100%; border-radius:10px; overflow:hidden; background:#000;"></div>
         <button class="apple-btn-primary" style="margin-top:12px; background:var(--apple-gray);" onclick="closeBarcodeScannerModal()">關閉相機</button>
     </div>
 </div>
 
-<div id="appleDialogOverlay" class="modal-overlay" style="z-index: 100020;">
+<!-- 🔴 致命位 3 修正：通用 Modal 加齊 ARIA 屬性 -->
+<div id="appleDialogOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="dialogTitle" aria-describedby="dialogMessage" style="z-index: 100020;">
     <div class="modal-box" style="max-width: 290px; text-align: center; padding: 20px 16px 0 16px; border-radius: 14px;">
         <h4 id="dialogTitle" style="margin: 0 0 6px 0; font-size: 17px; font-weight: 600;"></h4>
         <p id="dialogMessage" style="font-size: 13px; color: var(--text-sub); margin: 0 0 14px 0; line-height: 1.4;"></p>
@@ -966,7 +966,6 @@ window.addEventListener("unhandledrejection", function(event) {
     console.warn("【Lohas Unhandled Promise Rejection】", reason);
 });
 
-// 🔴 致命位 2 修正：加入互斥鎖 (In-Flight Lock) 與只清除已成功上報批次
 let errorUploadInFlight = false;
 
 async function uploadErrorLogs() {
@@ -992,7 +991,6 @@ async function uploadErrorLogs() {
         });
 
         if (res.ok) {
-            // 讀取最新狀態並只截斷已確認上傳的批次，避免併發時新產生的日誌被誤清空
             const currentLogs = JSON.parse(localStorage.getItem("lohas_error_logs") || "[]");
             const remaining = currentLogs.slice(batchSize);
             localStorage.setItem("lohas_error_logs", JSON.stringify(remaining));
@@ -1005,7 +1003,7 @@ async function uploadErrorLogs() {
 }
 
 // ==========================================
-// 2. 原生觸覺回饋與原生對話框
+// 2. 原生觸覺回饋與對話框（含返回 / ESC 關閉 Promise 處理）
 // ==========================================
 async function triggerHaptic(type = 'light') {
     const Haptics = window.Capacitor?.Plugins?.Haptics;
@@ -1018,9 +1016,23 @@ async function triggerHaptic(type = 'light') {
     } catch (e) {}
 }
 
+let activeDialogResolver = null;
+
+function dismissActiveDialog(val = null) {
+    const overlay = document.getElementById('appleDialogOverlay');
+    if (overlay && overlay.classList.contains('active')) {
+        overlay.classList.remove('active');
+        if (activeDialogResolver) {
+            activeDialogResolver(val);
+            activeDialogResolver = null;
+        }
+    }
+}
+
 function showAppleDialog({ type = 'alert', title = '', message = '', defaultValue = '', okText = '好', cancelText = '取消' }) {
     triggerHaptic('light');
     return new Promise((resolve) => {
+        activeDialogResolver = resolve;
         const overlay = document.getElementById('appleDialogOverlay');
         const titleEl = document.getElementById('dialogTitle');
         const msgEl = document.getElementById('dialogMessage');
@@ -1045,15 +1057,14 @@ function showAppleDialog({ type = 'alert', title = '', message = '', defaultValu
             const cancelBtn = document.createElement('button');
             cancelBtn.style.cssText = 'padding:12px; border:none; background:none; color:var(--apple-blue); font-size:16px; border-right:0.5px solid rgba(0,0,0,0.15); cursor:pointer;';
             cancelBtn.textContent = cancelText;
-            cancelBtn.onclick = () => { triggerHaptic('light'); overlay.classList.remove('active'); resolve(null); };
+            cancelBtn.onclick = () => { triggerHaptic('light'); dismissActiveDialog(null); };
 
             const okBtn = document.createElement('button');
             okBtn.style.cssText = 'padding:12px; border:none; background:none; color:var(--apple-blue); font-size:16px; font-weight:600; cursor:pointer;';
             okBtn.textContent = okText;
             okBtn.onclick = () => {
                 triggerHaptic('medium');
-                overlay.classList.remove('active');
-                resolve(type === 'prompt' ? inputEl.value : true);
+                dismissActiveDialog(type === 'prompt' ? inputEl.value : true);
             };
 
             btnGrid.appendChild(cancelBtn);
@@ -1063,7 +1074,7 @@ function showAppleDialog({ type = 'alert', title = '', message = '', defaultValu
             const okBtn = document.createElement('button');
             okBtn.style.cssText = 'padding:12px; border:none; background:none; color:var(--apple-blue); font-size:16px; font-weight:600; cursor:pointer; width:100%;';
             okBtn.textContent = okText;
-            okBtn.onclick = () => { triggerHaptic('light'); overlay.classList.remove('active'); resolve(true); };
+            okBtn.onclick = () => { triggerHaptic('light'); dismissActiveDialog(true); };
             btnGrid.appendChild(okBtn);
         }
 
@@ -1073,6 +1084,45 @@ function showAppleDialog({ type = 'alert', title = '', message = '', defaultValu
 
 function openDisclaimerModal() { triggerHaptic('light'); document.getElementById("disclaimerModalOverlay").classList.add("active"); }
 function closeDisclaimerModal() { triggerHaptic('light'); document.getElementById("disclaimerModalOverlay").classList.remove("active"); }
+
+// 🔴 致命位 3 修正：ESC 鍵監聽關閉所有活躍 Modal（支援 iPad 實體鍵盤）
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        if (document.getElementById('barcodeScannerModalOverlay')?.classList.contains('active')) {
+            closeBarcodeScannerModal();
+            return;
+        }
+        if (document.getElementById('iddsiPickerModalOverlay')?.classList.contains('active')) {
+            closeIddsiPickerModal();
+            return;
+        }
+        if (document.getElementById('disclaimerModalOverlay')?.classList.contains('active')) {
+            closeDisclaimerModal();
+            return;
+        }
+        if (document.getElementById('appleDialogOverlay')?.classList.contains('active')) {
+            dismissActiveDialog(null);
+            return;
+        }
+        document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+    }
+});
+
+// 🔴 致命位 3 修正：iOS Safari Swipe Back 防禦（優先關閉當前開啟中的 Modal）
+if (window.history && window.history.pushState) {
+    window.history.pushState(null, null, window.location.href);
+    window.addEventListener('popstate', function() {
+        const activeModal = document.querySelector('.modal-overlay.active');
+        if (activeModal) {
+            window.history.pushState(null, null, window.location.href);
+            if (activeModal.id === 'barcodeScannerModalOverlay') closeBarcodeScannerModal();
+            else if (activeModal.id === 'appleDialogOverlay') dismissActiveDialog(null);
+            else if (activeModal.id === 'iddsiPickerModalOverlay') closeIddsiPickerModal();
+            else if (activeModal.id === 'disclaimerModalOverlay') closeDisclaimerModal();
+            else activeModal.classList.remove('active');
+        }
+    });
+}
 
 const API_URL = "https://script.google.com/macros/s/AKfycbwOgthCxMHgU-7nsuYd91AMSWUrr48qU8pm02j4qCYk_TE5nN7dJOB_o5nrUc932kZr/exec";
 
@@ -1591,7 +1641,6 @@ async function commitCurrentMeal() {
     document.getElementById("aiWarningBox").innerHTML = "";
     triggerDynamicIsland(`✅ 已記低：${pendingFoodItem.FoodName} (+${fCal} kcal)`);
     
-    // 同步寫入 Apple HealthKit (Dietary Energy)
     HealthKitBridge.syncDietaryMeal(fCal);
 
     const committedFoodName = pendingFoodItem.FoodName;
@@ -1628,7 +1677,6 @@ function quickAddWater(ml, typeName) {
     const logId = "WATER_" + Date.now();
     todayAuditLogs.unshift({ logId, mealType: "snack", title: `💧 ${typeName}`, calories: 0, water: ml, sodium: 0, protein: 0, carbs: 0, fat: 0, grams: ml, subText: `${MEAL_TYPE_MAP['snack']} · +${ml} ml 水分` });
     
-    // 同步寫入 Apple HealthKit (Dietary Water)
     HealthKitBridge.syncWater(ml);
 
     triggerDynamicIsland(`💧 已記錄飲水 +${ml}ml`);
@@ -1654,7 +1702,6 @@ async function logCurrentWeight() {
     triggerHaptic('success');
     triggerDynamicIsland(`⚖️ 已記錄今日體重：${val} kg`);
 
-    // 同步寫入 Apple HealthKit (Body Mass)
     HealthKitBridge.syncBodyMass(val);
 }
 
@@ -1800,7 +1847,6 @@ function stopAiDynamicProgress() {
     if (warningBox) warningBox.innerHTML = "";
 }
 
-// 🔴 致命位 4 修正：清空本機前主動嘗試上報未傳送的 Crash Logs
 async function clearAllData() {
     const confirm1 = await showAppleDialog({ type: 'confirm', title: '確定清除所有記錄？', message: '此操作會清空個人目標、飲食及體重日誌，不可復原。', okText: '下一步' });
     if (!confirm1) return;
@@ -1815,7 +1861,6 @@ async function clearAllData() {
     });
     if (!warn) return;
 
-    // 清空前嘗試將尚存在本地的崩潰日誌排洪上報
     try {
         if (navigator.onLine && !userProfile.pureLocalMode) {
             await uploadErrorLogs();
@@ -2480,25 +2525,28 @@ function copyReportText() {
     triggerDynamicIsland("📋 已複製文字到剪貼簿！");
 }
 
-// 🔴 致命位 3 導航架構說明：
-// 依據 Apple HIG，iOS 原生 TabBar 切換屬於平面狀態替換，因此使用 replaceState 避免污染歷史堆疊；
-// 後續若增加全螢幕檢視或多層 Modal，才在開啟時使用 pushState。
 function switchAppleTab(tabId, el, updateHash = true) {
     triggerHaptic('light');
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.tab-item').forEach(i => {
+        i.classList.remove('active');
+        i.setAttribute('aria-selected', 'false');
+    });
     
     const targetContent = document.getElementById(`tab-${tabId}`);
     if (targetContent) targetContent.classList.add('active');
     
+    const tabs = ['home', 'meals', 'trends', 'profile'];
+    const idx = tabs.indexOf(tabId);
+
     if (el) {
         el.classList.add('active');
-    } else {
-        const tabs = ['home', 'meals', 'trends', 'profile'];
-        const idx = tabs.indexOf(tabId);
-        if (idx > -1) {
-            const matchedEl = document.querySelectorAll('.tab-item')[idx];
-            if (matchedEl) matchedEl.classList.add('active');
+        el.setAttribute('aria-selected', 'true');
+    } else if (idx > -1) {
+        const matchedEl = document.querySelectorAll('.tab-item')[idx];
+        if (matchedEl) {
+            matchedEl.classList.add('active');
+            matchedEl.setAttribute('aria-selected', 'true');
         }
     }
 
@@ -2507,18 +2555,23 @@ function switchAppleTab(tabId, el, updateHash = true) {
     }
 }
 
+// 🔴 致命位 2 修正：50ms 防抖處理，防止連續觸發重覆換頁與頻繁震動
+let hashChangeTimer = null;
 window.addEventListener('hashchange', () => {
-    const tabId = location.hash.replace('#', '') || 'home';
-    const tabs = ['home', 'meals', 'trends', 'profile'];
-    const idx = tabs.indexOf(tabId);
-    if (idx > -1) {
-        const tabEl = document.querySelectorAll('.tab-item')[idx];
-        if (tabEl) switchAppleTab(tabId, tabEl, false);
-    }
+    if (hashChangeTimer) clearTimeout(hashChangeTimer);
+    hashChangeTimer = setTimeout(() => {
+        const tabId = location.hash.replace('#', '') || 'home';
+        const tabs = ['home', 'meals', 'trends', 'profile'];
+        const idx = tabs.indexOf(tabId);
+        if (idx > -1) {
+            const tabEl = document.querySelectorAll('.tab-item')[idx];
+            if (tabEl) switchAppleTab(tabId, tabEl, false);
+        }
+    }, 50);
 });
 
 // ==========================================
-// 初始化流程（非阻塞式 HealthKit 異步掛載 + 錯誤定時回報）
+// 初始化流程
 // ==========================================
 window.onload = () => {
     loadUserProfile();
