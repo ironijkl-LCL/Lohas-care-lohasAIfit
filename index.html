@@ -831,7 +831,7 @@
 
         <div class="ui-card">
             <h3><i class="fa-solid fa-shield-halved" style="color: var(--apple-green);"></i> 關於、私隱與免責聲明</h3>
-            <p style="font-size:11px; color:var(--text-sub); margin:0 0 10px 0;">Lohas Diet Tracker v4.8 (App Store Edition)<br>所有健康日誌均優先保存於用戶本地端。</p>
+            <p style="font-size:11px; color:var(--text-sub); margin:0 0 10px 0;">Lohas Diet Tracker v4.9 (App Store Edition)<br>所有健康日誌均優先保存於用戶本地端。</p>
             
             <div style="display:flex; flex-direction:column; gap:8px;">
                 <button class="apple-btn-primary" style="background:rgba(0,122,255,0.08); color:var(--apple-blue); border:1px solid rgba(0,122,255,0.2); text-align:left; display:flex; justify-content:space-between; align-items:center; padding:10px 12px;" onclick="openDisclaimerModal()">
@@ -862,7 +862,7 @@
     </div>
 </div>
 
-<!-- Modal 集合（全部補齊 role="dialog" 及 aria-modal="true" 支援 Accessibility 5.1.5） -->
+<!-- Modal 集合 -->
 <div id="disclaimerModalOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="disclaimerModalTitle" style="z-index: 100015;">
     <div class="modal-box" style="max-width: 380px; max-height: 85vh; display:flex; flex-direction:column; padding: 20px 18px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
@@ -909,7 +909,6 @@
     </div>
 </div>
 
-<!-- 🔴 致命位 3 修正：通用 Modal 加齊 ARIA 屬性 -->
 <div id="appleDialogOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="dialogTitle" aria-describedby="dialogMessage" style="z-index: 100020;">
     <div class="modal-box" style="max-width: 290px; text-align: center; padding: 20px 16px 0 16px; border-radius: 14px;">
         <h4 id="dialogTitle" style="margin: 0 0 6px 0; font-size: 17px; font-weight: 600;"></h4>
@@ -1003,7 +1002,7 @@ async function uploadErrorLogs() {
 }
 
 // ==========================================
-// 2. 原生觸覺回饋與對話框（含返回 / ESC 關閉 Promise 處理）
+// 2. 原生觸覺回饋、對話框與 Modal History 統一架構
 // ==========================================
 async function triggerHaptic(type = 'light') {
     const Haptics = window.Capacitor?.Plugins?.Haptics;
@@ -1018,10 +1017,27 @@ async function triggerHaptic(type = 'light') {
 
 let activeDialogResolver = null;
 
+// 🔴 致命位修復：Modal History 堆疊管理
+let modalHistoryPushed = false;
+
+function pushModalHistory() {
+    if (!modalHistoryPushed && window.history && window.history.pushState) {
+        window.history.pushState({ modal: true }, null, window.location.href);
+        modalHistoryPushed = true;
+    }
+}
+
+function popModalHistory() {
+    if (modalHistoryPushed) {
+        modalHistoryPushed = false;
+    }
+}
+
 function dismissActiveDialog(val = null) {
     const overlay = document.getElementById('appleDialogOverlay');
     if (overlay && overlay.classList.contains('active')) {
         overlay.classList.remove('active');
+        popModalHistory();
         if (activeDialogResolver) {
             activeDialogResolver(val);
             activeDialogResolver = null;
@@ -1031,6 +1047,7 @@ function dismissActiveDialog(val = null) {
 
 function showAppleDialog({ type = 'alert', title = '', message = '', defaultValue = '', okText = '好', cancelText = '取消' }) {
     triggerHaptic('light');
+    pushModalHistory();
     return new Promise((resolve) => {
         activeDialogResolver = resolve;
         const overlay = document.getElementById('appleDialogOverlay');
@@ -1082,47 +1099,52 @@ function showAppleDialog({ type = 'alert', title = '', message = '', defaultValu
     });
 }
 
-function openDisclaimerModal() { triggerHaptic('light'); document.getElementById("disclaimerModalOverlay").classList.add("active"); }
-function closeDisclaimerModal() { triggerHaptic('light'); document.getElementById("disclaimerModalOverlay").classList.remove("active"); }
+function openDisclaimerModal() { 
+    triggerHaptic('light'); 
+    pushModalHistory();
+    document.getElementById("disclaimerModalOverlay").classList.add("active"); 
+}
+function closeDisclaimerModal() { 
+    triggerHaptic('light'); 
+    popModalHistory();
+    document.getElementById("disclaimerModalOverlay").classList.remove("active"); 
+}
 
-// 🔴 致命位 3 修正：ESC 鍵監聽關閉所有活躍 Modal（支援 iPad 實體鍵盤）
+// ESC 鍵監聽關閉最上層活躍 Modal（支援 iPad 外接鍵盤）
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-        if (document.getElementById('barcodeScannerModalOverlay')?.classList.contains('active')) {
-            closeBarcodeScannerModal();
-            return;
-        }
-        if (document.getElementById('iddsiPickerModalOverlay')?.classList.contains('active')) {
-            closeIddsiPickerModal();
-            return;
-        }
-        if (document.getElementById('disclaimerModalOverlay')?.classList.contains('active')) {
-            closeDisclaimerModal();
-            return;
-        }
-        if (document.getElementById('appleDialogOverlay')?.classList.contains('active')) {
-            dismissActiveDialog(null);
-            return;
-        }
-        document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
-    }
-});
-
-// 🔴 致命位 3 修正：iOS Safari Swipe Back 防禦（優先關閉當前開啟中的 Modal）
-if (window.history && window.history.pushState) {
-    window.history.pushState(null, null, window.location.href);
-    window.addEventListener('popstate', function() {
         const activeModal = document.querySelector('.modal-overlay.active');
         if (activeModal) {
-            window.history.pushState(null, null, window.location.href);
             if (activeModal.id === 'barcodeScannerModalOverlay') closeBarcodeScannerModal();
             else if (activeModal.id === 'appleDialogOverlay') dismissActiveDialog(null);
             else if (activeModal.id === 'iddsiPickerModalOverlay') closeIddsiPickerModal();
             else if (activeModal.id === 'disclaimerModalOverlay') closeDisclaimerModal();
+            else if (activeModal.id === 'onboardingModalOverlay') completeOnboarding();
             else activeModal.classList.remove('active');
         }
-    });
-}
+    }
+});
+
+// 🔴 致命位修正：popstate 統一處理，有 modal 關閉 modal，無 modal 正常離開
+window.addEventListener('popstate', function(e) {
+    const activeModal = document.querySelector('.modal-overlay.active');
+    if (activeModal) {
+        modalHistoryPushed = false;
+        if (activeModal.id === 'barcodeScannerModalOverlay') closeBarcodeScannerModal();
+        else if (activeModal.id === 'appleDialogOverlay') dismissActiveDialog(null);
+        else if (activeModal.id === 'iddsiPickerModalOverlay') closeIddsiPickerModal();
+        else if (activeModal.id === 'disclaimerModalOverlay') closeDisclaimerModal();
+        else if (activeModal.id === 'onboardingModalOverlay') completeOnboarding();
+        else activeModal.classList.remove('active');
+
+        // 重新補齊一層防禦狀態，避免再次按返回時因無 state 直接閃退
+        if (window.history && window.history.pushState) {
+            window.history.pushState(null, null, window.location.href);
+            modalHistoryPushed = true;
+        }
+    }
+    // 冇 modal 打開時不攔截，讓用戶正常退出或返回
+});
 
 const API_URL = "https://script.google.com/macros/s/AKfycbwOgthCxMHgU-7nsuYd91AMSWUrr48qU8pm02j4qCYk_TE5nN7dJOB_o5nrUc932kZr/exec";
 
@@ -1931,10 +1953,14 @@ function quickLogFavorite(name) {
 }
 
 function checkOnboarding() {
-    if (!localStorage.getItem("lohas_onboarded_v4")) document.getElementById("onboardingModalOverlay").classList.add("active");
+    if (!localStorage.getItem("lohas_onboarded_v4")) {
+        pushModalHistory();
+        document.getElementById("onboardingModalOverlay").classList.add("active");
+    }
 }
 function completeOnboarding() {
     triggerHaptic('medium');
+    popModalHistory();
     localStorage.setItem("lohas_onboarded_v4", "true");
     document.getElementById("onboardingModalOverlay").classList.remove("active");
 }
@@ -2122,6 +2148,7 @@ async function openBarcodeScannerModal() {
     if (isScannerStarting) return;
     isScannerStarting = true;
     triggerHaptic('light');
+    pushModalHistory();
     document.getElementById("barcodeScannerModalOverlay").classList.add("active");
     try {
         barcodeScanner = new Html5Qrcode("barcode-reader");
@@ -2135,8 +2162,55 @@ async function openBarcodeScannerModal() {
 }
 
 async function closeBarcodeScannerModal() {
+    popModalHistory();
     if (barcodeScanner) { try { await barcodeScanner.stop(); } catch(e) {} barcodeScanner.clear(); barcodeScanner = null; }
     document.getElementById("barcodeScannerModalOverlay").classList.remove("active");
+}
+
+function openIddsiPickerModal() {
+    triggerHaptic('light');
+    pushModalHistory();
+    const currentVal = pendingFoodItem ? String(pendingFoodItem["吞嚥安全 (IDDSI)"] || "0") : "0";
+    const container = document.getElementById("iddsiOptionListContainer");
+    container.innerHTML = "";
+    Object.keys(IDDSI_COLORS).forEach(lvl => {
+        const item = IDDSI_COLORS[lvl];
+        const isSelected = lvl === currentVal;
+        const card = document.createElement("div");
+        card.className = `iddsi-option-card ${item.cssClass}`;
+        card.innerHTML = `<span>${item.label}</span><span>${isSelected ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-regular fa-circle"></i>'}</span>`;
+        card.onclick = () => selectIddsiLevel(lvl);
+        container.appendChild(card);
+    });
+    document.getElementById("iddsiPickerModalOverlay").classList.add("active");
+}
+
+function closeIddsiPickerModal() { 
+    triggerHaptic('light'); 
+    popModalHistory();
+    document.getElementById("iddsiPickerModalOverlay").classList.remove("active"); 
+}
+
+function selectIddsiLevel(lvl) {
+    triggerHaptic('medium');
+    if (pendingFoodItem) {
+        pendingFoodItem["吞嚥安全 (IDDSI)"] = lvl;
+        pendingFoodItem.isUserModified = true;
+        renderPendingFoodDetails();
+    }
+    updateIddsiTriggerBtnUI(lvl, true);
+    closeIddsiPickerModal();
+}
+
+function updateIddsiTriggerBtnUI(lvl, isModified = false) {
+    const cleanLvl = String(parseIddsi(lvl));
+    const cfg = IDDSI_COLORS[cleanLvl] || IDDSI_COLORS["0"];
+    const trigger = document.getElementById("iddsiCustomTrigger");
+    const text = document.getElementById("iddsiTriggerText");
+    if (trigger && text) {
+        trigger.className = `iddsi-trigger-btn ${cfg.cssClass}`;
+        text.innerHTML = `${cfg.short} <span style="font-size:10px; opacity:0.85; margin-left:4px;">${isModified ? '(已手動選擇)' : '(自動判斷)'}</span>`;
+    }
 }
 
 async function fetchOpenFoodFactsData(barcode) {
@@ -2277,47 +2351,6 @@ function renderPendingFoodDetails() {
         textureNoticeBox.style.display = "block";
         textureNoticeText.textContent = "💡 此餐食含有固體與流質混合質地（例：湯連湯渣），進食時請留意避免嗆喉。";
     } else textureNoticeBox.style.display = "none";
-}
-
-function openIddsiPickerModal() {
-    triggerHaptic('light');
-    const currentVal = pendingFoodItem ? String(pendingFoodItem["吞嚥安全 (IDDSI)"] || "0") : "0";
-    const container = document.getElementById("iddsiOptionListContainer");
-    container.innerHTML = "";
-    Object.keys(IDDSI_COLORS).forEach(lvl => {
-        const item = IDDSI_COLORS[lvl];
-        const isSelected = lvl === currentVal;
-        const card = document.createElement("div");
-        card.className = `iddsi-option-card ${item.cssClass}`;
-        card.innerHTML = `<span>${item.label}</span><span>${isSelected ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-regular fa-circle"></i>'}</span>`;
-        card.onclick = () => selectIddsiLevel(lvl);
-        container.appendChild(card);
-    });
-    document.getElementById("iddsiPickerModalOverlay").classList.add("active");
-}
-
-function closeIddsiPickerModal() { triggerHaptic('light'); document.getElementById("iddsiPickerModalOverlay").classList.remove("active"); }
-
-function selectIddsiLevel(lvl) {
-    triggerHaptic('medium');
-    if (pendingFoodItem) {
-        pendingFoodItem["吞嚥安全 (IDDSI)"] = lvl;
-        pendingFoodItem.isUserModified = true;
-        renderPendingFoodDetails();
-    }
-    updateIddsiTriggerBtnUI(lvl, true);
-    closeIddsiPickerModal();
-}
-
-function updateIddsiTriggerBtnUI(lvl, isModified = false) {
-    const cleanLvl = String(parseIddsi(lvl));
-    const cfg = IDDSI_COLORS[cleanLvl] || IDDSI_COLORS["0"];
-    const trigger = document.getElementById("iddsiCustomTrigger");
-    const text = document.getElementById("iddsiTriggerText");
-    if (trigger && text) {
-        trigger.className = `iddsi-trigger-btn ${cfg.cssClass}`;
-        text.innerHTML = `${cfg.short} <span style="font-size:10px; opacity:0.85; margin-left:4px;">${isModified ? '(已手動選擇)' : '(自動判斷)'}</span>`;
-    }
 }
 
 function deleteMealLog(logId) {
@@ -2555,7 +2588,6 @@ function switchAppleTab(tabId, el, updateHash = true) {
     }
 }
 
-// 🔴 致命位 2 修正：50ms 防抖處理，防止連續觸發重覆換頁與頻繁震動
 let hashChangeTimer = null;
 window.addEventListener('hashchange', () => {
     if (hashChangeTimer) clearTimeout(hashChangeTimer);
@@ -2571,7 +2603,7 @@ window.addEventListener('hashchange', () => {
 });
 
 // ==========================================
-// 初始化流程
+// 初始化流程（乾淨掛載基底歷史，不與分頁 Hash 衝突）
 // ==========================================
 window.onload = () => {
     loadUserProfile();
@@ -2580,14 +2612,23 @@ window.onload = () => {
     const rawW = localStorage.getItem("lohas_weight_logs");
     if (rawW) { try { weightLogs = JSON.parse(rawW); } catch(e) {} }
     renderWeightUI();
-    checkOnboarding();
     flushOfflineSyncQueue();
 
+    // 依 URL Hash 還原當前分頁（使用 replaceState 不增加堆疊）
     const initialTab = location.hash.replace('#', '');
     if (['home', 'meals', 'trends', 'profile'].includes(initialTab)) {
         switchAppleTab(initialTab, null, false);
     }
 
+    // 掛載基底 History 狀態（為後續返回鍵與 Modal 關閉提供清晰參考錨點）
+    if (window.history && window.history.pushState) {
+        window.history.pushState({ base: true }, null, window.location.href);
+    }
+
+    // 檢查新手導覽
+    checkOnboarding();
+
+    // 啟動 Apple HealthKit
     HealthKitBridge.init().then(isAvailable => {
         if (isAvailable) {
             return refreshWatchCalories();
@@ -2596,6 +2637,7 @@ window.onload = () => {
         updateDashboardUI();
     }).catch(e => console.warn("HealthKit 啟動略過:", e));
 
+    // 啟動 10 秒後執行離線錯誤日誌排洪
     setTimeout(uploadErrorLogs, 10000);
 };
 </script>
