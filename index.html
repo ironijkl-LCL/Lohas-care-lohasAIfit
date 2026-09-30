@@ -11,9 +11,9 @@
     <meta name="apple-mobile-web-app-title" content="樂活飲食">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2642/2642731.png">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- 本地封裝腳本（位於 www/js/vendor） -->
-    <script src="js/vendor/html5-qrcode.min.js"></script>
+    <!-- 樣式與圖標：優先讀取本地，若無則自動備援 CDN -->
+    <link rel="stylesheet" href="css/fontawesome.min.css" onerror="this.onerror=null;this.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';">
+    <script src="js/vendor/html5-qrcode.min.js" onerror="let s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js';document.head.appendChild(s);"></script>
 
     <style>
         :root {
@@ -112,18 +112,6 @@
             display: flex;
             align-items: center;
             gap: 6px;
-        }
-
-        .pure-local-badge-banner {
-            display: none;
-            background: rgba(52, 199, 89, 0.12);
-            border: 1px solid rgba(52, 199, 89, 0.3);
-            border-radius: var(--border-radius-medium);
-            padding: 8px 12px;
-            margin-bottom: 10px;
-            font-size: 11px;
-            color: var(--apple-green);
-            line-height: 1.4;
         }
 
         .daily-summary-banner {
@@ -241,7 +229,7 @@
         }
         .apple-input:focus { outline: none; border-color: var(--apple-blue); }
 
-        /* IDDSI 質地色票規範 */
+        /* IDDSI 色票樣式 */
         .iddsi-c0 { background-color: #FFFFFF !important; color: #000000 !important; border: 1.5px solid #8E8E93 !important; }
         @media (prefers-color-scheme: dark) {
             .iddsi-c0 { background-color: #2C2C2E !important; color: #FFFFFF !important; border: 1.5px solid #FFFFFF !important; }
@@ -450,6 +438,7 @@
             100% { transform: scale(1); }
         }
 
+        /* iPad 平板螢幕適配 */
         @media (min-width: 768px) {
             body { padding-bottom: calc(85px + env(safe-area-inset-bottom, 0px)); }
             .app-container { max-width: 780px; padding: 24px 32px; }
@@ -477,8 +466,8 @@
 </head>
 <body>
 
-<!-- Dynamic Island 通知條 -->
-<div id="dynamicIsland" class="dynamic-island-banner" role="status" aria-live="polite">
+<!-- 動態島通知條 -->
+<div id="dynamicIsland" class="dynamic-island-banner">
     <div style="display:flex; align-items:center; gap:8px;">
         <i id="islandIcon" class="fa-solid fa-bell"></i>
         <div id="islandText" style="font-size: 12px; font-weight: 500;">處理中...</div>
@@ -487,6 +476,7 @@
 </div>
 
 <div class="app-container">
+    
     <div class="app-header-block">
         <div class="app-header-info">
             <h2>Lohas Healthy Life</h2>
@@ -497,12 +487,7 @@
         </div>
     </div>
 
-    <!-- 純本地模式安全橫幅 -->
-    <div id="pureLocalModeBanner" class="pure-local-badge-banner">
-        <i class="fa-solid fa-shield-halved"></i> <b>純本地隱私模式已開啟</b>：所有資料 100% 儲存於本機，相片與日誌絕不上傳雲端伺服器。
-    </div>
-
-    <!-- 每日飲食簡報 -->
+    <!-- 每日狀態總結 -->
     <div class="daily-summary-banner" id="dailySummaryBanner">
         <i class="fa-solid fa-chart-pie" style="color:var(--apple-blue); margin-right:4px;"></i>
         <span id="dailySummaryText">今日食得點？一齊睇下進度：</span>
@@ -603,10 +588,11 @@
             </div>
         </div>
 
+        <!-- 語音或文字速記模組 -->
         <div class="ui-card" style="background: linear-gradient(180deg, rgba(0, 122, 255, 0.04), var(--bg-card));">
             <h3><i class="fa-solid fa-comment-dots" style="color: var(--apple-blue);"></i> 語音 / 文字速記</h3>
-            <p style="font-size:11px; color:var(--text-sub); margin:0 0 6px 0;">直接講或者打低食咗咩，語音停頓 3 秒自動分析入帳：</p>
-            <input type="text" class="apple-input" id="nlInput" placeholder="例: 食咗個叉燒飯同埋凍檸茶">
+            <p style="font-size:11px; color:var(--text-sub); margin:0 0 6px 0;">直接講或者打低食咗咩，系統會自動拆解菜式：</p>
+            <input type="text" class="apple-input" id="nlInput" placeholder="例: 食咗個腸蛋麵同埋凍檸茶">
             <div style="display:flex; gap:6px; margin-top:8px;">
                 <button class="apple-btn-primary" style="flex:2;" onclick="triggerNaturalLanguageLog()">⚡ 分析並記錄</button>
                 <button id="voiceDictateBtn" class="apple-btn-primary" style="flex:1; background:var(--bg-card); color:var(--apple-blue); border:1px solid rgba(0,0,0,0.12);" onclick="toggleVoiceRecognitionForNL()">
@@ -616,7 +602,7 @@
         </div>
 
         <div class="ui-card">
-            <h3><i class="fa-solid fa-camera" style="color: var(--apple-green);"></i> 影相辨識或搜尋資料庫</h3>
+            <h3><i class="fa-solid fa-camera" style="color: var(--apple-green);"></i> 影相辨識或掃描條碼</h3>
             
             <div style="display:flex; gap:8px;">
                 <label for="imageInput" class="apple-btn-primary" style="flex:1; text-align:center; padding:10px; background:var(--bg-card); color:var(--text-main); border:1px solid rgba(0,0,0,0.1); cursor:pointer;">
@@ -637,8 +623,8 @@
             <div id="aiWarningBox"></div>
 
             <div style="margin-top: 10px;">
-                <input type="text" class="apple-input" id="foodSearchInput" placeholder="搜尋食物或包裝品 (例: 雲吞麵、冬瓜豆腐湯、燕麥奶)...">
-                <button class="apple-btn-primary" style="margin-top: 8px;" onclick="searchFoodText()">🔍 搜尋食物（本地 + 全球資料庫）</button>
+                <input type="text" class="apple-input" id="foodSearchInput" placeholder="或直接搜尋食物 (例: 凍檸茶、腸蛋麵、碎肉粥)...">
+                <button class="apple-btn-primary" style="margin-top: 8px;" onclick="searchFoodText()">🔍 搜尋資料庫</button>
             </div>
         </div>
 
@@ -784,14 +770,6 @@
                     <input type="number" id="user-water-limit" class="apple-input" value="2000">
                 </div>
 
-                <div style="margin-top:6px; padding:10px; background:rgba(0,122,255,0.06); border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <div style="font-size:12px; font-weight:700; color:var(--apple-blue);"><i class="fa-solid fa-shield-halved"></i> 純本地隱私模式 (不經雲端)</div>
-                        <div style="font-size:10px; color:var(--text-sub); margin-top:2px;">關閉相片與日誌上傳，所有運算 100% 於手機本機執行</div>
-                    </div>
-                    <input type="checkbox" id="user-pure-local-mode" style="transform:scale(1.2);">
-                </div>
-
                 <div>
                     <label style="font-size: 12px; font-weight:600; color: var(--apple-orange);">我的敏感或忌食食材</label>
                     <div class="checkbox-label-grid" style="display:grid; grid-template-columns:repeat(2,1fr); gap:6px; margin-top:4px;">
@@ -831,7 +809,7 @@
 
         <div class="ui-card">
             <h3><i class="fa-solid fa-shield-halved" style="color: var(--apple-green);"></i> 關於、私隱與免責聲明</h3>
-            <p style="font-size:11px; color:var(--text-sub); margin:0 0 10px 0;">Lohas Diet Tracker v4.9 (App Store Edition)<br>所有健康日誌均優先保存於用戶本地端。</p>
+            <p style="font-size:11px; color:var(--text-sub); margin:0 0 10px 0;">Lohas Diet Tracker v4.3 (App Store Edition)<br>所有健康日誌均優先保存於用戶本地端。</p>
             
             <div style="display:flex; flex-direction:column; gap:8px;">
                 <button class="apple-btn-primary" style="background:rgba(0,122,255,0.08); color:var(--apple-blue); border:1px solid rgba(0,122,255,0.2); text-align:left; display:flex; justify-content:space-between; align-items:center; padding:10px 12px;" onclick="openDisclaimerModal()">
@@ -854,20 +832,21 @@
     </div>
 
     <!-- 底部導航 Bar -->
-    <div class="apple-tab-bar" role="tablist">
-        <div class="tab-item active" role="tab" aria-selected="true" onclick="switchAppleTab('home', this)"><i class="fa-solid fa-heart-pulse"></i><span>概覽</span></div>
-        <div class="tab-item" role="tab" aria-selected="false" onclick="switchAppleTab('meals', this)"><i class="fa-solid fa-circle-plus"></i><span>記錄飲食</span></div>
-        <div class="tab-item" role="tab" aria-selected="false" onclick="switchAppleTab('trends', this)"><i class="fa-solid fa-chart-line"></i><span>趨勢統計</span></div>
-        <div class="tab-item" role="tab" aria-selected="false" onclick="switchAppleTab('profile', this)"><i class="fa-solid fa-user-gear"></i><span>目標設定</span></div>
+    <div class="apple-tab-bar">
+        <div class="tab-item active" onclick="switchAppleTab('home', this)"><i class="fa-solid fa-heart-pulse"></i><span>概覽</span></div>
+        <div class="tab-item" onclick="switchAppleTab('meals', this)"><i class="fa-solid fa-circle-plus"></i><span>記錄飲食</span></div>
+        <div class="tab-item" onclick="switchAppleTab('trends', this)"><i class="fa-solid fa-chart-line"></i><span>趨勢統計</span></div>
+        <div class="tab-item" onclick="switchAppleTab('profile', this)"><i class="fa-solid fa-user-gear"></i><span>目標設定</span></div>
     </div>
+
 </div>
 
-<!-- Modal 集合 -->
-<div id="disclaimerModalOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="disclaimerModalTitle" style="z-index: 100015;">
+<!-- 免責聲明 Modal -->
+<div id="disclaimerModalOverlay" class="modal-overlay" style="z-index: 100015;">
     <div class="modal-box" style="max-width: 380px; max-height: 85vh; display:flex; flex-direction:column; padding: 20px 18px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-            <h3 id="disclaimerModalTitle" style="margin:0; font-size:16px; color:var(--apple-red);"><i class="fa-solid fa-shield-heart"></i> 醫療與飲食安全免責聲明</h3>
-            <button onclick="closeDisclaimerModal()" style="border:none; background:none; color:var(--apple-gray); font-size:18px; cursor:pointer;" aria-label="關閉"><i class="fa-solid fa-xmark"></i></button>
+            <h3 style="margin:0; font-size:16px; color:var(--apple-red);"><i class="fa-solid fa-shield-heart"></i> 醫療與飲食安全免責聲明</h3>
+            <button onclick="closeDisclaimerModal()" style="border:none; background:none; color:var(--apple-gray); font-size:18px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div style="overflow-y:auto; font-size:12px; line-height:1.6; color:var(--text-main); padding-right:4px;">
             <p><b>1. 非臨床診斷用途：</b><br>本應用程式提供之熱量估算、全營養素分析、IDDSI 質地級別參考及 AR 碗量換算，均為演算法與日常數據庫參考，僅供個人飲食管理日誌之用，<strong>並非</strong>專業臨床醫療診斷或治療指引。</p>
@@ -878,38 +857,47 @@
     </div>
 </div>
 
-<div id="onboardingModalOverlay" class="modal-overlay" role="dialog" aria-modal="true" style="z-index: 100010;">
+<!-- Onboarding Modal -->
+<div id="onboardingModalOverlay" class="modal-overlay" style="z-index: 100010;">
     <div class="modal-box" style="max-width: 360px; text-align: center;">
         <div style="font-size: 38px; color: var(--apple-blue); margin-bottom: 8px;">🌱</div>
         <h3 style="margin: 0 0 6px 0; font-size: 18px;">歡迎使用樂活飲食管理</h3>
         <p style="font-size: 12px; color: var(--text-sub); line-height: 1.5; margin-bottom: 14px;">
             一齊開啟你的健康飲食日誌！影張相或者講一句話，即可自動幫你分析熱量、質地與營養。
         </p>
+        <div style="background:rgba(0,0,0,0.02); border-radius:10px; padding:10px; text-align:left; font-size:12px; margin-bottom:14px;">
+            <div style="margin-bottom:6px;"><i class="fa-solid fa-check" style="color:var(--apple-green);"></i> 影相自動估算 21 項營養素</div>
+            <div style="margin-bottom:6px;"><i class="fa-solid fa-check" style="color:var(--apple-green);"></i> 廣東話語音即講即記</div>
+            <div><i class="fa-solid fa-check" style="color:var(--apple-green);"></i> 本地隱私保障，數據隨時匯出</div>
+        </div>
         <button class="apple-btn-primary" onclick="completeOnboarding()">立即開始</button>
     </div>
 </div>
 
-<div id="iddsiPickerModalOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="iddsiPickerTitle" style="z-index: 100003;">
+<!-- IDDSI Modal -->
+<div id="iddsiPickerModalOverlay" class="modal-overlay" style="z-index: 100003;">
     <div class="modal-box" style="max-width: 360px; padding: 18px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
-            <h3 id="iddsiPickerTitle" style="margin:0; font-size:16px;"><i class="fa-solid fa-layer-group" style="color:var(--apple-blue);"></i> 食物及飲品質地等級</h3>
-            <button onclick="closeIddsiPickerModal()" style="border:none; background:none; color:var(--apple-gray); font-size:18px; cursor:pointer;" aria-label="關閉"><i class="fa-solid fa-xmark"></i></button>
+            <h3 style="margin:0; font-size:16px;"><i class="fa-solid fa-layer-group" style="color:var(--apple-blue);"></i> 食物及飲品質地等級</h3>
+            <button onclick="closeIddsiPickerModal()" style="border:none; background:none; color:var(--apple-gray); font-size:18px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <p style="font-size: 11px; color: var(--text-sub); margin: 0 0 10px 0;">可依個人咀嚼喜好或長輩照護需要自由選擇：</p>
         <div class="iddsi-option-list" id="iddsiOptionListContainer"></div>
     </div>
 </div>
 
-<div id="barcodeScannerModalOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="barcodeScannerTitle" style="z-index: 100004;">
+<!-- 條碼掃描相機 Modal -->
+<div id="barcodeScannerModalOverlay" class="modal-overlay" style="z-index: 100004;">
     <div class="modal-box" style="max-width: 340px; text-align: center;">
-        <h3 id="barcodeScannerTitle" style="margin:0 0 8px 0; font-size:16px; color:var(--apple-purple);"><i class="fa-solid fa-barcode"></i> 掃描食品包裝條碼</h3>
+        <h3 style="margin:0 0 8px 0; font-size:16px; color:var(--apple-purple);"><i class="fa-solid fa-barcode"></i> 掃描食品包裝條碼</h3>
         <p style="font-size: 11px; color: var(--text-sub); margin: 0 0 10px 0;">將條碼對準框內，即時搜尋包裝營養資料：</p>
         <div id="barcode-reader" style="width:100%; border-radius:10px; overflow:hidden; background:#000;"></div>
         <button class="apple-btn-primary" style="margin-top:12px; background:var(--apple-gray);" onclick="closeBarcodeScannerModal()">關閉相機</button>
     </div>
 </div>
 
-<div id="appleDialogOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="dialogTitle" aria-describedby="dialogMessage" style="z-index: 100020;">
+<!-- 通用 Apple 原生風格 Modal 對話框 -->
+<div id="appleDialogOverlay" class="modal-overlay" style="z-index: 100020;">
     <div class="modal-box" style="max-width: 290px; text-align: center; padding: 20px 16px 0 16px; border-radius: 14px;">
         <h4 id="dialogTitle" style="margin: 0 0 6px 0; font-size: 17px; font-weight: 600;"></h4>
         <p id="dialogMessage" style="font-size: 13px; color: var(--text-sub); margin: 0 0 14px 0; line-height: 1.4;"></p>
@@ -922,12 +910,14 @@
 
 <script>
 // ==========================================
-// 1. 頂層全域錯誤追蹤
+// 1. 錯誤追蹤
 // ==========================================
 window.onerror = function(msg, url, line, col, error) {
     if (msg === "Script error." || !url) return false;
     const errorStr = String(msg || "");
-    if (/Failed to fetch|NetworkError|Load failed|AbortError/i.test(errorStr)) return false;
+    if (/Failed to fetch|NetworkError|Load failed|AbortError/i.test(errorStr)) {
+        return false;
+    }
 
     const errorReport = {
         msg: errorStr,
@@ -935,15 +925,7 @@ window.onerror = function(msg, url, line, col, error) {
         line,
         col,
         error: error ? error.stack : null,
-        ts: new Date().toISOString(),
-        ua: navigator.userAgent,
-        profile: (() => { 
-            try { 
-                return JSON.parse(localStorage.getItem("lohas_user_profile_public") || "{}").name || "unknown"; 
-            } catch(e) { 
-                return "unknown"; 
-            } 
-        })()
+        ts: new Date().toISOString()
     };
     
     console.error("【Lohas App Error】", errorReport);
@@ -965,91 +947,28 @@ window.addEventListener("unhandledrejection", function(event) {
     console.warn("【Lohas Unhandled Promise Rejection】", reason);
 });
 
-let errorUploadInFlight = false;
-
-async function uploadErrorLogs() {
-    if (errorUploadInFlight) return;
-    if (!navigator.onLine || userProfile.pureLocalMode) return;
-
-    errorUploadInFlight = true;
-    try {
-        const errs = JSON.parse(localStorage.getItem("lohas_error_logs") || "[]");
-        if (errs.length === 0) return;
-
-        const batchSize = Math.min(errs.length, 5);
-        const payload = {
-            action: "logErrors",
-            device: navigator.userAgent,
-            errors: errs.slice(0, batchSize)
-        };
-
-        const res = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(payload)
-        });
-
-        if (res.ok) {
-            const currentLogs = JSON.parse(localStorage.getItem("lohas_error_logs") || "[]");
-            const remaining = currentLogs.slice(batchSize);
-            localStorage.setItem("lohas_error_logs", JSON.stringify(remaining));
-        }
-    } catch (e) {
-        console.warn("錯誤上報略過:", e);
-    } finally {
-        errorUploadInFlight = false;
-    }
-}
-
 // ==========================================
-// 2. 原生觸覺回饋、對話框與 Modal History 統一架構
+// 2. 原生觸覺回饋與原生對話框
 // ==========================================
 async function triggerHaptic(type = 'light') {
     const Haptics = window.Capacitor?.Plugins?.Haptics;
     if (!Haptics) return;
     try {
-        if (type === 'success') await Haptics.notification({ type: 'SUCCESS' });
-        else if (type === 'warning') await Haptics.notification({ type: 'WARNING' });
-        else if (type === 'medium') await Haptics.impact({ style: 'MEDIUM' });
-        else await Haptics.impact({ style: 'LIGHT' });
-    } catch (e) {}
-}
-
-let activeDialogResolver = null;
-
-// 🔴 致命位修復：Modal History 堆疊管理
-let modalHistoryPushed = false;
-
-function pushModalHistory() {
-    if (!modalHistoryPushed && window.history && window.history.pushState) {
-        window.history.pushState({ modal: true }, null, window.location.href);
-        modalHistoryPushed = true;
-    }
-}
-
-function popModalHistory() {
-    if (modalHistoryPushed) {
-        modalHistoryPushed = false;
-    }
-}
-
-function dismissActiveDialog(val = null) {
-    const overlay = document.getElementById('appleDialogOverlay');
-    if (overlay && overlay.classList.contains('active')) {
-        overlay.classList.remove('active');
-        popModalHistory();
-        if (activeDialogResolver) {
-            activeDialogResolver(val);
-            activeDialogResolver = null;
+        if (type === 'success') {
+            await Haptics.notification({ type: 'SUCCESS' });
+        } else if (type === 'warning') {
+            await Haptics.notification({ type: 'WARNING' });
+        } else if (type === 'medium') {
+            await Haptics.impact({ style: 'MEDIUM' });
+        } else {
+            await Haptics.impact({ style: 'LIGHT' });
         }
-    }
+    } catch (e) {}
 }
 
 function showAppleDialog({ type = 'alert', title = '', message = '', defaultValue = '', okText = '好', cancelText = '取消' }) {
     triggerHaptic('light');
-    pushModalHistory();
     return new Promise((resolve) => {
-        activeDialogResolver = resolve;
         const overlay = document.getElementById('appleDialogOverlay');
         const titleEl = document.getElementById('dialogTitle');
         const msgEl = document.getElementById('dialogMessage');
@@ -1074,14 +993,15 @@ function showAppleDialog({ type = 'alert', title = '', message = '', defaultValu
             const cancelBtn = document.createElement('button');
             cancelBtn.style.cssText = 'padding:12px; border:none; background:none; color:var(--apple-blue); font-size:16px; border-right:0.5px solid rgba(0,0,0,0.15); cursor:pointer;';
             cancelBtn.textContent = cancelText;
-            cancelBtn.onclick = () => { triggerHaptic('light'); dismissActiveDialog(null); };
+            cancelBtn.onclick = () => { triggerHaptic('light'); overlay.classList.remove('active'); resolve(null); };
 
             const okBtn = document.createElement('button');
             okBtn.style.cssText = 'padding:12px; border:none; background:none; color:var(--apple-blue); font-size:16px; font-weight:600; cursor:pointer;';
             okBtn.textContent = okText;
             okBtn.onclick = () => {
                 triggerHaptic('medium');
-                dismissActiveDialog(type === 'prompt' ? inputEl.value : true);
+                overlay.classList.remove('active');
+                resolve(type === 'prompt' ? inputEl.value : true);
             };
 
             btnGrid.appendChild(cancelBtn);
@@ -1091,7 +1011,7 @@ function showAppleDialog({ type = 'alert', title = '', message = '', defaultValu
             const okBtn = document.createElement('button');
             okBtn.style.cssText = 'padding:12px; border:none; background:none; color:var(--apple-blue); font-size:16px; font-weight:600; cursor:pointer; width:100%;';
             okBtn.textContent = okText;
-            okBtn.onclick = () => { triggerHaptic('light'); dismissActiveDialog(true); };
+            okBtn.onclick = () => { triggerHaptic('light'); overlay.classList.remove('active'); resolve(true); };
             btnGrid.appendChild(okBtn);
         }
 
@@ -1099,52 +1019,14 @@ function showAppleDialog({ type = 'alert', title = '', message = '', defaultValu
     });
 }
 
-function openDisclaimerModal() { 
-    triggerHaptic('light'); 
-    pushModalHistory();
-    document.getElementById("disclaimerModalOverlay").classList.add("active"); 
+function openDisclaimerModal() {
+    triggerHaptic('light');
+    document.getElementById("disclaimerModalOverlay").classList.add("active");
 }
-function closeDisclaimerModal() { 
-    triggerHaptic('light'); 
-    popModalHistory();
-    document.getElementById("disclaimerModalOverlay").classList.remove("active"); 
+function closeDisclaimerModal() {
+    triggerHaptic('light');
+    document.getElementById("disclaimerModalOverlay").classList.remove("active");
 }
-
-// ESC 鍵監聽關閉最上層活躍 Modal（支援 iPad 外接鍵盤）
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        const activeModal = document.querySelector('.modal-overlay.active');
-        if (activeModal) {
-            if (activeModal.id === 'barcodeScannerModalOverlay') closeBarcodeScannerModal();
-            else if (activeModal.id === 'appleDialogOverlay') dismissActiveDialog(null);
-            else if (activeModal.id === 'iddsiPickerModalOverlay') closeIddsiPickerModal();
-            else if (activeModal.id === 'disclaimerModalOverlay') closeDisclaimerModal();
-            else if (activeModal.id === 'onboardingModalOverlay') completeOnboarding();
-            else activeModal.classList.remove('active');
-        }
-    }
-});
-
-// 🔴 致命位修正：popstate 統一處理，有 modal 關閉 modal，無 modal 正常離開
-window.addEventListener('popstate', function(e) {
-    const activeModal = document.querySelector('.modal-overlay.active');
-    if (activeModal) {
-        modalHistoryPushed = false;
-        if (activeModal.id === 'barcodeScannerModalOverlay') closeBarcodeScannerModal();
-        else if (activeModal.id === 'appleDialogOverlay') dismissActiveDialog(null);
-        else if (activeModal.id === 'iddsiPickerModalOverlay') closeIddsiPickerModal();
-        else if (activeModal.id === 'disclaimerModalOverlay') closeDisclaimerModal();
-        else if (activeModal.id === 'onboardingModalOverlay') completeOnboarding();
-        else activeModal.classList.remove('active');
-
-        // 重新補齊一層防禦狀態，避免再次按返回時因無 state 直接閃退
-        if (window.history && window.history.pushState) {
-            window.history.pushState(null, null, window.location.href);
-            modalHistoryPushed = true;
-        }
-    }
-    // 冇 modal 打開時不攔截，讓用戶正常退出或返回
-});
 
 const API_URL = "https://script.google.com/macros/s/AKfycbwOgthCxMHgU-7nsuYd91AMSWUrr48qU8pm02j4qCYk_TE5nN7dJOB_o5nrUc932kZr/exec";
 
@@ -1156,7 +1038,7 @@ function escapeHTML(str) {
 function getFormattedDateTime() {
     const now = new Date();
     const pad = (n) => String(n).padStart(2, '0');
-    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 }
 
 const IDDSI_COLORS = {
@@ -1199,8 +1081,7 @@ let userProfile = {
     height: 170,
     weight: 65,
     waterLimit: 2000,
-    allergens: [],
-    pureLocalMode: false
+    allergens: []
 };
 
 let favoriteFoods = [];
@@ -1227,128 +1108,431 @@ let islandDismissTimer = null;
 
 let speechRecognitionInstance = null;
 let isSpeechRecognizing = false;
-let speechSilenceTimer = null;
 
 // ==========================================
-// 3. Apple HealthKit 橋接封裝 (含體重雙向同步)
+// 3. AI 辨識計時
 // ==========================================
-let watchActiveBurn = 0;
-
-const HealthKitBridge = {
-    plugin: window.Capacitor?.Plugins?.HealthKitPlugin,
-
-    async init() {
-        if (!this.plugin) return false;
-        try {
-            const res = await this.plugin.requestAuthorization();
-            return !!res.granted;
-        } catch (e) {
-            console.warn("HealthKit 授權略過/拒絕:", e);
-            return false;
-        }
-    },
-
-    async fetchActiveCalories() {
-        if (!this.plugin) return 0;
-        try {
-            const res = await this.plugin.getTodayActiveCalories();
-            return res.calories || 0;
-        } catch (e) {
-            console.warn("讀取 Watch 消耗失敗:", e);
-            return 0;
-        }
-    },
-
-    async syncDietaryMeal(kcal) {
-        if (!this.plugin || kcal <= 0) return;
-        try {
-            await this.plugin.logDietaryEnergy({ calories: Number(kcal) });
-        } catch (e) {
-            console.warn("同步飲食至 Apple Health 失敗:", e);
-        }
-    },
-
-    async syncWater(ml) {
-        if (!this.plugin || ml <= 0) return;
-        try {
-            await this.plugin.logDietaryWater({ waterMl: Number(ml) });
-        } catch (e) {
-            console.warn("同步水分至 Apple Health 失敗:", e);
-        }
-    },
-
-    async syncBodyMass(kg) {
-        if (!this.plugin || kg <= 0) return;
-        try {
-            await this.plugin.logBodyMass({ weightKg: Number(kg) });
-        } catch (e) {
-            console.warn("同步體重至 Apple Health 失敗:", e);
-        }
+function startAiDynamicProgress() {
+    aiElapsedSeconds = 0;
+    triggerDynamicIsland("🔍 睇緊相入面有咩好嘢食...", "normal");
+    
+    const warningBox = document.getElementById("aiWarningBox");
+    if (warningBox) {
+        warningBox.innerHTML = `
+            <div style="background:rgba(0,122,255,0.08); border:1px solid rgba(0,122,255,0.2); border-radius:10px; padding:8px 12px; margin-top:8px; font-size:12px; color:var(--apple-blue); display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <span>正在辨識相片營養... (<b id="aiTimerText">0s</b>)</span>
+            </div>
+        `;
     }
-};
 
-async function refreshWatchCalories() {
-    watchActiveBurn = await HealthKitBridge.fetchActiveCalories();
-}
+    if (aiProgressTimer) clearInterval(aiProgressTimer);
+    aiProgressTimer = setInterval(() => {
+        aiElapsedSeconds++;
+        const timerText = document.getElementById("aiTimerText");
+        if (timerText) timerText.textContent = `${aiElapsedSeconds}s`;
 
-// ==========================================
-// 4. 離線佇列 (Offline Queue) 與 本地快取層 (LRU)
-// ==========================================
-function cacheFoodItem(item) {
-    try {
-        let cache = JSON.parse(localStorage.getItem("lohas_food_cache") || "{}");
-        cache[item.FoodName] = item;
-        const keys = Object.keys(cache);
-        if (keys.length > 200) {
-            delete cache[keys[0]];
+        if (aiElapsedSeconds === 3) {
+            triggerDynamicIsland("🥣 分析緊食物質地與份量...");
+        } else if (aiElapsedSeconds === 6) {
+            triggerDynamicIsland("🥗 計算緊各項營養數值...");
         }
-        localStorage.setItem("lohas_food_cache", JSON.stringify(cache));
-    } catch(e) {}
+    }, 1000);
 }
 
-function getCachedFoodItem(name) {
-    try {
-        let cache = JSON.parse(localStorage.getItem("lohas_food_cache") || "{}");
-        return cache[name] || null;
-    } catch(e) { return null; }
+function stopAiDynamicProgress() {
+    if (aiProgressTimer) {
+        clearInterval(aiProgressTimer);
+        aiProgressTimer = null;
+    }
+    const warningBox = document.getElementById("aiWarningBox");
+    if (warningBox) warningBox.innerHTML = "";
 }
 
-function enqueueOfflineSync(payload) {
-    try {
-        let queue = JSON.parse(localStorage.getItem("lohas_offline_sync_queue") || "[]");
-        queue.push(payload);
-        localStorage.setItem("lohas_offline_sync_queue", JSON.stringify(queue.slice(-50)));
-    } catch(e) {}
+// ==========================================
+// 4. 資料刪除功能
+// ==========================================
+async function clearAllData() {
+    const confirm1 = await showAppleDialog({
+        type: 'confirm',
+        title: '確定清除所有記錄？',
+        message: '此操作會清空個人目標、飲食及體重日誌，不可復原。',
+        okText: '下一步'
+    });
+    if (!confirm1) return;
+
+    const confirm2 = await showAppleDialog({
+        type: 'confirm',
+        title: '最後確認',
+        message: '真係要清空並還原 App 初始狀態？',
+        okText: '確定清空'
+    });
+    if (!confirm2) return;
+
+    localStorage.clear();
+    await showAppleDialog({ title: '已清空', message: '所有資料已清除，即將為你重新載入。' });
+    location.reload();
 }
 
-async function flushOfflineSyncQueue() {
-    if (!navigator.onLine || userProfile.pureLocalMode) return;
-    let queue = JSON.parse(localStorage.getItem("lohas_offline_sync_queue") || "[]");
-    if (queue.length === 0) return;
+// ==========================================
+// 5. 體重紀錄與防呆檢查
+// ==========================================
+async function logCurrentWeight() {
+    const input = document.getElementById("weightInput");
+    const val = parseFloat(input.value);
+    if (!val || val <= 20 || val >= 300) {
+        return showAppleDialog({ title: "數值無效", message: "請輸入有效的體重數值 (20-300 kg)！" });
+    }
 
-    const remaining = [];
-    for (const item of queue) {
-        try {
-            await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: "logMeal", ...item })
+    if (weightLogs.length > 0) {
+        const lastWeight = weightLogs[0].weight;
+        const diff = Math.abs(val - lastWeight);
+        if (diff >= 3.0) {
+            const ok = await showAppleDialog({
+                type: 'confirm',
+                title: '體重變動確認',
+                message: `今次記錄（${val}kg）同平時（${lastWeight}kg）相差 ${diff.toFixed(1)}kg，確認數值冇打錯？`,
+                okText: '數值正確'
             });
-        } catch(e) {
-            remaining.push(item);
+            if (!ok) return;
         }
     }
-    localStorage.setItem("lohas_offline_sync_queue", JSON.stringify(remaining));
+
+    const todayStr = getTodayDateString();
+    const existingIdx = weightLogs.findIndex(w => w.date === todayStr);
+
+    if (existingIdx > -1) {
+        weightLogs[existingIdx].weight = val;
+    } else {
+        weightLogs.unshift({ date: todayStr, weight: val });
+    }
+
+    userProfile.weight = val;
+    localStorage.setItem("lohas_weight_logs", JSON.stringify(weightLogs.slice(0, 30)));
+    saveUserProfile(false);
+    calculatePersonalTargets();
+    renderWeightUI();
+    input.value = "";
+    triggerHaptic('success');
+    triggerDynamicIsland(`⚖️ 已記錄今日體重：${val} kg`);
 }
 
-window.addEventListener('online', () => {
-    flushOfflineSyncQueue();
-    uploadErrorLogs();
-});
+function renderWeightUI() {
+    const latestBox = document.getElementById("meta-weight-latest");
+    const diffBox = document.getElementById("meta-weight-diff");
+    const historyBox = document.getElementById("weightHistoryContainer");
+
+    if (weightLogs.length === 0) {
+        latestBox.textContent = `${userProfile.weight} kg`;
+        diffBox.textContent = "尚未記錄今日體重";
+        if (historyBox) historyBox.innerHTML = "尚無歷史體重紀錄。";
+        return;
+    }
+
+    const latest = weightLogs[0].weight;
+    latestBox.textContent = `${latest} kg`;
+
+    if (weightLogs.length > 1) {
+        const diff = (latest - weightLogs[1].weight).toFixed(1);
+        if (diff > 0) diffBox.innerHTML = `<span style="color:var(--apple-orange);">+${diff} kg</span> (較上次)`;
+        else if (diff < 0) diffBox.innerHTML = `<span style="color:var(--apple-green);">${diff} kg</span> (較上次)`;
+        else diffBox.textContent = "與上次持平";
+    } else {
+        diffBox.textContent = "已建立首筆記錄";
+    }
+
+    if (historyBox) {
+        historyBox.innerHTML = weightLogs.slice(0, 3).map(w => `
+            <span class="weight-pill" style="margin-right:6px;">${w.date}:${w.weight}kg</span>
+        `).join("");
+    }
+}
 
 // ==========================================
-// 5. 即時語音辨識（3 秒靜音自動停 mic 並觸發入帳）
+// 6. 常用食物管理
 // ==========================================
+function loadFavorites() {
+    const raw = localStorage.getItem("lohas_favorite_foods");
+    favoriteFoods = raw ? JSON.parse(raw) : [
+        { name: "凍檸茶", cal: 120, grams: 250, iddsi: "0" },
+        { name: "腸蛋麵", cal: 560, grams: 420, iddsi: "7" },
+        { name: "香煎雞扒飯", cal: 620, grams: 400, iddsi: "7" }
+    ];
+    renderFavoritesUI();
+}
+
+function renderFavoritesUI() {
+    const box = document.getElementById("quickFavoritesList");
+    if (!box) return;
+    if (favoriteFoods.length === 0) {
+        box.innerHTML = `<span style="font-size:11px; color:var(--text-sub);">尚無常用食物，可於登記餐食時點擊星星收藏。</span>`;
+        return;
+    }
+    box.innerHTML = favoriteFoods.map(f => `
+        <button class="fav-chip" onclick="quickLogFavorite('${escapeHTML(f.name)}')">
+            ⭐ ${escapeHTML(f.name)} (${f.cal}kcal)
+        </button>
+    `).join("");
+}
+
+function toggleCurrentFoodFavorite() {
+    if (!pendingFoodItem) return;
+    const name = pendingFoodItem.FoodName;
+    const idx = favoriteFoods.findIndex(f => f.name === name);
+    const starBtn = document.getElementById("favoriteToggleBtn");
+
+    if (idx > -1) {
+        favoriteFoods.splice(idx, 1);
+        starBtn.innerHTML = `<i class="fa-regular fa-star"></i>`;
+        triggerHaptic('light');
+        triggerDynamicIsland(`已從常用食物中移除`);
+    } else {
+        favoriteFoods.push({
+            name: name,
+            cal: pendingFoodItem.rawNutrients.calories || 200,
+            grams: pendingFoodItem.rawNutrients.grams || 250,
+            iddsi: pendingFoodItem["吞嚥安全 (IDDSI)"] || "7"
+        });
+        starBtn.innerHTML = `<i class="fa-solid fa-star"></i>`;
+        triggerHaptic('medium');
+        triggerDynamicIsland(`⭐ 已收藏到常用食物！`);
+    }
+
+    localStorage.setItem("lohas_favorite_foods", JSON.stringify(favoriteFoods));
+    renderFavoritesUI();
+}
+
+function quickLogFavorite(name) {
+    triggerHaptic('light');
+    document.getElementById("foodSearchInput").value = name;
+    switchAppleTab('meals', document.querySelectorAll('.tab-item')[1]);
+    searchFoodText();
+}
+
+// ==========================================
+// 7. 新手導覽
+// ==========================================
+function checkOnboarding() {
+    const isDone = localStorage.getItem("lohas_onboarded_v4");
+    if (!isDone) {
+        document.getElementById("onboardingModalOverlay").classList.add("active");
+    }
+}
+
+function completeOnboarding() {
+    triggerHaptic('medium');
+    localStorage.setItem("lohas_onboarded_v4", "true");
+    document.getElementById("onboardingModalOverlay").classList.remove("active");
+    triggerDynamicIsland("🎉 歡迎使用！隨時影相或用語音記錄飲食。");
+}
+
+// ==========================================
+// 8. iOS Widget & Siri 捷徑支援
+// ==========================================
+async function exportWidgetPayload() {
+    triggerHaptic('light');
+    const widgetData = {
+        calories: cal,
+        targetCalories: dailyTargets.cal,
+        water: waterTotal,
+        targetWater: dailyTargets.water,
+        lastMeal: todayAuditLogs.length > 0 ? todayAuditLogs[0].title : "尚未進食",
+        updatedAt: new Date().toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit' })
+    };
+    localStorage.setItem("lohas_widget_payload", JSON.stringify(widgetData));
+    await showAppleDialog({
+        title: "Widget 數據已就緒",
+        message: "已為你產生可供 iOS Scriptable 或 WidgetKit 讀取的桌面數據。"
+    });
+    triggerDynamicIsland("📱 Widget 數據已更新並存入本地儲存區");
+}
+
+function showSiriIntentHelp() {
+    showAppleDialog({
+        title: "設定 Siri 語音記錄",
+        message: "1. 開啟 iPhone「捷徑」App\n2. 新增捷徑並命名為「記錄飲水」或「記錄午餐」\n3. 加入「打開 URL」動作，填入本 App 網址\n4. 即可直接同 Siri 講快速啟動！"
+    });
+}
+
+// ==========================================
+// 9. 即時轉文字語音辨識 + 廣東話自然語言分析
+// ==========================================
+async function parseNaturalLanguage(text) {
+    if (!text || !text.trim()) return [];
+    const t = text.trim();
+
+    const rawSegments = t
+        .replace(/^(我|今日|頭先|啱啱|食咗|飲咗|幫我入|入|食左|飲左)\s*/g, '')
+        .split(/(?:[，,、和與及\+]|同埋|仲有|加|跟|配)/)
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+
+    const parsedList = [];
+
+    rawSegments.forEach(seg => {
+        let clean = seg.replace(/^(我|今日|頭先|啱啱|食咗|飲咗|食佐|飲佐|幫我入|入)/g, '').trim();
+        if (!clean) return;
+
+        let scale = 1.0;
+        let weight = 250;
+        let iddsi = "7";
+        let isLiquid = false;
+
+        if (clean.includes("半碗") || clean.includes("一半") || clean.includes("少少")) { scale = 0.5; }
+        else if (clean.includes("兩碗") || clean.includes("兩杯") || clean.includes("兩份")) { scale = 2.0; }
+        else if (clean.includes("三碗") || clean.includes("三杯")) { scale = 3.0; }
+
+        clean = clean.replace(/^[一二兩三半123]?[個碗杯碟份隻樽包碗條]/g, '').trim();
+
+        if (clean.includes("茶") || clean.includes("水") || clean.includes("汁") || clean.includes("啡") || clean.includes("奶") || clean.includes("湯")) {
+            isLiquid = true;
+            iddsi = "0";
+            weight = 250;
+        } else if (clean.includes("粥") || clean.includes("糊") || clean.includes("泥")) {
+            iddsi = "4";
+            weight = 300;
+        } else if (clean.includes("碎") || clean.includes("免治")) {
+            iddsi = "5";
+            weight = 200;
+        }
+
+        let target = LOCAL_FALLBACK_DB.find(f => f.FoodName.includes(clean) || clean.includes(f.FoodName));
+        let nutrients;
+
+        if (target) {
+            nutrients = { ...target.rawNutrients };
+            clean = target.FoodName;
+            iddsi = target["吞嚥安全 (IDDSI)"];
+        } else {
+            nutrients = {
+                grams: Math.round(weight * scale),
+                calories: Math.round((isLiquid ? 120 : 350) * scale),
+                protein_g: Number((isLiquid ? 1.0 : 14.0 * scale).toFixed(1)),
+                carbs_g: Number((isLiquid ? 22.0 : 45.0 * scale).toFixed(1)),
+                fat_g: Number((isLiquid ? 2.0 : 8.0 * scale).toFixed(1)),
+                fiber_g: isLiquid ? 0 : 2.5,
+                sugar_g: isLiquid ? 15 : 2.0,
+                saturated_fat_g: isLiquid ? 0.5 : 2.0,
+                trans_fat_g: 0.0,
+                cholesterol_mg: isLiquid ? 5 : 25,
+                calcium_mg: isLiquid ? 20 : 40,
+                iron_mg: 1.5, magnesium_mg: 20,
+                sodium_mg: Math.round((isLiquid ? 40 : 450) * scale),
+                potassium_mg: Math.round((isLiquid ? 80 : 300) * scale),
+                zinc_mg: 1.0, vitamin_c_mg: 2.0,
+                water_ml: Math.round((isLiquid ? 230 : 120) * scale)
+            };
+        }
+
+        parsedList.push({
+            food: clean,
+            grams: Math.round(weight * scale),
+            iddsi: iddsi,
+            nutrients: nutrients
+        });
+    });
+
+    return parsedList;
+}
+
+async function triggerNaturalLanguageLog() {
+    const input = document.getElementById("nlInput");
+    const val = input.value.trim();
+    if (!val) {
+        return showAppleDialog({ title: "請輸入餐點", message: "請講出或者輸入你食咗咩（例如：食咗個腸蛋麵同埋凍檸茶）！" });
+    }
+
+    const items = await parseNaturalLanguage(val);
+    if (items.length === 0) {
+        return showAppleDialog({ title: "未能識別", message: "未能識別餐點名稱，請嘗試用更直接的字眼再試一次！" });
+    }
+
+    let summaryNames = [];
+    for (const item of items) {
+        const logId = "NL_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4);
+        const n = item.nutrients;
+        
+        cal += n.calories;
+        grams += item.grams;
+        protein += n.protein_g;
+        carbs += n.carbs_g;
+        fat += n.fat_g;
+        sodium += n.sodium_mg;
+        waterTotal += n.water_ml;
+        maxIddsiText = item.iddsi;
+
+        todayAuditLogs.unshift({
+            logId: logId,
+            mealType: currentMealType,
+            title: item.food,
+            calories: n.calories,
+            water: n.water_ml,
+            sodium: n.sodium_mg,
+            protein: n.protein_g,
+            carbs: n.carbs_g,
+            fat: n.fat_g,
+            grams: item.grams,
+            subText: `${MEAL_TYPE_MAP[currentMealType]} ·${item.grams}g · IDDSI L${item.iddsi}`
+        });
+
+        // 雲端背景備份
+        fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+                action: "logMeal",
+                timestamp: getFormattedDateTime(),
+                id: userProfile.name || "健康探索者",
+                FoodName: item.food,
+                "克 Grams": item.grams,
+                "熱量 Calories": n.calories,
+                "蛋白質 Protein (g)": n.protein_g,
+                "碳水化合物 Carbs (g)": n.carbs_g,
+                "脂肪 Fat (g)": n.fat_g,
+                "膳食纖維 Fiber (g)": n.fiber_g || 0,
+                "糖 Sugar (g)": n.sugar_g || 0,
+                "飽和脂肪 Saturated Fat (g)": n.saturated_fat_g || 0,
+                "反式脂肪 Trans Fat (g)": n.trans_fat_g || 0,
+                "膽固醇 Cholesterol (mg)": n.cholesterol_mg || 0,
+                "鈣 Calcium (mg)": n.calcium_mg || 0,
+                "鐵 Iron (mg)": n.iron_mg || 0,
+                "鎂 Magnesium (mg)": n.magnesium_mg || 0,
+                "鈉 Sodium (mg)": n.sodium_mg || 0,
+                "鉀 Potassium (mg)": n.potassium_mg || 0,
+                "鋅 Zinc (mg)": n.zinc_mg || 0,
+                "維他命C Vitamin C (mg)": n.vitamin_c_mg || 0,
+                "吞嚥安全 (IDDSI)": String(item.iddsi),
+                grams: item.grams,
+                calories: n.calories,
+                protein_g: n.protein_g,
+                carbs_g: n.carbs_g,
+                fat_g: n.fat_g,
+                fiber_g: n.fiber_g || 0,
+                sugar_g: n.sugar_g || 0,
+                saturated_fat_g: n.saturated_fat_g || 0,
+                trans_fat_g: n.trans_fat_g || 0,
+                cholesterol_mg: n.cholesterol_mg || 0,
+                calcium_mg: n.calcium_mg || 0,
+                iron_mg: n.iron_mg || 0,
+                magnesium_mg: n.magnesium_mg || 0,
+                sodium_mg: n.sodium_mg || 0,
+                potassium_mg: n.potassium_mg || 0,
+                zinc_mg: n.zinc_mg || 0,
+                vitamin_c_mg: n.vitamin_c_mg || 0
+            })
+        }).catch(e => console.warn("背景同步雲端略過:", e));
+
+        summaryNames.push(item.food);
+    }
+
+    input.value = "";
+    saveDailyState();
+    updateDashboardUI();
+    renderAuditHistory();
+    triggerHaptic('success');
+    triggerDynamicIsland(`✅ 已成功記低：${summaryNames.join('、')}！`);
+}
+
 function toggleVoiceRecognitionForNL() {
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRec) {
@@ -1360,7 +1544,6 @@ function toggleVoiceRecognitionForNL() {
     const voiceBtn = document.getElementById("voiceDictateBtn");
 
     if (isSpeechRecognizing && speechRecognitionInstance) {
-        if (speechSilenceTimer) clearTimeout(speechSilenceTimer);
         speechRecognitionInstance.stop();
         return;
     }
@@ -1377,8 +1560,8 @@ function toggleVoiceRecognitionForNL() {
             isSpeechRecognizing = true;
             triggerHaptic('medium');
             voiceBtn.classList.add("voice-btn-recording");
-            voiceBtn.innerHTML = `<i class="fa-solid fa-stop"></i> 聆聽中...`;
-            triggerDynamicIsland("🎙️ 請講嘢，講完停頓 3 秒自動為你入帳...");
+            voiceBtn.innerHTML = `<i class="fa-solid fa-stop"></i> 講完撳我`;
+            triggerDynamicIsland("🎙️ 請講嘢，文字會即時顯示喺輸入框...");
         };
 
         speechRecognitionInstance.onresult = (e) => {
@@ -1393,19 +1576,10 @@ function toggleVoiceRecognitionForNL() {
             }
             const fullText = (recognizedFinal + interimText).replace(/[。]/g, '');
             input.value = fullText;
-
-            if (speechSilenceTimer) clearTimeout(speechSilenceTimer);
-            speechSilenceTimer = setTimeout(() => {
-                if (speechRecognitionInstance && isSpeechRecognizing) {
-                    triggerDynamicIsland("⏱️ 偵測到停頓，自動為你分析...");
-                    speechRecognitionInstance.stop();
-                }
-            }, 3000);
         };
 
         speechRecognitionInstance.onerror = (e) => {
             console.warn("語音錯誤:", e);
-            if (speechSilenceTimer) clearTimeout(speechSilenceTimer);
             if (e.error !== 'no-speech') {
                 triggerDynamicIsland("語音識別未就緒或未授權麥克風", "warning");
             }
@@ -1413,19 +1587,16 @@ function toggleVoiceRecognitionForNL() {
         };
 
         speechRecognitionInstance.onend = () => {
-            if (speechSilenceTimer) clearTimeout(speechSilenceTimer);
             stopVoiceRecognitionUI();
-            
             if (input.value.trim().length > 1) {
                 triggerHaptic('light');
-                triggerNaturalLanguageLog();
+                triggerDynamicIsland("🎙️ 語音輸入完成！");
             }
         };
 
         speechRecognitionInstance.start();
     } catch (err) {
         console.warn("語音啟動異常:", err);
-        if (speechSilenceTimer) clearTimeout(speechSilenceTimer);
         stopVoiceRecognitionUI();
     }
 }
@@ -1440,8 +1611,365 @@ function stopVoiceRecognitionUI() {
 }
 
 // ==========================================
-// 6. 語意提取（湯渣固液雙質地安全臨床判斷）
+// 10. AR / LiDAR 碗量估算引擎
 // ==========================================
+const FOOD_DENSITY_MAP = {
+    "drink": 1.0,
+    "soup": 1.02,
+    "congee": 1.05,
+    "rice": 0.82,
+    "noodle": 0.75,
+    "meat": 1.08,
+    "vegetable": 0.45
+};
+
+function getFoodDensity(foodName) {
+    if (!foodName) return 0.85;
+    if (foodName.includes("茶") || foodName.includes("水") || foodName.includes("汁")) return FOOD_DENSITY_MAP.drink;
+    if (foodName.includes("湯")) return FOOD_DENSITY_MAP.soup;
+    if (foodName.includes("粥") || foodName.includes("糊")) return FOOD_DENSITY_MAP.congee;
+    if (foodName.includes("飯")) return FOOD_DENSITY_MAP.rice;
+    if (foodName.includes("麵") || foodName.includes("粉")) return FOOD_DENSITY_MAP.noodle;
+    if (foodName.includes("菜") || foodName.includes("沙律")) return FOOD_DENSITY_MAP.vegetable;
+    return 0.85;
+}
+
+async function startARVolumeEstimation() {
+    if (!pendingFoodItem) return;
+
+    const { FoodVolumePlugin } = window.Capacitor?.Plugins || {};
+    if (!FoodVolumePlugin) {
+        await showAppleDialog({
+            title: "僅支援 iOS App",
+            message: "AR 體積測量需配合 iPhone/iPad 相機與 ARKit，請在實機 App 上使用。"
+        });
+        return;
+    }
+
+    try {
+        triggerHaptic('light');
+        triggerDynamicIsland("📐 啟動 ARKit 實景測量...");
+        const result = await FoodVolumePlugin.measureVolume();
+        
+        if (result && result.volume_ml) {
+            const vol = result.volume_ml;
+
+            if (vol < 30 || vol > 1800) {
+                await showAppleDialog({
+                    title: "份量數值似乎有誤",
+                    message: `測出容器約 ${vol}ml，可能超出一般個人碗碟大小，建議放平手機再對準餐枱試一次。`
+                });
+                return;
+            }
+
+            const density = getFoodDensity(pendingFoodItem.FoodName);
+            const autoGrams = Math.round(vol * density);
+
+            pendingFoodItem.rawNutrients.grams = autoGrams;
+            const standardPortion = 250;
+            currentPortionScale = autoGrams / standardPortion;
+
+            const breakdownBox = document.getElementById("measurementBreakdownBox");
+            if (breakdownBox) {
+                breakdownBox.style.display = "flex";
+                document.getElementById("arVolVal").textContent = `${vol} ml`;
+                document.getElementById("arDensityVal").textContent = `${density.toFixed(2)} g/cm³`;
+                document.getElementById("arTechBadge").textContent = result.device_has_lidar ? "LiDAR 測量" : "AR 碗量估算";
+            }
+
+            renderPendingFoodDetails();
+
+            const isLiDAR = !!result.device_has_lidar;
+            const techTag = isLiDAR ? "🎯 LiDAR 實境測量" : "📐 AR 實景測量";
+            triggerHaptic('success');
+            triggerDynamicIsland(`${techTag}：容量約 ${vol}ml → 估算約 ${autoGrams}g`);
+        }
+    } catch (err) {
+        console.warn("AR 測量取消:", err);
+    }
+}
+
+// 每日健康總結
+function generateDailySummary() {
+    const calPct = Math.round((cal / dailyTargets.cal) * 100);
+    let msg = `今日已達目標熱量 <b>${calPct}%</b> (${cal} /${dailyTargets.cal} kcal)`;
+    
+    if (protein < dailyTargets.protein * 0.8) {
+        msg += `，蛋白質仲差 <b>${Math.round(dailyTargets.protein - protein)}g</b> 先夠`;
+    } else {
+        msg += `，蛋白質達標啦 💪`;
+    }
+
+    if (waterTotal < dailyTargets.water) {
+        msg += `，飲水仲差 <b>${Math.round(dailyTargets.water - waterTotal)}ml</b>`;
+    } else {
+        msg += `，水分充足 💧`;
+    }
+
+    if (sodium > dailyTargets.sodium) {
+        msg += `；留意鈉質少少超標 (${Math.round(sodium)}mg)`;
+    }
+
+    return msg + "。";
+}
+
+// 條碼掃描
+async function openBarcodeScannerModal() {
+    if (isScannerStarting) return;
+    isScannerStarting = true;
+    triggerHaptic('light');
+    document.getElementById("barcodeScannerModalOverlay").classList.add("active");
+    try {
+        barcodeScanner = new Html5Qrcode("barcode-reader");
+        await barcodeScanner.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: 250 },
+            async (barcode) => {
+                await closeBarcodeScannerModal();
+                triggerHaptic('medium');
+                triggerDynamicIsland(`🔍 已掃描條碼：${barcode}，搵緊資料...`);
+                await fetchOpenFoodFactsData(barcode);
+            },
+            () => {}
+        );
+    } catch (err) {
+        console.warn("條碼相機開啟異常:", err);
+    } finally {
+        isScannerStarting = false;
+    }
+}
+
+async function closeBarcodeScannerModal() {
+    if (barcodeScanner) {
+        try { await barcodeScanner.stop(); } catch (e) {}
+        barcodeScanner.clear();
+        barcodeScanner = null;
+    }
+    document.getElementById("barcodeScannerModalOverlay").classList.remove("active");
+}
+
+async function fetchOpenFoodFactsData(barcode) {
+    try {
+        const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
+        const json = await res.json();
+        
+        if (json.status !== 1 || !json.product) {
+            return showAppleDialog({ title: "搵唔到此商品", message: `資料庫未有此條碼 (${barcode}) 的記錄，可以直接輸入菜名搜尋。` });
+        }
+
+        const p = json.product;
+        const name = p.product_name_zh || p.product_name || p.product_name_en || "包裝食物";
+        const n = p.nutriments || {};
+
+        const cals = Math.round(n['energy-kcal_100g'] || n['energy-kcal'] || 150);
+        const prot = Number((n['proteins_100g'] || 3.0).toFixed(1));
+        const carbs_v = Number((n['carbohydrates_100g'] || 20.0).toFixed(1));
+        const fat_v = Number((n['fat_100g'] || 4.0).toFixed(1));
+        const sugar_v = Number((n['sugars_100g'] || 2.0).toFixed(1));
+        const sodium_v = Math.round((n['sodium_100g'] ? n['sodium_100g'] * 1000 : (n['salt_100g'] ? n['salt_100g'] * 400 : 150)));
+
+        pendingFoodItem = {
+            FoodName: name,
+            "吞嚥安全 (IDDSI)": "7",
+            dual: false,
+            isDrink: false,
+            allergen_tags: [],
+            clinicalReason: "包裝食物條碼資料",
+            isUserModified: false,
+            rawNutrients: {
+                grams: 100,
+                calories: cals,
+                protein_g: prot,
+                carbs_g: carbs_v,
+                fat_g: fat_v,
+                fiber_g: Number((n['fiber_100g'] || 1.0).toFixed(1)),
+                sugar_g: sugar_v,
+                saturated_fat_g: Number((n['saturated-fat_100g'] || 1.0).toFixed(1)),
+                trans_fat_g: 0.0,
+                cholesterol_mg: 0,
+                calcium_mg: Math.round(n['calcium_100g'] ? n['calcium_100g'] * 1000 : 20),
+                iron_mg: 1.0, magnesium_mg: 15,
+                sodium_mg: sodium_v,
+                potassium_mg: 150, zinc_mg: 0.5, vitamin_c_mg: 0.0, water_ml: 20
+            }
+        };
+
+        document.getElementById("measurementBreakdownBox").style.display = "none";
+        document.getElementById("single_foodname").textContent = name;
+        document.getElementById("singleQueryResultCard").style.display = "block";
+        setPortionScale(1.0, document.querySelectorAll('.portion-chip')[3]);
+        switchAppleTab('meals', document.querySelectorAll('.tab-item')[1]);
+        triggerHaptic('success');
+        triggerDynamicIsland(`📦 已載入食品：${name}`);
+
+    } catch (e) {
+        showAppleDialog({ title: "連線失敗", message: "未能連線至資料庫，請檢查網絡設定。" });
+    }
+}
+
+function exportCSV() {
+    triggerHaptic('light');
+    if (todayAuditLogs.length === 0) {
+        return showAppleDialog({ title: "今日尚無記錄", message: "今日尚未有飲食紀錄可匯出。" });
+    }
+
+    let csvContent = "\uFEFF";
+    csvContent += "日期,餐別,食物名稱,重量(g),熱量(kcal),蛋白質(g),碳水化合物(g),脂肪(g),鈉質(mg),水分(ml)\n";
+
+    todayAuditLogs.forEach(row => {
+        csvContent += `"${getTodayDateString()}","${MEAL_TYPE_MAP[row.mealType || 'lunch']}","${row.title}",${row.grams},${row.calories},${row.protein},${row.carbs},${row.fat},${row.sodium},${row.water}\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `lohas_diet_log_${getTodayDateString()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    triggerHaptic('success');
+    triggerDynamicIsland("📊 已成功下載 CSV 記錄檔！");
+}
+
+async function backupLocalData() {
+    triggerHaptic('light');
+    const backupObj = {
+        profile: userProfile,
+        dailyLogs: todayAuditLogs,
+        dailyTotals: { cal, grams, protein, carbs, fat, sodium, waterTotal },
+        favorites: favoriteFoods,
+        weightLogs: weightLogs,
+        backupDate: new Date().toISOString()
+    };
+
+    const blob = new Blob([JSON.stringify(backupObj, null, 2)], { type: "application/json" });
+
+    if (navigator.canShare && navigator.canShare({ files: [new File([blob], `lohas_backup_${getTodayDateString()}.json`, { type: 'application/json' })] })) {
+        try {
+            await navigator.share({
+                title: '樂活飲食日誌備份',
+                files: [new File([blob], `lohas_backup_${getTodayDateString()}.json`, { type: 'application/json' })]
+            });
+            triggerHaptic('success');
+            triggerDynamicIsland("📥 備份已分享 / 儲存至檔案");
+            return;
+        } catch (e) {}
+    }
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `lohas_backup_${getTodayDateString()}.json`;
+    a.click();
+    triggerHaptic('success');
+    triggerDynamicIsland("📥 備份檔案已成功下載！");
+}
+
+function restoreLocalData(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (data.profile) {
+                userProfile = data.profile;
+                localStorage.setItem("lohas_user_profile_public", JSON.stringify(userProfile));
+            }
+            if (data.dailyLogs) todayAuditLogs = data.dailyLogs;
+            if (data.favorites) {
+                favoriteFoods = data.favorites;
+                localStorage.setItem("lohas_favorite_foods", JSON.stringify(favoriteFoods));
+            }
+            if (data.weightLogs) {
+                weightLogs = data.weightLogs;
+                localStorage.setItem("lohas_weight_logs", JSON.stringify(weightLogs));
+            }
+            if (data.dailyTotals) {
+                cal = data.dailyTotals.cal || 0;
+                grams = data.dailyTotals.grams || 0;
+                protein = data.dailyTotals.protein || 0;
+                carbs = data.dailyTotals.carbs || 0;
+                fat = data.dailyTotals.fat || 0;
+                sodium = data.dailyTotals.sodium || 0;
+                waterTotal = data.dailyTotals.waterTotal || 0;
+            }
+            saveDailyState();
+            loadUserProfile();
+            loadFavorites();
+            renderWeightUI();
+            updateDashboardUI();
+            renderAuditHistory();
+            triggerHaptic('success');
+            triggerDynamicIsland("🎉 備份資料已成功還原！");
+        } catch (err) {
+            showAppleDialog({ title: "還原失敗", message: "檔案格式不正確，無法還原。" });
+        }
+    };
+    reader.readAsText(file);
+}
+
+function suggestNextMeal() {
+    const remainCal = Math.max(0, dailyTargets.cal - cal);
+    const remainProtein = Math.max(0, dailyTargets.protein - protein);
+    const box = document.getElementById("nextMealSuggestionBox");
+
+    if (!box) return;
+
+    if (remainCal < 200) {
+        box.innerHTML = `💡 <b>今日熱量好接近目標！</b><br>下一餐建議以<b>清淡蔬菜沙律</b>、<b>冬瓜豆腐湯</b>或無糖茶飲為主，飲夠水就最健康。`;
+        return;
+    }
+
+    if (remainProtein > 20) {
+        box.innerHTML = `🥩 <b>蛋白質仲差緊少少 (${remainProtein.toFixed(1)}g)：</b><br>下一餐推薦：<b>清蒸豆腐魚柳</b>、<b>白灼蝦配蕎麥麵</b>或<b>去皮白切雞飯</b>，高蛋白又低脂肪。`;
+        return;
+    }
+
+    if (waterTotal < dailyTargets.water * 0.6) {
+        box.innerHTML = `💧 <b>水分好似飲得唔夠：</b><br>下一餐不妨揀多湯汁嘅<b>鮮茄牛肉湯通粉</b>，順便飲多 500ml 溫水補足水分。`;
+        return;
+    }
+
+    box.innerHTML = `🥗 <b>進食進度非常平均：</b><br>剩餘熱量仲有 <b>${remainCal} kcal</b>，下一餐可以揀<b>南瓜碎肉粥</b>或者<b>三文魚糙米飯</b>！`;
+}
+
+// 包含茶餐廳經典食物的常用庫
+const LOCAL_FALLBACK_DB = [
+    { 
+        "FoodName": "凍檸茶", 
+        "吞嚥安全 (IDDSI)": "0", "dual": false, "isDrink": true, "allergen_tags": [],
+        rawNutrients: { grams: 250, calories: 120, protein_g: 0.2, carbs_g: 28.0, fat_g: 0.0, fiber_g: 0.0, sugar_g: 25.0, saturated_fat_g: 0.0, trans_fat_g: 0.0, cholesterol_mg: 0, calcium_mg: 15, iron_mg: 0.3, magnesium_mg: 8, sodium_mg: 15, potassium_mg: 60, zinc_mg: 0.1, vitamin_c_mg: 12.0, water_ml: 240 }
+    },
+    { 
+        "FoodName": "腸蛋麵", 
+        "吞嚥安全 (IDDSI)": "7", "dual": true, "isDrink": false, "allergen_tags": ["GLUTEN", "EGG", "SOY"],
+        rawNutrients: { grams: 420, calories: 560, protein_g: 18.0, carbs_g: 62.0, fat_g: 26.0, fiber_g: 2.5, sugar_g: 3.0, saturated_fat_g: 8.5, trans_fat_g: 0.2, cholesterol_mg: 230, calcium_mg: 45, iron_mg: 2.8, magnesium_mg: 30, sodium_mg: 1250, potassium_mg: 320, zinc_mg: 2.2, vitamin_c_mg: 0.0, water_ml: 260 }
+    },
+    { 
+        "FoodName": "餐蛋麵", 
+        "吞嚥安全 (IDDSI)": "7", "dual": true, "isDrink": false, "allergen_tags": ["GLUTEN", "EGG", "SOY"],
+        rawNutrients: { grams: 420, calories: 620, protein_g: 19.0, carbs_g: 64.0, fat_g: 32.0, fiber_g: 2.5, sugar_g: 3.5, saturated_fat_g: 10.0, trans_fat_g: 0.3, cholesterol_mg: 240, calcium_mg: 40, iron_mg: 2.9, magnesium_mg: 32, sodium_mg: 1450, potassium_mg: 340, zinc_mg: 2.4, vitamin_c_mg: 0.0, water_ml: 250 }
+    },
+    { 
+        "FoodName": "碎肉燕麥粥", 
+        "吞嚥安全 (IDDSI)": "4", "dual": false, "isDrink": false, "allergen_tags": ["GLUTEN"],
+        rawNutrients: { grams: 300, calories: 250, protein_g: 15.0, carbs_g: 35.0, fat_g: 7.0, fiber_g: 4.0, sugar_g: 1.5, saturated_fat_g: 1.5, trans_fat_g: 0.0, cholesterol_mg: 30, calcium_mg: 60, iron_mg: 2.0, magnesium_mg: 50, sodium_mg: 350, potassium_mg: 400, zinc_mg: 2.0, vitamin_c_mg: 5.0, water_ml: 200 }
+    },
+    { 
+        "FoodName": "清蒸豆腐魚柳", 
+        "吞嚥安全 (IDDSI)": "5", "dual": false, "isDrink": false, "allergen_tags": ["SEAFOOD", "SOY"],
+        rawNutrients: { grams: 180, calories: 220, protein_g: 24.0, carbs_g: 4.0, fat_g: 9.0, fiber_g: 1.2, sugar_g: 0.5, saturated_fat_g: 1.5, trans_fat_g: 0.0, cholesterol_mg: 45, calcium_mg: 120, iron_mg: 1.8, magnesium_mg: 40, sodium_mg: 410, potassium_mg: 350, zinc_mg: 1.5, vitamin_c_mg: 1.0, water_ml: 90 }
+    },
+    { 
+        "FoodName": "沙嗲牛肉麵", 
+        "吞嚥安全 (IDDSI)": "7", "dual": true, "isDrink": false, "allergen_tags": ["PEANUT", "GLUTEN", "SOY"],
+        rawNutrients: { grams: 420, calories: 580, protein_g: 26.0, carbs_g: 68.0, fat_g: 22.0, fiber_g: 3.5, sugar_g: 5.0, saturated_fat_g: 7.0, trans_fat_g: 0.3, cholesterol_mg: 60, calcium_mg: 40, iron_mg: 3.5, magnesium_mg: 35, sodium_mg: 1380, potassium_mg: 380, zinc_mg: 3.2, vitamin_c_mg: 0.0, water_ml: 260 }
+    }
+];
+
 function extractHumanFoodData(rawName, fallbackIddsi = null) {
     let cleanName = "未命名餐食";
     let detectedIddsi = null;
@@ -1479,268 +2007,38 @@ function extractHumanFoodData(rawName, fallbackIddsi = null) {
     }
 
     const lower = cleanName.toLowerCase();
-    
-    if (lower.includes("茶") || lower.includes("水") || lower.includes("汁") || lower.includes("啡") || lower.includes("奶") || lower.includes("豆漿")) {
+    if (lower.includes("茶") || lower.includes("水") || lower.includes("汁") || lower.includes("啡") || lower.includes("奶") || lower.includes("湯")) {
         isDrink = true;
     }
 
-    if (lower.includes("湯")) {
-        isDrink = true;
-        if (lower.includes("麵") || lower.includes("粉") || lower.includes("飯") || lower.includes("通粉") || lower.includes("米線")) {
-            isDual = true;
-        } else if (lower.includes("豆腐") || lower.includes("冬瓜") || lower.includes("肉") || lower.includes("菜") || lower.includes("蛋") || lower.includes("瓜") || lower.includes("蘿蔔") || lower.includes("魚") || lower.includes("雞") || lower.includes("渣")) {
-            isDual = true;
-        }
-    }
-
-    if (lower.includes("珍珠")) {
+    if (lower.includes("珍珠") || (lower.includes("湯") && (lower.includes("麵") || lower.includes("粉") || lower.includes("飯")))) {
         isDual = true;
     }
 
     if (detectedIddsi === null || detectedIddsi === undefined || detectedIddsi === "") {
         if (fallbackIddsi !== null && fallbackIddsi !== undefined && fallbackIddsi !== "") {
             detectedIddsi = String(fallbackIddsi);
-        } else if (isDual) {
-            detectedIddsi = (lower.includes("碎") || lower.includes("免治")) ? "5" : "7";
-        } else if (isDrink) {
+        } else if (isDrink && !isDual) {
             detectedIddsi = "0";
         } else if (lower.includes("糊") || lower.includes("粥") || lower.includes("泥")) {
             detectedIddsi = "4";
-        } else if (lower.includes("麥皮")) {
-            detectedIddsi = "3";
-        } else if (lower.includes("碎") || lower.includes("免治") || lower.includes("蒸水蛋") || lower.includes("炒蛋") || lower.includes("腸粉")) {
-            detectedIddsi = lower.includes("蒸水蛋") || lower.includes("炒蛋") || lower.includes("腸粉") ? "6" : "5";
+        } else if (lower.includes("碎") || lower.includes("免治")) {
+            detectedIddsi = "5";
         } else {
             detectedIddsi = "7";
         }
     }
 
+    if (isDrink && !isDual && detectedIddsi === "7") {
+        detectedIddsi = "0";
+    }
+
     return { name: cleanName, iddsi: detectedIddsi, reason: clinicalReason, grams: estGrams, isDual, isDrink };
 }
 
-// 24 款經典中式茶餐廳/港式日常食材離線庫
-const LOCAL_FALLBACK_DB = [
-    { "FoodName": "凍檸茶", "吞嚥安全 (IDDSI)": "0", "dual": false, "isDrink": true, "allergen_tags": [], rawNutrients: { grams: 250, calories: 120, protein_g: 0.2, carbs_g: 28.0, fat_g: 0.0, fiber_g: 0.0, sugar_g: 25.0, saturated_fat_g: 0.0, trans_fat_g: 0.0, cholesterol_mg: 0, calcium_mg: 15, iron_mg: 0.3, magnesium_mg: 8, sodium_mg: 15, potassium_mg: 60, zinc_mg: 0.1, vitamin_c_mg: 12.0, water_ml: 240 } },
-    { "FoodName": "腸蛋麵", "吞嚥安全 (IDDSI)": "7", "dual": true, "isDrink": false, "allergen_tags": ["GLUTEN", "EGG", "SOY"], rawNutrients: { grams: 420, calories: 560, protein_g: 18.0, carbs_g: 62.0, fat_g: 26.0, fiber_g: 2.5, sugar_g: 3.0, saturated_fat_g: 8.5, trans_fat_g: 0.2, cholesterol_mg: 230, calcium_mg: 45, iron_mg: 2.8, magnesium_mg: 30, sodium_mg: 1250, potassium_mg: 320, zinc_mg: 2.2, vitamin_c_mg: 0.0, water_ml: 260 } },
-    { "FoodName": "冬瓜豆腐湯", "吞嚥安全 (IDDSI)": "7", "dual": true, "isDrink": true, "allergen_tags": ["SOY"], rawNutrients: { grams: 350, calories: 110, protein_g: 6.5, carbs_g: 8.0, fat_g: 4.0, fiber_g: 2.0, sugar_g: 2.0, saturated_fat_g: 0.5, trans_fat_g: 0.0, cholesterol_mg: 0, calcium_mg: 90, iron_mg: 1.2, magnesium_mg: 35, sodium_mg: 420, potassium_mg: 280, zinc_mg: 0.8, vitamin_c_mg: 15.0, water_ml: 310 } },
-    { "FoodName": "碎肉燕麥粥", "吞嚥安全 (IDDSI)": "4", "dual": false, "isDrink": false, "allergen_tags": ["GLUTEN"], rawNutrients: { grams: 300, calories: 250, protein_g: 15.0, carbs_g: 35.0, fat_g: 7.0, fiber_g: 4.0, sugar_g: 1.5, saturated_fat_g: 1.5, trans_fat_g: 0.0, cholesterol_mg: 30, calcium_mg: 60, iron_mg: 2.0, magnesium_mg: 50, sodium_mg: 350, potassium_mg: 400, zinc_mg: 2.0, vitamin_c_mg: 5.0, water_ml: 200 } },
-    { "FoodName": "白粥", "吞嚥安全 (IDDSI)": "4", "dual": false, "isDrink": false, "allergen_tags": [], rawNutrients: { grams: 300, calories: 130, protein_g: 2.5, carbs_g: 28.0, fat_g: 0.3, fiber_g: 0.5, sugar_g: 0.0, saturated_fat_g: 0.1, trans_fat_g: 0.0, cholesterol_mg: 0, calcium_mg: 8, iron_mg: 0.4, magnesium_mg: 10, sodium_mg: 10, potassium_mg: 40, zinc_mg: 0.5, vitamin_c_mg: 0.0, water_ml: 270 } },
-    { "FoodName": "叉燒飯", "吞嚥安全 (IDDSI)": "7", "dual": false, "isDrink": false, "allergen_tags": ["SOY"], rawNutrients: { grams: 450, calories: 680, protein_g: 28.0, carbs_g: 85.0, fat_g: 20.0, fiber_g: 2.0, sugar_g: 12.0, saturated_fat_g: 6.5, trans_fat_g: 0.1, cholesterol_mg: 75, calcium_mg: 30, iron_mg: 2.5, magnesium_mg: 35, sodium_mg: 1200, potassium_mg: 320, zinc_mg: 2.8, vitamin_c_mg: 0.0, water_ml: 80 } },
-    { "FoodName": "雲吞麵", "吞嚥安全 (IDDSI)": "7", "dual": true, "isDrink": false, "allergen_tags": ["GLUTEN", "SEAFOOD", "EGG"], rawNutrients: { grams: 400, calories: 480, protein_g: 22.0, carbs_g: 65.0, fat_g: 12.0, fiber_g: 2.0, sugar_g: 2.0, saturated_fat_g: 3.5, trans_fat_g: 0.0, cholesterol_mg: 90, calcium_mg: 50, iron_mg: 2.8, magnesium_mg: 30, sodium_mg: 1400, potassium_mg: 280, zinc_mg: 2.2, vitamin_c_mg: 1.0, water_ml: 250 } },
-    { "FoodName": "蒸水蛋", "吞嚥安全 (IDDSI)": "6", "dual": false, "isDrink": false, "allergen_tags": ["EGG"], rawNutrients: { grams: 180, calories: 130, protein_g: 12.0, carbs_g: 1.5, fat_g: 8.0, fiber_g: 0.0, sugar_g: 0.5, saturated_fat_g: 2.5, trans_fat_g: 0.0, cholesterol_mg: 220, calcium_mg: 45, iron_mg: 1.6, magnesium_mg: 15, sodium_mg: 350, potassium_mg: 180, zinc_mg: 1.2, vitamin_c_mg: 0.0, water_ml: 140 } },
-    { "FoodName": "炒青菜", "吞嚥安全 (IDDSI)": "7", "dual": false, "isDrink": false, "allergen_tags": [], rawNutrients: { grams: 200, calories: 90, protein_g: 3.0, carbs_g: 6.0, fat_g: 6.0, fiber_g: 3.5, sugar_g: 2.0, saturated_fat_g: 1.0, trans_fat_g: 0.0, cholesterol_mg: 0, calcium_mg: 110, iron_mg: 1.8, magnesium_mg: 25, sodium_mg: 400, potassium_mg: 350, zinc_mg: 0.8, vitamin_c_mg: 25.0, water_ml: 150 } },
-    { "FoodName": "白切雞飯", "吞嚥安全 (IDDSI)": "7", "dual": false, "isDrink": false, "allergen_tags": [], rawNutrients: { grams: 450, calories: 620, protein_g: 32.0, carbs_g: 78.0, fat_g: 18.0, fiber_g: 1.8, sugar_g: 1.0, saturated_fat_g: 4.5, trans_fat_g: 0.0, cholesterol_mg: 85, calcium_mg: 35, iron_mg: 2.2, magnesium_mg: 40, sodium_mg: 900, potassium_mg: 380, zinc_mg: 2.5, vitamin_c_mg: 2.0, water_ml: 100 } },
-    { "FoodName": "鮮茄牛肉飯", "吞嚥安全 (IDDSI)": "7", "dual": false, "isDrink": false, "allergen_tags": [], rawNutrients: { grams: 450, calories: 650, protein_g: 26.0, carbs_g: 82.0, fat_g: 18.0, fiber_g: 3.2, sugar_g: 8.0, saturated_fat_g: 5.0, trans_fat_g: 0.2, cholesterol_mg: 65, calcium_mg: 40, iron_mg: 3.2, magnesium_mg: 45, sodium_mg: 1100, potassium_mg: 520, zinc_mg: 3.5, vitamin_c_mg: 18.0, water_ml: 150 } },
-    { "FoodName": "咖喱牛腩飯", "吞嚥安全 (IDDSI)": "7", "dual": false, "isDrink": false, "allergen_tags": [], rawNutrients: { grams: 480, calories: 750, protein_g: 30.0, carbs_g: 88.0, fat_g: 28.0, fiber_g: 3.0, sugar_g: 4.0, saturated_fat_g: 10.0, trans_fat_g: 0.3, cholesterol_mg: 80, calcium_mg: 45, iron_mg: 3.8, magnesium_mg: 40, sodium_mg: 1300, potassium_mg: 460, zinc_mg: 4.0, vitamin_c_mg: 5.0, water_ml: 120 } },
-    { "FoodName": "魚蛋粉", "吞嚥安全 (IDDSI)": "7", "dual": true, "isDrink": false, "allergen_tags": ["SEAFOOD", "GLUTEN"], rawNutrients: { grams: 420, calories: 450, protein_g: 20.0, carbs_g: 62.0, fat_g: 10.0, fiber_g: 1.5, sugar_g: 1.5, saturated_fat_g: 2.5, trans_fat_g: 0.0, cholesterol_mg: 45, calcium_mg: 60, iron_mg: 1.8, magnesium_mg: 28, sodium_mg: 1500, potassium_mg: 260, zinc_mg: 1.8, vitamin_c_mg: 0.0, water_ml: 280 } },
-    { "FoodName": "艇仔粥", "吞嚥安全 (IDDSI)": "4", "dual": false, "isDrink": false, "allergen_tags": ["SEAFOOD", "PEANUT"], rawNutrients: { grams: 400, calories: 280, protein_g: 12.0, carbs_g: 42.0, fat_g: 6.0, fiber_g: 1.5, sugar_g: 1.0, saturated_fat_g: 1.5, trans_fat_g: 0.0, cholesterol_mg: 40, calcium_mg: 35, iron_mg: 1.5, magnesium_mg: 30, sodium_mg: 800, potassium_mg: 240, zinc_mg: 1.5, vitamin_c_mg: 1.0, water_ml: 320 } },
-    { "FoodName": "豆漿", "吞嚥安全 (IDDSI)": "0", "dual": false, "isDrink": true, "allergen_tags": ["SOY"], rawNutrients: { grams: 300, calories: 90, protein_g: 6.0, carbs_g: 8.0, fat_g: 3.5, fiber_g: 0.8, sugar_g: 6.0, saturated_fat_g: 0.5, trans_fat_g: 0.0, cholesterol_mg: 0, calcium_mg: 45, iron_mg: 1.2, magnesium_mg: 25, sodium_mg: 30, potassium_mg: 280, zinc_mg: 0.6, vitamin_c_mg: 0.0, water_ml: 280 } },
-    { "FoodName": "鮮奶", "吞嚥安全 (IDDSI)": "0", "dual": false, "isDrink": true, "allergen_tags": ["MILK"], rawNutrients: { grams: 250, calories: 155, protein_g: 8.0, carbs_g: 12.0, fat_g: 8.0, fiber_g: 0.0, sugar_g: 12.0, saturated_fat_g: 5.0, trans_fat_g: 0.2, cholesterol_mg: 25, calcium_mg: 280, iron_mg: 0.2, magnesium_mg: 30, sodium_mg: 100, potassium_mg: 350, zinc_mg: 1.0, vitamin_c_mg: 2.0, water_ml: 220 } },
-    { "FoodName": "麥皮", "吞嚥安全 (IDDSI)": "3", "dual": false, "isDrink": false, "allergen_tags": ["GLUTEN"], rawNutrients: { grams: 250, calories: 180, protein_g: 6.0, carbs_g: 32.0, fat_g: 3.0, fiber_g: 3.5, sugar_g: 4.0, saturated_fat_g: 0.6, trans_fat_g: 0.0, cholesterol_mg: 5, calcium_mg: 80, iron_mg: 1.8, magnesium_mg: 45, sodium_mg: 120, potassium_mg: 220, zinc_mg: 1.5, vitamin_c_mg: 0.0, water_ml: 200 } },
-    { "FoodName": "多士", "吞嚥安全 (IDDSI)": "7", "dual": false, "isDrink": false, "allergen_tags": ["GLUTEN"], rawNutrients: { grams: 60, calories: 160, protein_g: 5.0, carbs_g: 30.0, fat_g: 2.0, fiber_g: 1.5, sugar_g: 2.5, saturated_fat_g: 0.5, trans_fat_g: 0.0, cholesterol_mg: 0, calcium_mg: 40, iron_mg: 1.2, magnesium_mg: 15, sodium_mg: 250, potassium_mg: 70, zinc_mg: 0.5, vitamin_c_mg: 0.0, water_ml: 15 } },
-    { "FoodName": "炒蛋", "吞嚥安全 (IDDSI)": "6", "dual": false, "isDrink": false, "allergen_tags": ["EGG"], rawNutrients: { grams: 120, calories: 180, protein_g: 12.0, carbs_g: 1.0, fat_g: 14.0, fiber_g: 0.0, sugar_g: 0.5, saturated_fat_g: 4.0, trans_fat_g: 0.0, cholesterol_mg: 350, calcium_mg: 50, iron_mg: 1.8, magnesium_mg: 12, sodium_mg: 280, potassium_mg: 140, zinc_mg: 1.3, vitamin_c_mg: 0.0, water_ml: 75 } },
-    { "FoodName": "腸粉", "吞嚥安全 (IDDSI)": "6", "dual": false, "isDrink": false, "allergen_tags": ["SOY", "GLUTEN"], rawNutrients: { grams: 200, calories: 220, protein_g: 8.0, carbs_g: 38.0, fat_g: 4.0, fiber_g: 1.0, sugar_g: 3.0, saturated_fat_g: 0.8, trans_fat_g: 0.0, cholesterol_mg: 10, calcium_mg: 25, iron_mg: 1.0, magnesium_mg: 18, sodium_mg: 600, potassium_mg: 120, zinc_mg: 0.8, vitamin_c_mg: 0.0, water_ml: 100 } }
-];
-
-// ==========================================
-// 7. 食物檢索（本地清單 + LRU 快取 + Open Food Facts API）
-// ==========================================
-async function searchFoodText() {
-    const raw = document.getElementById("foodSearchInput").value.trim();
-    if (!raw) return;
-
-    triggerHaptic('light');
-
-    let target = LOCAL_FALLBACK_DB.find(f => f.FoodName.includes(raw) || raw.includes(f.FoodName));
-    if (target) {
-        loadPendingFood(target);
-        triggerDynamicIsland(`🔍 本地推薦庫命中：${target.FoodName}`);
-        return;
-    }
-
-    let cached = getCachedFoodItem(raw);
-    if (cached) {
-        loadPendingFood(cached);
-        triggerDynamicIsland(`⚡ 已從本地快取載入：${cached.FoodName}`);
-        return;
-    }
-
-    triggerDynamicIsland(`🌐 連線 Open Food Facts 搜尋「${raw}」...`);
-    try {
-        const fields = 'code,product_name,product_name_zh,product_name_en,nutriments,serving_size,serving_quantity,image_url,allergens_tags,allergens_hierarchy';
-        const searchUrl = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(raw)}&search_simple=1&action=process&json=1&page_size=5&fields=${fields}`;
-        
-        const res = await fetch(searchUrl);
-        if (res.ok) {
-            const data = await res.json();
-            if (data.products && data.products.length > 0) {
-                const validProduct = data.products.find(p => (p.product_name_zh || p.product_name || p.product_name_en)) || data.products[0];
-                const item = convertOpenFoodFactsProduct(validProduct, raw);
-                cacheFoodItem(item);
-                loadPendingFood(item);
-                triggerHaptic('success');
-                triggerDynamicIsland(`🌐 已獲取公開營養數據：${item.FoodName}`);
-                return;
-            }
-        }
-    } catch (e) {
-        console.warn("Open Food Facts 離線:", e);
-    }
-
-    const extracted = extractHumanFoodData(raw, "7");
-    target = {
-        FoodName: extracted.name,
-        "吞嚥安全 (IDDSI)": extracted.iddsi,
-        dual: extracted.isDual, 
-        isDrink: extracted.isDrink, 
-        allergen_tags: [], 
-        clinicalReason: "演算法估算",
-        isUserModified: false,
-        rawNutrients: {
-            grams: extracted.grams || 250,
-            calories: extracted.isDrink && !extracted.isDual ? 120 : 300,
-            protein_g: extracted.isDrink && !extracted.isDual ? 1 : 12,
-            carbs_g: extracted.isDrink && !extracted.isDual ? 22 : 40,
-            fat_g: extracted.isDrink && !extracted.isDual ? 1 : 8,
-            fiber_g: extracted.isDrink && !extracted.isDual ? 0 : 3,
-            sugar_g: extracted.isDrink && !extracted.isDual ? 18 : 2,
-            saturated_fat_g: 1, trans_fat_g: 0, cholesterol_mg: 20,
-            calcium_mg: 30, iron_mg: 1.5, magnesium_mg: 25,
-            sodium_mg: extracted.isDrink && !extracted.isDual ? 30 : 400,
-            potassium_mg: 200, zinc_mg: 1.2, vitamin_c_mg: 2,
-            water_ml: extracted.isDrink ? 230 : 150
-        }
-    };
-    cacheFoodItem(target);
-    loadPendingFood(target);
-    triggerDynamicIsland(`💡 未搵到現成包裝，已自動估算營養值`);
-}
-
-// ==========================================
-// 8. 餐食入帳與健康同步（HealthKit + 離線佇列）
-// ==========================================
-async function commitCurrentMeal() {
-    if (!pendingFoodItem) return;
-
-    const s = currentPortionScale;
-    const n = pendingFoodItem.rawNutrients || {};
-    const currentItemLevel = parseIddsi(pendingFoodItem["吞嚥安全 (IDDSI)"]);
-    const logId = "LOG_" + Date.now();
-
-    const fGrams = Math.round((Number(n.grams) || 250) * s);
-    const fCal = Math.round((Number(n.calories) || 200) * s);
-    const fProtein = Number(((Number(n.protein_g) || 10) * s).toFixed(1));
-    const fCarbs = Number(((Number(n.carbs_g) || 30) * s).toFixed(1));
-    const fFat = Number(((Number(n.fat_g) || 5) * s).toFixed(1));
-    const fSodium = Math.round((Number(n.sodium_mg) || 250) * s);
-    const fWater = Math.round((Number(n.water_ml) || 150) * s);
-
-    cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
-    sodium += fSodium; waterTotal += fWater;
-    maxIddsiText = currentItemLevel.toString();
-
-    todayAuditLogs.unshift({
-        logId,
-        mealType: currentMealType,
-        title: pendingFoodItem.FoodName,
-        calories: fCal,
-        water: fWater,
-        sodium: fSodium,
-        protein: fProtein,
-        carbs: fCarbs,
-        fat: fFat,
-        grams: fGrams,
-        subText: `${MEAL_TYPE_MAP[currentMealType]} · ${fGrams}g · IDDSI L${currentItemLevel}`
-    });
-
-    renderAuditHistory();
-    saveDailyState();
-    updateDashboardUI();
-
-    triggerHaptic('success');
-    document.getElementById("singleQueryResultCard").style.display = "none";
-    document.getElementById("foodSearchInput").value = "";
-    document.getElementById("aiWarningBox").innerHTML = "";
-    triggerDynamicIsland(`✅ 已記低：${pendingFoodItem.FoodName} (+${fCal} kcal)`);
-    
-    HealthKitBridge.syncDietaryMeal(fCal);
-
-    const committedFoodName = pendingFoodItem.FoodName;
-    pendingFoodItem = null;
-
-    if (userProfile.pureLocalMode) return;
-
-    const payloadData = {
-        "timestamp": getFormattedDateTime(),
-        "id": userProfile.name || "健康探索者",
-        "FoodName": committedFoodName,
-        "克 Grams": fGrams,
-        "熱量 Calories": fCal,
-        "蛋白質 Protein (g)": fProtein,
-        "碳水化合物 Carbs (g)": fCarbs,
-        "脂肪 Fat (g)": fFat,
-        "鈉 Sodium (mg)": fSodium,
-        "吞嚥安全 (IDDSI)": String(currentItemLevel)
-    };
-
-    fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: "logMeal", ...payloadData })
-    }).catch(err => {
-        console.warn("雲端同步失敗，已加入離線排隊佇列:", err);
-        enqueueOfflineSync(payloadData);
-    });
-}
-
-function quickAddWater(ml, typeName) {
-    triggerHaptic('light');
-    waterTotal += ml;
-    const logId = "WATER_" + Date.now();
-    todayAuditLogs.unshift({ logId, mealType: "snack", title: `💧 ${typeName}`, calories: 0, water: ml, sodium: 0, protein: 0, carbs: 0, fat: 0, grams: ml, subText: `${MEAL_TYPE_MAP['snack']} · +${ml} ml 水分` });
-    
-    HealthKitBridge.syncWater(ml);
-
-    triggerDynamicIsland(`💧 已記錄飲水 +${ml}ml`);
-    renderAuditHistory();
-    saveDailyState();
-    updateDashboardUI();
-}
-
-async function logCurrentWeight() {
-    const input = document.getElementById("weightInput");
-    const val = parseFloat(input.value);
-    if (!val || val <= 20 || val >= 300) return showAppleDialog({ title: "數值無效", message: "請輸入有效的體重數值 (20-300 kg)！" });
-    const todayStr = getTodayDateString();
-    const existingIdx = weightLogs.findIndex(w => w.date === todayStr);
-    if (existingIdx > -1) weightLogs[existingIdx].weight = val;
-    else weightLogs.unshift({ date: todayStr, weight: val });
-    userProfile.weight = val;
-    localStorage.setItem("lohas_weight_logs", JSON.stringify(weightLogs.slice(0, 30)));
-    saveUserProfile(false);
-    calculatePersonalTargets();
-    renderWeightUI();
-    input.value = "";
-    triggerHaptic('success');
-    triggerDynamicIsland(`⚖️ 已記錄今日體重：${val} kg`);
-
-    HealthKitBridge.syncBodyMass(val);
-}
-
-// ==========================================
-// 9. 相片分析（支援純本地隱私防禦模式）
-// ==========================================
 async function uploadAndDetectFood() {
     if (!processedBase64) {
         return showAppleDialog({ title: "請先影相", message: "請先用相機影低或者喺相簿揀選食物相片。" });
-    }
-
-    if (userProfile.pureLocalMode) {
-        showAppleDialog({
-            title: "純本地隱私模式中",
-            message: "你已開啟純本地模式，相片不會上傳至遠端伺服器。請直接輸入菜名搜尋。"
-        });
-        return;
     }
     
     const uploadBtn = document.getElementById("uploadBtn");
@@ -1764,11 +2062,17 @@ async function uploadAndDetectFood() {
         });
         
         clearTimeout(timeoutId);
-        if (!response.ok) throw new Error(`伺服器狀態碼：${response.status}`);
+
+        if (!response.ok) {
+            throw new Error(`伺服器回應狀態碼：${response.status}`);
+        }
+
         const resData = await response.json();
         stopAiDynamicProgress();
 
-        if (resData.error) throw new Error(resData.error);
+        if (resData.error) {
+            throw new Error(resData.error);
+        }
 
         const extracted = extractHumanFoodData(resData.foodName || resData.food || "", resData.iddsi_level);
         const conf = resData.confidence || 0.95;
@@ -1788,13 +2092,29 @@ async function uploadAndDetectFood() {
                 protein_g: Number(rawN.protein_g) || 8.0,
                 carbs_g: Number(rawN.carbs_g) || 25.0,
                 fat_g: Number(rawN.fat_g) || 5.0,
+                fiber_g: Number(rawN.fiber_g) || 2.0,
+                sugar_g: Number(rawN.sugar_g) || 2.0,
+                saturated_fat_g: Number(rawN.saturated_fat_g) || 1.0,
+                trans_fat_g: 0.0,
+                cholesterol_mg: Number(rawN.cholesterol_mg) || 20,
+                calcium_mg: Number(rawN.calcium_mg) || 40,
+                iron_mg: Number(rawN.iron_mg) || 1.5,
+                magnesium_mg: Number(rawN.magnesium_mg) || 25,
                 sodium_mg: Number(rawN.sodium_mg) || 250,
+                potassium_mg: Number(rawN.potassium_mg) || 250,
+                zinc_mg: Number(rawN.zinc_mg) || 1.2,
+                vitamin_c_mg: Number(rawN.vitamin_c_mg) || 3.0,
                 water_ml: Number(rawN.water_ml) || 180
             }
         };
 
-        cacheFoodItem(pendingFoodItem);
-        loadPendingFood(pendingFoodItem);
+        const isFav = favoriteFoods.some(f => f.name === extracted.name);
+        document.getElementById("favoriteToggleBtn").innerHTML = isFav ? `<i class="fa-solid fa-star"></i>` : `<i class="fa-regular fa-star"></i>`;
+
+        document.getElementById("measurementBreakdownBox").style.display = "none";
+        document.getElementById("single_foodname").textContent = extracted.name;
+        document.getElementById("singleQueryResultCard").style.display = "block";
+        setPortionScale(1.0, document.querySelectorAll('.portion-chip')[3]);
         triggerHaptic('success');
         triggerDynamicIsland(`🎉 辨識出：${extracted.name} (${Math.round(conf * 100)}%)`);
 
@@ -1812,383 +2132,161 @@ async function uploadAndDetectFood() {
     }
 }
 
-// ==========================================
-// 10. Dashboard UI 更新（含 Apple Watch 運動熱量動態調整）
-// ==========================================
-function updateDashboardUI() {
-    document.getElementById("meta-cal-total").textContent = cal;
-    document.getElementById("meta-water-total").textContent = Math.round(waterTotal);
-    document.getElementById("meta-sodium-total").textContent = Math.round(sodium);
-    document.getElementById("protein").textContent = protein.toFixed(1);
-    document.getElementById("carbs").textContent = carbs.toFixed(1);
-    document.getElementById("fat").textContent = fat.toFixed(1);
-
-    const adjustedTargetCal = dailyTargets.cal + Math.round(watchActiveBurn);
-    const targetCalEl = document.getElementById("target-cal-lbl-mini");
-    if (targetCalEl) {
-        targetCalEl.innerHTML = watchActiveBurn > 0 
-            ? `${adjustedTargetCal} <span style="font-size:9px; color:var(--apple-orange);">(含 Watch +${Math.round(watchActiveBurn)})</span>`
-            : `${adjustedTargetCal}`;
+function processAndPreviewImage(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
+    
+    const uploadBtn = document.getElementById("uploadBtn");
+    if (uploadBtn) {
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = "⏳ 正在處理相片...";
     }
 
-    const waterPct = Math.min(Math.round((waterTotal / dailyTargets.water) * 100), 100);
-    document.getElementById("water-progress-pct").textContent = `進度：${waterPct}%`;
-    document.getElementById("bar-protein").style.width = `${Math.min((protein/dailyTargets.protein)*100, 100)}%`;
-    document.getElementById("bar-carbs").style.width = `${Math.min((carbs/dailyTargets.carbs)*100, 100)}%`;
-    document.getElementById("bar-fat").style.width = `${Math.min((fat/dailyTargets.fat)*100, 100)}%`;
+    currentObjectUrl = URL.createObjectURL(file);
+    document.getElementById("preview-img").src = currentObjectUrl;
+    document.getElementById("previewWrapper").style.display = "block";
+    
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function(e) {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = function() {
+            const canvas = document.getElementById("processedCanvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = Math.min(img.width, 640);
+            canvas.height = Math.round((canvas.width / img.width) * img.height);
+            ctx.filter = "brightness(1.05) contrast(1.10)";
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            processedBase64 = canvas.toDataURL("image/jpeg", 0.82);
 
-    document.getElementById("dailySummaryText").innerHTML = generateDailySummary();
-    suggestNextMeal();
-    renderWeightUI();
-    loadWeeklyDataFromStorage();
-}
-
-function startAiDynamicProgress() {
-    aiElapsedSeconds = 0;
-    triggerDynamicIsland("🔍 睇緊相入面有咩好嘢食...", "normal");
-    const warningBox = document.getElementById("aiWarningBox");
-    if (warningBox) {
-        warningBox.innerHTML = `
-            <div style="background:rgba(0,122,255,0.08); border:1px solid rgba(0,122,255,0.2); border-radius:10px; padding:8px 12px; margin-top:8px; font-size:12px; color:var(--apple-blue); display:flex; align-items:center; gap:8px;">
-                <i class="fa-solid fa-spinner fa-spin"></i>
-                <span>正在辨識相片營養... (<b id="aiTimerText">0s</b>)</span>
-            </div>
-        `;
-    }
-    if (aiProgressTimer) clearInterval(aiProgressTimer);
-    aiProgressTimer = setInterval(() => {
-        aiElapsedSeconds++;
-        const timerText = document.getElementById("aiTimerText");
-        if (timerText) timerText.textContent = `${aiElapsedSeconds}s`;
-    }, 1000);
-}
-
-function stopAiDynamicProgress() {
-    if (aiProgressTimer) { clearInterval(aiProgressTimer); aiProgressTimer = null; }
-    const warningBox = document.getElementById("aiWarningBox");
-    if (warningBox) warningBox.innerHTML = "";
-}
-
-async function clearAllData() {
-    const confirm1 = await showAppleDialog({ type: 'confirm', title: '確定清除所有記錄？', message: '此操作會清空個人目標、飲食及體重日誌，不可復原。', okText: '下一步' });
-    if (!confirm1) return;
-    const confirm2 = await showAppleDialog({ type: 'confirm', title: '最後確認', message: '真係要清空並還原 App 初始狀態？', okText: '確定清空' });
-    if (!confirm2) return;
-
-    const warn = await showAppleDialog({
-        type: 'confirm',
-        title: '注意：Health App 資料',
-        message: '本 App 已寫入 Apple Health 的飲食、水分與體重紀錄，需由你在 Apple Health App 中手動刪除。確定繼續？',
-        okText: '繼續清空'
-    });
-    if (!warn) return;
-
-    try {
-        if (navigator.onLine && !userProfile.pureLocalMode) {
-            await uploadErrorLogs();
-        }
-    } catch (e) {
-        console.warn("清空前錯誤上報略過:", e);
-    }
-
-    localStorage.clear();
-    location.reload();
-}
-
-function renderWeightUI() {
-    const latestBox = document.getElementById("meta-weight-latest");
-    const diffBox = document.getElementById("meta-weight-diff");
-    const historyBox = document.getElementById("weightHistoryContainer");
-    if (weightLogs.length === 0) {
-        latestBox.textContent = `${userProfile.weight} kg`;
-        diffBox.textContent = "尚未記錄今日體重";
-        if (historyBox) historyBox.innerHTML = "尚無歷史體重紀錄。";
-        return;
-    }
-    const latest = weightLogs[0].weight;
-    latestBox.textContent = `${latest} kg`;
-    if (weightLogs.length > 1) {
-        const diff = (latest - weightLogs[1].weight).toFixed(1);
-        diffBox.innerHTML = diff > 0 ? `<span style="color:var(--apple-orange);">+${diff} kg</span>` : `<span style="color:var(--apple-green);">${diff} kg</span>`;
-    } else diffBox.textContent = "已建立首筆記錄";
-    if (historyBox) {
-        historyBox.innerHTML = weightLogs.slice(0, 3).map(w => `<span class="weight-pill" style="margin-right:6px;">${w.date}: ${w.weight}kg</span>`).join("");
-    }
-}
-
-function loadFavorites() {
-    const raw = localStorage.getItem("lohas_favorite_foods");
-    favoriteFoods = raw ? JSON.parse(raw) : [{ name: "凍檸茶", cal: 120, grams: 250, iddsi: "0" }, { name: "叉燒飯", cal: 680, grams: 450, iddsi: "7" }, { name: "雲吞麵", cal: 480, grams: 400, iddsi: "7" }];
-    renderFavoritesUI();
-}
-
-function renderFavoritesUI() {
-    const box = document.getElementById("quickFavoritesList");
-    if (!box) return;
-    if (favoriteFoods.length === 0) { box.innerHTML = `<span style="font-size:11px; color:var(--text-sub);">尚無常用食物。</span>`; return; }
-    box.innerHTML = favoriteFoods.map(f => `<button class="fav-chip" onclick="quickLogFavorite('${escapeHTML(f.name)}')">⭐ ${escapeHTML(f.name)} (${f.cal}kcal)</button>`).join("");
-}
-
-function toggleCurrentFoodFavorite() {
-    if (!pendingFoodItem) return;
-    const name = pendingFoodItem.FoodName;
-    const idx = favoriteFoods.findIndex(f => f.name === name);
-    const starBtn = document.getElementById("favoriteToggleBtn");
-    if (idx > -1) {
-        favoriteFoods.splice(idx, 1);
-        starBtn.innerHTML = `<i class="fa-regular fa-star"></i>`;
-    } else {
-        favoriteFoods.push({ name: name, cal: pendingFoodItem.rawNutrients.calories || 200, grams: pendingFoodItem.rawNutrients.grams || 250, iddsi: pendingFoodItem["吞嚥安全 (IDDSI)"] || "7" });
-        starBtn.innerHTML = `<i class="fa-solid fa-star"></i>`;
-    }
-    localStorage.setItem("lohas_favorite_foods", JSON.stringify(favoriteFoods));
-    renderFavoritesUI();
-}
-
-function quickLogFavorite(name) {
-    triggerHaptic('light');
-    document.getElementById("foodSearchInput").value = name;
-    switchAppleTab('meals', document.querySelectorAll('.tab-item')[1]);
-    searchFoodText();
-}
-
-function checkOnboarding() {
-    if (!localStorage.getItem("lohas_onboarded_v4")) {
-        pushModalHistory();
-        document.getElementById("onboardingModalOverlay").classList.add("active");
-    }
-}
-function completeOnboarding() {
-    triggerHaptic('medium');
-    popModalHistory();
-    localStorage.setItem("lohas_onboarded_v4", "true");
-    document.getElementById("onboardingModalOverlay").classList.remove("active");
-}
-
-async function exportWidgetPayload() {
-    triggerHaptic('light');
-    const widgetData = { calories: cal, targetCalories: dailyTargets.cal, water: waterTotal, targetWater: dailyTargets.water, lastMeal: todayAuditLogs.length > 0 ? todayAuditLogs[0].title : "尚未進食", updatedAt: new Date().toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit' }) };
-    localStorage.setItem("lohas_widget_payload", JSON.stringify(widgetData));
-    await showAppleDialog({ title: "Widget 數據已就緒", message: "已為你產生可供桌面 Widget 讀取的數據。" });
-}
-
-function showSiriIntentHelp() {
-    showAppleDialog({ title: "設定 Siri 語音記錄", message: "1. 開啟 iPhone「捷徑」App\n2. 新增捷徑並命名為「記錄飲食」\n3. 加入「打開 URL」動作\n4. 即可直接同 Siri 講快速啟動！" });
-}
-
-async function parseNaturalLanguage(text) {
-    if (!text || !text.trim()) return [];
-    const t = text.trim();
-    const rawSegments = t.replace(/^(我|今日|頭先|啱啱|食咗|飲咗|幫我入|入|食左|飲左)\s*/g, '').split(/(?:[，,、和與及\+]|同埋|仲有|加|跟|配)/).map(s => s.trim()).filter(s => s.length > 0);
-    const parsedList = [];
-
-    rawSegments.forEach(seg => {
-        let clean = seg.replace(/^(我|今日|頭先|啱啱|食咗|飲咗|食佐|飲佐|幫我入|入)/g, '').trim();
-        if (!clean) return;
-        let scale = 1.0;
-        if (clean.includes("半碗") || clean.includes("一半") || clean.includes("少少")) scale = 0.5;
-        else if (clean.includes("兩碗") || clean.includes("兩杯") || clean.includes("兩份")) scale = 2.0;
-        clean = clean.replace(/^[一二兩三半123]?[個碗杯碟份隻樽包碗條]/g, '').trim();
-
-        let matched = LOCAL_FALLBACK_DB.find(f => f.FoodName === clean || f.FoodName.includes(clean) || clean.includes(f.FoodName));
-        if (matched) {
-            parsedList.push({
-                food: matched.FoodName,
-                grams: Math.round((matched.rawNutrients.grams || 250) * scale),
-                iddsi: matched["吞嚥安全 (IDDSI)"],
-                nutrients: {
-                    calories: Math.round(matched.rawNutrients.calories * scale),
-                    protein_g: Number((matched.rawNutrients.protein_g * scale).toFixed(1)),
-                    carbs_g: Number((matched.rawNutrients.carbs_g * scale).toFixed(1)),
-                    fat_g: Number((matched.rawNutrients.fat_g * scale).toFixed(1)),
-                    sodium_mg: Math.round(matched.rawNutrients.sodium_mg * scale),
-                    water_ml: Math.round((matched.rawNutrients.water_ml || 150) * scale)
-                }
-            });
-            return;
-        }
-
-        const ext = extractHumanFoodData(clean);
-        parsedList.push({
-            food: ext.name,
-            grams: Math.round(ext.grams * scale),
-            iddsi: ext.iddsi,
-            nutrients: {
-                calories: Math.round((ext.isDrink && !ext.isDual ? 120 : 350) * scale),
-                protein_g: Number((ext.isDrink && !ext.isDual ? 1.0 : 14.0 * scale).toFixed(1)),
-                carbs_g: Number((ext.isDrink && !ext.isDual ? 22.0 : 45.0 * scale).toFixed(1)),
-                fat_g: Number((ext.isDrink && !ext.isDual ? 2.0 : 8.0 * scale).toFixed(1)),
-                sodium_mg: Math.round((ext.isDrink && !ext.isDual ? 40 : 450) * scale),
-                water_ml: Math.round((ext.isDrink ? 230 : 120) * scale)
+            if (uploadBtn) {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = "開始分析相片營養";
             }
-        });
-    });
-    return parsedList;
-}
-
-async function triggerNaturalLanguageLog() {
-    const input = document.getElementById("nlInput");
-    const val = input.value.trim();
-    if (!val) return showAppleDialog({ title: "請輸入餐點", message: "請講出或者輸入你食咗咩！" });
-
-    const items = await parseNaturalLanguage(val);
-    if (items.length === 0) return showAppleDialog({ title: "未能識別", message: "未能識別餐點名稱，請嘗試用更直接的字眼再試一次！" });
-
-    let summaryNames = [];
-    for (const item of items) {
-        const logId = "NL_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4);
-        const n = item.nutrients;
-        
-        cal += n.calories; grams += item.grams; protein += n.protein_g; carbs += n.carbs_g; fat += n.fat_g; sodium += n.sodium_mg; waterTotal += n.water_ml;
-        maxIddsiText = item.iddsi;
-
-        todayAuditLogs.unshift({
-            logId: logId, mealType: currentMealType, title: item.food, calories: n.calories, water: n.water_ml, sodium: n.sodium_mg, protein: n.protein_g, carbs: n.carbs_g, fat: n.fat_g, grams: item.grams,
-            subText: `${MEAL_TYPE_MAP[currentMealType]} · ${item.grams}g · IDDSI L${item.iddsi}`
-        });
-
-        HealthKitBridge.syncDietaryMeal(n.calories);
-
-        if (!userProfile.pureLocalMode) {
-            const payload = { timestamp: getFormattedDateTime(), id: userProfile.name || "健康探索者", FoodName: item.food, "克 Grams": item.grams, "熱量 Calories": n.calories, "蛋白質 Protein (g)": n.protein_g, "碳水化合物 Carbs (g)": n.carbs_g, "脂肪 Fat (g)": n.fat_g, "吞嚥安全 (IDDSI)": String(item.iddsi) };
-            fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: "logMeal", ...payload }) }).catch(() => enqueueOfflineSync(payload));
-        }
-        summaryNames.push(item.food);
-    }
-
-    input.value = "";
-    saveDailyState();
-    updateDashboardUI();
-    renderAuditHistory();
-    triggerHaptic('success');
-    triggerDynamicIsland(`✅ 已成功記低：${summaryNames.join('、')}！`);
-}
-
-const FOOD_DENSITY_MAP = { "drink": 1.0, "soup": 1.02, "congee": 1.05, "rice": 0.82, "noodle": 0.75, "meat": 1.08, "vegetable": 0.45 };
-function getFoodDensity(foodName) {
-    if (!foodName) return 0.85;
-    if (foodName.includes("茶") || foodName.includes("水") || foodName.includes("汁") || foodName.includes("豆漿") || foodName.includes("奶")) return FOOD_DENSITY_MAP.drink;
-    if (foodName.includes("湯")) return FOOD_DENSITY_MAP.soup;
-    if (foodName.includes("粥") || foodName.includes("糊") || foodName.includes("麥皮")) return FOOD_DENSITY_MAP.congee;
-    if (foodName.includes("飯")) return FOOD_DENSITY_MAP.rice;
-    if (foodName.includes("麵") || foodName.includes("粉")) return FOOD_DENSITY_MAP.noodle;
-    if (foodName.includes("菜") || foodName.includes("沙律")) return FOOD_DENSITY_MAP.vegetable;
-    return 0.85;
-}
-
-async function startARVolumeEstimation() {
-    if (!pendingFoodItem) return;
-    const { FoodVolumePlugin } = window.Capacitor?.Plugins || {};
-    if (!FoodVolumePlugin) return showAppleDialog({ title: "僅支援 iOS App", message: "AR 體積測量需配合 iPhone/iPad 相機與 ARKit。" });
-    try {
-        const result = await FoodVolumePlugin.measureVolume();
-        if (result && result.volume_ml) {
-            const vol = result.volume_ml;
-            const density = getFoodDensity(pendingFoodItem.FoodName);
-            const autoGrams = Math.round(vol * density);
-            pendingFoodItem.rawNutrients.grams = autoGrams;
-            currentPortionScale = autoGrams / 250;
-            renderPendingFoodDetails();
-            triggerHaptic('success');
-            triggerDynamicIsland(`📐 AR 實景測量：約 ${autoGrams}g`);
-        }
-    } catch(err) {}
-}
-
-function generateDailySummary() {
-    const calPct = Math.round((cal / dailyTargets.cal) * 100);
-    return `今日已達目標熱量 <b>${calPct}%</b> (${cal} / ${dailyTargets.cal} kcal)，水分 ${waterTotal < dailyTargets.water ? '仲差少少' : '充足'}。`;
-}
-
-function convertOpenFoodFactsProduct(p, fallbackName = "包裝食品") {
-    const name = p.product_name_zh || p.product_name || p.product_name_en || fallbackName;
-    const n = p.nutriments || {};
-    let servingGrams = 100;
-    if (p.serving_quantity && !isNaN(p.serving_quantity) && Number(p.serving_quantity) > 0) servingGrams = Math.round(Number(p.serving_quantity));
-    else if (p.serving_size) {
-        const m = p.serving_size.match(/(\d+(\.\d+)?)\s*(g|ml|克|毫升)/i);
-        if (m) servingGrams = Math.round(parseFloat(m[1]));
-    }
-    const ratio = servingGrams / 100;
-    const cal100 = Number(n['energy-kcal_100g'] ?? n['energy-kcal'] ?? 150);
-    const prot100 = Number(n['proteins_100g'] ?? 0);
-    const carbs100 = Number(n['carbohydrates_100g'] ?? 0);
-    const fat100 = Number(n['fat_100g'] ?? 0);
-    const sodiumMg100 = n['sodium_100g'] ? Math.round(n['sodium_100g'] * 1000) : (n['salt_100g'] ? Math.round(n['salt_100g'] * 400) : 0);
-
-    const isDrink = /茶|水|汁|啡|奶|汽水|可樂|飲品/i.test(name);
-    return {
-        FoodName: name,
-        "吞嚥安全 (IDDSI)": isDrink ? "0" : "7",
-        dual: false, isDrink: isDrink, allergen_tags: [], clinicalReason: "Open Food Facts 公開資料庫", isUserModified: false,
-        rawNutrients: {
-            grams: servingGrams,
-            calories: Math.round(cal100 * ratio),
-            protein_g: Number((prot100 * ratio).toFixed(1)),
-            carbs_g: Number((carbs100 * ratio).toFixed(1)),
-            fat_g: Number((fat100 * ratio).toFixed(1)),
-            sodium_mg: Math.round(sodiumMg100 * ratio),
-            water_ml: isDrink ? Math.round(servingGrams * 0.92) : Math.round(servingGrams * 0.15)
-        }
+        };
+        img.onerror = function() {
+            showAppleDialog({ title: "讀取失敗", message: "未能讀取相片，請再影一次。" });
+            if (uploadBtn) {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = "開始分析相片營養";
+            }
+        };
     };
 }
 
-function loadPendingFood(target) {
-    pendingFoodItem = target;
-    pendingFoodItem.isUserModified = false;
-    document.getElementById("measurementBreakdownBox").style.display = "none";
-    document.getElementById("single_foodname").textContent = target.FoodName;
-    document.getElementById("singleQueryResultCard").style.display = "block";
-    setPortionScale(1.0, document.querySelectorAll('.portion-chip')[3]);
-    const isFav = favoriteFoods.some(f => f.name === target.FoodName);
-    document.getElementById("favoriteToggleBtn").innerHTML = isFav ? `<i class="fa-solid fa-star"></i>` : `<i class="fa-regular fa-star"></i>`;
-}
-
-async function openBarcodeScannerModal() {
-    if (isScannerStarting) return;
-    isScannerStarting = true;
+function setPortionScale(s, el) {
     triggerHaptic('light');
-    pushModalHistory();
-    document.getElementById("barcodeScannerModalOverlay").classList.add("active");
-    try {
-        barcodeScanner = new Html5Qrcode("barcode-reader");
-        await barcodeScanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, async (barcode) => {
-            await closeBarcodeScannerModal();
-            triggerHaptic('medium');
-            triggerDynamicIsland(`🔍 已掃描條碼：${barcode}`);
-            await fetchOpenFoodFactsData(barcode);
-        }, () => {});
-    } catch(e) {} finally { isScannerStarting = false; }
+    currentPortionScale = s;
+    document.querySelectorAll('.portion-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    renderPendingFoodDetails();
 }
 
-async function closeBarcodeScannerModal() {
-    popModalHistory();
-    if (barcodeScanner) { try { await barcodeScanner.stop(); } catch(e) {} barcodeScanner.clear(); barcodeScanner = null; }
-    document.getElementById("barcodeScannerModalOverlay").classList.remove("active");
+function evaluateSanity(grams, cal) {
+    const sanityBanner = document.getElementById("sanityCheckBanner");
+    const sanityText = document.getElementById("sanityCheckText");
+    if (!sanityBanner || !sanityText) return;
+
+    if (grams > 1000) {
+        sanityBanner.style.display = "block";
+        sanityText.textContent = `溫馨提示：呢餐份量睇落幾多（超過1公斤），如果係同朋友分住食，可以調低份量比例。`;
+        return;
+    }
+
+    if (cal > 1500) {
+        sanityBanner.style.display = "block";
+        sanityText.textContent = `溫馨提示：呢餐熱量偏高（超過1500 kcal），留意會唔會太飽肚～`;
+        return;
+    }
+
+    if (grams < 20 && !pendingFoodItem?.isDrink) {
+        sanityBanner.style.display = "block";
+        sanityText.textContent = `份量提醒：估算重量只有 ${grams}g，數值可能偏小，建議手動確認一下。`;
+        return;
+    }
+
+    sanityBanner.style.display = "none";
+}
+
+function renderPendingFoodDetails() {
+    if (!pendingFoodItem) return;
+    const s = currentPortionScale;
+    const n = pendingFoodItem.rawNutrients || {};
+
+    const scaledCal = Math.round((n.calories || 200) * s);
+    const scaledGrams = Math.round((n.grams || 250) * s);
+    const iddsiVal = pendingFoodItem["吞嚥安全 (IDDSI)"] !== undefined ? String(pendingFoodItem["吞嚥安全 (IDDSI)"]) : "0";
+
+    document.getElementById("single_cal").textContent = `${scaledCal} kcal`;
+    document.getElementById("single_grams_lbl").textContent = `約 ${scaledGrams}g`;
+
+    evaluateSanity(scaledGrams, scaledCal);
+    updateIddsiTriggerBtnUI(iddsiVal, pendingFoodItem.isUserModified);
+
+    const grid19 = document.getElementById("nutrientGrid19");
+    if (grid19) {
+        grid19.innerHTML = `
+            <div class="nutrient-pill-card"><span class="n-label">🥩 蛋白質</span><span class="n-val">${(n.protein_g * s).toFixed(1)} g</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🍞 碳水</span><span class="n-val">${(n.carbs_g * s).toFixed(1)} g</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🧈 脂肪</span><span class="n-val">${(n.fat_g * s).toFixed(1)} g</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🥬 纖維</span><span class="n-val">${((n.fiber_g || 0) * s).toFixed(1)} g</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🍬 糖分</span><span class="n-val">${((n.sugar_g || 0) * s).toFixed(1)} g</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🧂 鈉質</span><span class="n-val">${Math.round((n.sodium_mg || 0) * s)} mg</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🥛 鈣質</span><span class="n-val">${Math.round((n.calcium_mg || 0) * s)} mg</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🩸 鐵質</span><span class="n-val">${((n.iron_mg || 0) * s).toFixed(1)} mg</span></div>
+            <div class="nutrient-pill-card"><span class="n-label">🍊 維C</span><span class="n-val">${((n.vitamin_c_mg || 0) * s).toFixed(1)} mg</span></div>
+        `;
+    }
+
+    const alertBox = document.getElementById("allergenMatchAlertBox");
+    const alertDetails = document.getElementById("allergenMatchDetails");
+    const collisions = (pendingFoodItem.allergen_tags || []).filter(t => (userProfile.allergens || []).includes(t));
+    if (collisions.length > 0) {
+        alertBox.style.display = "block";
+        alertDetails.textContent = `💡 注意：可能含有忌食成分【${collisions.join('、')}】。`;
+    } else {
+        alertBox.style.display = "none";
+    }
+
+    const textureNoticeBox = document.getElementById("textureNoticeBox");
+    const textureNoticeText = document.getElementById("textureNoticeText");
+    if (pendingFoodItem.dual) {
+        textureNoticeBox.style.display = "block";
+        textureNoticeText.textContent = "💡 此餐食含有固體與流質混合質地，進食時請留意避免嗆親。";
+    } else {
+        textureNoticeBox.style.display = "none";
+    }
+
+    document.getElementById("commitMealBtn").disabled = false;
 }
 
 function openIddsiPickerModal() {
     triggerHaptic('light');
-    pushModalHistory();
     const currentVal = pendingFoodItem ? String(pendingFoodItem["吞嚥安全 (IDDSI)"] || "0") : "0";
     const container = document.getElementById("iddsiOptionListContainer");
     container.innerHTML = "";
+
     Object.keys(IDDSI_COLORS).forEach(lvl => {
         const item = IDDSI_COLORS[lvl];
         const isSelected = lvl === currentVal;
         const card = document.createElement("div");
         card.className = `iddsi-option-card ${item.cssClass}`;
-        card.innerHTML = `<span>${item.label}</span><span>${isSelected ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-regular fa-circle"></i>'}</span>`;
+        card.innerHTML = `
+            <span>${item.label}</span>
+            <span>${isSelected ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-regular fa-circle"></i>'}</span>
+        `;
         card.onclick = () => selectIddsiLevel(lvl);
         container.appendChild(card);
     });
+
     document.getElementById("iddsiPickerModalOverlay").classList.add("active");
 }
 
-function closeIddsiPickerModal() { 
-    triggerHaptic('light'); 
-    popModalHistory();
-    document.getElementById("iddsiPickerModalOverlay").classList.remove("active"); 
+function closeIddsiPickerModal() {
+    triggerHaptic('light');
+    document.getElementById("iddsiPickerModalOverlay").classList.remove("active");
 }
 
 function selectIddsiLevel(lvl) {
@@ -2209,148 +2307,133 @@ function updateIddsiTriggerBtnUI(lvl, isModified = false) {
     const text = document.getElementById("iddsiTriggerText");
     if (trigger && text) {
         trigger.className = `iddsi-trigger-btn ${cfg.cssClass}`;
-        text.innerHTML = `${cfg.short} <span style="font-size:10px; opacity:0.85; margin-left:4px;">${isModified ? '(已手動選擇)' : '(自動判斷)'}</span>`;
+        const tag = isModified ? "(已手動選擇)" : "(自動判斷)";
+        text.innerHTML = `${cfg.short} <span style="font-size:10px; opacity:0.85; margin-left:4px;">${tag}</span>`;
     }
 }
 
-async function fetchOpenFoodFactsData(barcode) {
-    try {
-        const fields = 'code,product_name,product_name_zh,product_name_en,nutriments,serving_size,serving_quantity,image_url,allergens_tags,allergens_hierarchy';
-        const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}.json?fields=${fields}`);
-        const json = await res.json();
-        if (json.status !== 1 || !json.product) return showAppleDialog({ title: "搵唔到此商品", message: `資料庫未有此條碼 (${barcode}) 的記錄。` });
-        const item = convertOpenFoodFactsProduct(json.product, "包裝食物");
-        cacheFoodItem(item);
-        loadPendingFood(item);
-        switchAppleTab('meals', document.querySelectorAll('.tab-item')[1]);
-        triggerHaptic('success');
-        triggerDynamicIsland(`📦 已成功載入：${item.FoodName}`);
-    } catch(e) { showAppleDialog({ title: "連線失敗", message: "未能連線至資料庫。" }); }
-}
+async function searchFoodText() {
+    const raw = document.getElementById("foodSearchInput").value.trim();
+    if (!raw) return;
 
-function exportCSV() {
-    triggerHaptic('light');
-    if (todayAuditLogs.length === 0) return showAppleDialog({ title: "今日尚無記錄", message: "今日尚未有飲食紀錄可匯出。" });
-    let csvContent = "\uFEFF日期,餐別,食物名稱,重量(g),熱量(kcal),蛋白質(g),碳水化合物(g),脂肪(g),鈉質(mg),水分(ml)\n";
-    todayAuditLogs.forEach(row => {
-        csvContent += `"${getTodayDateString()}","${MEAL_TYPE_MAP[row.mealType || 'lunch']}","${row.title}",${row.grams},${row.calories},${row.protein},${row.carbs},${row.fat},${row.sodium},${row.water}\n`;
-    });
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `lohas_diet_log_${getTodayDateString()}.csv`;
-    link.click();
-}
-
-async function backupLocalData() {
-    triggerHaptic('light');
-    const backupObj = { profile: userProfile, dailyLogs: todayAuditLogs, dailyTotals: { cal, grams, protein, carbs, fat, sodium, waterTotal }, favorites: favoriteFoods, weightLogs: weightLogs, backupDate: new Date().toISOString() };
-    const blob = new Blob([JSON.stringify(backupObj, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `lohas_backup_${getTodayDateString()}.json`;
-    a.click();
-}
-
-function restoreLocalData(input) {
-    const file = input.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-        try {
-            const data = JSON.parse(e.target.result);
-            if (data.profile) { userProfile = data.profile; localStorage.setItem("lohas_user_profile_public", JSON.stringify(userProfile)); }
-            if (data.dailyLogs) todayAuditLogs = data.dailyLogs;
-            if (data.favorites) { favoriteFoods = data.favorites; localStorage.setItem("lohas_favorite_foods", JSON.stringify(favoriteFoods)); }
-            if (data.weightLogs) { weightLogs = data.weightLogs; localStorage.setItem("lohas_weight_logs", JSON.stringify(weightLogs)); }
-            if (data.dailyTotals) { cal = data.dailyTotals.cal || 0; grams = data.dailyTotals.grams || 0; protein = data.dailyTotals.protein || 0; carbs = data.dailyTotals.carbs || 0; fat = data.dailyTotals.fat || 0; sodium = data.dailyTotals.sodium || 0; waterTotal = data.dailyTotals.waterTotal || 0; }
-            saveDailyState(); loadUserProfile(); loadFavorites(); renderWeightUI(); updateDashboardUI(); renderAuditHistory();
-            triggerHaptic('success'); triggerDynamicIsland("🎉 備份資料已成功還原！");
-        } catch(err) { showAppleDialog({ title: "還原失敗", message: "檔案格式不正確。" }); }
-    };
-    reader.readAsText(file);
-}
-
-function suggestNextMeal() {
-    const remainCal = Math.max(0, dailyTargets.cal - cal);
-    const remainProtein = Math.max(0, dailyTargets.protein - protein);
-    const box = document.getElementById("nextMealSuggestionBox");
-    if (!box) return;
-    if (remainCal < 200) box.innerHTML = `💡 今日熱量好接近目標！下一餐建議以<b>清淡沙律</b>或無糖茶飲為主。`;
-    else if (remainProtein > 20) box.innerHTML = `🥩 蛋白質仲差緊少少 (${remainProtein.toFixed(1)}g)：推薦<b>蒸水蛋</b>、<b>清蒸魚柳</b>或<b>白切雞飯</b>。`;
-    else box.innerHTML = `🥗 剩餘熱量仲有 <b>${remainCal} kcal</b>，下一餐可以揀<b>鮮茄牛肉飯</b>或者<b>艇仔粥</b>！`;
-}
-
-function processAndPreviewImage(input) {
-    const file = input.files[0];
-    if (!file) return;
-    if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
-    currentObjectUrl = URL.createObjectURL(file);
-    document.getElementById("preview-img").src = currentObjectUrl;
-    document.getElementById("previewWrapper").style.display = "block";
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const img = new Image();
-        img.src = e.target.result;
-        img.onload = function() {
-            const canvas = document.getElementById("processedCanvas");
-            const ctx = canvas.getContext("2d");
-            canvas.width = Math.min(img.width, 640);
-            canvas.height = Math.round((canvas.width / img.width) * img.height);
-            ctx.filter = "brightness(1.05) contrast(1.10)";
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            processedBase64 = canvas.toDataURL("image/jpeg", 0.82);
+    let target = LOCAL_FALLBACK_DB.find(f => f.FoodName.includes(raw) || raw.includes(f.FoodName));
+    if (!target) {
+        const extracted = extractHumanFoodData(raw, "7");
+        target = {
+            FoodName: extracted.name,
+            "吞嚥安全 (IDDSI)": extracted.iddsi,
+            dual: extracted.isDual, 
+            isDrink: extracted.isDrink, 
+            allergen_tags: [], 
+            clinicalReason: "手動輸入",
+            rawNutrients: { grams: 250, calories: 300, protein_g: 12, carbs_g: 40, fat_g: 8, fiber_g: 3, sugar_g: 2, saturated_fat_g: 2, trans_fat_g: 0, cholesterol_mg: 25, calcium_mg: 45, iron_mg: 1.8, magnesium_mg: 30, sodium_mg: 400, potassium_mg: 300, zinc_mg: 1.5, vitamin_c_mg: 2, water_ml: 150 }
         };
-    };
-    reader.readAsDataURL(file);
+    }
+
+    pendingFoodItem = target;
+    pendingFoodItem.isUserModified = false;
+    document.getElementById("measurementBreakdownBox").style.display = "none";
+    document.getElementById("single_foodname").textContent = target.FoodName;
+    document.getElementById("singleQueryResultCard").style.display = "block";
+    setPortionScale(1.0, document.querySelectorAll('.portion-chip')[3]);
+
+    const isFav = favoriteFoods.some(f => f.name === target.FoodName);
+    document.getElementById("favoriteToggleBtn").innerHTML = isFav ? `<i class="fa-solid fa-star"></i>` : `<i class="fa-regular fa-star"></i>`;
 }
 
-function setPortionScale(s, el) {
-    triggerHaptic('light');
-    currentPortionScale = s;
-    document.querySelectorAll('.portion-chip').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-    renderPendingFoodDetails();
-}
-
-function evaluateSanity(grams, cal) {
-    const sanityBanner = document.getElementById("sanityCheckBanner");
-    const sanityText = document.getElementById("sanityCheckText");
-    if (!sanityBanner || !sanityText) return;
-    if (grams > 1000) { sanityBanner.style.display = "block"; sanityText.textContent = `份量超過1公斤，若是分食可調低比例。`; return; }
-    if (cal > 1500) { sanityBanner.style.display = "block"; sanityText.textContent = `熱量超過1500 kcal，請留意飽足感。`; return; }
-    sanityBanner.style.display = "none";
-}
-
-function renderPendingFoodDetails() {
+// Local-First 秒存本機 + 背景異步同步
+async function commitCurrentMeal() {
     if (!pendingFoodItem) return;
+
     const s = currentPortionScale;
     const n = pendingFoodItem.rawNutrients || {};
-    const scaledCal = Math.round((n.calories || 200) * s);
-    const scaledGrams = Math.round((n.grams || 250) * s);
-    const iddsiVal = pendingFoodItem["吞嚥安全 (IDDSI)"] !== undefined ? String(pendingFoodItem["吞嚥安全 (IDDSI)"]) : "0";
+    const currentItemLevel = parseIddsi(pendingFoodItem["吞嚥安全 (IDDSI)"]);
+    const logId = "LOG_" + Date.now();
 
-    document.getElementById("single_cal").textContent = `${scaledCal} kcal`;
-    document.getElementById("single_grams_lbl").textContent = `約 ${scaledGrams}g`;
-    evaluateSanity(scaledGrams, scaledCal);
-    updateIddsiTriggerBtnUI(iddsiVal, pendingFoodItem.isUserModified);
+    const fGrams = Math.round((Number(n.grams) || 250) * s);
+    const fCal = Math.round((Number(n.calories) || 200) * s);
+    const fProtein = Number(((Number(n.protein_g) || 10) * s).toFixed(1));
+    const fCarbs = Number(((Number(n.carbs_g) || 30) * s).toFixed(1));
+    const fFat = Number(((Number(n.fat_g) || 5) * s).toFixed(1));
+    const fFiber = Number(((Number(n.fiber_g) || 0) * s).toFixed(1));
+    const fSugar = Number(((Number(n.sugar_g) || 0) * s).toFixed(1));
+    const fSatFat = Number(((Number(n.saturated_fat_g) || 0) * s).toFixed(1));
+    const fTransFat = Number(((Number(n.trans_fat_g) || 0) * s).toFixed(1));
+    const fCholesterol = Math.round((Number(n.cholesterol_mg) || 0) * s);
+    const fCalcium = Math.round((Number(n.calcium_mg) || 0) * s);
+    const fIron = Number(((Number(n.iron_mg) || 0) * s).toFixed(1));
+    const fMagnesium = Math.round((Number(n.magnesium_mg) || 0) * s);
+    const fSodium = Math.round((Number(n.sodium_mg) || 250) * s);
+    const fPotassium = Math.round((Number(n.potassium_mg) || 250) * s);
+    const fZinc = Number(((Number(n.zinc_mg) || 0) * s).toFixed(1));
+    const fVitaminC = Number(((Number(n.vitamin_c_mg) || 0) * s).toFixed(1));
+    const fWater = Math.round((Number(n.water_ml) || 150) * s);
 
-    const grid19 = document.getElementById("nutrientGrid19");
-    if (grid19) {
-        grid19.innerHTML = `
-            <div class="nutrient-pill-card"><span class="n-label">🥩 蛋白質</span><span class="n-val">${(n.protein_g * s).toFixed(1)} g</span></div>
-            <div class="nutrient-pill-card"><span class="n-label">🍞 碳水</span><span class="n-val">${(n.carbs_g * s).toFixed(1)} g</span></div>
-            <div class="nutrient-pill-card"><span class="n-label">🧈 脂肪</span><span class="n-val">${(n.fat_g * s).toFixed(1)} g</span></div>
-            <div class="nutrient-pill-card"><span class="n-label">🧂 鈉質</span><span class="n-val">${Math.round((n.sodium_mg || 0) * s)} mg</span></div>
-        `;
-    }
+    // 1. 本地即時入帳
+    cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
+    sodium += fSodium; waterTotal += fWater;
+    maxIddsiText = currentItemLevel.toString();
 
-    const textureNoticeBox = document.getElementById("textureNoticeBox");
-    const textureNoticeText = document.getElementById("textureNoticeText");
-    if (pendingFoodItem.dual) {
-        textureNoticeBox.style.display = "block";
-        textureNoticeText.textContent = "💡 此餐食含有固體與流質混合質地（例：湯連湯渣），進食時請留意避免嗆喉。";
-    } else textureNoticeBox.style.display = "none";
+    todayAuditLogs.unshift({
+        logId,
+        mealType: currentMealType,
+        title: pendingFoodItem.FoodName,
+        calories: fCal,
+        water: fWater,
+        sodium: fSodium,
+        protein: fProtein,
+        carbs: fCarbs,
+        fat: fFat,
+        grams: fGrams,
+        subText: `${MEAL_TYPE_MAP[currentMealType]} · ${fGrams}g · IDDSI L${currentItemLevel}`
+    });
+
+    renderAuditHistory();
+    saveDailyState();
+    updateDashboardUI();
+
+    // 2. 觸感與介面即時關閉
+    triggerHaptic('success');
+    document.getElementById("singleQueryResultCard").style.display = "none";
+    document.getElementById("foodSearchInput").value = "";
+    document.getElementById("aiWarningBox").innerHTML = "";
+    triggerDynamicIsland(`✅ 已記低：${pendingFoodItem.FoodName} (+${fCal} kcal)`);
+    
+    const committedFoodName = pendingFoodItem.FoodName;
+    pendingFoodItem = null;
+
+    // 3. 背景非同步同步至 Google 試算表（不阻擋任何操作）
+    const payloadData = {
+        "timestamp": getFormattedDateTime(),
+        "id": userProfile.name || "健康探索者",
+        "FoodName": committedFoodName,
+        "克 Grams": fGrams,
+        "熱量 Calories": fCal,
+        "蛋白質 Protein (g)": fProtein,
+        "碳水化合物 Carbs (g)": fCarbs,
+        "脂肪 Fat (g)": fFat,
+        "膳食纖維 Fiber (g)": fFiber,
+        "糖 Sugar (g)": fSugar,
+        "飽和脂肪 Saturated Fat (g)": fSatFat,
+        "反式脂肪 Trans Fat (g)": fTransFat,
+        "膽固醇 Cholesterol (mg)": fCholesterol,
+        "鈣 Calcium (mg)": fCalcium,
+        "鐵 Iron (mg)": fIron,
+        "鎂 Magnesium (mg)": fMagnesium,
+        "鈉 Sodium (mg)": fSodium,
+        "鉀 Potassium (mg)": fPotassium,
+        "鋅 Zinc (mg)": fZinc,
+        "維他命C Vitamin C (mg)": fVitaminC,
+        "吞嚥安全 (IDDSI)": String(currentItemLevel)
+    };
+
+    fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: "logMeal", ...payloadData })
+    }).catch(err => {
+        console.warn("GAS 雲端備份於背景略過，本地資料完整無損:", err);
+    });
 }
 
 function deleteMealLog(logId) {
@@ -2358,36 +2441,122 @@ function deleteMealLog(logId) {
     const idx = todayAuditLogs.findIndex(l => l.logId === logId);
     if (idx === -1) return;
     const item = todayAuditLogs[idx];
-    cal = Math.max(0, cal - item.calories); grams = Math.max(0, grams - item.grams); protein = Math.max(0, protein - item.protein); carbs = Math.max(0, carbs - item.carbs); fat = Math.max(0, fat - item.fat); sodium = Math.max(0, sodium - item.sodium); waterTotal = Math.max(0, waterTotal - item.water);
+
+    cal = Math.max(0, cal - item.calories);
+    grams = Math.max(0, grams - item.grams);
+    protein = Math.max(0, protein - item.protein);
+    carbs = Math.max(0, carbs - item.carbs);
+    fat = Math.max(0, fat - item.fat);
+    sodium = Math.max(0, sodium - item.sodium);
+    waterTotal = Math.max(0, waterTotal - item.water);
+
     todayAuditLogs.splice(idx, 1);
-    renderAuditHistory(); saveDailyState(); updateDashboardUI();
+    renderAuditHistory();
+    saveDailyState();
+    updateDashboardUI();
     triggerDynamicIsland("🗑️ 已移除飲食紀錄");
 }
 
 function renderAuditHistory() {
     const container = document.getElementById("history-container");
     container.innerHTML = "";
-    if (todayAuditLogs.length === 0) { container.innerHTML = "<div style='color:var(--text-sub); font-size:12px;'>今日仲未有飲食紀錄。</div>"; return; }
+    if (todayAuditLogs.length === 0) {
+        container.innerHTML = "<div style='color:var(--text-sub); font-size:12px;'>今日仲未有飲食紀錄，快啲記錄第一餐！</div>";
+        return;
+    }
+
+    const fragment = document.createDocumentFragment();
     todayAuditLogs.forEach(l => {
         const row = document.createElement("div");
         row.className = "history-item-row";
-        row.innerHTML = `<div><strong>${escapeHTML(l.title)}</strong><div style="font-size:11px; color:var(--text-sub);">${escapeHTML(l.subText)}</div></div><div style="display:flex; align-items:center; gap:8px;"><span style="color:var(--apple-orange); font-weight:700;">+${l.calories} KCAL</span><button onclick="deleteMealLog('${l.logId}')" style="border:none; background:rgba(255,59,48,0.1); color:var(--apple-red); font-size:11px; padding:3px 6px; border-radius:4px; cursor:pointer;">刪除</button></div>`;
-        container.appendChild(row);
+        
+        const infoDiv = document.createElement("div");
+        const titleStrong = document.createElement("strong");
+        titleStrong.textContent = l.title;
+        const subDiv = document.createElement("div");
+        subDiv.style.cssText = "font-size:11px; color:var(--text-sub);";
+        subDiv.textContent = l.subText;
+        infoDiv.appendChild(titleStrong);
+        infoDiv.appendChild(subDiv);
+
+        const actDiv = document.createElement("div");
+        actDiv.style.cssText = "display:flex; align-items:center; gap:8px;";
+        actDiv.innerHTML = `<span style="color:var(--apple-orange); font-weight:700;">+${l.calories} KCAL</span>`;
+
+        const delBtn = document.createElement("button");
+        delBtn.setAttribute("data-action", "delete-meal");
+        delBtn.setAttribute("data-id", l.logId);
+        delBtn.style.cssText = "border:none; background:rgba(255,59,48,0.1); color:var(--apple-red); font-size:11px; padding:3px 6px; border-radius:4px; cursor:pointer;";
+        delBtn.textContent = "刪除";
+        actDiv.appendChild(delBtn);
+
+        row.appendChild(infoDiv);
+        row.appendChild(actDiv);
+        fragment.appendChild(row);
     });
+    container.appendChild(fragment);
+}
+
+document.getElementById("history-container")?.addEventListener("click", (e) => {
+    const btn = e.target.closest('[data-action="delete-meal"]');
+    if (!btn) return;
+    const logId = btn.getAttribute("data-id");
+    if (logId) deleteMealLog(logId);
+});
+
+function quickAddWater(ml, typeName) {
+    triggerHaptic('light');
+    waterTotal += ml;
+    const logId = "WATER_" + Date.now();
+    todayAuditLogs.unshift({ logId, mealType: "snack", title: `💧 ${typeName}`, calories: 0, water: ml, sodium: 0, protein: 0, carbs: 0, fat: 0, grams: ml, subText: `${MEAL_TYPE_MAP['snack']} · +${ml} ml 水分` });
+    triggerDynamicIsland(`💧 已記錄飲水 +${ml}ml`);
+    renderAuditHistory();
+    saveDailyState();
+    updateDashboardUI();
 }
 
 async function customWaterPrompt() {
-    const input = await showAppleDialog({ type: 'prompt', title: '自訂飲水量', message: '請輸入飲水量 (ml):', defaultValue: '250' });
+    const input = await showAppleDialog({
+        type: 'prompt',
+        title: '自訂飲水量',
+        message: '請輸入飲水量 (ml):',
+        defaultValue: '250'
+    });
     if (input !== null) {
         const ml = parseInt(input, 10);
         if (!isNaN(ml) && ml > 0) quickAddWater(ml, "自訂飲水");
     }
 }
 
+function updateDashboardUI() {
+    document.getElementById("meta-cal-total").textContent = cal;
+    document.getElementById("meta-water-total").textContent = Math.round(waterTotal);
+    document.getElementById("meta-sodium-total").textContent = Math.round(sodium);
+    document.getElementById("protein").textContent = protein.toFixed(1);
+    document.getElementById("carbs").textContent = carbs.toFixed(1);
+    document.getElementById("fat").textContent = fat.toFixed(1);
+
+    const waterPct = Math.min(Math.round((waterTotal / dailyTargets.water) * 100), 100);
+    document.getElementById("water-progress-pct").textContent = `進度：${waterPct}%`;
+    document.getElementById("bar-protein").style.width = `${Math.min((protein/dailyTargets.protein)*100, 100)}%`;
+    document.getElementById("bar-carbs").style.width = `${Math.min((carbs/dailyTargets.carbs)*100, 100)}%`;
+    document.getElementById("bar-fat").style.width = `${Math.min((fat/dailyTargets.fat)*100, 100)}%`;
+
+    document.getElementById("dailySummaryText").innerHTML = generateDailySummary();
+    suggestNextMeal();
+    renderWeightUI();
+    loadWeeklyDataFromStorage();
+}
+
 function triggerDynamicIsland(text, type = "normal") {
-    if (islandDismissTimer) clearTimeout(islandDismissTimer);
+    if (islandDismissTimer) {
+        clearTimeout(islandDismissTimer);
+        islandDismissTimer = null;
+    }
     const island = document.getElementById("dynamicIsland");
+    const dismissBtn = document.getElementById("islandDismissBtn");
     document.getElementById("islandText").textContent = text;
+    
     island.className = "dynamic-island-banner active";
     if (type === "warning") {
         island.classList.add("alert-warning");
@@ -2395,12 +2564,16 @@ function triggerDynamicIsland(text, type = "normal") {
     } else {
         document.getElementById("islandIcon").className = "fa-solid fa-circle-check";
     }
+    dismissBtn.style.display = "none";
     islandDismissTimer = setTimeout(() => { dismissDynamicIsland(); }, 3500);
 }
 
-function dismissDynamicIsland() {
-    if (islandDismissTimer) clearTimeout(islandDismissTimer);
-    document.getElementById("dynamicIsland").classList.remove("active");
+function dismissDynamicIsland() { 
+    if (islandDismissTimer) {
+        clearTimeout(islandDismissTimer);
+        islandDismissTimer = null;
+    }
+    document.getElementById("dynamicIsland").classList.remove("active"); 
 }
 
 function saveUserProfile(notify = true) {
@@ -2410,7 +2583,6 @@ function saveUserProfile(notify = true) {
     userProfile.height = parseFloat(document.getElementById("user-height").value) || 170;
     userProfile.weight = parseFloat(document.getElementById("user-weight").value) || 65;
     userProfile.waterLimit = parseFloat(document.getElementById("user-water-limit").value) || 2000;
-    userProfile.pureLocalMode = document.getElementById("user-pure-local-mode").checked;
 
     let alls = [];
     ["PEANUT", "SEAFOOD", "EGG", "MILK", "GLUTEN", "SOY"].forEach(tag => {
@@ -2419,12 +2591,6 @@ function saveUserProfile(notify = true) {
     userProfile.allergens = alls;
 
     localStorage.setItem("lohas_user_profile_public", JSON.stringify(userProfile));
-    
-    const banner = document.getElementById("pureLocalModeBanner");
-    if (banner) {
-        banner.style.display = userProfile.pureLocalMode ? "block" : "none";
-    }
-
     calculatePersonalTargets();
     updateProfileUI();
     if (notify) {
@@ -2444,12 +2610,6 @@ function loadUserProfile() {
     document.getElementById("user-height").value = userProfile.height;
     document.getElementById("user-weight").value = userProfile.weight;
     document.getElementById("user-water-limit").value = userProfile.waterLimit;
-    document.getElementById("user-pure-local-mode").checked = !!userProfile.pureLocalMode;
-
-    const banner = document.getElementById("pureLocalModeBanner");
-    if (banner) {
-        banner.style.display = userProfile.pureLocalMode ? "block" : "none";
-    }
 
     ["PEANUT", "SEAFOOD", "EGG", "MILK", "GLUTEN", "SOY"].forEach(tag => {
         const el = document.getElementById(`allergen-${tag}`);
@@ -2460,25 +2620,31 @@ function loadUserProfile() {
     updateProfileUI();
 }
 
-function updateProfileUI() { document.getElementById("headerUserName").textContent = userProfile.name; }
+function updateProfileUI() {
+    document.getElementById("headerUserName").textContent = userProfile.name;
+}
 
 function calculatePersonalTargets() {
     const bmr = (10 * userProfile.weight) + (6.25 * userProfile.height) - (5 * userProfile.age) + (userProfile.gender === "male" ? 5 : -161);
     const tdee = Math.round(bmr * 1.35);
+
     dailyTargets.cal = tdee;
     dailyTargets.protein = Math.round((tdee * 0.20) / 4);
     dailyTargets.carbs = Math.round((tdee * 0.55) / 4);
     dailyTargets.fat = Math.round((tdee * 0.25) / 9);
     dailyTargets.water = parseFloat(userProfile.waterLimit) || 2000;
+
     document.getElementById("target-cal-lbl-mini").textContent = dailyTargets.cal;
     document.getElementById("target-water-lbl").textContent = dailyTargets.water;
     document.getElementById("target-protein-lbl").textContent = dailyTargets.protein;
     document.getElementById("target-carbs-lbl").textContent = dailyTargets.carbs;
     document.getElementById("target-fat-lbl").textContent = dailyTargets.fat;
+    updateDashboardUI();
 }
 
 function saveDailyState() {
-    localStorage.setItem(`lohas_daily_state_public_${getTodayDateString()}`, JSON.stringify({ cal, grams, protein, carbs, fat, sodium, waterTotal, maxIddsiText, logs: todayAuditLogs }));
+    const state = { cal, grams, protein, carbs, fat, sodium, waterTotal, maxIddsiText, logs: todayAuditLogs };
+    localStorage.setItem(`lohas_daily_state_public_${getTodayDateString()}`, JSON.stringify(state));
 }
 
 function loadDailyState() {
@@ -2488,8 +2654,12 @@ function loadDailyState() {
             const d = JSON.parse(raw);
             cal = d.cal || 0; grams = d.grams || 0; protein = d.protein || 0; carbs = d.carbs || 0;
             fat = d.fat || 0; sodium = d.sodium || 0; waterTotal = d.waterTotal || 0;
-            maxIddsiText = d.maxIddsiText || "-"; todayAuditLogs = d.logs || [];
+            maxIddsiText = d.maxIddsiText || "-";
+            todayAuditLogs = d.logs || [];
         } catch(e) {}
+    } else {
+        cal = 0; grams = 0; protein = 0; carbs = 0; fat = 0; sodium = 0; waterTotal = 0;
+        maxIddsiText = "-"; todayAuditLogs = [];
     }
     renderAuditHistory();
     updateDashboardUI();
@@ -2501,13 +2671,22 @@ function getTodayDateString() {
 }
 
 function drawChart() {
+    const svg = document.getElementById("chartSvg");
     const gridY = document.getElementById("chartGridY");
     const gridX = document.getElementById("chartGridX");
     const pathLine = document.getElementById("chartPathLine");
-    if (!gridY || !gridX || !pathLine) return;
+    if (!svg || !gridY || !gridX || !pathLine) return;
     gridY.innerHTML = ""; gridX.innerHTML = "";
+
     const maxVal = Math.max(...weeklyData, 2000);
     const chartLeft = 35, chartRight = 310, chartBottom = 75, chartHeight = 55;
+
+    [0, Math.round(maxVal / 2), maxVal].forEach((yVal) => {
+        const yPos = chartBottom - (yVal / maxVal * chartHeight);
+        gridY.innerHTML += `<line x1="${chartLeft}" y1="${yPos}" x2="${chartRight}" y2="${yPos}" stroke="rgba(0,0,0,0.06)" stroke-dasharray="3,3"/>`;
+        gridY.innerHTML += `<text x="${chartLeft - 4}" y="${yPos + 3}" text-anchor="end" font-size="9px" fill="var(--apple-gray)">${yVal}</text>`;
+    });
+
     const stepX = (chartRight - chartLeft) / (weeklyData.length - 1);
     let pts = [];
     weeklyData.forEach((val, idx) => {
@@ -2545,7 +2724,7 @@ function loadWeeklyDataFromStorage() {
 
 function generatePersonalReport() {
     triggerHaptic('light');
-    const r = `【樂活飲食 - 我的今日飲食摘要】\n日期：${new Date().toLocaleDateString('zh-HK')}\n用戶：${userProfile.name}\n總熱量：${cal} / ${dailyTargets.cal} kcal\n飲水量：${Math.round(waterTotal)} ml`;
+    const r = `【樂活飲食 - 我的今日飲食摘要】\n日期：${new Date().toLocaleDateString('zh-HK')}\n用戶：${userProfile.name} (體重: ${userProfile.weight}kg)\n----------------------------------------\n1. 熱量與核心營養：\n   - 總熱量：${cal} / ${dailyTargets.cal} kcal (${Math.round((cal/dailyTargets.cal)*100)}%)\n   - 蛋白質：${protein.toFixed(1)}g | 碳水：${carbs.toFixed(1)}g | 脂肪：${fat.toFixed(1)}g\n2. 水分與鈉含量：\n   - 飲水量：${Math.round(waterTotal)} ml / 目標 ${dailyTargets.water} ml\n   - 鈉質攝取：${Math.round(sodium)} mg\n----------------------------------------\n紀錄生成於樂活飲食日誌`;
     document.getElementById("clinicalReportOutput").value = r;
     triggerDynamicIsland("📋 已產生今日摘要");
 }
@@ -2558,53 +2737,14 @@ function copyReportText() {
     triggerDynamicIsland("📋 已複製文字到剪貼簿！");
 }
 
-function switchAppleTab(tabId, el, updateHash = true) {
+function switchAppleTab(tabId, el) {
     triggerHaptic('light');
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-item').forEach(i => {
-        i.classList.remove('active');
-        i.setAttribute('aria-selected', 'false');
-    });
-    
-    const targetContent = document.getElementById(`tab-${tabId}`);
-    if (targetContent) targetContent.classList.add('active');
-    
-    const tabs = ['home', 'meals', 'trends', 'profile'];
-    const idx = tabs.indexOf(tabId);
-
-    if (el) {
-        el.classList.add('active');
-        el.setAttribute('aria-selected', 'true');
-    } else if (idx > -1) {
-        const matchedEl = document.querySelectorAll('.tab-item')[idx];
-        if (matchedEl) {
-            matchedEl.classList.add('active');
-            matchedEl.setAttribute('aria-selected', 'true');
-        }
-    }
-
-    if (updateHash && history.replaceState) {
-        history.replaceState(null, null, `#${tabId}`);
-    }
+    document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
+    document.getElementById(`tab-${tabId}`).classList.add('active');
+    el.classList.add('active');
 }
 
-let hashChangeTimer = null;
-window.addEventListener('hashchange', () => {
-    if (hashChangeTimer) clearTimeout(hashChangeTimer);
-    hashChangeTimer = setTimeout(() => {
-        const tabId = location.hash.replace('#', '') || 'home';
-        const tabs = ['home', 'meals', 'trends', 'profile'];
-        const idx = tabs.indexOf(tabId);
-        if (idx > -1) {
-            const tabEl = document.querySelectorAll('.tab-item')[idx];
-            if (tabEl) switchAppleTab(tabId, tabEl, false);
-        }
-    }, 50);
-});
-
-// ==========================================
-// 初始化流程（乾淨掛載基底歷史，不與分頁 Hash 衝突）
-// ==========================================
 window.onload = () => {
     loadUserProfile();
     loadDailyState();
@@ -2612,33 +2752,7 @@ window.onload = () => {
     const rawW = localStorage.getItem("lohas_weight_logs");
     if (rawW) { try { weightLogs = JSON.parse(rawW); } catch(e) {} }
     renderWeightUI();
-    flushOfflineSyncQueue();
-
-    // 依 URL Hash 還原當前分頁（使用 replaceState 不增加堆疊）
-    const initialTab = location.hash.replace('#', '');
-    if (['home', 'meals', 'trends', 'profile'].includes(initialTab)) {
-        switchAppleTab(initialTab, null, false);
-    }
-
-    // 掛載基底 History 狀態（為後續返回鍵與 Modal 關閉提供清晰參考錨點）
-    if (window.history && window.history.pushState) {
-        window.history.pushState({ base: true }, null, window.location.href);
-    }
-
-    // 檢查新手導覽
     checkOnboarding();
-
-    // 啟動 Apple HealthKit
-    HealthKitBridge.init().then(isAvailable => {
-        if (isAvailable) {
-            return refreshWatchCalories();
-        }
-    }).then(() => {
-        updateDashboardUI();
-    }).catch(e => console.warn("HealthKit 啟動略過:", e));
-
-    // 啟動 10 秒後執行離線錯誤日誌排洪
-    setTimeout(uploadErrorLogs, 10000);
 };
 </script>
 </body>
