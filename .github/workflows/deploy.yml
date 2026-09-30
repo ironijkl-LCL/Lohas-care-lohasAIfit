@@ -5,14 +5,16 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+# 確保具備 Pages 與 OIDC 部署權限
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# 鎖定同一時間只有一個 Pages 部署任務，若有新 push 自動中斷舊任務
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -30,7 +32,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          # 若 index.html 位於 www 資料夾內，請填 'www'；若位於根目錄則維持 '.'
+          path: 'www'
 
       - name: Deploy to GitHub Pages
         id: deployment
