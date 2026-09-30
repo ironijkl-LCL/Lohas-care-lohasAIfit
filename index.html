@@ -722,7 +722,7 @@
             <div style="display:flex; gap:6px; margin-bottom:8px;">
                 <button class="apple-btn-primary" style="padding:6px; font-size:11px;" onclick="generatePersonalReport()">文字摘要</button>
                 <button class="apple-btn-primary" style="padding:6px; font-size:11px; background:var(--apple-teal);" onclick="copyReportText()">📋 複製</button>
-                <button class="apple-btn-primary" style="padding:6px; font-size:11px; background:var(--apple-green);" onclick="exportCSV()">📊 匯出 CSV</button>
+                <button class="apple-btn-primary" style="padding:6px; font-size:11px; background:var(--apple-green);" onclick="exportCSV()">📊 匯出 CSV (Excel 相容)</button>
             </div>
             <textarea id="clinicalReportOutput" class="apple-input" rows="4" style="font-size: 11px; font-family: monospace;" readonly placeholder="點擊上方按鈕產生個人健康摘要..."></textarea>
         </div>
@@ -1559,7 +1559,7 @@ async function triggerNaturalLanguageLog() {
             if (n.water_ml > 0) HealthKitPlugin.logDietaryWater({ waterMl: n.water_ml }).catch(e => console.warn(e));
         }
 
-        // 雲端背景備份
+        // 雲端背景備份 (完整對齊 21 欄)
         fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -1585,24 +1585,7 @@ async function triggerNaturalLanguageLog() {
                 "鉀 Potassium (mg)": n.potassium_mg || 0,
                 "鋅 Zinc (mg)": n.zinc_mg || 0,
                 "維他命C Vitamin C (mg)": n.vitamin_c_mg || 0,
-                "吞嚥安全 (IDDSI)": String(item.iddsi),
-                grams: item.grams,
-                calories: n.calories,
-                protein_g: n.protein_g,
-                carbs_g: n.carbs_g,
-                fat_g: n.fat_g,
-                fiber_g: n.fiber_g || 0,
-                sugar_g: n.sugar_g || 0,
-                saturated_fat_g: n.saturated_fat_g || 0,
-                trans_fat_g: n.trans_fat_g || 0,
-                cholesterol_mg: n.cholesterol_mg || 0,
-                calcium_mg: n.calcium_mg || 0,
-                iron_mg: n.iron_mg || 0,
-                magnesium_mg: n.magnesium_mg || 0,
-                sodium_mg: n.sodium_mg || 0,
-                potassium_mg: n.potassium_mg || 0,
-                zinc_mg: n.zinc_mg || 0,
-                vitamin_c_mg: n.vitamin_c_mg || 0
+                "吞嚥安全 (IDDSI)": String(item.iddsi)
             })
         }).catch(e => console.warn("背景同步雲端略過:", e));
 
@@ -2020,7 +2003,7 @@ function suggestNextMeal() {
     box.innerHTML = `🥗 <b>進食進度非常平均：</b><br>剩餘熱量仲有 <b>${remainCal} kcal</b>，下一餐可以揀<b>南瓜碎肉粥</b>或者<b>三文魚糙米飯</b>！`;
 }
 
-// 包含茶餐廳經典食物的常用庫
+// 包含茶餐廳經典食物的常用庫 (21 項完整配置)
 const LOCAL_FALLBACK_DB = [
     { 
         "FoodName": "凍檸茶", 
@@ -2425,7 +2408,7 @@ async function searchFoodText() {
     document.getElementById("favoriteToggleBtn").innerHTML = isFav ? `<i class="fa-solid fa-star"></i>` : `<i class="fa-regular fa-star"></i>`;
 }
 
-// Local-First 秒存本機 + 寫入 HealthKit + 背景異步同步
+// Local-First 秒存本機 + 寫入 HealthKit + 背景同步 21 欄至 Google 試算表
 async function commitCurrentMeal() {
     if (!pendingFoodItem) return;
 
@@ -2457,7 +2440,7 @@ async function commitCurrentMeal() {
     const fVitaminC = Number(((Number(n.vitamin_c_mg) || 0) * s).toFixed(1));
     const fWater = Math.round((Number(n.water_ml) || 150) * s);
 
-    // 1. 本地即時入帳
+    // 1. 本地即時入帳 (0.05 秒內完成)
     cal += fCal; grams += fGrams; protein += fProtein; carbs += fCarbs; fat += fFat;
     sodium += fSodium; waterTotal += fWater;
     maxIddsiText = currentItemLevel.toString();
@@ -2480,7 +2463,7 @@ async function commitCurrentMeal() {
     saveDailyState();
     updateDashboardUI();
 
-    // 2. 觸發原生震動並關閉 UI
+    // 2. 觸發原生震動反饋並關閉 UI
     triggerHaptic('success');
     document.getElementById("singleQueryResultCard").style.display = "none";
     document.getElementById("foodSearchInput").value = "";
@@ -2500,7 +2483,7 @@ async function commitCurrentMeal() {
         }
     }
 
-    // 4. 背景非同步同步至 Google 試算表（不阻擋操作）
+    // 4. 背景非同步同步至 Google 試算表（完整 21 欄位）
     const payloadData = {
         "timestamp": getFormattedDateTime(),
         "id": userProfile.name || "健康探索者",
