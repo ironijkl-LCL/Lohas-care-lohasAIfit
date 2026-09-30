@@ -786,6 +786,27 @@
             </div>
         </div>
 
+        <!-- 🌟 專為 Apple Guideline 2.5.1 打造的 HealthKit 明確識別與透明度卡片 -->
+        <div class="ui-card">
+            <h3><i class="fa-solid fa-heart-pulse" style="color:var(--apple-red);"></i> Apple Health (健康) 數據同步</h3>
+            <p style="font-size:11px; color:var(--text-sub); margin:0 0 10px 0; line-height:1.5;">
+                本應用整合 Apple HealthKit 技術。啟用後可自動讀取 Apple Watch 每日活動消耗熱量，並將飲食日誌中的熱量與飲水量同步寫入 iOS「健康」App，方便您集中管理。
+            </p>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:0.5px solid rgba(0,0,0,0.06);">
+                <div>
+                    <div style="font-size:13px; font-weight:600;">連接 Apple HealthKit</div>
+                    <div style="font-size:11px; color:var(--apple-gray);" id="hk-status-label">尚未授權</div>
+                </div>
+                <button id="btnConnectHealthKit" class="apple-btn-primary" style="width:auto; padding:6px 14px; font-size:12px;" onclick="connectAppleHealthKit()">
+                    立即授權
+                </button>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:12px;">
+                <span style="color:var(--text-sub);">今日 Apple Watch 消耗：</span>
+                <span id="hk-burned-display" style="font-weight:700; color:var(--apple-orange);">-- kcal</span>
+            </div>
+        </div>
+
         <div class="ui-card">
             <h3><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--apple-purple);"></i> iOS 桌面 Widget 與 Siri 捷徑</h3>
             <p style="font-size:11px; color:var(--text-sub); margin:0 0 8px 0;">支援將今日熱量及飲水進度同步至 iOS 桌面 Widget 或透過 Siri 語音打卡：</p>
@@ -816,7 +837,7 @@
                     <span><i class="fa-solid fa-file-medical"></i> 醫療與吞嚥安全免責聲明 (Disclaimer)</span>
                     <i class="fa-solid fa-chevron-right" style="font-size:12px;"></i>
                 </button>
-                <a href="https://lohas-care.org/privacy" target="_blank" style="text-decoration:none; font-size:12px; color:var(--apple-blue); display:flex; justify-content:space-between; padding:8px 0; border-bottom:0.5px solid rgba(0,0,0,0.06);">
+                <a href="https://ironijkl-lcl.github.io/Lohas-care-lohasAIfit/privacy.html" target="_blank" style="text-decoration:none; font-size:12px; color:var(--apple-blue); display:flex; justify-content:space-between; padding:8px 0; border-bottom:0.5px solid rgba(0,0,0,0.06);">
                     <span><i class="fa-solid fa-lock"></i> 隱私政策 (Privacy Policy)</span>
                     <i class="fa-solid fa-arrow-up-right-from-square"></i>
                 </a>
@@ -1110,7 +1131,64 @@ let speechRecognitionInstance = null;
 let isSpeechRecognizing = false;
 
 // ==========================================
-// 3. AI 辨識計時
+// 3. Apple Health (HealthKit) 原生對接與透明度
+// ==========================================
+const HealthKitPlugin = window.Capacitor?.Plugins?.HealthKitPlugin;
+
+async function connectAppleHealthKit() {
+    if (!HealthKitPlugin) {
+        showAppleDialog({ title: "僅支援 iOS", message: "請於 iPhone 或 iPad 實機上使用 Apple Health 同步功能。" });
+        return;
+    }
+
+    try {
+        triggerHaptic('light');
+        const res = await HealthKitPlugin.requestAuthorization();
+        if (res.granted) {
+            updateHealthKitStatusUI(true);
+            localStorage.setItem("lohas_healthkit_enabled", "true");
+            triggerHaptic('success');
+            triggerDynamicIsland("✅ 已成功連接 Apple HealthKit！");
+            refreshAppleHealthBurnedCalories();
+        }
+    } catch (err) {
+        console.warn("HealthKit 授權失敗:", err);
+        triggerDynamicIsland("未能取得 Apple Health 授權", "warning");
+    }
+}
+
+async function refreshAppleHealthBurnedCalories() {
+    if (!HealthKitPlugin || localStorage.getItem("lohas_healthkit_enabled") !== "true") return;
+    try {
+        const res = await HealthKitPlugin.getTodayActiveCalories();
+        if (res && res.calories !== undefined) {
+            const burned = res.calories;
+            const displayEl = document.getElementById("hk-burned-display");
+            if (displayEl) displayEl.textContent = `${burned} kcal`;
+        }
+    } catch (e) {
+        console.warn("讀取動態熱量略過:", e);
+    }
+}
+
+function updateHealthKitStatusUI(isConnected) {
+    const statusLabel = document.getElementById("hk-status-label");
+    const connectBtn = document.getElementById("btnConnectHealthKit");
+    if (statusLabel && connectBtn) {
+        if (isConnected) {
+            statusLabel.textContent = "已連線同步中";
+            statusLabel.style.color = "var(--apple-green)";
+            connectBtn.style.display = "none";
+        } else {
+            statusLabel.textContent = "尚未授權";
+            statusLabel.style.color = "var(--apple-gray)";
+            connectBtn.style.display = "inline-block";
+        }
+    }
+}
+
+// ==========================================
+// 4. AI 辨識計時
 // ==========================================
 function startAiDynamicProgress() {
     aiElapsedSeconds = 0;
@@ -1150,7 +1228,7 @@ function stopAiDynamicProgress() {
 }
 
 // ==========================================
-// 4. 資料刪除功能
+// 5. 資料刪除功能
 // ==========================================
 async function clearAllData() {
     const confirm1 = await showAppleDialog({
@@ -1175,7 +1253,7 @@ async function clearAllData() {
 }
 
 // ==========================================
-// 5. 體重紀錄與防呆檢查
+// 6. 體重紀錄與防呆檢查
 // ==========================================
 async function logCurrentWeight() {
     const input = document.getElementById("weightInput");
@@ -1249,7 +1327,7 @@ function renderWeightUI() {
 }
 
 // ==========================================
-// 6. 常用食物管理
+// 7. 常用食物管理
 // ==========================================
 function loadFavorites() {
     const raw = localStorage.getItem("lohas_favorite_foods");
@@ -1310,7 +1388,7 @@ function quickLogFavorite(name) {
 }
 
 // ==========================================
-// 7. 新手導覽
+// 8. 新手導覽
 // ==========================================
 function checkOnboarding() {
     const isDone = localStorage.getItem("lohas_onboarded_v4");
@@ -1327,7 +1405,7 @@ function completeOnboarding() {
 }
 
 // ==========================================
-// 8. iOS Widget & Siri 捷徑支援
+// 9. iOS Widget & Siri 捷徑支援
 // ==========================================
 async function exportWidgetPayload() {
     triggerHaptic('light');
@@ -1355,7 +1433,7 @@ function showSiriIntentHelp() {
 }
 
 // ==========================================
-// 9. 即時轉文字語音辨識 + 廣東話自然語言分析
+// 10. 即時轉文字語音辨識 + 廣東話自然語言分析
 // ==========================================
 async function parseNaturalLanguage(text) {
     if (!text || !text.trim()) return [];
@@ -1474,6 +1552,12 @@ async function triggerNaturalLanguageLog() {
             grams: item.grams,
             subText: `${MEAL_TYPE_MAP[currentMealType]} ·${item.grams}g · IDDSI L${item.iddsi}`
         });
+
+        // 同步寫入 Apple Health (HealthKit)
+        if (HealthKitPlugin && localStorage.getItem("lohas_healthkit_enabled") === "true") {
+            if (n.calories > 0) HealthKitPlugin.logDietaryEnergy({ calories: n.calories }).catch(e => console.warn(e));
+            if (n.water_ml > 0) HealthKitPlugin.logDietaryWater({ waterMl: n.water_ml }).catch(e => console.warn(e));
+        }
 
         // 雲端背景備份
         fetch(API_URL, {
@@ -1611,7 +1695,7 @@ function stopVoiceRecognitionUI() {
 }
 
 // ==========================================
-// 10. AR / LiDAR 碗量估算引擎
+// 11. AR / LiDAR 碗量估算引擎
 // ==========================================
 const FOOD_DENSITY_MAP = {
     "drink": 1.0,
@@ -2341,9 +2425,13 @@ async function searchFoodText() {
     document.getElementById("favoriteToggleBtn").innerHTML = isFav ? `<i class="fa-solid fa-star"></i>` : `<i class="fa-regular fa-star"></i>`;
 }
 
-// Local-First 秒存本機 + 背景異步同步
+// Local-First 秒存本機 + 寫入 HealthKit + 背景異步同步
 async function commitCurrentMeal() {
     if (!pendingFoodItem) return;
+
+    const commitBtn = document.getElementById("commitMealBtn");
+    commitBtn.disabled = true;
+    commitBtn.textContent = "⏳ 正在記錄入帳...";
 
     const s = currentPortionScale;
     const n = pendingFoodItem.rawNutrients || {};
@@ -2392,7 +2480,7 @@ async function commitCurrentMeal() {
     saveDailyState();
     updateDashboardUI();
 
-    // 2. 觸感與介面即時關閉
+    // 2. 觸發原生震動並關閉 UI
     triggerHaptic('success');
     document.getElementById("singleQueryResultCard").style.display = "none";
     document.getElementById("foodSearchInput").value = "";
@@ -2402,7 +2490,17 @@ async function commitCurrentMeal() {
     const committedFoodName = pendingFoodItem.FoodName;
     pendingFoodItem = null;
 
-    // 3. 背景非同步同步至 Google 試算表（不阻擋任何操作）
+    // 3. 同步寫入 Apple Health (HealthKit)
+    if (HealthKitPlugin && localStorage.getItem("lohas_healthkit_enabled") === "true") {
+        if (fCal > 0) {
+            HealthKitPlugin.logDietaryEnergy({ calories: fCal }).catch(e => console.warn("寫入 HealthKit 失敗:", e));
+        }
+        if (fWater > 0) {
+            HealthKitPlugin.logDietaryWater({ waterMl: fWater }).catch(e => console.warn("寫入 HealthKit 水分失敗:", e));
+        }
+    }
+
+    // 4. 背景非同步同步至 Google 試算表（不阻擋操作）
     const payloadData = {
         "timestamp": getFormattedDateTime(),
         "id": userProfile.name || "健康探索者",
@@ -2509,6 +2607,12 @@ function quickAddWater(ml, typeName) {
     waterTotal += ml;
     const logId = "WATER_" + Date.now();
     todayAuditLogs.unshift({ logId, mealType: "snack", title: `💧 ${typeName}`, calories: 0, water: ml, sodium: 0, protein: 0, carbs: 0, fat: 0, grams: ml, subText: `${MEAL_TYPE_MAP['snack']} · +${ml} ml 水分` });
+    
+    // 寫入水分至 Apple Health
+    if (HealthKitPlugin && localStorage.getItem("lohas_healthkit_enabled") === "true") {
+        HealthKitPlugin.logDietaryWater({ waterMl: ml }).catch(e => console.warn(e));
+    }
+
     triggerDynamicIsland(`💧 已記錄飲水 +${ml}ml`);
     renderAuditHistory();
     saveDailyState();
@@ -2743,6 +2847,10 @@ function switchAppleTab(tabId, el) {
     document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
     document.getElementById(`tab-${tabId}`).classList.add('active');
     el.classList.add('active');
+
+    if (tabId === 'profile') {
+        refreshAppleHealthBurnedCalories();
+    }
 }
 
 window.onload = () => {
@@ -2753,6 +2861,11 @@ window.onload = () => {
     if (rawW) { try { weightLogs = JSON.parse(rawW); } catch(e) {} }
     renderWeightUI();
     checkOnboarding();
+
+    // 初始化 HealthKit 授權狀態顯示
+    const isHkEnabled = localStorage.getItem("lohas_healthkit_enabled") === "true";
+    updateHealthKitStatusUI(isHkEnabled);
+    if (isHkEnabled) refreshAppleHealthBurnedCalories();
 };
 </script>
 </body>
