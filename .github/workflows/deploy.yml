@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # 若 index.html 位於 www 資料夾內，請填 'www'；若位於根目錄則維持 '.'
-          path: 'www'
+          path: '.'
 
       - name: Deploy to GitHub Pages
         id: deployment
